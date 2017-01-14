@@ -15,12 +15,6 @@
  */
 package org.testify.client;
 
-import org.testify.ClientInstance;
-import org.testify.ServerInstance;
-import org.testify.TestContext;
-import org.testify.annotation.Cut;
-import org.testify.annotation.Fake;
-import org.testify.junit.UnitTest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -30,6 +24,12 @@ import org.junit.runner.RunWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import org.testify.ClientInstance;
+import org.testify.ServerInstance;
+import org.testify.TestContext;
+import org.testify.annotation.Cut;
+import org.testify.annotation.Fake;
+import org.testify.junit.UnitTest;
 
 /**
  *

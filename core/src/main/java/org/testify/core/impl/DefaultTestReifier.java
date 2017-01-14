@@ -15,7 +15,9 @@
  */
 package org.testify.core.impl;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Optional;
 import org.testify.CutDescriptor;
 import org.testify.FieldDescriptor;
 import org.testify.InvokableDescriptor;
@@ -24,9 +26,7 @@ import org.testify.MockProvider;
 import org.testify.TestDescriptor;
 import org.testify.TestReifier;
 import org.testify.core.util.ServiceLocatorUtil;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Optional;
+import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
  * An implementation of {@link TestReifier} contract.

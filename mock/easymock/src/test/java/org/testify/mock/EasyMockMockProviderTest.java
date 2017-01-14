@@ -15,12 +15,12 @@
  */
 package org.testify.mock;
 
-import org.testify.fixture.Mockable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createMock;
 import org.easymock.cglib.proxy.Factory;
 import org.junit.Before;
 import org.junit.Test;
+import org.testify.fixture.Mockable;
 
 /**
  *

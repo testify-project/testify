@@ -15,13 +15,13 @@
  */
 package org.testify.junit.core;
 
-import org.testify.trait.LoggingTrait;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.StoppedByUserException;
 import org.junit.runners.model.MultipleFailureException;
+import org.testify.trait.LoggingTrait;
 
 /**
  * A JUnit test run notifier to handle logging and notification test lifecycle

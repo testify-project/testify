@@ -15,9 +15,9 @@
  */
 package org.testify.junit.fixture.service;
 
+import javax.inject.Inject;
 import org.testify.junit.fixture.common.CustomQualifier;
 import org.testify.junit.fixture.common.Greeting;
-import javax.inject.Inject;
 
 /**
  *

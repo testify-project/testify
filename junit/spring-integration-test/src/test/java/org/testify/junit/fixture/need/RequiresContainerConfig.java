@@ -15,8 +15,6 @@
  */
 package org.testify.junit.fixture.need;
 
-import org.testify.ContainerInstance;
-import org.testify.junit.fixture.need.common.DatabaseConfig;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -32,6 +30,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
+import org.testify.ContainerInstance;
+import org.testify.junit.fixture.need.common.DatabaseConfig;
 
 /**
  *

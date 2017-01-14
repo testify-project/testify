@@ -15,12 +15,12 @@
  */
 package org.testify.fixture.analyzer;
 
-import org.testify.annotation.RequiresContainer;
-import org.testify.annotation.TestGroup;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.testify.annotation.RequiresContainer;
+import org.testify.annotation.TestGroup;
 
 /**
  *

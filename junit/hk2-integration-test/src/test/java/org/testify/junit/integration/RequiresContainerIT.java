@@ -15,11 +15,6 @@
  */
 package org.testify.junit.integration;
 
-import org.testify.annotation.Module;
-import org.testify.annotation.RequiresContainer;
-import org.testify.junit.fixture.need.common.GreetingEntity;
-import org.testify.junit.fixture.need.container.PostgresAbstractBinder;
-import org.testify.tools.category.ContainerTests;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -29,6 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.testify.annotation.Module;
+import org.testify.annotation.RequiresContainer;
+import org.testify.junit.fixture.need.common.GreetingEntity;
+import org.testify.junit.fixture.need.container.PostgresAbstractBinder;
+import org.testify.tools.category.ContainerTests;
 
 /**
  *

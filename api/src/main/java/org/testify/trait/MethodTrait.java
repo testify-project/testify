@@ -15,7 +15,6 @@
  */
 package org.testify.trait;
 
-import org.testify.guava.common.reflect.TypeToken;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  * A contract that specifies method traits.

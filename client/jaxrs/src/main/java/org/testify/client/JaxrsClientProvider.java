@@ -15,14 +15,14 @@
  */
 package org.testify.client;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import org.testify.ClientInstance;
 import org.testify.ClientProvider;
 import org.testify.ServerInstance;
 import org.testify.TestContext;
 import org.testify.tools.Discoverable;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 
 /**
  * A Jersey Client implementation of the ClientProvider SPI contract.

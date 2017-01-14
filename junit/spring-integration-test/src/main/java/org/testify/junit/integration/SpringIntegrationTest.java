@@ -18,8 +18,8 @@ package org.testify.junit.integration;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.runners.model.InitializationError;
-import org.testify.level.integration.IntegrationTestRunner;
 import org.testify.junit.core.BaseJUnitTestRunner;
+import org.testify.level.integration.IntegrationTestRunner;
 
 /**
  * A JUnit Spring integration test class runner. This class is the main entry

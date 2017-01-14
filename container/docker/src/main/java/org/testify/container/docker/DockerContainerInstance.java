@@ -15,11 +15,11 @@
  */
 package org.testify.container.docker;
 
-import org.testify.ContainerInstance;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.testify.ContainerInstance;
 
 /**
  * A Docker implementation of {@link ContainerInstance SPI Contract} that

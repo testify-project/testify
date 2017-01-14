@@ -15,12 +15,6 @@
  */
 package org.testify.di.hk2;
 
-import org.testify.guava.common.collect.ImmutableSet;
-import org.testify.guava.common.reflect.TypeToken;
-import org.testify.ServiceInstance;
-import org.testify.annotation.Module;
-import org.testify.annotation.Real;
-import org.testify.annotation.Scan;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -40,6 +34,12 @@ import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.BuilderHelper;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addOneConstant;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
+import org.testify.ServiceInstance;
+import org.testify.annotation.Module;
+import org.testify.annotation.Real;
+import org.testify.annotation.Scan;
+import org.testify.guava.common.collect.ImmutableSet;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class

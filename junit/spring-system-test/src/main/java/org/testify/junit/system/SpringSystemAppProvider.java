@@ -15,6 +15,16 @@
  */
 package org.testify.junit.system;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.web.SpringServletContainerInitializer;
+import org.testify.ApplicationInstance;
+import org.testify.ApplicationProvider;
+import org.testify.TestContext;
+import org.testify.TestDescriptor;
+import org.testify.annotation.Application;
 import org.testify.bytebuddy.ByteBuddy;
 import org.testify.bytebuddy.description.type.TypeDescription;
 import org.testify.bytebuddy.dynamic.ClassFileLocator;
@@ -26,18 +36,8 @@ import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
 import static org.testify.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testify.bytebuddy.matcher.ElementMatchers.not;
 import org.testify.bytebuddy.pool.TypePool;
-import org.testify.ApplicationInstance;
-import org.testify.ApplicationProvider;
-import org.testify.TestContext;
-import org.testify.TestDescriptor;
-import org.testify.annotation.Application;
 import org.testify.core.impl.DefaultApplicationInstance;
 import org.testify.tools.Discoverable;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.web.SpringServletContainerInitializer;
 
 /**
  * A Spring Servlet implementation of the ApplicationProvider SPI contract.
@@ -55,7 +55,6 @@ public class SpringSystemAppProvider implements ApplicationProvider {
     public ApplicationInstance start(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Application application = testDescriptor.getApplication().get();
-
 
         SpringSystemInterceptor interceptor = new SpringSystemInterceptor(LOCAL_APPLICATION_INSTANCE);
 

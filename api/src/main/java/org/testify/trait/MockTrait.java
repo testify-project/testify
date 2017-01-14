@@ -15,13 +15,13 @@
  */
 package org.testify.trait;
 
+import java.util.Optional;
+import static java.util.Optional.ofNullable;
 import org.testify.annotation.Cut;
 import org.testify.annotation.Fake;
 import org.testify.annotation.Fixture;
 import org.testify.annotation.Real;
 import org.testify.annotation.Virtual;
-import java.util.Optional;
-import static java.util.Optional.ofNullable;
 
 /**
  * A contract that specifies mock traits.

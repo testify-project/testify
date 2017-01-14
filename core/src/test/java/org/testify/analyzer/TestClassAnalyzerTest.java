@@ -15,16 +15,16 @@
  */
 package org.testify.analyzer;
 
-import org.testify.asm.ClassReader;
-import org.testify.TestDescriptor;
-import org.testify.core.analyzer.TestClassAnalyzer;
-import org.testify.core.analyzer.TestDescriptorBuilder;
-import org.testify.fixture.analyzer.AnalyzedModule;
-import org.testify.fixture.analyzer.AnalyzedTestClass;
 import java.io.IOException;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
+import org.testify.TestDescriptor;
+import org.testify.asm.ClassReader;
+import org.testify.core.analyzer.TestClassAnalyzer;
+import org.testify.core.analyzer.TestDescriptorBuilder;
+import org.testify.fixture.analyzer.AnalyzedModule;
+import org.testify.fixture.analyzer.AnalyzedTestClass;
 
 /**
  *

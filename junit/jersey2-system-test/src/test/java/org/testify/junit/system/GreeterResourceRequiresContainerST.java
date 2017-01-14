@@ -15,14 +15,6 @@
  */
 package org.testify.junit.system;
 
-import org.testify.ClientInstance;
-import org.testify.annotation.Application;
-import org.testify.annotation.Cut;
-import org.testify.annotation.Module;
-import org.testify.annotation.RequiresContainer;
-import org.testify.junit.fixture.GreeterApplication;
-import org.testify.junit.fixture.need.PostgresAbstractModule;
-import org.testify.tools.category.ContainerTests;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -31,6 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.testify.ClientInstance;
+import org.testify.annotation.Application;
+import org.testify.annotation.Cut;
+import org.testify.annotation.Module;
+import org.testify.annotation.RequiresContainer;
+import org.testify.junit.fixture.GreeterApplication;
+import org.testify.junit.fixture.need.PostgresAbstractModule;
+import org.testify.tools.category.ContainerTests;
 
 /**
  * Test Greeter Resource inside the container from the client perspective real

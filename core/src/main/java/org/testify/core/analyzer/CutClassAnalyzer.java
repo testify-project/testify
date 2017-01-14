@@ -15,12 +15,6 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.asm.ClassVisitor;
-import org.testify.asm.FieldVisitor;
-import org.testify.asm.MethodVisitor;
-import static org.testify.asm.Opcodes.ASM5;
-import static org.testify.asm.Type.getMethodType;
-import static org.testify.guava.common.base.Preconditions.checkState;
 import static java.lang.Class.forName;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,6 +25,12 @@ import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import static java.util.stream.Stream.of;
+import org.testify.asm.ClassVisitor;
+import org.testify.asm.FieldVisitor;
+import org.testify.asm.MethodVisitor;
+import static org.testify.asm.Opcodes.ASM5;
+import static org.testify.asm.Type.getMethodType;
+import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
  * A class visitor implementation that performs analysis on the class under

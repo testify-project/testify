@@ -15,11 +15,11 @@
  */
 package org.testify.mock;
 
-import org.testify.MockProvider;
-import org.testify.tools.Discoverable;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import org.testify.MockProvider;
+import org.testify.tools.Discoverable;
 
 /**
  * A Mockito implementation of the {@link MockProvider} SPI contract.

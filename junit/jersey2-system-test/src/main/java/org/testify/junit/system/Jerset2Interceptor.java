@@ -15,16 +15,6 @@
  */
 package org.testify.junit.system;
 
-import org.testify.bytebuddy.implementation.bind.annotation.AllArguments;
-import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
-import org.testify.bytebuddy.implementation.bind.annotation.RuntimeType;
-import org.testify.bytebuddy.implementation.bind.annotation.SuperCall;
-import org.testify.bytebuddy.implementation.bind.annotation.This;
-import org.testify.ServiceInstance;
-import org.testify.ServiceProvider;
-import org.testify.TestContext;
-import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
-import org.testify.core.util.ServiceLocatorUtil;
 import java.net.URI;
 import java.util.concurrent.Callable;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -32,6 +22,16 @@ import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer;
 import org.glassfish.jersey.server.ApplicationHandler;
+import org.testify.ServiceInstance;
+import org.testify.ServiceProvider;
+import org.testify.TestContext;
+import org.testify.bytebuddy.implementation.bind.annotation.AllArguments;
+import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
+import org.testify.bytebuddy.implementation.bind.annotation.RuntimeType;
+import org.testify.bytebuddy.implementation.bind.annotation.SuperCall;
+import org.testify.bytebuddy.implementation.bind.annotation.This;
+import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
+import org.testify.core.util.ServiceLocatorUtil;
 
 /**
  * A class that intercepts methods of classes that extend or implement

@@ -15,10 +15,10 @@
  */
 package org.testify.junit.fixture.need.container;
 
-import org.testify.junit.fixture.need.database.DatabaseModule;
 import com.google.inject.AbstractModule;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
+import org.testify.junit.fixture.need.database.DatabaseModule;
 
 /**
  * Create Postgres data source dynamically. Note that we do this just so we can

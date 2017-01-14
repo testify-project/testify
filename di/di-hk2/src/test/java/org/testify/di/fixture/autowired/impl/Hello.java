@@ -15,8 +15,8 @@
  */
 package org.testify.di.fixture.autowired.impl;
 
-import org.testify.di.fixture.autowired.Greeting;
 import org.jvnet.hk2.annotations.Service;
+import org.testify.di.fixture.autowired.Greeting;
 
 /**
  * Hello Greeting implementation.

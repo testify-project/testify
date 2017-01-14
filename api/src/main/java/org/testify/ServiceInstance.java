@@ -15,15 +15,15 @@
  */
 package org.testify;
 
-import org.testify.guava.common.collect.ImmutableSet;
-import org.testify.annotation.Module;
-import org.testify.annotation.Scan;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
+import org.testify.annotation.Module;
+import org.testify.annotation.Scan;
+import org.testify.guava.common.collect.ImmutableSet;
 
 /**
  * A contract that defines methods for working with various dependency injection

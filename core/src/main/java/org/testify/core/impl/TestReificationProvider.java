@@ -15,6 +15,10 @@
  */
 package org.testify.core.impl;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.testify.CutDescriptor;
 import org.testify.MockProvider;
 import org.testify.ReificationProvider;
@@ -25,10 +29,6 @@ import org.testify.TestDescriptor;
 import org.testify.TestReifier;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * An implementation of the ReificationProvider SPI contract.

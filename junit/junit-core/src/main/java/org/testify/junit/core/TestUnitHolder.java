@@ -15,12 +15,12 @@
  */
 package org.testify.junit.core;
 
-import org.testify.TestContext;
-import org.testify.TestDescriptor;
-import org.testify.TestRunner;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.function.Consumer;
+import org.testify.TestContext;
+import org.testify.TestDescriptor;
+import org.testify.TestRunner;
 
 /**
  * A utility class for holding inheritable thread local instances of a

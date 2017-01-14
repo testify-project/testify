@@ -15,8 +15,8 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.guava.common.collect.ImmutableList;
-import org.testify.guava.common.collect.ImmutableMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import org.testify.FieldDescriptor;
 import org.testify.InvokableDescriptor;
 import org.testify.TestDescriptor;
@@ -25,8 +25,8 @@ import org.testify.annotation.Module;
 import org.testify.annotation.RequiresContainer;
 import org.testify.annotation.RequiresResource;
 import org.testify.annotation.Scan;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
+import org.testify.guava.common.collect.ImmutableList;
+import org.testify.guava.common.collect.ImmutableMap;
 
 /**
  * A builder class that facilitates the construction of a {@link TestDescriptor}

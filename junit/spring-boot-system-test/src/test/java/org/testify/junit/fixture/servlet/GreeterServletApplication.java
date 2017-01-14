@@ -15,11 +15,11 @@
  */
 package org.testify.junit.fixture.servlet;
 
-import org.testify.junit.fixture.web.GreeterWebConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Import;
+import org.testify.junit.fixture.web.GreeterWebConfig;
 
 /**
  *

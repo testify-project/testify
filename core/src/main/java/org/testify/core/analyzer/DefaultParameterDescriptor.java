@@ -15,10 +15,10 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.ParameterDescriptor;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Objects;
+import org.testify.ParameterDescriptor;
 
 /**
  * A descriptor class used to access or perform operations on a class under test

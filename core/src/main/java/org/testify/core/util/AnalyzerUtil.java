@@ -15,15 +15,15 @@
  */
 package org.testify.core.util;
 
-import org.testify.asm.ClassReader;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import org.testify.CutDescriptor;
 import org.testify.TestDescriptor;
+import org.testify.asm.ClassReader;
 import org.testify.core.analyzer.CutClassAnalyzer;
 import org.testify.core.analyzer.CutDescriptorBuilder;
 import org.testify.core.analyzer.TestClassAnalyzer;
 import org.testify.core.analyzer.TestDescriptorBuilder;
-import java.io.IOException;
-import java.lang.reflect.Field;
 
 /**
  * A utility class for analyzing classes.

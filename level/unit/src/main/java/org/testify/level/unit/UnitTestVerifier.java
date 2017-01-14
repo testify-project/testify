@@ -15,7 +15,12 @@
  */
 package org.testify.level.unit;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
+import static java.lang.reflect.Modifier.isFinal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import javax.inject.Inject;
 import org.testify.CutDescriptor;
 import org.testify.FieldDescriptor;
 import org.testify.ParameterDescriptor;
@@ -23,12 +28,7 @@ import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestVerifier;
 import org.testify.annotation.Real;
-import static java.lang.reflect.Modifier.isFinal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import javax.inject.Inject;
+import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
  * A unit test verifier that inspects unit test context descriptors to make sure

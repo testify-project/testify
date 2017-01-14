@@ -15,9 +15,9 @@
  */
 package org.testify;
 
+import java.lang.reflect.Parameter;
 import org.testify.trait.AnnotationTrait;
 import org.testify.trait.TypeTrait;
-import java.lang.reflect.Parameter;
 
 /**
  * A contract that defines methods to access properties of or perform operations

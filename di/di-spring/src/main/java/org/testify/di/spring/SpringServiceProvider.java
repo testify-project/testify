@@ -15,6 +15,9 @@
  */
 package org.testify.di.spring;
 
+import java.util.List;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.testify.ServiceInstance;
 import org.testify.ServiceProvider;
 import org.testify.TestContext;
@@ -22,9 +25,6 @@ import org.testify.TestDescriptor;
 import org.testify.annotation.Module;
 import org.testify.annotation.Scan;
 import org.testify.tools.Discoverable;
-import java.util.List;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * A Spring implementation of the {@link ServiceProvider} contract.

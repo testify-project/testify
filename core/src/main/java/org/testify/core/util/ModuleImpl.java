@@ -15,8 +15,8 @@
  */
 package org.testify.core.util;
 
-import org.testify.annotation.Module;
 import java.lang.annotation.Annotation;
+import org.testify.annotation.Module;
 
 /**
  * An an implementation of {@link Module} annotation for testing purpose.

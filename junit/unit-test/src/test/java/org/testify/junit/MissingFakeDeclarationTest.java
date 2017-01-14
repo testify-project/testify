@@ -15,12 +15,12 @@
  */
 package org.testify.junit;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.testify.annotation.Cut;
 import org.testify.annotation.Fake;
 import org.testify.junit.fixture.ImplicitTypeDistinctTypes;
 import org.testify.junit.fixture.collaborator.Hello;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  *

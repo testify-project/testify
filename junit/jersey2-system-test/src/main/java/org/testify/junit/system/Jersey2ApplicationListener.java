@@ -15,17 +15,17 @@
  */
 package org.testify.junit.system;
 
-import org.testify.RequiresProvider;
-import org.testify.ServiceInstance;
-import org.testify.TestContext;
-import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
-import org.testify.core.util.ServiceLocatorUtil;
 import java.util.List;
 import java.util.Optional;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
+import org.testify.RequiresProvider;
+import org.testify.ServiceInstance;
+import org.testify.TestContext;
+import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
+import org.testify.core.util.ServiceLocatorUtil;
 
 /**
  * A Jersey 2 application event listeners that listens for application events to

@@ -15,10 +15,10 @@
  */
 package org.testify.junit.core;
 
+import java.lang.reflect.Method;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestRunner;
-import java.lang.reflect.Method;
 
 /**
  * A container class for test unit that describes a test run.

@@ -15,14 +15,6 @@
  */
 package org.testify.level.integration;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
-import org.testify.CutDescriptor;
-import org.testify.FieldDescriptor;
-import org.testify.ParameterDescriptor;
-import org.testify.TestContext;
-import org.testify.TestDescriptor;
-import org.testify.TestVerifier;
-import org.testify.annotation.RequiresResource;
 import static java.lang.Class.forName;
 import static java.lang.reflect.Modifier.isFinal;
 import static java.security.AccessController.doPrivileged;
@@ -31,6 +23,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.testify.CutDescriptor;
+import org.testify.FieldDescriptor;
+import org.testify.ParameterDescriptor;
+import org.testify.TestContext;
+import org.testify.TestDescriptor;
+import org.testify.TestVerifier;
+import org.testify.annotation.RequiresResource;
+import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
  * An integration test verifier that inspects the test context descriptors to

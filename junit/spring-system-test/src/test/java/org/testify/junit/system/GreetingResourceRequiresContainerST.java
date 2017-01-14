@@ -28,10 +28,9 @@ import org.testify.annotation.ConfigHandler;
 import org.testify.annotation.Real;
 import org.testify.annotation.RequiresContainer;
 import org.testify.github.dockerjava.core.DockerClientConfig;
-import org.testify.junit.system.SpringSystemTest;
-import org.testify.tools.category.ContainerTests;
 import org.testify.junit.fixture.common.UserEntity;
 import org.testify.junit.fixture.need.container.DockerContainerApplication;
+import org.testify.tools.category.ContainerTests;
 
 /**
  *

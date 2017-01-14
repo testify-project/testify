@@ -15,8 +15,8 @@
  */
 package org.testify.junit.fixture.common;
 
-import org.testify.junit.fixture.common.impl.Hello;
 import static org.mockito.Mockito.mock;
+import org.testify.junit.fixture.common.impl.Hello;
 
 /**
  *

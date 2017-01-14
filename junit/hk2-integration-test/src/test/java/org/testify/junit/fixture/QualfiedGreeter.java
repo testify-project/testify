@@ -15,10 +15,10 @@
  */
 package org.testify.junit.fixture;
 
-import org.testify.junit.fixture.common.Greeting;
-import org.testify.junit.fixture.common.qualifier.CustomQualifier;
 import javax.inject.Inject;
 import org.jvnet.hk2.annotations.Service;
+import org.testify.junit.fixture.common.Greeting;
+import org.testify.junit.fixture.common.qualifier.CustomQualifier;
 
 /**
  *

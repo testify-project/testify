@@ -15,16 +15,16 @@
  */
 package org.testify.core.impl;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
+import java.util.Set;
+import static java.util.stream.Collectors.toSet;
 import org.testify.ContainerInstance;
 import org.testify.ContainerProvider;
 import org.testify.RequiresProvider;
 import org.testify.ServiceInstance;
 import org.testify.TestContext;
 import org.testify.core.util.ServiceLocatorUtil;
+import static org.testify.guava.common.base.Preconditions.checkState;
 import org.testify.tools.Discoverable;
-import java.util.Set;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * A class for start, initializing and destroy required containers.

@@ -15,10 +15,10 @@
  */
 package org.testify.core.impl;
 
-import org.testify.Instance;
-import org.testify.ResourceInstance;
 import java.util.HashMap;
 import java.util.Map;
+import org.testify.Instance;
+import org.testify.ResourceInstance;
 
 /**
  * A builder class used to construction ResourceInstance instances.

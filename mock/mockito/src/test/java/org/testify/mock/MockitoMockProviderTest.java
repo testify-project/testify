@@ -15,12 +15,12 @@
  */
 package org.testify.mock;
 
-import org.testify.fixture.Mockable;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.mockito.internal.util.MockUtil;
+import org.testify.fixture.Mockable;
 
 /**
  *

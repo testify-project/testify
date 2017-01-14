@@ -15,9 +15,9 @@
  */
 package org.testify.junit.fixture.service;
 
-import org.testify.junit.fixture.common.Greeting;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.testify.junit.fixture.common.Greeting;
 
 /**
  *

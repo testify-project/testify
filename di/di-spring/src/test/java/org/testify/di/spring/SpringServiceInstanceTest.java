@@ -15,16 +15,6 @@
  */
 package org.testify.di.spring;
 
-import org.testify.guava.common.reflect.TypeToken;
-import org.testify.core.util.ModuleImpl;
-import org.testify.core.util.ScanImpl;
-import org.testify.di.fixture.autowired.Greeting;
-import org.testify.di.fixture.autowired.impl.Haye;
-import org.testify.di.fixture.autowired.impl.Hello;
-import org.testify.di.fixture.common.CreatedService;
-import org.testify.di.fixture.common.WiredContract;
-import org.testify.di.fixture.common.WiredService;
-import org.testify.di.fixture.module.TestModule;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import javax.inject.Provider;
@@ -37,6 +27,16 @@ import org.springframework.beans.factory.support.BeanDefinitionDefaults;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.testify.core.util.ModuleImpl;
+import org.testify.core.util.ScanImpl;
+import org.testify.di.fixture.autowired.Greeting;
+import org.testify.di.fixture.autowired.impl.Haye;
+import org.testify.di.fixture.autowired.impl.Hello;
+import org.testify.di.fixture.common.CreatedService;
+import org.testify.di.fixture.common.WiredContract;
+import org.testify.di.fixture.common.WiredService;
+import org.testify.di.fixture.module.TestModule;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  *

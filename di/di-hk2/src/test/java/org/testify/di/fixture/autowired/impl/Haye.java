@@ -15,9 +15,9 @@
  */
 package org.testify.di.fixture.autowired.impl;
 
-import org.testify.di.fixture.autowired.Greeting;
 import javax.inject.Named;
 import org.jvnet.hk2.annotations.Service;
+import org.testify.di.fixture.autowired.Greeting;
 
 /**
  * Haye Greeting implementation.

@@ -15,14 +15,14 @@
  */
 package org.testify.junit.system;
 
-import org.testify.ServerInstance;
-import org.testify.annotation.Application;
-import org.testify.annotation.Real;
-import org.testify.junit.fixture.servlet.GreeterServletApplication;
 import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testify.ServerInstance;
+import org.testify.annotation.Application;
+import org.testify.annotation.Real;
+import org.testify.junit.fixture.servlet.GreeterServletApplication;
 
 /**
  *

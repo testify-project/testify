@@ -15,16 +15,16 @@
  */
 package org.testify.junit.integration;
 
-import org.testify.annotation.Cut;
-import org.testify.annotation.Fake;
-import org.testify.junit.fixture.QualfiedGreeter;
-import org.testify.junit.fixture.common.Greeting;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
+import org.testify.annotation.Cut;
+import org.testify.annotation.Fake;
+import org.testify.junit.fixture.QualfiedGreeter;
+import org.testify.junit.fixture.common.Greeting;
 
 /**
  *

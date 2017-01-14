@@ -15,11 +15,6 @@
  */
 package org.testify.junit.integration;
 
-import org.testify.annotation.Cut;
-import org.testify.annotation.Fake;
-import org.testify.junit.fixture.IterableProviderGreeter;
-import org.testify.junit.fixture.common.Greeting;
-import org.testify.junit.fixture.common.impl.Hello;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.glassfish.hk2.api.IterableProvider;
 import org.junit.Test;
@@ -28,6 +23,11 @@ import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import org.testify.annotation.Cut;
+import org.testify.annotation.Fake;
+import org.testify.junit.fixture.IterableProviderGreeter;
+import org.testify.junit.fixture.common.Greeting;
+import org.testify.junit.fixture.common.impl.Hello;
 
 /**
  *

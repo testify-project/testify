@@ -15,15 +15,15 @@
  */
 package org.testify.di.guice;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import java.util.List;
 import org.testify.ServiceInstance;
 import org.testify.ServiceProvider;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.annotation.Module;
 import org.testify.tools.Discoverable;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import java.util.List;
 
 /**
  * A Google Guice implementation of the {@link ServiceProvider} contract.

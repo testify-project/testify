@@ -15,6 +15,10 @@
  */
 package org.testify.level.integration;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import org.testify.CutDescriptor;
 import org.testify.FieldDescriptor;
 import org.testify.InvokableDescriptor;
@@ -30,10 +34,6 @@ import org.testify.annotation.Fixture;
 import static org.testify.core.impl.TestContextProperties.CUT_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * A class used to run a integration test.

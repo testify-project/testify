@@ -15,13 +15,6 @@
  */
 package org.testify.di.hk2;
 
-import org.testify.ServiceInstance;
-import org.testify.ServiceProvider;
-import org.testify.TestContext;
-import org.testify.TestDescriptor;
-import org.testify.annotation.Module;
-import org.testify.annotation.Scan;
-import org.testify.tools.Discoverable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,6 +28,13 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.jvnet.hk2.internal.ServiceLocatorImpl;
+import org.testify.ServiceInstance;
+import org.testify.ServiceProvider;
+import org.testify.TestContext;
+import org.testify.TestDescriptor;
+import org.testify.annotation.Module;
+import org.testify.annotation.Scan;
+import org.testify.tools.Discoverable;
 
 /**
  * An HK2 implementation of the {@link ServiceProvider} contract.

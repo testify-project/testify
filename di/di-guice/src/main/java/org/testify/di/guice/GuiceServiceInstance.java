@@ -15,12 +15,6 @@
  */
 package org.testify.di.guice;
 
-import org.testify.guava.common.collect.ImmutableSet;
-import org.testify.Instance;
-import org.testify.ServiceInstance;
-import org.testify.annotation.Fixture;
-import org.testify.annotation.Real;
-import org.testify.core.impl.DefaultInstance;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Guice;
@@ -40,6 +34,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
+import org.testify.Instance;
+import org.testify.ServiceInstance;
+import org.testify.annotation.Fixture;
+import org.testify.annotation.Real;
+import org.testify.core.impl.DefaultInstance;
+import org.testify.guava.common.collect.ImmutableSet;
 
 /**
  * A Google Guice DI implementation of the {@link ServiceInstance} spi contract.

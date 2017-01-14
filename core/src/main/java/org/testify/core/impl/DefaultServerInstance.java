@@ -15,9 +15,9 @@
  */
 package org.testify.core.impl;
 
-import org.testify.ServerInstance;
 import java.net.URI;
 import java.util.Objects;
+import org.testify.ServerInstance;
 
 /**
  * Default implementation of {@link ServerInstance} contract.

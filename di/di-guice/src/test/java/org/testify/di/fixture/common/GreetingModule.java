@@ -15,12 +15,12 @@
  */
 package org.testify.di.fixture.common;
 
-import org.testify.di.fixture.common.impl.Caio;
-import org.testify.di.fixture.common.impl.Haye;
-import org.testify.di.fixture.common.impl.Hello;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import org.testify.di.fixture.common.impl.Caio;
+import org.testify.di.fixture.common.impl.Haye;
+import org.testify.di.fixture.common.impl.Hello;
 
 /**
  * Greeting module.

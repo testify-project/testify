@@ -15,13 +15,13 @@
  */
 package org.testify.junit.bad;
 
-import org.testify.annotation.Cut;
-import org.testify.junit.UnitTest;
-import org.testify.junit.fixture.MultipleConstructor;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testify.annotation.Cut;
+import org.testify.junit.UnitTest;
+import org.testify.junit.fixture.MultipleConstructor;
 
 /**
  *

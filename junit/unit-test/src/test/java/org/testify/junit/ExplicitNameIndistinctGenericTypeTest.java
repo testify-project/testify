@@ -15,10 +15,6 @@
  */
 package org.testify.junit;
 
-import org.testify.annotation.Cut;
-import org.testify.annotation.Fake;
-import org.testify.junit.fixture.ExplicitNameIndistinctGenericType;
-import org.testify.junit.fixture.collaborator.Hello;
 import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
@@ -28,6 +24,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import org.testify.annotation.Cut;
+import org.testify.annotation.Fake;
+import org.testify.junit.fixture.ExplicitNameIndistinctGenericType;
+import org.testify.junit.fixture.collaborator.Hello;
 
 /**
  *

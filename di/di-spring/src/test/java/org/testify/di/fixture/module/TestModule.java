@@ -15,11 +15,11 @@
  */
 package org.testify.di.fixture.module;
 
-import org.testify.di.fixture.common.WiredContract;
-import org.testify.di.fixture.common.WiredService;
 import javax.inject.Singleton;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.testify.di.fixture.common.WiredContract;
+import org.testify.di.fixture.common.WiredService;
 
 /**
  *

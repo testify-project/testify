@@ -15,15 +15,15 @@
  */
 package org.testify.junit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.testify.annotation.Cut;
 import org.testify.annotation.Fake;
 import org.testify.junit.fixture.SpiInstanceType;
 import org.testify.junit.fixture.collaborator.Hello;
 import org.testify.junit.fixture.collaborator.World;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
 /**
  *

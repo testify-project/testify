@@ -15,14 +15,14 @@
  */
 package org.testify.container.docker.callback;
 
-import org.testify.github.dockerjava.api.async.ResultCallback;
-import org.testify.github.dockerjava.api.model.PullResponseItem;
-import org.testify.github.dockerjava.api.model.ResponseItem;
-import org.testify.TestContext;
-import org.testify.annotation.RequiresContainer;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import org.testify.TestContext;
+import org.testify.annotation.RequiresContainer;
+import org.testify.github.dockerjava.api.async.ResultCallback;
+import org.testify.github.dockerjava.api.model.PullResponseItem;
+import org.testify.github.dockerjava.api.model.ResponseItem;
 
 /**
  * A callback class that listens for image pull request and prints progress

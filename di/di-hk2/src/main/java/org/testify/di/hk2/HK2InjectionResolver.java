@@ -15,11 +15,6 @@
  */
 package org.testify.di.hk2;
 
-import org.testify.FieldDescriptor;
-import org.testify.MockProvider;
-import org.testify.TestContext;
-import org.testify.TestDescriptor;
-import org.testify.core.util.ServiceLocatorUtil;
 import java.lang.reflect.Type;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -31,6 +26,11 @@ import static org.glassfish.hk2.api.InjectionResolver.SYSTEM_RESOLVER_NAME;
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.api.ServiceHandle;
 import org.glassfish.hk2.api.ServiceLocator;
+import org.testify.FieldDescriptor;
+import org.testify.MockProvider;
+import org.testify.TestContext;
+import org.testify.TestDescriptor;
+import org.testify.core.util.ServiceLocatorUtil;
 
 /**
  * A custom HK2 injection resolve used to get and createFake service instances

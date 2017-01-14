@@ -15,9 +15,9 @@
  */
 package org.testify.junit.fixture.common;
 
-import org.testify.junit.fixture.common.qualifier.CustomQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.testify.junit.fixture.common.qualifier.CustomQualifier;
 
 /**
  *

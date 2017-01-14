@@ -15,9 +15,9 @@
  */
 package org.testify.junit.fixture.common.impl;
 
-import org.testify.junit.fixture.common.Greeting;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import org.testify.junit.fixture.common.Greeting;
 
 /**
  *

@@ -15,14 +15,14 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.guava.common.collect.ImmutableList;
-import org.testify.guava.common.collect.ImmutableMap;
-import org.testify.CutDescriptor;
-import org.testify.FieldDescriptor;
-import org.testify.ParameterDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import org.testify.CutDescriptor;
+import org.testify.FieldDescriptor;
+import org.testify.ParameterDescriptor;
+import org.testify.guava.common.collect.ImmutableList;
+import org.testify.guava.common.collect.ImmutableMap;
 
 /**
  * A builder class that facilitates the construction of a {@link CutDescriptor}

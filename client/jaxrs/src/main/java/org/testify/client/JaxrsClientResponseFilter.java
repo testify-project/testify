@@ -15,7 +15,6 @@
  */
 package org.testify.client;
 
-import org.testify.TestContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +23,7 @@ import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Response;
+import org.testify.TestContext;
 
 /**
  * A JAX-RS client response filter that stores server error responses in the

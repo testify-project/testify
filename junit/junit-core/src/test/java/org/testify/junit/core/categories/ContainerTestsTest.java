@@ -15,11 +15,11 @@
  */
 package org.testify.junit.core.categories;
 
-import org.testify.junit.fixture.FunctionalTest;
-import org.testify.tools.category.ContainerTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.testify.junit.fixture.FunctionalTest;
+import org.testify.tools.category.ContainerTests;
 
 /**
  *

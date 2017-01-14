@@ -15,7 +15,6 @@
  */
 package org.testify.junit.fixture.need;
 
-import org.testify.ContainerInstance;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -23,6 +22,7 @@ import javax.sql.DataSource;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.Rank;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.testify.ContainerInstance;
 
 /**
  * A provider of a JDBC Postgres test DataSource. Note that we don't annotate

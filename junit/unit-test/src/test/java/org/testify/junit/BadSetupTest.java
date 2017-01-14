@@ -15,7 +15,6 @@
  */
 package org.testify.junit;
 
-import org.testify.guava.common.reflect.ClassPath;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Ignore;
@@ -24,6 +23,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testify.guava.common.reflect.ClassPath;
 
 /**
  *

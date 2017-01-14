@@ -15,14 +15,14 @@
  */
 package org.testify.core.analyzer;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
+import java.util.Objects;
+import java.util.Optional;
+import static java.util.Optional.ofNullable;
 import org.testify.InvokableDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.annotation.CollaboratorProvider;
 import org.testify.annotation.ConfigHandler;
-import java.util.Objects;
-import java.util.Optional;
-import static java.util.Optional.ofNullable;
+import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
  * A class that encapsulating an instance object and a method descriptor. This

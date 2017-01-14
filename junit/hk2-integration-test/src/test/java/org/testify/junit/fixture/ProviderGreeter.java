@@ -15,10 +15,10 @@
  */
 package org.testify.junit.fixture;
 
-import org.testify.junit.fixture.common.impl.Hello;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jvnet.hk2.annotations.Service;
+import org.testify.junit.fixture.common.impl.Hello;
 
 /**
  *

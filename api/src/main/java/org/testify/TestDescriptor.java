@@ -15,15 +15,15 @@
  */
 package org.testify;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Optional;
 import org.testify.annotation.Application;
 import org.testify.annotation.Module;
 import org.testify.annotation.RequiresContainer;
 import org.testify.annotation.RequiresResource;
 import org.testify.annotation.Scan;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * A contract that defines methods used to access or perform operations on a

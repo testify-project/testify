@@ -15,15 +15,15 @@
  */
 package org.testify.analyzer;
 
-import org.testify.asm.ClassReader;
-import org.testify.CutDescriptor;
-import org.testify.core.analyzer.CutClassAnalyzer;
-import org.testify.core.analyzer.CutDescriptorBuilder;
-import org.testify.fixture.analyzer.AnalyzedTestClass;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
+import org.testify.CutDescriptor;
+import org.testify.asm.ClassReader;
+import org.testify.core.analyzer.CutClassAnalyzer;
+import org.testify.core.analyzer.CutDescriptorBuilder;
+import org.testify.fixture.analyzer.AnalyzedTestClass;
 
 /**
  *

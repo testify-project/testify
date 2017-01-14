@@ -15,6 +15,7 @@
  */
 package org.testify.level.system;
 
+import java.util.Optional;
 import org.testify.ClientInstance;
 import org.testify.ClientProvider;
 import org.testify.ReificationProvider;
@@ -29,7 +30,6 @@ import org.testify.annotation.Fixture;
 import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
-import java.util.Optional;
 
 /**
  * A class used to run a system test.

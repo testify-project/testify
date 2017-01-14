@@ -15,24 +15,24 @@
  */
 package org.testify.junit.system;
 
-import org.testify.bytebuddy.implementation.bind.annotation.AllArguments;
-import org.testify.bytebuddy.implementation.bind.annotation.Argument;
-import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
-import org.testify.bytebuddy.implementation.bind.annotation.RuntimeType;
-import org.testify.bytebuddy.implementation.bind.annotation.SuperCall;
-import org.testify.bytebuddy.implementation.bind.annotation.This;
+import java.util.concurrent.Callable;
+import java.util.stream.Stream;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.testify.ApplicationInstance;
 import org.testify.ServiceInstance;
 import org.testify.ServiceProvider;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestReifier;
+import org.testify.bytebuddy.implementation.bind.annotation.AllArguments;
+import org.testify.bytebuddy.implementation.bind.annotation.Argument;
+import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
+import org.testify.bytebuddy.implementation.bind.annotation.RuntimeType;
+import org.testify.bytebuddy.implementation.bind.annotation.SuperCall;
+import org.testify.bytebuddy.implementation.bind.annotation.This;
 import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
-import java.util.concurrent.Callable;
-import java.util.stream.Stream;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 /**
  * A class that intercepts methods of classes that extend

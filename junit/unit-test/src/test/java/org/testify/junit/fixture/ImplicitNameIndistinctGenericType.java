@@ -15,8 +15,8 @@
  */
 package org.testify.junit.fixture;
 
-import org.testify.junit.fixture.collaborator.Hello;
 import javax.inject.Provider;
+import org.testify.junit.fixture.collaborator.Hello;
 
 /**
  *

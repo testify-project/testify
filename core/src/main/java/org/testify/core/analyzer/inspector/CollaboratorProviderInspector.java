@@ -15,14 +15,14 @@
  */
 package org.testify.core.analyzer.inspector;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
+import java.lang.reflect.Method;
 import org.testify.annotation.CollaboratorProvider;
 import org.testify.core.analyzer.DefaultInvokableDescriptor;
 import org.testify.core.analyzer.DefaultMethodDescriptor;
 import org.testify.core.analyzer.TestAnnotationInspector;
 import org.testify.core.analyzer.TestDescriptorBuilder;
+import static org.testify.guava.common.base.Preconditions.checkState;
 import org.testify.tools.Discoverable;
-import java.lang.reflect.Method;
 
 /**
  * An annotation inspector that processes {@link CollaboratorProvider}

@@ -15,10 +15,10 @@
  */
 package org.testify.junit.fixture;
 
-import org.testify.junit.core.BaseJUnitTestRunner;
 import static java.util.Collections.EMPTY_MAP;
 import java.util.Map;
 import org.junit.runners.model.InitializationError;
+import org.testify.junit.core.BaseJUnitTestRunner;
 
 /**
  *

@@ -15,6 +15,13 @@
  */
 package org.testify.di.guice;
 
+import com.google.inject.Injector;
+import com.google.inject.name.Names;
+import java.lang.annotation.Annotation;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+import static org.mockito.Mockito.mock;
 import org.testify.core.util.ModuleImpl;
 import org.testify.di.fixture.common.Greeting;
 import org.testify.di.fixture.common.GreetingModule;
@@ -25,13 +32,6 @@ import org.testify.di.fixture.common.impl.Hello;
 import org.testify.di.fixture.dynamic.DynamicConstant;
 import org.testify.di.fixture.dynamic.DynamicContract;
 import org.testify.di.fixture.dynamic.DynamicModule;
-import com.google.inject.Injector;
-import com.google.inject.name.Names;
-import java.lang.annotation.Annotation;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
-import static org.mockito.Mockito.mock;
 
 /**
  *

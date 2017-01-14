@@ -15,9 +15,9 @@
  */
 package org.testify.junit.fixture.need.common;
 
-import org.testify.junit.fixture.need.common.entity.GreetingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.testify.junit.fixture.need.common.entity.GreetingEntity;
 
 /**
  *

@@ -15,13 +15,6 @@
  */
 package org.testify.di.spring;
 
-import org.testify.guava.common.collect.ImmutableSet;
-import org.testify.guava.common.reflect.TypeToken;
-import org.testify.ServiceInstance;
-import org.testify.annotation.Module;
-import org.testify.annotation.Real;
-import org.testify.annotation.Scan;
-import org.testify.core.impl.DefaultServiceProvider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -43,6 +36,13 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.testify.ServiceInstance;
+import org.testify.annotation.Module;
+import org.testify.annotation.Real;
+import org.testify.annotation.Scan;
+import org.testify.core.impl.DefaultServiceProvider;
+import org.testify.guava.common.collect.ImmutableSet;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  * A Spring DI implementation of {@link ServiceInstance} SPI contract. This

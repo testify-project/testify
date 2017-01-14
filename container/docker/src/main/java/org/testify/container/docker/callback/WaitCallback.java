@@ -15,9 +15,9 @@
  */
 package org.testify.container.docker.callback;
 
+import org.testify.TestContext;
 import org.testify.github.dockerjava.api.model.WaitResponse;
 import org.testify.github.dockerjava.core.command.WaitContainerResultCallback;
-import org.testify.TestContext;
 
 /**
  * A callback class that listens for container stop requests and prints progress

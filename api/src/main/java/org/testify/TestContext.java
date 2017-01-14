@@ -15,10 +15,10 @@
  */
 package org.testify;
 
-import org.testify.trait.LoggingTrait;
-import org.testify.trait.PropertiesTrait;
 import java.util.Map;
 import java.util.Optional;
+import org.testify.trait.LoggingTrait;
+import org.testify.trait.PropertiesTrait;
 
 /**
  * A small context class that contains reference to the test testInstance, the

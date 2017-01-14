@@ -15,16 +15,6 @@
  */
 package org.testify.di.hk2;
 
-import org.testify.guava.common.reflect.TypeToken;
-import org.testify.core.util.ModuleImpl;
-import org.testify.core.util.ScanImpl;
-import org.testify.di.fixture.autowired.Greeting;
-import org.testify.di.fixture.autowired.impl.Haye;
-import org.testify.di.fixture.autowired.impl.Hello;
-import org.testify.di.fixture.common.ConstantService;
-import org.testify.di.fixture.common.WiredContract;
-import org.testify.di.fixture.common.WiredService;
-import org.testify.di.fixture.module.TestModule;
 import java.lang.annotation.Annotation;
 import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +25,16 @@ import org.glassfish.hk2.utilities.NamedImpl;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Before;
 import org.junit.Test;
+import org.testify.core.util.ModuleImpl;
+import org.testify.core.util.ScanImpl;
+import org.testify.di.fixture.autowired.Greeting;
+import org.testify.di.fixture.autowired.impl.Haye;
+import org.testify.di.fixture.autowired.impl.Hello;
+import org.testify.di.fixture.common.ConstantService;
+import org.testify.di.fixture.common.WiredContract;
+import org.testify.di.fixture.common.WiredService;
+import org.testify.di.fixture.module.TestModule;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  *

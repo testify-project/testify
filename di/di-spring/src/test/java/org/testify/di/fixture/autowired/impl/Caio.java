@@ -15,9 +15,9 @@
  */
 package org.testify.di.fixture.autowired.impl;
 
+import org.springframework.stereotype.Component;
 import org.testify.di.fixture.autowired.Greeting;
 import org.testify.di.fixture.common.qualifier.CustomQualfier;
-import org.springframework.stereotype.Component;
 
 /**
  * Caio Greeting implementation.

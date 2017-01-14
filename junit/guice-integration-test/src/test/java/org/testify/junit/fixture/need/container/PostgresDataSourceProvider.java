@@ -15,13 +15,13 @@
  */
 package org.testify.junit.fixture.need.container;
 
-import org.testify.ContainerInstance;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.testify.ContainerInstance;
 
 /**
  * A provider of a JDBC Postgres test DataSource. Note that we don't annotate

@@ -15,13 +15,6 @@
  */
 package org.testify.di.spring;
 
-import org.testify.guava.common.reflect.TypeToken;
-import org.testify.CutDescriptor;
-import org.testify.FieldDescriptor;
-import org.testify.MockProvider;
-import org.testify.TestContext;
-import org.testify.TestDescriptor;
-import org.testify.core.util.ServiceLocatorUtil;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
@@ -31,6 +24,13 @@ import javax.inject.Provider;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
+import org.testify.CutDescriptor;
+import org.testify.FieldDescriptor;
+import org.testify.MockProvider;
+import org.testify.TestContext;
+import org.testify.TestDescriptor;
+import org.testify.core.util.ServiceLocatorUtil;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  * A custom Spring bean post processor used to get and createFake service

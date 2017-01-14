@@ -15,10 +15,10 @@
  */
 package org.testify.junit.fixture.servlet;
 
-import org.testify.junit.fixture.common.DatabaseConfig;
-import org.testify.junit.fixture.web.GreeterWebConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.testify.junit.fixture.common.DatabaseConfig;
+import org.testify.junit.fixture.web.GreeterWebConfig;
 
 /**
  *

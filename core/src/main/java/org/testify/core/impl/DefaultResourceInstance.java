@@ -15,12 +15,12 @@
  */
 package org.testify.core.impl;
 
-import org.testify.Instance;
-import org.testify.ResourceInstance;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import org.testify.Instance;
+import org.testify.ResourceInstance;
 
 /**
  * A class that contains server and client instances of a required resource.

@@ -15,21 +15,6 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.asm.AnnotationVisitor;
-import org.testify.asm.ClassVisitor;
-import org.testify.asm.FieldVisitor;
-import org.testify.asm.MethodVisitor;
-import static org.testify.asm.Opcodes.ASM5;
-import org.testify.asm.Type;
-import static org.testify.asm.Type.getMethodType;
-import static org.testify.asm.Type.getType;
-import static org.testify.guava.common.base.Preconditions.checkState;
-import org.testify.FieldDescriptor;
-import org.testify.annotation.CollaboratorProvider;
-import org.testify.annotation.ConfigHandler;
-import org.testify.annotation.Cut;
-import org.testify.annotation.TestGroup;
-import org.testify.core.util.ServiceLocatorUtil;
 import static java.lang.Class.forName;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -40,6 +25,21 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
 import static java.util.stream.Stream.of;
+import org.testify.FieldDescriptor;
+import org.testify.annotation.CollaboratorProvider;
+import org.testify.annotation.ConfigHandler;
+import org.testify.annotation.Cut;
+import org.testify.annotation.TestGroup;
+import org.testify.asm.AnnotationVisitor;
+import org.testify.asm.ClassVisitor;
+import org.testify.asm.FieldVisitor;
+import org.testify.asm.MethodVisitor;
+import static org.testify.asm.Opcodes.ASM5;
+import org.testify.asm.Type;
+import static org.testify.asm.Type.getMethodType;
+import static org.testify.asm.Type.getType;
+import org.testify.core.util.ServiceLocatorUtil;
+import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
  * A class visitor implementation that performs analysis on the test class.

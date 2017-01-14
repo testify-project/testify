@@ -15,14 +15,14 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.FieldDescriptor;
-import org.testify.annotation.Fake;
-import org.testify.annotation.Real;
-import org.testify.annotation.Virtual;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
+import org.testify.FieldDescriptor;
+import org.testify.annotation.Fake;
+import org.testify.annotation.Real;
+import org.testify.annotation.Virtual;
 
 /**
  * A descriptor class used to access properties of or perform operations on an

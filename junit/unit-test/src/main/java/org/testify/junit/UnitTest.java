@@ -15,11 +15,11 @@
  */
 package org.testify.junit;
 
-import org.testify.junit.core.BaseJUnitTestRunner;
-import org.testify.level.unit.UnitTestRunner;
 import static java.util.Collections.EMPTY_MAP;
 import java.util.Map;
 import org.junit.runners.model.InitializationError;
+import org.testify.junit.core.BaseJUnitTestRunner;
+import org.testify.level.unit.UnitTestRunner;
 
 /**
  * A JUnit unit test runner. This class is the main entry point for running a

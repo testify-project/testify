@@ -15,11 +15,11 @@
  */
 package org.testify.junit.integration;
 
-import org.testify.level.integration.IntegrationTestRunner;
-import org.testify.junit.core.BaseJUnitTestRunner;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.runners.model.InitializationError;
+import org.testify.junit.core.BaseJUnitTestRunner;
+import org.testify.level.integration.IntegrationTestRunner;
 
 /**
  * A JUnit HK2 integration test class runner. This class is the main entry point

@@ -15,11 +15,11 @@
  */
 package org.testify.core.impl;
 
+import java.util.Objects;
+import java.util.Set;
 import org.testify.ApplicationInstance;
 import org.testify.TestContext;
 import org.testify.annotation.Application;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * Default implementation of {@link ApplicationInstance} contract.

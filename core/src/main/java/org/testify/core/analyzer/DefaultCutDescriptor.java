@@ -15,10 +15,6 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.guava.common.reflect.TypeToken;
-import org.testify.CutDescriptor;
-import org.testify.FieldDescriptor;
-import org.testify.ParameterDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +28,10 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import java.util.stream.Collectors;
+import org.testify.CutDescriptor;
+import org.testify.FieldDescriptor;
+import org.testify.ParameterDescriptor;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  * A descriptor class used to access properties of or perform operations on an

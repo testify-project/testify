@@ -15,9 +15,9 @@
  */
 package org.testify.junit.fixture.common.impl;
 
+import org.jvnet.hk2.annotations.Service;
 import org.testify.junit.fixture.common.Greeting;
 import org.testify.junit.fixture.common.qualifier.CustomQualifier;
-import org.jvnet.hk2.annotations.Service;
 
 /**
  *

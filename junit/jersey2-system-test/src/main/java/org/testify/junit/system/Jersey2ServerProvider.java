@@ -15,6 +15,19 @@
  */
 package org.testify.junit.system;
 
+import java.net.URI;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.NetworkListener;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.testify.ServerInstance;
+import org.testify.ServerProvider;
+import org.testify.TestContext;
+import org.testify.annotation.Application;
 import org.testify.bytebuddy.ByteBuddy;
 import org.testify.bytebuddy.description.type.TypeDescription;
 import org.testify.bytebuddy.dynamic.ClassFileLocator;
@@ -26,24 +39,11 @@ import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
 import static org.testify.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testify.bytebuddy.matcher.ElementMatchers.not;
 import org.testify.bytebuddy.pool.TypePool;
-import org.testify.ServerInstance;
-import org.testify.ServerProvider;
-import org.testify.TestContext;
-import org.testify.annotation.Application;
 import org.testify.core.impl.DefaultServerInstance;
 import static org.testify.core.impl.TestContextProperties.APP;
 import static org.testify.core.impl.TestContextProperties.APP_NAME;
 import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTAINER;
 import org.testify.tools.Discoverable;
-import java.net.URI;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.NetworkListener;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.

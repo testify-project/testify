@@ -15,14 +15,6 @@
  */
 package org.testify.server.undertow;
 
-import org.testify.ApplicationInstance;
-import org.testify.ApplicationProvider;
-import org.testify.ServerInstance;
-import org.testify.ServerProvider;
-import org.testify.TestContext;
-import org.testify.core.impl.DefaultServerInstance;
-import org.testify.core.util.ServiceLocatorUtil;
-import org.testify.tools.Discoverable;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -46,6 +38,14 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import java.util.Set;
 import javax.servlet.ServletContainerInitializer;
+import org.testify.ApplicationInstance;
+import org.testify.ApplicationProvider;
+import org.testify.ServerInstance;
+import org.testify.ServerProvider;
+import org.testify.TestContext;
+import org.testify.core.impl.DefaultServerInstance;
+import org.testify.core.util.ServiceLocatorUtil;
+import org.testify.tools.Discoverable;
 import org.xnio.StreamConnection;
 import org.xnio.channels.AcceptingChannel;
 

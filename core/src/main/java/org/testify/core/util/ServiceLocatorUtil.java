@@ -15,13 +15,13 @@
  */
 package org.testify.core.util;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
+import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
  * A utility class to locate services.

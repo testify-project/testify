@@ -15,10 +15,10 @@
  */
 package org.testify.core.impl;
 
-import org.testify.Instance;
 import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import org.testify.Instance;
 
 /**
  * Default implementation of {@link Instance} contract.

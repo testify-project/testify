@@ -15,21 +15,6 @@
  */
 package org.testify.junit.system;
 
-import org.testify.bytebuddy.implementation.bind.annotation.AllArguments;
-import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
-import org.testify.bytebuddy.implementation.bind.annotation.RuntimeType;
-import org.testify.bytebuddy.implementation.bind.annotation.SuperCall;
-import org.testify.bytebuddy.implementation.bind.annotation.This;
-import org.testify.ServiceInstance;
-import org.testify.ServiceProvider;
-import org.testify.TestContext;
-import org.testify.TestReifier;
-import static org.testify.core.impl.TestContextProperties.APP;
-import static org.testify.core.impl.TestContextProperties.APP_ARGUMENTS;
-import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTAINER;
-import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTEXT;
-import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
-import org.testify.core.util.ServiceLocatorUtil;
 import java.util.concurrent.Callable;
 import javax.servlet.ServletContext;
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
@@ -38,6 +23,21 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.testify.ServiceInstance;
+import org.testify.ServiceProvider;
+import org.testify.TestContext;
+import org.testify.TestReifier;
+import org.testify.bytebuddy.implementation.bind.annotation.AllArguments;
+import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
+import org.testify.bytebuddy.implementation.bind.annotation.RuntimeType;
+import org.testify.bytebuddy.implementation.bind.annotation.SuperCall;
+import org.testify.bytebuddy.implementation.bind.annotation.This;
+import static org.testify.core.impl.TestContextProperties.APP;
+import static org.testify.core.impl.TestContextProperties.APP_ARGUMENTS;
+import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTAINER;
+import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTEXT;
+import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
+import org.testify.core.util.ServiceLocatorUtil;
 
 /**
  * A class that intercepts methods of classes that extend or implement

@@ -15,9 +15,6 @@
  */
 package org.testify.client;
 
-import org.testify.annotation.CollaboratorProvider;
-import org.testify.annotation.Cut;
-import org.testify.junit.UnitTest;
 import java.net.URI;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -26,6 +23,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testify.annotation.CollaboratorProvider;
+import org.testify.annotation.Cut;
+import org.testify.junit.UnitTest;
 
 /**
  *

@@ -15,9 +15,6 @@
  */
 package org.testify.junit.fixture.need.container;
 
-import org.testify.ContainerInstance;
-import org.testify.junit.fixture.common.DatabaseConfig;
-import org.testify.junit.fixture.common.SessionFactoryFactoryBean;
 import javax.sql.DataSource;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,6 +23,9 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.testify.ContainerInstance;
+import org.testify.junit.fixture.common.DatabaseConfig;
+import org.testify.junit.fixture.common.SessionFactoryFactoryBean;
 
 /**
  *

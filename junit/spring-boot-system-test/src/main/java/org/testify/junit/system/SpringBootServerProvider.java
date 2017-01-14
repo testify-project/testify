@@ -15,27 +15,6 @@
  */
 package org.testify.junit.system;
 
-import org.testify.bytebuddy.ByteBuddy;
-import org.testify.bytebuddy.description.type.TypeDescription;
-import org.testify.bytebuddy.dynamic.ClassFileLocator;
-import org.testify.bytebuddy.dynamic.DynamicType;
-import org.testify.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import static org.testify.bytebuddy.implementation.MethodDelegation.to;
-import org.testify.bytebuddy.implementation.bind.MethodNameEqualityResolver;
-import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
-import static org.testify.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
-import static org.testify.bytebuddy.matcher.ElementMatchers.not;
-import org.testify.bytebuddy.pool.TypePool;
-import org.testify.ServerInstance;
-import org.testify.ServerProvider;
-import org.testify.TestContext;
-import org.testify.annotation.Application;
-import org.testify.core.impl.DefaultServerInstance;
-import static org.testify.core.impl.TestContextProperties.APP;
-import static org.testify.core.impl.TestContextProperties.APP_NAME;
-import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTAINER;
-import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTEXT;
-import org.testify.tools.Discoverable;
 import java.net.URI;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -47,6 +26,27 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
+import org.testify.ServerInstance;
+import org.testify.ServerProvider;
+import org.testify.TestContext;
+import org.testify.annotation.Application;
+import org.testify.bytebuddy.ByteBuddy;
+import org.testify.bytebuddy.description.type.TypeDescription;
+import org.testify.bytebuddy.dynamic.ClassFileLocator;
+import org.testify.bytebuddy.dynamic.DynamicType;
+import org.testify.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import static org.testify.bytebuddy.implementation.MethodDelegation.to;
+import org.testify.bytebuddy.implementation.bind.MethodNameEqualityResolver;
+import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
+import static org.testify.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
+import static org.testify.bytebuddy.matcher.ElementMatchers.not;
+import org.testify.bytebuddy.pool.TypePool;
+import org.testify.core.impl.DefaultServerInstance;
+import static org.testify.core.impl.TestContextProperties.APP;
+import static org.testify.core.impl.TestContextProperties.APP_NAME;
+import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTAINER;
+import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTEXT;
+import org.testify.tools.Discoverable;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.

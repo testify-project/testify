@@ -15,14 +15,6 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.FieldDescriptor;
-import org.testify.InvokableDescriptor;
-import org.testify.TestDescriptor;
-import org.testify.annotation.Application;
-import org.testify.annotation.Module;
-import org.testify.annotation.RequiresContainer;
-import org.testify.annotation.RequiresResource;
-import org.testify.annotation.Scan;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -32,6 +24,14 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import java.util.stream.Collectors;
+import org.testify.FieldDescriptor;
+import org.testify.InvokableDescriptor;
+import org.testify.TestDescriptor;
+import org.testify.annotation.Application;
+import org.testify.annotation.Module;
+import org.testify.annotation.RequiresContainer;
+import org.testify.annotation.RequiresResource;
+import org.testify.annotation.Scan;
 
 /**
  * A descriptor class used to access or perform operations on a test class.

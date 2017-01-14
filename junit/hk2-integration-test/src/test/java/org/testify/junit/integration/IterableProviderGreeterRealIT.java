@@ -15,15 +15,15 @@
  */
 package org.testify.junit.integration;
 
-import org.testify.annotation.Cut;
-import org.testify.annotation.Real;
-import org.testify.junit.fixture.IterableProviderGreeter;
-import org.testify.junit.fixture.common.Greeting;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.glassfish.hk2.api.IterableProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.testify.annotation.Cut;
+import org.testify.annotation.Real;
+import org.testify.junit.fixture.IterableProviderGreeter;
+import org.testify.junit.fixture.common.Greeting;
 
 /**
  *

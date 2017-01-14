@@ -15,13 +15,13 @@
  */
 package org.testify.trait;
 
-import org.testify.guava.common.reflect.TypeToken;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Optional;
+import org.testify.guava.common.reflect.TypeToken;
 
 /**
  * A contract that specifies type traits.

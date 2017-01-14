@@ -15,6 +15,11 @@
  */
 package org.testify.junit.system;
 
+import javax.ws.rs.client.WebTarget;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.testify.ClientInstance;
 import org.testify.ServerInstance;
 import org.testify.annotation.Application;
@@ -23,11 +28,6 @@ import org.testify.annotation.Real;
 import org.testify.junit.fixture.servlet.GreeterServletApplication;
 import org.testify.junit.fixture.web.resource.GreetingResource;
 import org.testify.junit.fixture.web.service.GreetingService;
-import javax.ws.rs.client.WebTarget;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
 @RunWith(SpringBootSystemTest.class)
 @Application(GreeterServletApplication.class)

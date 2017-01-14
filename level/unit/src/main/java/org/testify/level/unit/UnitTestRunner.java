@@ -15,20 +15,20 @@
  */
 package org.testify.level.unit;
 
-import org.testify.ObjenesisHelper;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Optional;
 import org.testify.CutDescriptor;
 import org.testify.FieldDescriptor;
 import org.testify.InvokableDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.MockProvider;
+import org.testify.ObjenesisHelper;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestRunner;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Optional;
 
 /**
  * A class used to run a integration test.

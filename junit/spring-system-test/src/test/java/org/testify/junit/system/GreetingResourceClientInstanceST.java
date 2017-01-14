@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.testify.ClientInstance;
 import org.testify.annotation.Application;
 import org.testify.annotation.Cut;
-import org.testify.junit.system.SpringSystemTest;
 import org.testify.junit.fixture.servlet.GreeterServletApplication;
 
 @RunWith(SpringSystemTest.class)

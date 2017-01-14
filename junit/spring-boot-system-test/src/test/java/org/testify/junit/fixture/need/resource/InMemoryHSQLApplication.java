@@ -15,10 +15,10 @@
  */
 package org.testify.junit.fixture.need.resource;
 
-import org.testify.junit.fixture.web.GreeterWebConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+import org.testify.junit.fixture.web.GreeterWebConfig;
 
 /**
  *

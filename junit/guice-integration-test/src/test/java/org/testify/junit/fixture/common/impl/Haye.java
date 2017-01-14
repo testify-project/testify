@@ -15,8 +15,8 @@
  */
 package org.testify.junit.fixture.common.impl;
 
-import org.testify.junit.fixture.common.Greeting;
 import javax.inject.Named;
+import org.testify.junit.fixture.common.Greeting;
 
 /**
  * Haye Greeting implementation.

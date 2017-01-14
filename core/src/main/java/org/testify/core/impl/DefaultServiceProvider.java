@@ -15,9 +15,9 @@
  */
 package org.testify.core.impl;
 
-import org.testify.ServiceInstance;
 import java.lang.annotation.Annotation;
 import javax.inject.Provider;
+import org.testify.ServiceInstance;
 
 /**
  * DefaultServiceProvider is a class that enables the creation of a provider

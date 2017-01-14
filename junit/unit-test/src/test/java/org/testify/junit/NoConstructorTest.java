@@ -15,12 +15,12 @@
  */
 package org.testify.junit;
 
-import org.testify.annotation.Cut;
-import org.testify.junit.fixture.NoConstructorType;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testify.annotation.Cut;
+import org.testify.junit.fixture.NoConstructorType;
 
 /**
  *

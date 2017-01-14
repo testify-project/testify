@@ -15,12 +15,12 @@
  */
 package org.testify;
 
-import org.testify.trait.FieldTrait;
-import org.testify.trait.MockTrait;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+import org.testify.trait.FieldTrait;
+import org.testify.trait.MockTrait;
 
 /**
  * A contract that defines methods to access properties of or perform operations

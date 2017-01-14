@@ -15,9 +15,9 @@
  */
 package org.testify.junit.fixture.common.impl;
 
-import org.testify.junit.fixture.common.Greeting;
 import org.glassfish.hk2.api.Rank;
 import org.jvnet.hk2.annotations.Service;
+import org.testify.junit.fixture.common.Greeting;
 
 /**
  *

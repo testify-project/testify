@@ -15,12 +15,6 @@
  */
 package org.testify.di.spring;
 
-import org.testify.RequiresProvider;
-import org.testify.ServiceInstance;
-import org.testify.TestContext;
-import org.testify.annotation.Fixture;
-import org.testify.core.util.ServiceLocatorUtil;
-import org.testify.trait.LoggingTrait;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +28,12 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
+import org.testify.RequiresProvider;
+import org.testify.ServiceInstance;
+import org.testify.TestContext;
+import org.testify.annotation.Fixture;
+import org.testify.core.util.ServiceLocatorUtil;
+import org.testify.trait.LoggingTrait;
 
 /**
  * A class that is called after the application context is refreshed to

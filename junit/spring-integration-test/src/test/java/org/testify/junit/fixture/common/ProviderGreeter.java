@@ -15,10 +15,10 @@
  */
 package org.testify.junit.fixture.common;
 
-import org.testify.junit.fixture.common.impl.Hello;
 import javax.inject.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.testify.junit.fixture.common.impl.Hello;
 
 /**
  *

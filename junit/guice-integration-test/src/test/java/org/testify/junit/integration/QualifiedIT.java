@@ -15,14 +15,14 @@
  */
 package org.testify.junit.integration;
 
-import org.testify.annotation.Module;
-import org.testify.junit.fixture.GreetingModule;
-import org.testify.junit.fixture.common.CustomQualifier;
-import org.testify.junit.fixture.common.Greeting;
 import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testify.annotation.Module;
+import org.testify.junit.fixture.GreetingModule;
+import org.testify.junit.fixture.common.CustomQualifier;
+import org.testify.junit.fixture.common.Greeting;
 
 /**
  *

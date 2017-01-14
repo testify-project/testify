@@ -15,9 +15,9 @@
  */
 package org.testify.core.analyzer;
 
-import org.testify.MethodDescriptor;
 import java.lang.reflect.Method;
 import java.util.Objects;
+import org.testify.MethodDescriptor;
 
 /**
  * A descriptor class used to access or perform operations on test class

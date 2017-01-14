@@ -15,11 +15,11 @@
  */
 package org.testify.junit.system;
 
-import org.testify.junit.core.BaseJUnitTestRunner;
-import org.testify.level.system.SystemTestRunner;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.runners.model.InitializationError;
+import org.testify.junit.core.BaseJUnitTestRunner;
+import org.testify.level.system.SystemTestRunner;
 
 /**
  * A JUnit Spring system test runner. This class is the main entry point for

@@ -15,10 +15,10 @@
  */
 package org.testify.di.fixture.autowired.impl;
 
-import org.testify.di.fixture.autowired.Greeting;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.testify.di.fixture.autowired.Greeting;
 
 /**
  * Hello Greeting implementation.

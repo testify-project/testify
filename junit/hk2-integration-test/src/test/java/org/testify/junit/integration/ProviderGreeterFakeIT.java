@@ -15,10 +15,6 @@
  */
 package org.testify.junit.integration;
 
-import org.testify.annotation.Cut;
-import org.testify.annotation.Fake;
-import org.testify.junit.fixture.ProviderGreeter;
-import org.testify.junit.fixture.common.impl.Hello;
 import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
@@ -27,6 +23,10 @@ import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import org.testify.annotation.Cut;
+import org.testify.annotation.Fake;
+import org.testify.junit.fixture.ProviderGreeter;
+import org.testify.junit.fixture.common.impl.Hello;
 
 /**
  *

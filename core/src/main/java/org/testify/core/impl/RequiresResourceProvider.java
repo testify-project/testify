@@ -15,7 +15,10 @@
  */
 package org.testify.core.impl;
 
-import static org.testify.guava.common.base.Preconditions.checkState;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import static java.util.stream.Collectors.toSet;
 import org.testify.Instance;
 import org.testify.RequiresProvider;
 import org.testify.ResourceInstance;
@@ -23,11 +26,8 @@ import org.testify.ResourceProvider;
 import org.testify.ServiceInstance;
 import org.testify.TestContext;
 import org.testify.annotation.RequiresResource;
+import static org.testify.guava.common.base.Preconditions.checkState;
 import org.testify.tools.Discoverable;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * A class for start, initializing and destroy required resource for testings.

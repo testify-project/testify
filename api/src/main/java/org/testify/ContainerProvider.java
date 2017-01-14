@@ -37,8 +37,7 @@ public interface ContainerProvider<S, T> {
      * returning configuration object. That is to is to say it should be
      * stateless and should not perform instantiation of the required container
      * as that should be handled in {@link #start
-     * (org.testify.TestContext, java.lang.Object, java.lang.Object)}
-     * method.
+     * (org.testify.TestContext, java.lang.Object, java.lang.Object)} method.
      * </p>
      *
      * @param testContext the test context

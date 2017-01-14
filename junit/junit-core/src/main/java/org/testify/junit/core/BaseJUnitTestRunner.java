@@ -15,16 +15,6 @@
  */
 package org.testify.junit.core;
 
-import org.testify.CutDescriptor;
-import org.testify.MethodDescriptor;
-import org.testify.TestContext;
-import org.testify.TestDescriptor;
-import org.testify.TestRunner;
-import org.testify.core.analyzer.DefaultMethodDescriptor;
-import org.testify.core.impl.DefaultTestContext;
-import org.testify.core.util.AnalyzerUtil;
-import org.testify.core.util.ServiceLocatorUtil;
-import org.testify.trait.LoggingTrait;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -44,6 +34,16 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.slf4j.MDC;
+import org.testify.CutDescriptor;
+import org.testify.MethodDescriptor;
+import org.testify.TestContext;
+import org.testify.TestDescriptor;
+import org.testify.TestRunner;
+import org.testify.core.analyzer.DefaultMethodDescriptor;
+import org.testify.core.impl.DefaultTestContext;
+import org.testify.core.util.AnalyzerUtil;
+import org.testify.core.util.ServiceLocatorUtil;
+import org.testify.trait.LoggingTrait;
 
 /**
  * Base class for all Testify Unit Runners. This class analyzes the test class,

@@ -15,10 +15,10 @@
  */
 package org.testify.client;
 
-import org.testify.ClientInstance;
 import java.net.URI;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import org.testify.ClientInstance;
 
 /**
  * Jersey Client based ClientInstance implementation.

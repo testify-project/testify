@@ -15,10 +15,6 @@
  */
 package org.testify.junit.system;
 
-import org.testify.ClientInstance;
-import org.testify.annotation.Application;
-import org.testify.annotation.Cut;
-import org.testify.junit.fixture.GreeterApplication;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -26,6 +22,10 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testify.ClientInstance;
+import org.testify.annotation.Application;
+import org.testify.annotation.Cut;
+import org.testify.junit.fixture.GreeterApplication;
 
 @RunWith(Jersey2SystemTest.class)
 @Application(GreeterApplication.class)

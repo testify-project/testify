@@ -15,9 +15,9 @@
  */
 package org.testify.di.fixture.autowired.impl;
 
-import org.testify.di.fixture.autowired.Greeting;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.testify.di.fixture.autowired.Greeting;
 
 /**
  * Haye Greeting implementation.

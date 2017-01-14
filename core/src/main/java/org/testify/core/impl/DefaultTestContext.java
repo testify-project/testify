@@ -15,14 +15,14 @@
  */
 package org.testify.core.impl;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import org.testify.CutDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestReifier;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * A small context class that contains reference to the test testInstance, the

@@ -15,6 +15,11 @@
  */
 package org.testify.junit.fixture;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.multibindings.MapBinder;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import org.testify.junit.fixture.common.CustomQualifier;
 import org.testify.junit.fixture.common.Greeting;
 import org.testify.junit.fixture.common.impl.Caio;
@@ -23,11 +28,6 @@ import org.testify.junit.fixture.common.impl.Hello;
 import org.testify.junit.fixture.service.Greeter;
 import org.testify.junit.fixture.service.NamedGreeter;
 import org.testify.junit.fixture.service.QualifiedGreeter;
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.multibindings.MapBinder;
-import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
 
 /**
  * Greeting module.
