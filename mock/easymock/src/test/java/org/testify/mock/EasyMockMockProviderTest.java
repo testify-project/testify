@@ -1,0 +1,86 @@
+/*
+ * Copyright 2016-2017 Sharmarke Aden.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.testify.mock;
+
+import org.testify.fixture.Mockable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.createMock;
+import org.easymock.cglib.proxy.Factory;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ *
+ * @author saden
+ */
+public class EasyMockMockProviderTest {
+
+    EasyMockMockProvider cut;
+
+    @Before
+    public void init() {
+        cut = new EasyMockMockProvider();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void givenNullCreateShouldThrowException() {
+        cut.createFake(null);
+    }
+
+    @Test
+    public void givenTypeCreateShouldReturnMockInstance() {
+        Mockable result = cut.createFake(Mockable.class);
+        assertThat(result).isInstanceOf(Factory.class);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void givenTypeAndNullDelegateCreateShouldThrowException() {
+        cut.createVirtual(Mockable.class, null);
+    }
+
+    @Test
+    public void givenTypeAndDelegateCreateShouldReturnMockInstance() {
+        Mockable delegate = new Mockable();
+
+        Mockable result = cut.createVirtual(Mockable.class, delegate);
+        assertThat(result).isInstanceOf(Factory.class);
+
+        result.setUpdated(Boolean.TRUE);
+        assertThat(delegate.getUpdated()).isTrue();
+    }
+
+    @Test
+    public void givenNullIsMockShouldReturnFalse() {
+        Mockable instance = null;
+        Boolean result = cut.isMock(instance);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void givenNonMockIsMockShouldReturnFalse() {
+        Mockable instance = new Mockable();
+        Boolean result = cut.isMock(instance);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void givenMockIsMockShouldReturnFalse() {
+        Mockable instance = createMock(Mockable.class);
+        Boolean result = cut.isMock(instance);
+        assertThat(result).isTrue();
+    }
+
+}

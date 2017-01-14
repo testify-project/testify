@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <actionName>CUSTOM-install</actionName>
+        <displayName>install</displayName>
+        <goals>
+            <goal>install</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install</actionName>
+        <displayName>clean install</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-install -skipTests</actionName>
+        <displayName>install -skipTests</displayName>
+        <goals>
+            <goal>install</goal>
+        </goals>
+        <properties>
+            <skipTests>true</skipTests>
+        </properties>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install -skipTests (parallel)</actionName>
+        <displayName>clean install -skipTests (parallel)</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            <goal>-T1C</goal>
+        </goals>
+        <properties>
+            <skipTests>true</skipTests>
+        </properties>
+    </action>
+    <action>
+        <actionName>CUSTOM-install -Pvalidate (parallel)</actionName>
+        <displayName>install -Pvalidate (parallel)</displayName>
+        <goals>
+            <goal>install</goal>
+            <goal>-T1C</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>validate</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install -Pvalidate (parallel)</actionName>
+        <displayName>clean install -Pvalidate (parallel)</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            <goal>-T1C</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>validate</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install -Pbuild</actionName>
+        <displayName>clean install -Pbuild</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>build</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean install -Pbuild (parallel)</actionName>
+        <displayName>clean install -Pbuild (parallel)</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            <goal>-T1C</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>build</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>CUSTOM-clean site site:stage (parallel)</actionName>
+        <displayName>clean site site:stage (parallel)</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            <goal>site</goal>
+            <goal>site:stage</goal>
+            <goal>-TC1</goal>
+        </goals>
+    </action>
+</actions>

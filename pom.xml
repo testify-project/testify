@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2016-2017 Sharmarke Aden.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.testify</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.1.4-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    
+    <name>Testify</name>
+    <description>
+        A Java Testing Framework faithful to testing principles and best practices.
+    </description>
+    <url>https://testify-project.github.io/testify</url>
+
+    <modules>
+        <module>tools</module>
+        <module>external</module>
+        <module>api</module>
+        <module>core</module>
+        <module>mock</module>
+        <module>container</module>
+        <module>di</module>
+        <module>level</module>
+        <module>junit</module>
+        <module>client</module>
+        <module>server</module>
+    </modules>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.version>3.0.5</maven.version>
+        <maven.years>2015, 2016</maven.years>
+
+        <!-- IDE Hints -->
+        <netbeans.compile.on.save>none</netbeans.compile.on.save>
+        <netbeans.checkstyle.format>true</netbeans.checkstyle.format>
+        <netbeans.hint.license>apache20</netbeans.hint.license>
+        <netbeans.hint.license.inceptionYear>2016</netbeans.hint.license.inceptionYear>
+
+        <!-- Build Dependency Versions -->
+        <buildtools.version>1.0.0-SNAPSHOT</buildtools.version>
+
+        <!-- Plugin Versions -->
+        <plugin.resource>3.0.1</plugin.resource>
+        <plugin.compiler>3.5.1</plugin.compiler>
+        <plugin.surefire>2.19.1</plugin.surefire>
+        <plugin.failsafe>2.19.1</plugin.failsafe>
+        <plugin.checkstyle>2.17</plugin.checkstyle>
+        <plugin.enforcer>1.4.1</plugin.enforcer>
+        <plugin.source>3.0.1</plugin.source>
+        <plugin.javadoc>2.10.4</plugin.javadoc>
+        <plugin.jacoco>0.7.7.201606060606</plugin.jacoco>
+        <plugin.pit>1.1.10</plugin.pit>
+        <plugin.license>3.0</plugin.license>
+        <plugin.sonatype>1.6.6</plugin.sonatype>
+        <plugin.versions>2.2</plugin.versions>
+        <plugin.gpg>1.6</plugin.gpg>
+        <plugin.site>3.5.1</plugin.site>
+        <plugin.projectinfo>2.9</plugin.projectinfo>
+        <plugin.jxr>2.5</plugin.jxr>
+
+        <!-- Test Dependencies -->
+        <junit.version>4.12</junit.version>
+        <testng.version>6.9.10</testng.version>
+        <mockito.version>2.5.4</mockito.version>
+        <assertj.version>3.5.2</assertj.version>
+
+        <!-- Logging Dependencies -->
+        <slf4j.version>1.7.18</slf4j.version>
+        <logback.version>1.1.6</logback.version>
+        <jansi.version>1.11</jansi.version>
+
+        <!-- General Dependencies -->
+        <javax.inject.version>1</javax.inject.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
+        <spring.version>4.2.3.RELEASE</spring.version>
+        <springboot.version>1.4.0.RELEASE</springboot.version>
+        <hk2.version>2.4.0</hk2.version>
+        <jersey.version>2.23.1</jersey.version>
+        <guice.version>4.0</guice.version>
+        <reflections.version>0.9.10</reflections.version>
+
+        <!-- Database Dependencies -->
+        <javax.el.version>3.0.0</javax.el.version>
+        <hibernate.version>5.1.0.Final</hibernate.version>
+        <hibernate.validator.version>5.2.2.Final</hibernate.validator.version>
+        <jsoup.version>1.9.2</jsoup.version>
+        <javax.transaction.version>1.2</javax.transaction.version>
+        <javax.interceptor.version>1.2</javax.interceptor.version>
+        <postgressql.version>9.4.1207</postgressql.version>
+
+        <!-- Misc Dependencies -->
+        <checkstyle.version>7.0</checkstyle.version>
+        
+    </properties>
+
+    <prerequisites>
+        <maven>${maven.version}</maven>
+    </prerequisites>
+
+    <inceptionYear>2016</inceptionYear>
+
+    <organization>
+        <name>Sharmarke Aden</name>
+        <url>https://testify-project.github.io/testify</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>saden1</id>
+            <name>Sharmarke Aden</name>
+            <timezone>-8</timezone>
+            <url>https://github.com/saden1</url>
+            <roles>
+                <role>Founder</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/testify-project/testify/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/testify-project/testify.git</connection>
+        <developerConnection>scm:git:https://github.com/testify-project/testify.git</developerConnection>
+        <url>https://github.com/testify-project/testify.git/tree/${project.scm.tag}</url>
+        <tag>master</tag>
+    </scm>
+
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>scm:git:ssh://git@github.com:testify-project/testify-site.git</url>
+        </site>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <name>Sonatype Maven Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <name>Sonatype Maven Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+    
+    <repositories>
+        <repository>
+            <id>gemfire</id>
+            <name>Gemfire Release Repository</name>
+            <url>http://dist.gemstone.com/maven/release</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${plugin.enforcer}</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-versions</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>[${maven.version},)</version>
+                                    </requireMavenVersion>
+                                    <requireJavaVersion>
+                                        <version>${maven.compiler.target}</version>
+                                    </requireJavaVersion>
+                                    <requireProperty>
+                                        <property>project.build.sourceEncoding</property>
+                                        <regex>${project.build.sourceEncoding}</regex>
+                                    </requireProperty>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${plugin.resource}</version>
+                    <configuration>
+                        <escapeString>\</escapeString>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${plugin.compiler}</version>
+                    <configuration>
+                        <debug>true</debug>
+                        <debuglevel>lines,vars,source</debuglevel>
+                        <compilerArguments>
+                            <!-- enable runtime discover of parameter names -->
+                            <parameters />
+                        </compilerArguments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${plugin.source}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${plugin.javadoc}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <quiet>true</quiet>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${plugin.gpg}</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${plugin.surefire}</version>
+                    <configuration>
+                        <argLine>${jacocoSurefireArgs} -client -Xms512m -Xmx2048m</argLine>
+                        <forkCount>1</forkCount>
+                        <reuseForks>true</reuseForks>
+                        <parallel>classesAndMethods</parallel>
+                        <useUnlimitedThreads>true</useUnlimitedThreads>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${plugin.failsafe}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <argLine>${jacocoFailesafeArgs} -client -Xms512m -Xmx2048m</argLine>
+                        <forkCount>1C</forkCount>
+                        <reuseForks>true</reuseForks>
+                        <parallel>classesAndMethods</parallel>
+                        <useUnlimitedThreads>true</useUnlimitedThreads>
+                        <includes>
+                            <include>**/*IT.java</include>
+                            <include>**/*ST.java</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${plugin.site}</version>
+                    <configuration>
+                        <skipDeploy>true</skipDeploy>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${plugin.jacoco}</version>
+                    <executions>
+                        <execution>
+                            <id>jacoco-prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                            <configuration>
+                                <propertyName>jacocoSurefireArgs</propertyName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>jacoco-prepare-agent-integration</id>
+                            <goals>
+                                <goal>prepare-agent-integration</goal>
+                            </goals>
+                            <configuration>
+                                <propertyName>jacocoFailesafeArgs</propertyName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>jacoco-report</id>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>jacoco-report-integration</id>
+                            <goals>
+                                <goal>report-integration</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>${plugin.pit}</version>
+                    <executions>
+                        <execution>
+                            <id>pit-report</id>
+                            <goals>
+                                <goal>mutationCoverage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <failWhenNoMutations>false</failWhenNoMutations>
+                        <skip>${skipTests}</skip>
+                        <skipTests>${skipTests}</skipTests>
+                        <threads>4</threads>
+                        <historyInputLocation>${project.build.directory}/pit.history</historyInputLocation>
+                        <historyOutputLocation>${project.build.directory}/pit.history</historyOutputLocation>
+                        <timeoutConstant>10000</timeoutConstant>
+                        <targetClasses>
+                            <param>org.testify.*</param>
+                        </targetClasses>
+                        <targetTests>
+                            <param>org.testify.*</param>
+                        </targetTests>
+                        <excludedClasses>
+                            <param>org.testify.*.*BadTestSetup</param>
+                        </excludedClasses>
+                        <exportLineCoverage>true</exportLineCoverage>
+                        <outputFormats>
+                            <outputFormat>HTML</outputFormat>
+                        </outputFormats>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>${plugin.license}</version>
+                    <executions>
+                        <execution>
+                            <id>license-check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.testify</groupId>
+                            <artifactId>build-tools</artifactId>
+                            <version>${buildtools.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.mycila</groupId>
+                            <artifactId>license-maven-plugin-git</artifactId>
+                            <version>${plugin.license}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <header>license.txt</header>
+                        <properties>
+                            <owner>${project.organization.name}</owner>
+                        </properties>
+                        <headerDefinitions>
+                            <headerDefinition>java_header_style.xml</headerDefinition>
+                        </headerDefinitions>
+                        <excludes>
+                            <exclude>**/.*</exclude>
+                            <exclude>**/*.md</exclude>
+                            <exclude>**/*.txt</exclude>
+                            <exclude>**/*.gpg</exclude>
+                            <exclude>**/*.enc</exclude>
+                            <exclude>**/*.tar</exclude>
+                            <exclude>**/*.sh</exclude>
+                            <exclude>**/settings.xml</exclude>
+                            <exclude>**/nbactions.xml</exclude>
+                            <exclude>LICENSE</exclude>
+                            <exclude>src/test/resources/**</exclude>
+                            <exclude>src/main/resources/**</exclude>
+                            <exclude>nbproject/**</exclude>
+                            <exclude>archetype.properties</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${plugin.checkstyle}</version>
+                    <executions>
+                        <execution>
+                            <id>checkstyle-check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.testify</groupId>
+                            <artifactId>build-tools</artifactId>
+                            <version>${buildtools.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <configLocation>custom_checkstyle.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${plugin.versions}</version>
+                    <configuration>
+                        <generateBackupPoms>false</generateBackupPoms>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${plugin.sonatype}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <description>${project.version}</description>
+                        <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${plugin.projectinfo}</version>
+                <configuration>
+                    <!--
+                    If the dependencies report takes too long to finish, it
+                    could be due to maven trying to determine which repository
+                    contains which artifact. Disable this feature to make
+                    builds faster.
+                    -->
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${plugin.javadoc}</version>
+                <configuration>
+                    <sourcepath>
+                        ${basedir}/api/src/main/java;
+                        ${basedir}/core/src/main/java;
+                    </sourcepath>
+                    <doctitle>Testify API Documentation</doctitle>
+                    <windowtitle>Testify API Documentation</windowtitle>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>javadoc</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${plugin.jacoco}</version>
+                <reportSets>
+                    <reportSet>
+                        <id>report</id>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${plugin.checkstyle}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${plugin.surefire}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report-only</report>
+                            <report>failsafe-report-only</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>${plugin.jxr}</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                            <report>test-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+        <!-- Default Development Profile -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <configuration>
+                            <skip>${skipTests}</skip>               
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>${skipTests}</skip>               
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <skip>${skipTests}</skip>               
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Quick Validation Profile -->
+        <profile>
+            <id>validate</id>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Build Profile -->
+        <profile>
+            <id>build</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Staging Profile -->
+        <profile>
+            <id>stage</id>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Release Profile -->
+        <profile>
+            <id>release</id>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <!--
+                                Don't include debug information in released
+                                builds but do include parameter names.
+                            -->
+                            <debug>false</debug>
+                            <compilerArguments>
+                                <parameters />
+                            </compilerArguments>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <configuration>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

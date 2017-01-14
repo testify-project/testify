@@ -1,0 +1,43 @@
+sudo: false
+
+language: java
+
+jdk:
+    - oraclejdk8
+
+services:
+    - docker
+
+notifications:
+    email:
+        - builds@fitbur.com
+    on-success: change
+    on-failure: always
+
+cache:
+    apt: true
+    pip: true
+    directories:
+        - $HOME/.m2
+
+addons:
+    apt:
+        packages:
+            - gnupg
+            - net-tools
+
+before_install:
+    - ./before_install.sh
+    - pip install --user codecov
+    - sudo apt-get update -y
+    - sudo apt-get install docker-engine=1.11.2-0~trusty -o Dpkg::Options::="--force-confold" --force-yes -y
+
+script: ./script.sh
+
+after_success:
+    - codecov
+    - ./after_success.sh
+
+env:
+    global:
+        - secure: JQ2CL1Gtuq7s1xfEn8Z3Xax6CBqellU2tOm8KjvN/75amZwsaPWt9YJQHY73SLVpVAmqHwLE0A5bI/pfRhkrIgGW6urUb0JBWJcsmo198Yg/rg/WBmyQGb7gLDZ8YZ6ci+0W5MFpg5zYCP7q7PFxkAl9fRGblZzN7VEn+fV70WHAOhveWXICxHHcULkQTKYjl8UumDP4Nm+wpyF4MT31OW1YI9lroVi0nk/CDqh+j9kXAceJ6qsYaD/x0pV0j8r23PCmnH2tf9PDX5df0UtW9hCxhyQrV+1r/m8NRKo+cVlCYFfzySum0uonq6ZejrHbFhGs1eHOj5/yf46k+J5/lKIPqoRn+tRYRAk9fPah2hhwdquQLriju4MyGLP5Q20qXwICClJZiGfq8eb0EffCUHyY9pfhl3kGdYOxqCFvfWDwZCMJaEfyuCmsDAIIre7A90MhCn3ERyP075yMkTh8rGH+wAii7Tu1ABUXg5thxC12SYWZtWP+arPmMw4w94iBd15iDqRoWTvU/Jwy2TyP0bLreTs0Ia5pgg4HkwEiND1Yzd7ZYABERqRP6ZJk8qTNBVkfybQAZ8vBsA9D4hfIIObmSkFlY/rr5HQmojJUOaDzQRfCRPp3uqPYFpZraaCnFQohSTqDtIuXN7LaUkmEsAjkAL9WtFkBG8H8KjRT0LM=
