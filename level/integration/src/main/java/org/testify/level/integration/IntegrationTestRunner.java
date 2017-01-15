@@ -30,7 +30,6 @@ import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestReifier;
 import org.testify.TestRunner;
-import org.testify.annotation.Fixture;
 import static org.testify.core.impl.TestContextProperties.CUT_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
@@ -124,44 +123,27 @@ public class IntegrationTestRunner implements TestRunner {
             }
         }
 
+        //invoke init method on test fields annotated with Fixture
         testDescriptor.getFieldDescriptors()
-                .parallelStream()
-                .filter(p -> p.getFixture().isPresent())
-                .forEach(p -> {
-                    Fixture fixture = p.getFixture().get();
-                    Optional<Object> value = p.getValue(testInstance);
-                    if (value.isPresent()) {
-                        Object instance = value.get();
-                        String initMethod = fixture.init();
+                .forEach(p -> p.init(testInstance));
 
-                        if (!initMethod.isEmpty()) {
-                            p.invoke(instance, initMethod);
-                        }
-                    }
-                });
+        //invoke init method on cut field annotated with Fixture
+        testContext.getCutDescriptor()
+                .ifPresent(p -> p.init(testInstance));
     }
 
     @Override
     public void stop() {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
-        testDescriptor.getFieldDescriptors()
-                .stream()
-                .filter(p -> p.getFixture().isPresent())
-                .forEach(p -> {
-                    Fixture fixture = p.getFixture().get();
-                    Optional<Object> value = p.getValue(testInstance);
-                    if (value.isPresent()) {
-                        Object instance = value.get();
-                        String destroyMethod = fixture.destroy();
 
-                        if (!destroyMethod.isEmpty()) {
-                            p.invoke(instance, destroyMethod);
-                        } else if (fixture.autoClose() && instance instanceof AutoCloseable) {
-                            p.invoke(instance, "close");
-                        }
-                    }
-                });
+        //invoke destroy method on fields annotated with Fixture
+        testDescriptor.getFieldDescriptors()
+                .forEach(p -> p.destroy(testInstance));
+
+        //invoke destroy method on cut field annotated with Fixture
+        testContext.getCutDescriptor()
+                .ifPresent(p -> p.destroy(testInstance));
 
         if (reificationProvider != null) {
             reificationProvider.destroy(testContext, serviceInstance);

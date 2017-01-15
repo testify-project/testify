@@ -306,7 +306,7 @@
                         <argLine>${jacocoFailesafeArgs} -client -Xms512m -Xmx2048m</argLine>
                         <forkCount>0.75C</forkCount>
                         <reuseForks>false</reuseForks>
-                        <parallel>classesAndMethods</parallel>
+                        <parallel>classes</parallel>
                         <useUnlimitedThreads>true</useUnlimitedThreads>
                         <includes>
                             <include>**/*IT.java</include>

@@ -20,6 +20,7 @@ import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import org.testify.annotation.Fixture;
 
 /**
  * A contract that specifies field traits.
@@ -79,6 +80,52 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
                 throw new IllegalStateException(e);
             }
         });
+    }
+
+    /**
+     * Initialize the field for the given instance if it is annotated with
+     * {@link Fixture}.
+     *
+     * @param instance the instance whose field value will be retrieved
+     */
+    default void init(Object instance) {
+        Optional<Fixture> fixtureAnnotaiton = getAnnotation(Fixture.class);
+        if (fixtureAnnotaiton.isPresent()) {
+            Fixture fixture = fixtureAnnotaiton.get();
+            Optional<Object> fieldValue = getValue(instance);
+            if (fieldValue.isPresent()) {
+                Object value = fieldValue.get();
+                String init = fixture.init();
+
+                if (!init.isEmpty()) {
+                    invoke(value, init);
+                }
+            }
+        }
+    }
+
+    /**
+     * Destroy the field for the given instance if it is annotated with
+     * {@link Fixture}.
+     *
+     * @param instance the instance whose field value will be retrieved
+     */
+    default void destroy(Object instance) {
+        Optional<Fixture> fixtureAnnotaiton = getAnnotation(Fixture.class);
+        if (fixtureAnnotaiton.isPresent()) {
+            Fixture fixture = fixtureAnnotaiton.get();
+            Optional<Object> fieldValue = getValue(instance);
+            if (fieldValue.isPresent()) {
+                Object value = fieldValue.get();
+                String destroyMethod = fixture.destroy();
+
+                if (!destroyMethod.isEmpty()) {
+                    invoke(value, destroyMethod);
+                } else if (fixture.autoClose() && instance instanceof AutoCloseable) {
+                    invoke(value, "close");
+                }
+            }
+        }
     }
 
 }

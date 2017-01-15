@@ -30,7 +30,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 import org.testify.RequiresProvider;
 import org.testify.ServiceInstance;
 import org.testify.TestContext;
@@ -133,9 +132,8 @@ public class SpringBeanFactoryPostProcessor implements
                 //so lets insure that controller entry points are prototype
                 //scoped and thus make them lazy.
                 Controller controller = beanType.getAnnotation(Controller.class);
-                RestController restController = beanType.getAnnotation(RestController.class);
 
-                if (controller != null || restController != null) {
+                if (controller != null) {
                     beanDefinition.setScope(SCOPE_PROTOTYPE);
                 }
             }
