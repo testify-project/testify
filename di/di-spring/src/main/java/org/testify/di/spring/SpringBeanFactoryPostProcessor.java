@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -28,6 +29,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.testify.RequiresProvider;
 import org.testify.ServiceInstance;
 import org.testify.TestContext;
@@ -72,16 +75,22 @@ public class SpringBeanFactoryPostProcessor implements
                 BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
                 Class<?> beanType = beanFactory.getType(beanName);
 
-                //mark all beans as lazy beans so we don't needlessly instianticate
-                //them during testing
+                //mark all beans as lazy beans so we don't needlessly
+                //instianticate them during testing
                 beanDefinition.setLazyInit(true);
 
+                //lets look for beans annotated with configuration
                 Configuration configuration = beanType.getAnnotation(Configuration.class);
 
                 if (configuration == null) {
+                    //if configuration annotation is not defined lets look for
+                    //the factory bean of the bean
                     String factoryBeanName = beanDefinition.getFactoryBeanName();
                     Fixture fixture = beanType.getAnnotation(Fixture.class);
 
+                    //if fixture is null but the factory bean is not defined
+                    //then try to get the fixture annotation from the factory
+                    //bean type
                     if (fixture == null && factoryBeanName != null) {
                         Class<?> factoryBeanType = beanFactory.getType(factoryBeanName);
                         fixture = factoryBeanType.isAnnotationPresent(Configuration.class)
@@ -89,6 +98,10 @@ public class SpringBeanFactoryPostProcessor implements
                                 : null;
                     }
 
+                    //if fixture is defined then lets find all the beans with
+                    //the same type and replace them with the bean definition
+                    //in the bean annotated with fixture and thus replacying
+                    //all production beans with test fixture beans
                     if (fixture != null) {
                         String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
 
@@ -108,13 +121,22 @@ public class SpringBeanFactoryPostProcessor implements
                                 }
 
                                 replacementBeanDefinition.setPrimary(false);
-                                replacementBeanDefinition.setLazyInit(false);
+                                replacementBeanDefinition.setLazyInit(true);
                                 beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
                                 replacedBeanNames.add(beanNameForType);
                             }
                         }
                     }
+                }
 
+                //by default spring eagerly initilizes singleton scoped beans
+                //so lets insure that controller entry points are prototype
+                //scoped and thus make them lazy.
+                Controller controller = beanType.getAnnotation(Controller.class);
+                RestController restController = beanType.getAnnotation(RestController.class);
+
+                if (controller != null || restController != null) {
+                    beanDefinition.setScope(SCOPE_PROTOTYPE);
                 }
             }
 

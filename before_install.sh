@@ -18,7 +18,7 @@ set -e
 
 if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     echo "Decrypting Secrets"
-    openssl aes-256-cbc -K $encrypted_8da71b22b126_key -iv $encrypted_8da71b22b126_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
+    openssl aes-256-cbc -K $encrypted_1b2bc6d866cb_key -iv $encrypted_1b2bc6d866cb_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
     tar -xvzf secrets.tar.gz
 fi
 
