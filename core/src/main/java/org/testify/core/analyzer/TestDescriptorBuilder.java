@@ -18,7 +18,7 @@ package org.testify.core.analyzer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import org.testify.FieldDescriptor;
-import org.testify.InvokableDescriptor;
+import org.testify.MethodDescriptor;
 import org.testify.TestDescriptor;
 import org.testify.annotation.Application;
 import org.testify.annotation.Module;
@@ -39,8 +39,8 @@ public class TestDescriptorBuilder {
     private final Class<?> testClass;
     private Application application;
     private Field cutField;
-    private InvokableDescriptor collaboratorMethod;
-    private final ImmutableList.Builder<InvokableDescriptor> configHandlers = ImmutableList.builder();
+    private MethodDescriptor collaboratorMethod;
+    private final ImmutableList.Builder<MethodDescriptor> configHandlers = ImmutableList.builder();
     private final ImmutableList.Builder<Module> modules = ImmutableList.builder();
     private final ImmutableList.Builder<RequiresContainer> containers = ImmutableList.builder();
     private final ImmutableList.Builder<RequiresResource> resources = ImmutableList.builder();
@@ -59,13 +59,13 @@ public class TestDescriptorBuilder {
         return this;
     }
 
-    public TestDescriptorBuilder collaboratorMethod(InvokableDescriptor invokableDescriptor) {
-        this.collaboratorMethod = invokableDescriptor;
+    public TestDescriptorBuilder collaboratorMethod(MethodDescriptor methodDescriptor) {
+        this.collaboratorMethod = methodDescriptor;
 
         return this;
     }
 
-    public TestDescriptorBuilder addConfigHandler(InvokableDescriptor invokableDescriptor) {
+    public TestDescriptorBuilder addConfigHandler(MethodDescriptor invokableDescriptor) {
         this.configHandlers.add(invokableDescriptor);
 
         return this;

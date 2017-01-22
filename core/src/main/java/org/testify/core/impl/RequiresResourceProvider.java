@@ -25,6 +25,7 @@ import org.testify.ResourceInstance;
 import org.testify.ResourceProvider;
 import org.testify.ServiceInstance;
 import org.testify.TestContext;
+import org.testify.TestReifier;
 import org.testify.annotation.RequiresResource;
 import static org.testify.guava.common.base.Preconditions.checkState;
 import org.testify.tools.Discoverable;
@@ -57,7 +58,8 @@ public class RequiresResourceProvider implements RequiresProvider {
 
                         ResourceProvider provider = (ResourceProvider) requiresProviderType.newInstance();
                         Object configuration = provider.configure(testContext);
-                        configuration = testContext.getTestReifier().configure(configuration);
+                        TestReifier testReifier = testContext.getTestReifier();
+                        configuration = testReifier.configure(testContext, configuration);
                         ResourceInstance<?, ?> resourceInstance = provider.start(testContext, configuration);
 
                         Instance<?> serverInstance = resourceInstance.getServer();

@@ -38,11 +38,13 @@ import org.testify.CutDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
+import org.testify.TestReifier;
 import org.testify.TestRunner;
 import org.testify.core.analyzer.DefaultMethodDescriptor;
 import org.testify.core.impl.DefaultTestContext;
 import org.testify.core.util.AnalyzerUtil;
 import org.testify.core.util.ServiceLocatorUtil;
+import org.testify.guava.common.base.Throwables;
 import org.testify.trait.LoggingTrait;
 
 /**
@@ -112,7 +114,8 @@ public abstract class BaseJUnitTestRunner extends BlockJUnit4ClassRunner impleme
         } catch (StoppedByUserException e) {
             throw e;
         } catch (Throwable e) {
-            testNotifier.addFailure(e);
+            Throwable cause = Throwables.getRootCause(e);
+            testNotifier.addFailure(cause);
             testNotifier.pleaseStop();
         } finally {
         }
@@ -149,15 +152,17 @@ public abstract class BaseJUnitTestRunner extends BlockJUnit4ClassRunner impleme
         MDC.put("method", method.getName());
 
         debug("Creating method decriptor for test method {}#{}", javaClass.getName(), method.getName());
-        MethodDescriptor methodDescriptor = new DefaultMethodDescriptor(method);
+        MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
 
         debug("Creating test context for test run {}#{}", javaClass.getName(), method.getName());
+        TestReifier testReifier = ServiceLocatorUtil.INSTANCE.getOne(TestReifier.class);
         TestContext testContext = new DefaultTestContext(
                 startResources,
                 testInstance,
                 methodDescriptor,
                 testDescriptor,
                 cutDescriptor,
+                testReifier,
                 dependencies
         );
 

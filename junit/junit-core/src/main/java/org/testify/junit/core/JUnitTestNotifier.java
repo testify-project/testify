@@ -21,6 +21,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.StoppedByUserException;
 import org.junit.runners.model.MultipleFailureException;
+import org.testify.guava.common.base.Throwables;
 import org.testify.trait.LoggingTrait;
 
 /**
@@ -43,11 +44,12 @@ public class JUnitTestNotifier extends RunNotifier implements LoggingTrait {
     @Override
     public void fireTestAssumptionFailed(Failure failure) {
         String methodName = failure.getDescription().getMethodName();
+        Throwable cause = Throwables.getRootCause(failure.getException());
 
         if (methodName == null) {
-            error("Test Class Assumption Failed");
+            error("Test Class Assumption Failed", cause);
         } else {
-            error("Test Method Assumption Failed");
+            error("Test Method Assumption Failed", cause);
         }
 
         notifier.fireTestAssumptionFailed(failure);
@@ -56,11 +58,12 @@ public class JUnitTestNotifier extends RunNotifier implements LoggingTrait {
     @Override
     public void fireTestFailure(Failure failure) {
         String methodName = failure.getDescription().getMethodName();
+        Throwable cause = Throwables.getRootCause(failure.getException());
 
         if (methodName == null) {
-            error("Test Class Failed");
+            error("Test Class Failed", cause);
         } else {
-            error("Test Method Failed");
+            error("Test Method Failed", cause);
         }
 
         notifier.fireTestFailure(failure);
@@ -88,7 +91,8 @@ public class JUnitTestNotifier extends RunNotifier implements LoggingTrait {
         if (e instanceof MultipleFailureException) {
             addMultipleFailureException((MultipleFailureException) e);
         } else {
-            notifier.fireTestFailure(new Failure(description, e));
+            Throwable cause = Throwables.getRootCause(e);
+            notifier.fireTestFailure(new Failure(description, cause));
         }
     }
 

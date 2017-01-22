@@ -69,7 +69,9 @@ public interface TypeTrait {
      * @return true if type is a subtype of the given type, false otherwise
      */
     default Boolean isSubtypeOf(Type type) {
-        return TypeToken.of(getGenericType()).isSubtypeOf(type);
+        boolean result = TypeToken.of(getGenericType()).isSubtypeOf(type);
+
+        return result ? result : TypeToken.of(getType()).isSubtypeOf(type);
     }
 
     /**
@@ -79,7 +81,9 @@ public interface TypeTrait {
      * @return true if type is a supertype of the given type, false otherwise
      */
     default Boolean isSupertypeOf(Type type) {
-        return TypeToken.of(getGenericType()).isSupertypeOf(type);
+        boolean result = TypeToken.of(getGenericType()).isSupertypeOf(type);
+
+        return result ? result : TypeToken.of(getType()).isSupertypeOf(type);
     }
 
     /**

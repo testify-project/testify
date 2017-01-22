@@ -121,7 +121,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
         SpringApplicationBuilder builder = new SpringApplicationBuilder(sources.toArray())
                 .bannerMode(Banner.Mode.OFF);
 
-        builder = testContext.getTestReifier().configure(builder);
+        builder = testContext.getTestReifier().configure(testContext, builder);
 
         return builder;
     }

@@ -65,7 +65,7 @@ public class SpringSystemInterceptor {
         ApplicationInstance applicationInstance = localApplicationInstance.get();
         TestContext testContext = applicationInstance.getTestContext();
         TestReifier testReifier = testContext.getTestReifier();
-        applicationContext = testReifier.configure(applicationContext);
+        applicationContext = testReifier.configure(testContext, applicationContext);
 
         ServiceProvider<ConfigurableApplicationContext> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
         ServiceInstance serviceInstance = serviceProvider.configure(testContext, applicationContext);

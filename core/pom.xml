@@ -49,8 +49,11 @@
             <artifactId>external-asm</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
-       
+        <dependency>
+            <groupId>org.testify.external</groupId>
+            <artifactId>external-objenesis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

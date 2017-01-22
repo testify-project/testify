@@ -18,7 +18,6 @@ package org.testify.core.analyzer.inspector;
 import java.lang.reflect.Method;
 import org.testify.MethodDescriptor;
 import org.testify.annotation.ConfigHandler;
-import org.testify.core.analyzer.DefaultInvokableDescriptor;
 import org.testify.core.analyzer.DefaultMethodDescriptor;
 import org.testify.core.analyzer.TestAnnotationInspector;
 import org.testify.core.analyzer.TestDescriptorBuilder;
@@ -52,9 +51,8 @@ public class ConfigHandlerInspector implements TestAnnotationInspector<ConfigHan
             for (Method method : methods) {
                 method.setAccessible(true);
 
-                MethodDescriptor methodDescriptor = new DefaultMethodDescriptor(method);
-                DefaultInvokableDescriptor invokableDescriptor = new DefaultInvokableDescriptor(methodDescriptor, instance);
-                builder.addConfigHandler(invokableDescriptor);
+                MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
+                builder.addConfigHandler(methodDescriptor);
             }
         }
     }

@@ -28,16 +28,27 @@ public interface TestReifier {
      * annotation.
      *
      * @param <T> the configuration object type
+     * @param testContext the test context
      * @param configuration the configuration object
      * @return return the original configuration or a new one in the event the
      * configuration object is immutable.
      */
-    <T> T configure(T configuration);
+    <T> T configure(TestContext testContext, T configuration);
 
     /**
-     * Reify the test and cut classes.
+     * Reify the test class from the cut instance.
      *
-     * @param cutInstance the class under test instance
+     * @param testContext the test context
+     * @param cutInstance the cut instance
      */
-    void reify(Object cutInstance);
+    void reify(TestContext testContext, Object cutInstance);
+
+    /**
+     * Reify the test and cut classes from the given collaborators arguments.
+     *
+     * @param testContext the test context
+     * @param cutInstance the cut instance
+     * @param collaborators the collaborators
+     */
+    void reify(TestContext testContext, Object cutInstance, Object... collaborators);
 }

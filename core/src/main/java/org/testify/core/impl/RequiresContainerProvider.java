@@ -59,7 +59,7 @@ public class RequiresContainerProvider implements RequiresProvider {
                         }
 
                         Object configuration = containerProvider.configure(testContext);
-                        configuration = testContext.getTestReifier().configure(configuration);
+                        configuration = testContext.getTestReifier().configure(testContext, configuration);
 
                         ContainerInstance containerInstance = containerProvider.start(
                                 testContext, requiresContainer, configuration

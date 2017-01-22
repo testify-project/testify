@@ -34,8 +34,12 @@ public class DefaultFieldDescriptor implements FieldDescriptor {
 
     private final Field field;
 
-    public DefaultFieldDescriptor(Field field) {
+    DefaultFieldDescriptor(Field field) {
         this.field = field;
+    }
+
+    public static FieldDescriptor of(Field field) {
+        return new DefaultFieldDescriptor(field);
     }
 
     @Override
@@ -55,7 +59,7 @@ public class DefaultFieldDescriptor implements FieldDescriptor {
 
     @Override
     public String getDefinedName() {
-        String name = null;
+        String name = "";
         Optional<Fake> fake = getFake();
         Optional<Real> real = getReal();
         Optional<Virtual> virtual = getVirtual();

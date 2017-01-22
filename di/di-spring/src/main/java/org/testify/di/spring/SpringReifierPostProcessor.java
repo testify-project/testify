@@ -103,7 +103,7 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
         Optional<CutDescriptor> descriptor = testContext.getCutDescriptor();
 
         if (descriptor.isPresent() && descriptor.get().isCutClass(beanClass)) {
-            testContext.getTestReifier().reify(bean);
+            testContext.getTestReifier().reify(testContext, bean);
         }
 
         return bean;

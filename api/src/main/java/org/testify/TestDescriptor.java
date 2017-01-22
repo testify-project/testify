@@ -58,9 +58,9 @@ public interface TestDescriptor {
      * Get the class under test collaborator provider associated with the test
      * class.
      *
-     * @return an optional with invokable descriptor, empty optional otherwise
+     * @return an optional with method descriptor, empty optional otherwise
      */
-    Optional<InvokableDescriptor> getCollaboratorProvider();
+    Optional<MethodDescriptor> getCollaboratorProvider();
 
     /**
      * The application annotation associated with the test class.
@@ -77,12 +77,12 @@ public interface TestDescriptor {
     Optional<Field> getCutField();
 
     /**
-     * Get a list invokable handlers for all the config handlers associated with
+     * Get a list method handlers for all the config handlers associated with
      * the test class.
      *
-     * @return a list with invokable descriptors, empty list otherwise
+     * @return a list with method descriptors, empty list otherwise
      */
-    List<InvokableDescriptor> getConfigHandlers();
+    List<MethodDescriptor> getConfigHandlers();
 
     /**
      * Get a list of field descriptors for all the fields associated with the
@@ -125,9 +125,9 @@ public interface TestDescriptor {
      * configuring the given configurable type.
      *
      * @param configurableType the configurable type
-     * @return an optional with invokable descriptor, empty optional otherwise
+     * @return an optional with method descriptor, empty optional otherwise
      */
-    Optional<InvokableDescriptor> findConfigHandler(Type configurableType);
+    Optional<MethodDescriptor> findConfigHandler(Type configurableType);
 
     /**
      * Find the descriptor for a field with the given type and name on the test

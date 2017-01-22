@@ -17,47 +17,46 @@ package org.testify.core.impl;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
-import org.testify.CutDescriptor;
+import java.util.Set;
 import org.testify.FieldDescriptor;
-import org.testify.InvokableDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.MockProvider;
+import org.testify.ObjenesisHelper;
+import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestReifier;
+import org.testify.annotation.Fake;
+import org.testify.annotation.Virtual;
 import org.testify.core.util.ServiceLocatorUtil;
 import static org.testify.guava.common.base.Preconditions.checkState;
+import org.testify.guava.common.reflect.TypeToken;
+import org.testify.instantiator.ObjectInstantiator;
+import org.testify.tools.Discoverable;
 
 /**
  * An implementation of {@link TestReifier} contract.
  *
  * @author saden
  */
+@Discoverable
 public class DefaultTestReifier implements TestReifier {
 
-    private final Object testInstance;
-    private final TestDescriptor testDescriptor;
-    private final CutDescriptor cutDescriptor;
-
-    public DefaultTestReifier(Object testInstance, TestDescriptor testDescriptor, CutDescriptor cutDescriptor) {
-        this.testInstance = testInstance;
-        this.testDescriptor = testDescriptor;
-        this.cutDescriptor = cutDescriptor;
-    }
-
     @Override
-    public <T> T configure(T configuration) {
+    public <T> T configure(TestContext testContext, T configuration) {
         Class<? extends Object> configurationType = configuration.getClass();
-        Optional<InvokableDescriptor> match = testDescriptor.findConfigHandler(configurationType);
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Object testInstance = testContext.getTestInstance();
+        Optional<MethodDescriptor> match = testDescriptor.findConfigHandler(configurationType);
 
         if (match.isPresent()) {
-            InvokableDescriptor invokableDescriptor = match.get();
-            MethodDescriptor methodDescriptor = invokableDescriptor.getMethodDescriptor();
+            MethodDescriptor methodDescriptor = match.get();
             Class<?> returnType = methodDescriptor.getReturnType();
             Optional<Object> result;
 
-            if (invokableDescriptor.getInstance().isPresent()) {
-                result = invokableDescriptor.invoke(configuration);
+            if (methodDescriptor.getInstance().isPresent()) {
+                result = methodDescriptor.invokeMethod(configuration);
             } else {
                 result = methodDescriptor.invoke(testInstance, configuration);
             }
@@ -84,49 +83,129 @@ public class DefaultTestReifier implements TestReifier {
     }
 
     @Override
-    public void reify(Object cutInstance) {
-        Collection<FieldDescriptor> testFields = testDescriptor.getFieldDescriptors();
+    public void reify(TestContext testContext, Object cutInstance) {
+        testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
+            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+            TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        testFields.stream().forEach((testField) -> {
-            String testFieldName = testField.getDefinedName();
-            Type testFieldType = testField.getGenericType();
+            Object testInstance = testContext.getTestInstance();
+            Collection<FieldDescriptor> testFieldDescriptors = testDescriptor.getFieldDescriptors();
 
-            Optional<FieldDescriptor> match = cutDescriptor.findFieldDescriptor(testFieldType, testFieldName);
+            testFieldDescriptors
+                    .stream()
+                    .filter(testFieldDescriptor -> testFieldDescriptor.isReplaceable())
+                    .forEach((testFieldDescriptor) -> {
+                        String testFieldName = testFieldDescriptor.getDefinedName();
+                        Class<?> testFieldType = testFieldDescriptor.getType();
+                        Type testFieldGenericType = testFieldDescriptor.getGenericType();
+                        Optional<FieldDescriptor> cutFieldMatch = cutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName);
 
-            if (!match.isPresent() && testField.isReplaceable()) {
-                match = cutDescriptor.findFieldDescriptor(testFieldType);
-            }
+                        if (!cutFieldMatch.isPresent()) {
+                            cutFieldMatch = cutDescriptor.findFieldDescriptor(testFieldGenericType);
+                        }
 
-            Optional<Object> testFieldValue = testField.getValue(testInstance);
+                        Optional<Object> testFieldValue = testFieldDescriptor.getValue(testInstance);
 
-            if (match.isPresent() && !testFieldValue.isPresent()) {
-                MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+                        if (cutFieldMatch.isPresent()) {
+                            FieldDescriptor cutFieldDescriptor = cutFieldMatch.get();
+                            Class<?> cutFieldType = cutFieldDescriptor.getType();
+                            Optional cutFieldValue = cutFieldDescriptor.getValue(cutInstance);
 
-                FieldDescriptor cutField = match.get();
-                Optional cutValue = cutField.getValue(cutInstance);
-                Object value = null;
+                            Optional<Fake> fake = testFieldDescriptor.getFake();
+                            Optional<Virtual> virtual = testFieldDescriptor.getVirtual();
+                            Object value = null;
 
-                if (cutValue.isPresent()) {
-                    value = cutValue.get();
-                    if (testField.getFake().isPresent()) {
-                        value = mockProvider.isMock(value)
-                                ? value
-                                : mockProvider.createFake(cutField.getType());
-                    } else if (testField.getVirtual().isPresent()) {
-                        value = mockProvider.isMock(value)
-                                ? value
-                                : mockProvider.createVirtual(cutField.getType(), value);
-                    }
-                } else if (testField.getFake().isPresent()) {
-                    value = mockProvider.isMock(value)
-                            ? value
-                            : mockProvider.createFake(cutField.getType());
-                }
+                            if (testFieldValue.isPresent()) {
+                                value = testFieldValue.get();
+                                if (virtual.isPresent()) {
+                                    value = mockProvider.isMock(value)
+                                            ? value
+                                            : mockProvider.createVirtual(testFieldType, value);
+                                }
+                            } else {
+                                if (cutFieldValue.isPresent()) {
+                                    value = cutFieldValue.get();
 
-                cutField.setValue(cutInstance, value);
-                testField.setValue(testInstance, value);
-            }
+                                    if (fake.isPresent()) {
+                                        value = mockProvider.isMock(value)
+                                                ? value
+                                                : mockProvider.createFake(cutFieldType);
+                                    } else if (virtual.isPresent()) {
+                                        value = mockProvider.isMock(value)
+                                                ? value
+                                                : mockProvider.createVirtual(cutFieldType, value);
+                                    }
+                                } else {
+                                    if (fake.isPresent()) {
+                                        value = mockProvider.isMock(value)
+                                                ? value
+                                                : mockProvider.createFake(cutFieldType);
+                                    } else if (virtual.isPresent()) {
+                                        if (testFieldType.isInterface()) {
+                                            value = mockProvider.createFake(testFieldType);
+                                        } else {
+                                            ObjectInstantiator<?> instantiator = ObjenesisHelper.getInstantiatorOf(testFieldType);
+                                            value = mockProvider.createVirtual(testFieldType, instantiator.newInstance());
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            cutFieldDescriptor.setValue(cutInstance, value);
+                            testFieldDescriptor.setValue(testInstance, value);
+                        }
+                    });
         });
     }
 
+    @Override
+    public void reify(TestContext testContext, Object cutInstance, Object... collaborators) {
+        testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
+            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+            TestDescriptor testDescriptor = testContext.getTestDescriptor();
+            Object testInstance = testContext.getTestInstance();
+            Set<FieldDescriptor> ignoredDescriptors = new HashSet<>();
+
+            for (Object collaborator : collaborators) {
+                Class<?> collaboratorType = collaborator.getClass();
+                TypeToken<?> typeToken = TypeToken.of(collaboratorType);
+
+                cutDescriptor.getFieldDescriptors().forEach((cutFieldDescriptor) -> {
+                    Class<?> cutFieldType = cutFieldDescriptor.getType();
+                    String cutFieldName = cutFieldDescriptor.getDefinedName();
+
+                    if (!ignoredDescriptors.contains(cutFieldDescriptor)
+                            && typeToken.isSubtypeOf(cutFieldType)) {
+                        Optional<FieldDescriptor> testFieldMatch
+                                = testDescriptor.findFieldDescriptor(cutFieldType, cutFieldName);
+
+                        if (!testFieldMatch.isPresent()) {
+                            testFieldMatch = testDescriptor.findFieldDescriptor(cutFieldType);
+                        }
+
+                        Object value = collaborator;
+
+                        if (testFieldMatch.isPresent()) {
+                            FieldDescriptor testFieldDescriptor = testFieldMatch.get();
+                            Optional<Virtual> virtual = testFieldDescriptor.getVirtual();
+
+                            if (!ignoredDescriptors.contains(testFieldDescriptor)
+                                    && virtual.isPresent()) {
+                                value = mockProvider.isMock(value)
+                                        ? value
+                                        : mockProvider.createVirtual(cutFieldType, value);
+                            }
+
+                            testFieldDescriptor.setValue(testInstance, value);
+                            ignoredDescriptors.add(testFieldDescriptor);
+                        }
+
+                        cutFieldDescriptor.setValue(cutInstance, value);
+                        ignoredDescriptors.add(cutFieldDescriptor);
+                    }
+                });
+            }
+        });
+    }
 }

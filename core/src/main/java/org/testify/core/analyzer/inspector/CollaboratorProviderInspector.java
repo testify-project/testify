@@ -16,8 +16,8 @@
 package org.testify.core.analyzer.inspector;
 
 import java.lang.reflect.Method;
+import org.testify.MethodDescriptor;
 import org.testify.annotation.CollaboratorProvider;
-import org.testify.core.analyzer.DefaultInvokableDescriptor;
 import org.testify.core.analyzer.DefaultMethodDescriptor;
 import org.testify.core.analyzer.TestAnnotationInspector;
 import org.testify.core.analyzer.TestDescriptorBuilder;
@@ -52,9 +52,8 @@ public class CollaboratorProviderInspector implements TestAnnotationInspector<Co
                 method.setAccessible(true);
 
                 Object instance = providerClass.newInstance();
-                DefaultMethodDescriptor methodDescriptor = new DefaultMethodDescriptor(method);
-                DefaultInvokableDescriptor invokableDescriptor = new DefaultInvokableDescriptor(methodDescriptor, instance);
-                builder.collaboratorMethod(invokableDescriptor);
+                MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
+                builder.collaboratorMethod(methodDescriptor);
 
                 return;
             }

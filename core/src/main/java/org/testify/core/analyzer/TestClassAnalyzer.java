@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import static java.util.stream.Stream.of;
 import org.testify.FieldDescriptor;
+import org.testify.MethodDescriptor;
 import org.testify.annotation.CollaboratorProvider;
 import org.testify.annotation.ConfigHandler;
 import org.testify.annotation.Cut;
@@ -155,15 +156,11 @@ public class TestClassAnalyzer extends ClassVisitor {
                 method.setAccessible(true);
 
                 if (method.getDeclaredAnnotation(ConfigHandler.class) != null) {
-                    DefaultMethodDescriptor methodDescriptor = new DefaultMethodDescriptor(method);
-                    DefaultInvokableDescriptor invokableDescriptor = new DefaultInvokableDescriptor(methodDescriptor);
-
-                    testDescriptorBuilder.addConfigHandler(invokableDescriptor);
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
+                    testDescriptorBuilder.addConfigHandler(methodDescriptor);
                 } else if (method.getDeclaredAnnotation(CollaboratorProvider.class) != null) {
-                    DefaultMethodDescriptor methodDescriptor = new DefaultMethodDescriptor(method);
-                    DefaultInvokableDescriptor invokableDescriptor = new DefaultInvokableDescriptor(methodDescriptor);
-
-                    testDescriptorBuilder.collaboratorMethod(invokableDescriptor);
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
+                    testDescriptorBuilder.collaboratorMethod(methodDescriptor);
                 }
 
             } catch (NoSuchMethodException | SecurityException e) {

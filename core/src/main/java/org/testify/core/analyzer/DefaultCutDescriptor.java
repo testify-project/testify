@@ -48,8 +48,12 @@ public class DefaultCutDescriptor implements CutDescriptor {
     private List<ParameterDescriptor> parameterDescriptors;
     private Map<DescriptorKey, ParameterDescriptor> parameterCache;
 
-    public DefaultCutDescriptor(Field field) {
+    DefaultCutDescriptor(Field field) {
         this.field = field;
+    }
+
+    public static CutDescriptor of(Field field) {
+        return new DefaultCutDescriptor(field);
     }
 
     @Override

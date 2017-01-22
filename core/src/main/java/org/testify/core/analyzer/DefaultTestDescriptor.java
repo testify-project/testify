@@ -25,7 +25,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import java.util.stream.Collectors;
 import org.testify.FieldDescriptor;
-import org.testify.InvokableDescriptor;
+import org.testify.MethodDescriptor;
 import org.testify.TestDescriptor;
 import org.testify.annotation.Application;
 import org.testify.annotation.Module;
@@ -42,9 +42,9 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     private final Class<?> testClass;
     private Application application;
-    private InvokableDescriptor collaboratorMethod;
+    private MethodDescriptor collaboratorMethod;
     private Field cutField;
-    private List<InvokableDescriptor> configHandlers;
+    private List<MethodDescriptor> configHandlers;
     private List<Module> modules;
     private List<Scan> scans;
     private List<RequiresContainer> containers;
@@ -54,6 +54,10 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     DefaultTestDescriptor(Class<?> testClass) {
         this.testClass = testClass;
+    }
+
+    public static TestDescriptor of(Class<?> testClass) {
+        return new DefaultTestDescriptor(testClass);
     }
 
     @Override
@@ -82,7 +86,7 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public Optional<InvokableDescriptor> getCollaboratorProvider() {
+    public Optional<MethodDescriptor> getCollaboratorProvider() {
         return ofNullable(collaboratorMethod);
     }
 
@@ -127,14 +131,14 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<InvokableDescriptor> getConfigHandlers() {
+    public List<MethodDescriptor> getConfigHandlers() {
         return configHandlers;
     }
 
     @Override
-    public Optional<InvokableDescriptor> findConfigHandler(Type parameterType) {
+    public Optional<MethodDescriptor> findConfigHandler(Type parameterType) {
         return configHandlers.parallelStream()
-                .filter(p -> p.getMethodDescriptor().hasParameterTypes(parameterType))
+                .filter(p -> p.hasParameterTypes(parameterType))
                 .findFirst();
     }
 
@@ -142,7 +146,7 @@ public class DefaultTestDescriptor implements TestDescriptor {
         this.application = application;
     }
 
-    void setCollaboratorMethod(InvokableDescriptor collaboratorMethod) {
+    void setCollaboratorMethod(MethodDescriptor collaboratorMethod) {
         this.collaboratorMethod = collaboratorMethod;
     }
 
@@ -150,7 +154,7 @@ public class DefaultTestDescriptor implements TestDescriptor {
         this.cutField = cutField;
     }
 
-    void setConfigHandlers(List<InvokableDescriptor> configHandlers) {
+    void setConfigHandlers(List<MethodDescriptor> configHandlers) {
         this.configHandlers = configHandlers;
     }
 

@@ -93,7 +93,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig> {
             Jersey2ApplicationListener listener = new Jersey2ApplicationListener(LOCAL_TEST_CONTEXT);
             resourceConfig.register(listener);
 
-            resourceConfig = testContext.getTestReifier().configure(resourceConfig);
+            resourceConfig = testContext.getTestReifier().configure(testContext, resourceConfig);
 
             return resourceConfig;
         } catch (Throwable t) {

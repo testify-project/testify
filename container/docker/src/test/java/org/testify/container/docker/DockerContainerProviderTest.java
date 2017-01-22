@@ -29,6 +29,7 @@ import org.testify.CutDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
+import org.testify.TestReifier;
 import org.testify.annotation.RequiresContainer;
 import static org.testify.container.docker.DockerContainerProvider.DEFAULT_DAEMON_URI;
 import org.testify.core.impl.DefaultTestContext;
@@ -69,10 +70,19 @@ public class DockerContainerProviderTest {
         Object testInstance = new Object();
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        TestReifier testReifier = mock(TestReifier.class);
         CutDescriptor cutDescriptor = mock(CutDescriptor.class);
         Map<String, String> dependencies = mock(Map.class);
 
-        TestContext testContext = new DefaultTestContext(startResources, testInstance, methodDescriptor, testDescriptor, cutDescriptor, dependencies);
+        TestContext testContext = new DefaultTestContext(
+                startResources,
+                testInstance,
+                methodDescriptor,
+                testDescriptor,
+                cutDescriptor,
+                testReifier,
+                dependencies);
+
         RequiresContainer delegate = AnnotationUtil.INSTANCE.newInstance(RequiresContainer.class);
         RequiresContainer requiresContainer = mock(RequiresContainer.class, delegatesTo(delegate));
         given(requiresContainer.value()).willReturn("postgres");

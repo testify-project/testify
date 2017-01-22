@@ -15,6 +15,7 @@
  */
 package org.testify;
 
+import java.util.Optional;
 import org.testify.trait.MethodTrait;
 
 /**
@@ -24,5 +25,23 @@ import org.testify.trait.MethodTrait;
  * @author saden
  */
 public interface MethodDescriptor extends MethodTrait {
+
+    /**
+     * The instance object.
+     *
+     * @return an optional containing the instance, empty optional otherwise
+     */
+    Optional<Object> getInstance();
+
+    /**
+     * Invoke the method using the underlying instance and the given arguments.
+     *
+     * @param args method arguments
+     *
+     * @return optional with method return value, empty optional otherwise
+     */
+    default Optional<Object> invokeMethod(Object... args) {
+        return invoke(getInstance().get(), args);
+    }
 
 }

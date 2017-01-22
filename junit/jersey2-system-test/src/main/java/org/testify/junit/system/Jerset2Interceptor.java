@@ -68,7 +68,7 @@ public class Jerset2Interceptor {
         ApplicationHandler applicationHandler = handler.getApplicationHandler();
         ServiceLocator serviceLocator = applicationHandler.getServiceLocator();
         TestContext testContext = localTestContext.get();
-        serviceLocator = testContext.getTestReifier().configure(serviceLocator);
+        serviceLocator = testContext.getTestReifier().configure(testContext, serviceLocator);
 
         ServiceProvider<ServiceLocator> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
 

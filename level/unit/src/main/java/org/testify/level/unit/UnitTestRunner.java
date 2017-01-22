@@ -20,13 +20,14 @@ import java.util.Collection;
 import java.util.Optional;
 import org.testify.CutDescriptor;
 import org.testify.FieldDescriptor;
-import org.testify.InvokableDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.MockProvider;
 import org.testify.ObjenesisHelper;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
+import org.testify.TestReifier;
 import org.testify.TestRunner;
+import org.testify.annotation.Cut;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
 
@@ -38,13 +39,17 @@ import org.testify.tools.Discoverable;
 @Discoverable
 public class UnitTestRunner implements TestRunner {
 
+    private TestContext testContext;
+
     @Override
     public void start(TestContext testContext) {
+        this.testContext = testContext;
         UnitTestVerifier verifier = new UnitTestVerifier(testContext);
         verifier.dependency();
         verifier.configuration();
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        TestReifier testReifier = testContext.getTestReifier();
         CutDescriptor cutDescriptor = testContext.getCutDescriptor().get();
 
         Object newInstance;
@@ -64,22 +69,21 @@ public class UnitTestRunner implements TestRunner {
         Object cutInstance = newInstance;
         Object testInstance = testContext.getTestInstance();
 
-        Optional<InvokableDescriptor> collaboratorMethod = testDescriptor.getCollaboratorProvider();
+        Optional<MethodDescriptor> collaboratorMethod = testDescriptor.getCollaboratorProvider();
         MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
 
         if (collaboratorMethod.isPresent()) {
-            InvokableDescriptor invokableDescriptor = collaboratorMethod.get();
-            Optional<Object> result;
+            MethodDescriptor methodDescriptor = collaboratorMethod.get();
+            Optional<Object> collaboratorMethodResult;
 
-            if (invokableDescriptor.getInstance().isPresent()) {
-                result = invokableDescriptor.invoke();
+            if (methodDescriptor.getInstance().isPresent()) {
+                collaboratorMethodResult = methodDescriptor.invokeMethod();
             } else {
-                MethodDescriptor methodDescriptor = invokableDescriptor.getMethodDescriptor();
-                result = methodDescriptor.invoke(testInstance);
+                collaboratorMethodResult = methodDescriptor.invoke(testInstance);
             }
 
-            if (result.isPresent()) {
-                Object resultValue = result.get();
+            if (collaboratorMethodResult.isPresent()) {
+                Object resultValue = collaboratorMethodResult.get();
                 Object[] collaborators;
 
                 if (resultValue.getClass().isArray()) {
@@ -90,14 +94,7 @@ public class UnitTestRunner implements TestRunner {
                     collaborators = new Object[]{};
                 }
 
-                for (Object collaborator : collaborators) {
-                    cutDescriptor.getFieldDescriptors().stream()
-                            .filter(p -> {
-                                return !p.getValue(cutInstance).isPresent()
-                                        && p.isSupertypeOf(collaborator.getClass());
-                            })
-                            .forEach(p -> p.setValue(cutInstance, collaborator));
-                }
+                testReifier.reify(testContext, cutInstance, collaborators);
             }
         } else {
             testDescriptor.getFieldDescriptors().stream().forEach(testFieldDescriptor -> {
@@ -146,14 +143,39 @@ public class UnitTestRunner implements TestRunner {
             });
         }
 
-        if (cutDescriptor.getCut().isPresent() && cutDescriptor.getCut().get().value()) {
-            Object instance = mockProvider.createVirtual(cutType, cutInstance);
-            cutDescriptor.setValue(testInstance, instance);
-        } else {
-            cutDescriptor.setValue(testInstance, cutInstance);
+        Optional<Cut> cutValue = cutDescriptor.getCut();
+        Object testCutInstance = cutInstance;
+
+        //If the cut annotation's value flag is set to true then create a
+        //virtual instance of the cut class
+        if (cutValue.isPresent() && cutValue.get().value()) {
+            testCutInstance = mockProvider.createVirtual(cutType, cutInstance);
         }
 
+        cutDescriptor.setValue(testInstance, testCutInstance);
+
+        //invoke init method on test fields annotated with Fixture
+        testDescriptor.getFieldDescriptors()
+                .forEach(p -> p.init(testInstance));
+
+        //invoke init method on cut field annotated with Fixture
+        testContext.getCutDescriptor()
+                .ifPresent(p -> p.init(testInstance));
+
         verifier.wiring();
+    }
+
+    @Override
+    public void stop() {
+        Object testInstance = testContext.getTestInstance();
+
+        //invoke destroy method on fields annotated with Fixture
+        testContext.getTestDescriptor().getFieldDescriptors()
+                .forEach(p -> p.destroy(testInstance));
+
+        //invoke destroy method on cut field annotated with Fixture
+        testContext.getCutDescriptor()
+                .ifPresent(p -> p.destroy(testInstance));
     }
 
 }

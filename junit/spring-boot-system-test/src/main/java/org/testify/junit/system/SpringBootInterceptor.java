@@ -97,7 +97,7 @@ public class SpringBootInterceptor {
         serviceProvider.postConfigure(testContext, serviceInstance);
 
         TestReifier testReifier = testContext.getTestReifier();
-        testReifier.configure(configurableApplicationContext);
+        testReifier.configure(testContext, configurableApplicationContext);
 
         testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
     }
@@ -110,7 +110,7 @@ public class SpringBootInterceptor {
         servletContainer.setPort(0);
         TestContext testContext = localTestContext.get();
 
-        testContext.getTestReifier().configure(servletContainer);
+        testContext.getTestReifier().configure(testContext, servletContainer);
 
         return containerFactory;
     }

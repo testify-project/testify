@@ -56,13 +56,13 @@ public class SystemTestRunner implements TestRunner {
         //configure and start the server
         serverProvider = ServiceLocatorUtil.INSTANCE.getOne(ServerProvider.class);
         Object serverConfig = serverProvider.configure(testContext);
-        serverConfig = testReifier.configure(serverConfig);
+        serverConfig = testReifier.configure(testContext, serverConfig);
         ServerInstance serverInstance = serverProvider.start(serverConfig);
 
         //create and initialize client
         clientProvider = ServiceLocatorUtil.INSTANCE.getOne(ClientProvider.class);
         Object clientConfig = clientProvider.configure(serverInstance);
-        clientConfig = testReifier.configure(clientConfig);
+        clientConfig = testReifier.configure(testContext, clientConfig);
         ClientInstance clientInstance = clientProvider.create(testContext, clientConfig);
 
         //add constants to the service instance provided by the server

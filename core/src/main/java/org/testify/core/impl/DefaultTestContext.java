@@ -37,6 +37,7 @@ public class DefaultTestContext implements TestContext {
     private final MethodDescriptor methodDescriptor;
     private final TestDescriptor testDescriptor;
     private final CutDescriptor cutDescriptor;
+    private final TestReifier testReifier;
     private final Map<String, String> dependencies;
 
     public DefaultTestContext(
@@ -45,12 +46,14 @@ public class DefaultTestContext implements TestContext {
             MethodDescriptor methodDescriptor,
             TestDescriptor descriptor,
             CutDescriptor cutDescriptor,
+            TestReifier testReifier,
             Map<String, String> dependencies) {
         this.methodDescriptor = methodDescriptor;
         this.startResources = startResources;
         this.testInstance = testInstance;
         this.testDescriptor = descriptor;
         this.cutDescriptor = cutDescriptor;
+        this.testReifier = testReifier;
         this.dependencies = dependencies;
     }
 
@@ -123,7 +126,7 @@ public class DefaultTestContext implements TestContext {
 
     @Override
     public TestReifier getTestReifier() {
-        return new DefaultTestReifier(testInstance, testDescriptor, cutDescriptor);
+        return testReifier;
     }
 
     @Override

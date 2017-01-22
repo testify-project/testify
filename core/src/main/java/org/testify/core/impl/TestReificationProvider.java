@@ -16,10 +16,12 @@
 package org.testify.core.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.testify.CutDescriptor;
+import org.testify.MethodDescriptor;
 import org.testify.MockProvider;
 import org.testify.ReificationProvider;
 import org.testify.RequiresProvider;
@@ -55,7 +57,7 @@ public class TestReificationProvider implements ReificationProvider {
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
-        Optional<CutDescriptor> descriptor = testContext.getCutDescriptor();
+        Optional<CutDescriptor> cutDescriptorOpt = testContext.getCutDescriptor();
 
         Set<Class<? extends Annotation>> nameQualifers = serviceInstance.getNameQualifers();
         Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
@@ -65,8 +67,8 @@ public class TestReificationProvider implements ReificationProvider {
 
         //if we are performing unit or integration test then get the cut class
         //from the service instance.
-        if (descriptor.isPresent()) {
-            CutDescriptor cutDescriptor = descriptor.get();
+        if (cutDescriptorOpt.isPresent()) {
+            CutDescriptor cutDescriptor = cutDescriptorOpt.get();
             Class type = cutDescriptor.getType();
 
             Annotation[] qualifierAnnotations = cutDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
@@ -75,7 +77,35 @@ public class TestReificationProvider implements ReificationProvider {
 
             cutDescriptor.setValue(testInstance, cutInstance);
             TestReifier testReifier = testContext.getTestReifier();
-            testReifier.reify(cutInstance);
+            Optional<MethodDescriptor> collaboratorMethod = testDescriptor.getCollaboratorProvider();
+
+            if (collaboratorMethod.isPresent()) {
+                MethodDescriptor methodDescriptor = collaboratorMethod.get();
+                Optional<Object> collaboratorMethodResult;
+
+                if (methodDescriptor.getInstance().isPresent()) {
+                    collaboratorMethodResult = methodDescriptor.invokeMethod();
+                } else {
+                    collaboratorMethodResult = methodDescriptor.invoke(testInstance);
+                }
+
+                if (collaboratorMethodResult.isPresent()) {
+                    Object resultValue = collaboratorMethodResult.get();
+                    Object[] collaborators;
+
+                    if (resultValue.getClass().isArray()) {
+                        collaborators = (Object[]) resultValue;
+                    } else if (resultValue instanceof Collection) {
+                        collaborators = ((Collection) resultValue).stream().toArray();
+                    } else {
+                        collaborators = new Object[]{};
+                    }
+
+                    testReifier.reify(testContext, cutInstance, collaborators);
+                }
+            } else {
+                testReifier.reify(testContext, cutInstance);
+            }
 
             if (cutDescriptor.isDelegatedCut()) {
                 cutInstance = mockProvider.createVirtual(cutDescriptor.getType(), cutInstance);

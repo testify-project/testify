@@ -31,9 +31,13 @@ public class DefaultParameterDescriptor implements ParameterDescriptor {
     private final Parameter parameter;
     private final Integer index;
 
-    public DefaultParameterDescriptor(Parameter parameter, Integer index) {
+    DefaultParameterDescriptor(Parameter parameter, Integer index) {
         this.parameter = parameter;
         this.index = index;
+    }
+
+    public static ParameterDescriptor of(Parameter parameter, Integer index) {
+        return new DefaultParameterDescriptor(parameter, index);
     }
 
     @Override

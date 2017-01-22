@@ -17,6 +17,8 @@ package org.testify.core.analyzer;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.Optional;
+import static java.util.Optional.ofNullable;
 import org.testify.MethodDescriptor;
 
 /**
@@ -28,9 +30,28 @@ import org.testify.MethodDescriptor;
 public class DefaultMethodDescriptor implements MethodDescriptor {
 
     private final Method method;
+    private final Object instance;
 
-    public DefaultMethodDescriptor(Method method) {
+    DefaultMethodDescriptor(Method method) {
+        this(method, null);
+    }
+
+    DefaultMethodDescriptor(Method method, Object instance) {
         this.method = method;
+        this.instance = instance;
+    }
+
+    public static MethodDescriptor of(Method method) {
+        return new DefaultMethodDescriptor(method);
+    }
+
+    public static MethodDescriptor of(Method method, Object instance) {
+        return new DefaultMethodDescriptor(method, instance);
+    }
+
+    @Override
+    public Optional<Object> getInstance() {
+        return ofNullable(instance);
     }
 
     @Override

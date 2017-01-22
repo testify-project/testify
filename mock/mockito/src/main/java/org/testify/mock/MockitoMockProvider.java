@@ -41,7 +41,6 @@ public class MockitoMockProvider implements MockProvider {
 
     @Override
     public <T> Boolean isMock(T instance) {
-
         return Mockito.mockingDetails(instance).isMock();
     }
 

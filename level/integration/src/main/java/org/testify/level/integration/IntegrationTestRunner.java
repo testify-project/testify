@@ -15,14 +15,6 @@
  */
 package org.testify.level.integration;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import org.testify.CutDescriptor;
-import org.testify.FieldDescriptor;
-import org.testify.InvokableDescriptor;
-import org.testify.MethodDescriptor;
 import org.testify.ReificationProvider;
 import org.testify.ServiceInstance;
 import org.testify.ServiceProvider;
@@ -30,7 +22,6 @@ import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestReifier;
 import org.testify.TestRunner;
-import static org.testify.core.impl.TestContextProperties.CUT_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
 
@@ -63,7 +54,7 @@ public class IntegrationTestRunner implements TestRunner {
         serviceProvider.postConfigure(testContext, serviceInstance);
 
         TestReifier testReifier = testContext.getTestReifier();
-        testReifier.configure(serviceContext);
+        testReifier.configure(testContext, serviceContext);
 
         reificationProvider = ServiceLocatorUtil.INSTANCE.getOne(ReificationProvider.class);
         reificationProvider.start(testContext, serviceInstance);
@@ -72,56 +63,6 @@ public class IntegrationTestRunner implements TestRunner {
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
-        Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
-        Optional<Object> cutProperty = testContext.getProperty(CUT_INSTANCE);
-        Optional<InvokableDescriptor> collaboratorMethod = testDescriptor.getCollaboratorProvider();
-
-        if (cutProperty.isPresent() && cutDescriptor.isPresent() && collaboratorMethod.isPresent()) {
-            Object cutInstance = cutProperty.get();
-
-            InvokableDescriptor invokableDescriptor = collaboratorMethod.get();
-            Optional<Object> result;
-
-            if (invokableDescriptor.getInstance().isPresent()) {
-                result = invokableDescriptor.invoke();
-            } else {
-                MethodDescriptor methodDescriptor = invokableDescriptor.getMethodDescriptor();
-                result = methodDescriptor.invoke(testInstance);
-            }
-
-            if (result.isPresent()) {
-                Object resultValue = result.get();
-                Object[] collaborators;
-
-                if (resultValue.getClass().isArray()) {
-                    collaborators = (Object[]) resultValue;
-                } else if (resultValue instanceof Collection) {
-                    collaborators = ((Collection) resultValue).stream().toArray();
-                } else {
-                    collaborators = new Object[]{};
-                }
-
-                Set<FieldDescriptor> replacedFields = new HashSet<>();
-
-                for (Object collaborator : collaborators) {
-                    cutDescriptor.get().getFieldDescriptors().stream()
-                            .filter(fieldDescriptor
-                                    -> !replacedFields.contains(fieldDescriptor)
-                            && fieldDescriptor.isSupertypeOf(collaborator.getClass()))
-                            .map(fieldDescriptor -> {
-                                fieldDescriptor.setValue(cutInstance, collaborator);
-
-                                return fieldDescriptor;
-                            })
-                            .forEach(fieldDescriptor -> {
-                                //TODO: you can end up with a cut class that has
-                                //multiple fields of the same type. we should
-                                //log any ambiguity
-                                replacedFields.add(fieldDescriptor);
-                            });
-                }
-            }
-        }
 
         //invoke init method on test fields annotated with Fixture
         testDescriptor.getFieldDescriptors()
