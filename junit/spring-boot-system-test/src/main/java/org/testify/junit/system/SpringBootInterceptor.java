@@ -32,11 +32,11 @@ import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testify.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testify.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testify.bytebuddy.implementation.bind.annotation.This;
-import static org.testify.core.impl.TestContextProperties.APP;
-import static org.testify.core.impl.TestContextProperties.APP_ARGUMENTS;
-import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTAINER;
-import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTEXT;
-import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
+import static org.testify.core.TestContextProperties.APP;
+import static org.testify.core.TestContextProperties.APP_ARGUMENTS;
+import static org.testify.core.TestContextProperties.APP_SERVLET_CONTAINER;
+import static org.testify.core.TestContextProperties.APP_SERVLET_CONTEXT;
+import static org.testify.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
 
 /**

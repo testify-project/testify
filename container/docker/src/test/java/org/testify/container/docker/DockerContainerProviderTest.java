@@ -31,7 +31,7 @@ import org.testify.TestDescriptor;
 import org.testify.TestReifier;
 import org.testify.annotation.RequiresContainer;
 import static org.testify.container.docker.DockerContainerProvider.DEFAULT_DAEMON_URI;
-import org.testify.core.impl.DefaultTestContext;
+import org.testify.core.DefaultTestContext;
 import org.testify.core.util.ReflectionUtil;
 import org.testify.github.dockerjava.core.DockerClientConfig;
 import static org.testify.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;

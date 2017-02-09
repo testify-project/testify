@@ -36,7 +36,7 @@ import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
 import static org.testify.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testify.bytebuddy.matcher.ElementMatchers.not;
 import org.testify.bytebuddy.pool.TypePool;
-import org.testify.core.impl.DefaultApplicationInstance;
+import org.testify.core.DefaultApplicationInstance;
 import org.testify.tools.Discoverable;
 
 /**

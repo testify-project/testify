@@ -39,10 +39,10 @@ import org.testify.bytebuddy.implementation.bind.annotation.BindingPriority;
 import static org.testify.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testify.bytebuddy.matcher.ElementMatchers.not;
 import org.testify.bytebuddy.pool.TypePool;
-import org.testify.core.impl.DefaultServerInstance;
-import static org.testify.core.impl.TestContextProperties.APP;
-import static org.testify.core.impl.TestContextProperties.APP_NAME;
-import static org.testify.core.impl.TestContextProperties.APP_SERVLET_CONTAINER;
+import org.testify.core.DefaultServerInstance;
+import static org.testify.core.TestContextProperties.APP;
+import static org.testify.core.TestContextProperties.APP_NAME;
+import static org.testify.core.TestContextProperties.APP_SERVLET_CONTAINER;
 import org.testify.tools.Discoverable;
 
 /**

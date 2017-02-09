@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testify.core.impl;
+package org.testify.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;

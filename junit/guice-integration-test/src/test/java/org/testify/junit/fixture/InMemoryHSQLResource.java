@@ -23,7 +23,7 @@ import org.hsqldb.jdbc.JDBCDataSource;
 import org.testify.ResourceInstance;
 import org.testify.ResourceProvider;
 import org.testify.TestContext;
-import org.testify.core.impl.ResourceInstanceBuilder;
+import org.testify.core.ResourceInstanceBuilder;
 
 /**
  * An implementation of ResourceProvider that provides an in-memory HSQL

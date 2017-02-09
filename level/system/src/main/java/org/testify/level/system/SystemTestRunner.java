@@ -25,7 +25,7 @@ import org.testify.TestContext;
 import org.testify.TestDescriptor;
 import org.testify.TestReifier;
 import org.testify.TestRunner;
-import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
+import static org.testify.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
 

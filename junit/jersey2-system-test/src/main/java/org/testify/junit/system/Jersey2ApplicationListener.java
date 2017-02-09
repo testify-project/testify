@@ -24,7 +24,7 @@ import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.testify.RequiresProvider;
 import org.testify.ServiceInstance;
 import org.testify.TestContext;
-import static org.testify.core.impl.TestContextProperties.SERVICE_INSTANCE;
+import static org.testify.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testify.core.util.ServiceLocatorUtil;
 
 /**

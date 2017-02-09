@@ -38,7 +38,7 @@ import org.testify.Instance;
 import org.testify.ServiceInstance;
 import org.testify.annotation.Fixture;
 import org.testify.annotation.Real;
-import org.testify.core.impl.DefaultInstance;
+import org.testify.core.DefaultInstance;
 import org.testify.guava.common.collect.ImmutableSet;
 
 /**

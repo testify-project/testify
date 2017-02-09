@@ -40,7 +40,7 @@ import org.testify.ServiceInstance;
 import org.testify.annotation.Module;
 import org.testify.annotation.Real;
 import org.testify.annotation.Scan;
-import org.testify.core.impl.DefaultServiceProvider;
+import org.testify.core.DefaultServiceProvider;
 import org.testify.guava.common.collect.ImmutableSet;
 import org.testify.guava.common.reflect.TypeToken;
 

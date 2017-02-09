@@ -43,7 +43,7 @@ import org.testify.ApplicationProvider;
 import org.testify.ServerInstance;
 import org.testify.ServerProvider;
 import org.testify.TestContext;
-import org.testify.core.impl.DefaultServerInstance;
+import org.testify.core.DefaultServerInstance;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.tools.Discoverable;
 import org.xnio.StreamConnection;
