@@ -31,7 +31,12 @@
     <dependencies>
         <dependency>
             <groupId>org.testify</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testify.tools</groupId>
+            <artifactId>service-generator</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

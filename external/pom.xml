@@ -67,6 +67,7 @@
                         </execution>
                     </executions>
                     <configuration>
+                        <shadedArtifactAttached>false</shadedArtifactAttached>
                         <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                         <createDependencyReducedPom>true</createDependencyReducedPom>
                         <createSourcesJar>true</createSourcesJar>

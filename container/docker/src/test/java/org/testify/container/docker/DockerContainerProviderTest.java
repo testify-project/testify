@@ -25,7 +25,6 @@ import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import org.testify.ContainerInstance;
-import org.testify.CutDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.TestContext;
 import org.testify.TestDescriptor;
@@ -33,7 +32,7 @@ import org.testify.TestReifier;
 import org.testify.annotation.RequiresContainer;
 import static org.testify.container.docker.DockerContainerProvider.DEFAULT_DAEMON_URI;
 import org.testify.core.impl.DefaultTestContext;
-import org.testify.core.util.AnnotationUtil;
+import org.testify.core.util.ReflectionUtil;
 import org.testify.github.dockerjava.core.DockerClientConfig;
 import static org.testify.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
 import org.testify.tools.category.ContainerTests;
@@ -71,19 +70,19 @@ public class DockerContainerProviderTest {
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         TestReifier testReifier = mock(TestReifier.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
+        Map<String, Object> properties = mock(Map.class);
         Map<String, String> dependencies = mock(Map.class);
 
         TestContext testContext = new DefaultTestContext(
                 startResources,
                 testInstance,
-                methodDescriptor,
                 testDescriptor,
-                cutDescriptor,
+                methodDescriptor,
                 testReifier,
+                properties,
                 dependencies);
 
-        RequiresContainer delegate = AnnotationUtil.INSTANCE.newInstance(RequiresContainer.class);
+        RequiresContainer delegate = ReflectionUtil.INSTANCE.newInstance(RequiresContainer.class);
         RequiresContainer requiresContainer = mock(RequiresContainer.class, delegatesTo(delegate));
         given(requiresContainer.value()).willReturn("postgres");
         given(requiresContainer.version()).willReturn("9.4");

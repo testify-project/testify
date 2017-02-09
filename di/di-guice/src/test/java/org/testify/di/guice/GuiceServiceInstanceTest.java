@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
-import org.testify.core.util.ModuleImpl;
+import org.testify.core.annotation.DefaultModule;
 import org.testify.di.fixture.common.Greeting;
 import org.testify.di.fixture.common.GreetingModule;
 import org.testify.di.fixture.common.GreetingQualfier;
@@ -45,7 +45,7 @@ public class GuiceServiceInstanceTest {
     @Before
     public void init() {
         cut = new GuiceServiceInstance(injector);
-        ModuleImpl module = new ModuleImpl(GreetingModule.class, Boolean.FALSE);
+        DefaultModule module = new DefaultModule(GreetingModule.class);
         cut.addModules(module);
     }
 
@@ -154,7 +154,7 @@ public class GuiceServiceInstanceTest {
 
     @Test
     public void givenModuleAddModuleShouldAddModule() {
-        ModuleImpl module = new ModuleImpl(DynamicModule.class, Boolean.FALSE);
+        DefaultModule module = new DefaultModule(DynamicModule.class);
         cut.addModules(module);
 
         DynamicContract result = cut.getService(DynamicContract.class);

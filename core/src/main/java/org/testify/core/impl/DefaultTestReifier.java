@@ -33,6 +33,7 @@ import org.testify.core.util.ServiceLocatorUtil;
 import static org.testify.guava.common.base.Preconditions.checkState;
 import org.testify.guava.common.reflect.TypeToken;
 import org.testify.instantiator.ObjectInstantiator;
+import org.testify.mock.MockitoMockProvider;
 import org.testify.tools.Discoverable;
 
 /**
@@ -54,9 +55,10 @@ public class DefaultTestReifier implements TestReifier {
             MethodDescriptor methodDescriptor = match.get();
             Class<?> returnType = methodDescriptor.getReturnType();
             Optional<Object> result;
+            Optional<Object> methodInstance = methodDescriptor.getInstance();
 
-            if (methodDescriptor.getInstance().isPresent()) {
-                result = methodDescriptor.invokeMethod(configuration);
+            if (methodInstance.isPresent()) {
+                result = methodDescriptor.invoke(methodInstance.get(), configuration);
             } else {
                 result = methodDescriptor.invoke(testInstance, configuration);
             }
@@ -85,7 +87,7 @@ public class DefaultTestReifier implements TestReifier {
     @Override
     public void reify(TestContext testContext, Object cutInstance) {
         testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
-            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOneIfPresent(MockProvider.class, MockitoMockProvider.class);
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
             Object testInstance = testContext.getTestInstance();
@@ -93,7 +95,7 @@ public class DefaultTestReifier implements TestReifier {
 
             testFieldDescriptors
                     .stream()
-                    .filter(testFieldDescriptor -> testFieldDescriptor.isReplaceable())
+                    .filter(testFieldDescriptor -> testFieldDescriptor.isInjectable())
                     .forEach((testFieldDescriptor) -> {
                         String testFieldName = testFieldDescriptor.getDefinedName();
                         Class<?> testFieldType = testFieldDescriptor.getType();
@@ -162,7 +164,7 @@ public class DefaultTestReifier implements TestReifier {
     @Override
     public void reify(TestContext testContext, Object cutInstance, Object... collaborators) {
         testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
-            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOneIfPresent(MockProvider.class, MockitoMockProvider.class);
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
             Object testInstance = testContext.getTestInstance();
             Set<FieldDescriptor> ignoredDescriptors = new HashSet<>();

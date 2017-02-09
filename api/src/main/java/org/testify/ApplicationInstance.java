@@ -15,6 +15,7 @@
  */
 package org.testify;
 
+import java.util.Collections;
 import java.util.Set;
 import org.testify.annotation.Application;
 
@@ -23,8 +24,9 @@ import org.testify.annotation.Application;
  * application.
  *
  * @author saden
+ * @param <T> the application initializer type
  */
-public interface ApplicationInstance {
+public interface ApplicationInstance<T> {
 
     /**
      * Get the application annotation.
@@ -41,17 +43,18 @@ public interface ApplicationInstance {
     TestContext getTestContext();
 
     /**
-     * Get the servlet container initializer class.
+     * Get the application initializer class.
      *
-     * @param <T> the servlet container initializer type
-     * @return the servlet container initilizer;
+     * @return the application initializer
      */
-    <T> T getServletContainerInitializer();
+    T getInitializer();
 
     /**
-     * Get the handler types associated with the servlet container initilizer.
+     * Get the application initializer handler types.
      *
-     * @return the handlers types
+     * @return a set of application initializer handlers types
      */
-    Set<Class<?>> getServletContainerInitializerHandlers();
+    default Set<Class<?>> getHandlers() {
+        return Collections.emptySet();
+    }
 }

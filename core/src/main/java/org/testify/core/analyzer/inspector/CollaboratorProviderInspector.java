@@ -17,10 +17,11 @@ package org.testify.core.analyzer.inspector;
 
 import java.lang.reflect.Method;
 import org.testify.MethodDescriptor;
+import org.testify.TestDescriptor;
 import org.testify.annotation.CollaboratorProvider;
 import org.testify.core.analyzer.DefaultMethodDescriptor;
 import org.testify.core.analyzer.TestAnnotationInspector;
-import org.testify.core.analyzer.TestDescriptorBuilder;
+import org.testify.core.analyzer.TestDescriptorProperties;
 import static org.testify.guava.common.base.Preconditions.checkState;
 import org.testify.tools.Discoverable;
 
@@ -39,13 +40,14 @@ public class CollaboratorProviderInspector implements TestAnnotationInspector<Co
     }
 
     @Override
-    public void inspect(TestDescriptorBuilder builder, Class<?> annotatedType, CollaboratorProvider collaboratorProvider) throws Exception {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, CollaboratorProvider collaboratorProvider) throws Exception {
         Class<?> providerClass = collaboratorProvider.value();
         checkState(providerClass != void.class,
                 "The value of @CollaboratorProvider annotation on '%s' must be specified.",
                 annotatedType.getName());
 
         Method[] methods = providerClass.getDeclaredMethods();
+
         for (Method method : methods) {
             if (method.getReturnType().equals(Object[].class)
                     && method.getParameterCount() == 0) {
@@ -53,7 +55,7 @@ public class CollaboratorProviderInspector implements TestAnnotationInspector<Co
 
                 Object instance = providerClass.newInstance();
                 MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
-                builder.collaboratorMethod(methodDescriptor);
+                testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
 
                 return;
             }

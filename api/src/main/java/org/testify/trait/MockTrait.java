@@ -31,6 +31,15 @@ import org.testify.annotation.Virtual;
 public interface MockTrait extends FieldTrait {
 
     /**
+     * Get {@link Cut} annotation.
+     *
+     * @return optional with cut annotation, empty optional otherwise
+     */
+    default Optional<Cut> getCut() {
+        return ofNullable(getMember().getDeclaredAnnotation(Cut.class));
+    }
+
+    /**
      * Get {@link Fake} annotation.
      *
      * @return optional with fake annotation, empty optional otherwise
@@ -81,21 +90,12 @@ public interface MockTrait extends FieldTrait {
      * Determine if the member is annotated with {@link Fake}, {@link Virtual},
      * or {@link Real} annotation.
      *
-     * @return true if the member is replaceable, false otherwise
+     * @return true if the member is injectable, false otherwise
      */
-    default Boolean isReplaceable() {
+    default Boolean isInjectable() {
         return getFake().isPresent()
                 || getReal().isPresent()
                 || getVirtual().isPresent();
-    }
-
-    /**
-     * Get {@link Cut} annotation.
-     *
-     * @return optional with cut annotation, empty optional otherwise
-     */
-    default Optional<Cut> getCut() {
-        return ofNullable(getMember().getDeclaredAnnotation(Cut.class));
     }
 
     /**
@@ -103,7 +103,9 @@ public interface MockTrait extends FieldTrait {
      *
      * @return true if the member is a delegated cut
      */
-    default Boolean isDelegatedCut() {
-        return getCut().map(p -> p.value()).orElse(false);
+    default Boolean isVirtualCut() {
+        return getCut()
+                .map(p -> p.value())
+                .orElse(false);
     }
 }

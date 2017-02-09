@@ -35,7 +35,24 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
     private final Instance<C> client;
     private final Map<String, Object> properties;
 
-    public DefaultResourceInstance(Instance<S> server,
+    /**
+     * Create a resource instance based on the given server, client and
+     * properties.
+     *
+     * @param <S> server resource instance type
+     * @param <C> client resource instance type
+     * @param server the server instance
+     * @param client the client instance
+     * @param properties the resource instance properties
+     * @return a new resource instance
+     */
+    public static <S, C> ResourceInstance<S, C> of(Instance<S> server,
+            Instance<C> client,
+            Map<String, Object> properties) {
+        return new DefaultResourceInstance<>(server, client, properties);
+    }
+
+    DefaultResourceInstance(Instance<S> server,
             Instance<C> client,
             Map<String, Object> properties) {
         this.server = server;

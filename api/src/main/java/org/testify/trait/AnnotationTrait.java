@@ -24,7 +24,6 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
-import static java.util.stream.Stream.of;
 
 /**
  * A contract that specifies annotated element traits.
@@ -44,51 +43,27 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
     /**
      * Get the given annotation on the annotated element.
      *
-     * @param <T> annotation type
-     * @param type the annotation type
+     * @param <A> annotation type
+     * @param annotationType the annotation type
      * @return optional with annotation, empty optional otherwise
      */
-    default <T extends Annotation> Optional<T> getAnnotation(Class<T> type) {
-        return ofNullable(getAnnotatedElement().getDeclaredAnnotation(type));
-    }
+    default <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationType) {
+        T type = getAnnotatedElement();
 
-    /**
-     * Get all the annotations on the annotated type.
-     *
-     * @return a list of annotations, empty list otherwise
-     */
-    default List<? extends Annotation> getAnnotations() {
-        return of(getAnnotatedElement().getDeclaredAnnotations()).parallel()
-                .collect(toList());
+        return ofNullable(type.getDeclaredAnnotation(annotationType));
     }
 
     /**
      * Get all the annotations of the given type.
      *
-     * @param <T> the annotation type
-     * @param type the annotation type
+     * @param <A> annotation type
+     * @param annotationType the annotation type
      * @return optional with annotation, empty optional otherwise
      */
-    default <T extends Annotation> List<T> getAnnotations(Class<T> type) {
-        return of(getAnnotatedElement().getDeclaredAnnotations())
-                .parallel()
-                .filter(p -> p.annotationType().equals(type))
-                .map(p -> (T) p)
-                .collect(toList());
-    }
+    default <A extends Annotation> List<A> getAnnotations(Class<A> annotationType) {
+        T type = getAnnotatedElement();
 
-    /**
-     * Get all the annotations of the given types.
-     *
-     * @param <T> the annotation type
-     * @param annotations the annotation types
-     * @return optional with annotation, empty optional otherwise
-     */
-    default <T extends Annotation> List<T> getAnnotations(Collection<Class<? extends Annotation>> annotations) {
-        return of(getAnnotatedElement().getDeclaredAnnotations())
-                .parallel()
-                .filter(p -> annotations.contains(p.annotationType()))
-                .map(p -> (T) p)
+        return Stream.of(type.getDeclaredAnnotationsByType(annotationType))
                 .collect(toList());
     }
 
@@ -96,13 +71,14 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
      * Get the meta annotations declared on the annotated element itself or
      * annotations on the annotated element.
      *
-     * @param metaAnnotations an array of meta annotations
+     * @param metaAnnotationTypes an array of meta annotations
      * @return an array of meta annotations
      */
-    default Annotation[] getMetaAnnotations(Collection<Class<? extends Annotation>>... metaAnnotations) {
+    default Annotation[] getMetaAnnotations(Collection<Class<? extends Annotation>>... metaAnnotationTypes) {
         T type = getAnnotatedElement();
 
-        return Stream.of(metaAnnotations).parallel()
+        return Stream.of(metaAnnotationTypes)
+                .parallel()
                 .flatMap(p -> p.parallelStream())
                 .distinct()
                 .map(p -> {
@@ -128,13 +104,13 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
     /**
      * Determine if the annotated element has any of the given annotations.
      *
-     * @param annotations the annotations we are looking for
+     * @param annotationTypes the annotations we are looking for
      * @return true if at least one annotation found, false otherwise
      */
-    default boolean hasAnyAnnotations(Class<? extends Annotation>... annotations) {
+    default boolean hasAnyAnnotations(Class<? extends Annotation>... annotationTypes) {
         T type = getAnnotatedElement();
 
-        return of(annotations)
+        return Stream.of(annotationTypes)
                 .parallel()
                 .distinct()
                 .anyMatch(p -> type.getDeclaredAnnotation(p) != null);
@@ -143,16 +119,18 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
     /**
      * Determine if the annotated element has any of the given annotations.
      *
-     * @param annotations the annotations we are looking for
+     * @param annotationTypes the annotations we are looking for
      * @return true if at least one annotation found, false otherwise
      */
-    default boolean hasAnyAnnotations(Collection<Class<? extends Annotation>> annotations) {
+    default boolean hasAnyAnnotations(Collection<Class<? extends Annotation>> annotationTypes) {
         T type = getAnnotatedElement();
 
-        return of(type.getDeclaredAnnotations())
-                .parallel()
-                .distinct()
-                .anyMatch(p -> annotations.contains(p.annotationType()));
+        return annotationTypes
+                .stream()
+                .map(p -> type.getDeclaredAnnotation(p))
+                .filter(Objects::nonNull)
+                .findAny()
+                .isPresent();
     }
 
 }

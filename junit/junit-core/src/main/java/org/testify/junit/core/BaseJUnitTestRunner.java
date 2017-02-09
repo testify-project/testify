@@ -17,6 +17,7 @@ package org.testify.junit.core;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +43,7 @@ import org.testify.TestReifier;
 import org.testify.TestRunner;
 import org.testify.core.analyzer.DefaultMethodDescriptor;
 import org.testify.core.impl.DefaultTestContext;
+import org.testify.core.impl.TestContextProperties;
 import org.testify.core.util.AnalyzerUtil;
 import org.testify.core.util.ServiceLocatorUtil;
 import org.testify.guava.common.base.Throwables;
@@ -140,11 +142,6 @@ public abstract class BaseJUnitTestRunner extends BlockJUnit4ClassRunner impleme
         debug("Creating test decriptor for test class {}", javaClass.getName());
         TestDescriptor testDescriptor = getTestDescriptor(javaClass);
         testUnit.setTestDescriptor(testDescriptor);
-        CutDescriptor cutDescriptor = null;
-
-        if (testDescriptor.getCutField().isPresent()) {
-            cutDescriptor = getCutDescriptor(testDescriptor.getCutField().get());
-        }
 
         Method method = frameworkMethod.getMethod();
         testUnit.setTestMethod(method);
@@ -156,15 +153,24 @@ public abstract class BaseJUnitTestRunner extends BlockJUnit4ClassRunner impleme
 
         debug("Creating test context for test run {}#{}", javaClass.getName(), method.getName());
         TestReifier testReifier = ServiceLocatorUtil.INSTANCE.getOne(TestReifier.class);
+        Map<String, Object> properties = new HashMap<>();
+
         TestContext testContext = new DefaultTestContext(
                 startResources,
                 testInstance,
-                methodDescriptor,
                 testDescriptor,
-                cutDescriptor,
+                methodDescriptor,
                 testReifier,
+                properties,
                 dependencies
         );
+
+        Optional<Field> cutField = testDescriptor.getCutField();
+
+        if (cutField.isPresent()) {
+            CutDescriptor cutDescriptor = getCutDescriptor(cutField.get());
+            testContext.addProperty(TestContextProperties.CUT_DESCRIPTOR, cutDescriptor);
+        }
 
         testUnit.setTestContext(testContext);
 

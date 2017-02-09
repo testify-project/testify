@@ -72,7 +72,7 @@ public class GuiceServiceInstance implements ServiceInstance {
     }
 
     @Override
-    public boolean isRunning() {
+    public Boolean isRunning() {
         return running;
     }
 

@@ -18,11 +18,7 @@ package org.testify.core.analyzer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Objects;
-import java.util.Optional;
 import org.testify.FieldDescriptor;
-import org.testify.annotation.Fake;
-import org.testify.annotation.Real;
-import org.testify.annotation.Virtual;
 
 /**
  * A descriptor class used to access properties of or perform operations on an
@@ -34,12 +30,12 @@ public class DefaultFieldDescriptor implements FieldDescriptor {
 
     private final Field field;
 
-    DefaultFieldDescriptor(Field field) {
-        this.field = field;
-    }
-
     public static FieldDescriptor of(Field field) {
         return new DefaultFieldDescriptor(field);
+    }
+
+    DefaultFieldDescriptor(Field field) {
+        this.field = field;
     }
 
     @Override
@@ -59,20 +55,18 @@ public class DefaultFieldDescriptor implements FieldDescriptor {
 
     @Override
     public String getDefinedName() {
-        String name = "";
-        Optional<Fake> fake = getFake();
-        Optional<Real> real = getReal();
-        Optional<Virtual> virtual = getVirtual();
+        String name = null;
 
-        if (fake.isPresent()) {
-            name = fake.get().value();
-        } else if (real.isPresent()) {
-            name = real.get().value();
-        } else if (virtual.isPresent()) {
-            name = virtual.get().value();
+        if (getFake().isPresent()) {
+            name = getFake().get().value();
+        } else if (getReal().isPresent()) {
+            name = getReal().get().value();
+        } else if (getVirtual().isPresent()) {
+            name = getVirtual().get().value();
         }
 
-        if ("".equals(name)) {
+        //if name has not been spcified then use the field name
+        if (name == null || "".equals(name)) {
             name = field.getName();
         }
 
@@ -101,7 +95,7 @@ public class DefaultFieldDescriptor implements FieldDescriptor {
 
     @Override
     public String toString() {
-        return "FieldDescriptor{" + "field=" + field + '}';
+        return "DefaultFieldDescriptor{" + "field=" + field + '}';
     }
 
 }

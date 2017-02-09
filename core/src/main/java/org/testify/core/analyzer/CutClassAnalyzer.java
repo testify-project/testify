@@ -20,11 +20,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.security.AccessController;
 import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import static java.util.stream.Stream.of;
+import org.testify.CutDescriptor;
+import org.testify.FieldDescriptor;
+import org.testify.ParameterDescriptor;
 import org.testify.asm.ClassVisitor;
 import org.testify.asm.FieldVisitor;
 import org.testify.asm.MethodVisitor;
@@ -42,12 +46,12 @@ public class CutClassAnalyzer extends ClassVisitor {
 
     public static final String CONSTRUCTOR_NAME = "<init>";
     private final Field cutField;
-    private final CutDescriptorBuilder descriptorBuilder;
+    private final CutDescriptor cutDescriptor;
 
-    public CutClassAnalyzer(Field cutField, CutDescriptorBuilder descriptorBuilder) {
+    public CutClassAnalyzer(Field cutField, CutDescriptor cutDescriptor) {
         super(ASM5);
         this.cutField = cutField;
-        this.descriptorBuilder = descriptorBuilder;
+        this.cutDescriptor = cutDescriptor;
     }
 
     @Override
@@ -65,7 +69,15 @@ public class CutClassAnalyzer extends ClassVisitor {
                 modifiersField.setAccessible(true);
                 modifiersField.setInt(field, modifiers & ~Modifier.FINAL);
 
-                descriptorBuilder.addFieldDescriptor(new DefaultFieldDescriptor(field));
+                FieldDescriptor fieldDescriptor = DefaultFieldDescriptor.of(field);
+                Type fieldType = fieldDescriptor.getGenericType();
+                String fieldName = fieldDescriptor.getName();
+                DescriptorKey typeKey = DescriptorKey.of(fieldType);
+                DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
+
+                cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
+                cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
+                cutDescriptor.addListElement(CutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
             } catch (SecurityException
                     | NoSuchFieldException
                     | IllegalAccessException
@@ -95,14 +107,23 @@ public class CutClassAnalyzer extends ClassVisitor {
                             .getType()
                             .getDeclaredConstructor(parameterTypes);
 
-                    descriptorBuilder.constructor(constructor);
+                    cutDescriptor.addProperty(CutDescriptorProperties.CONSTRUCTOR, constructor);
 
                     Parameter[] parameters = constructor.getParameters();
 
-                    for (int i = 0; i < parameters.length; i++) {
-                        Parameter parameter = parameters[i];
+                    for (int index = 0; index < parameters.length; index++) {
+                        Parameter parameter = parameters[index];
+                        ParameterDescriptor paramterDescriptor = DefaultParameterDescriptor.of(parameter, index);
 
-                        descriptorBuilder.addParameterDescriptor(new DefaultParameterDescriptor(parameter, i));
+                        Type paramterType = paramterDescriptor.getGenericType();
+                        String paramterName = paramterDescriptor.getName();
+
+                        DescriptorKey typeKey = DescriptorKey.of(paramterType);
+                        DescriptorKey typeAndNameKey = DescriptorKey.of(paramterType, paramterName);
+
+                        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeKey, paramterDescriptor);
+                        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeAndNameKey, paramterDescriptor);
+                        cutDescriptor.addListElement(CutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
                     }
 
                 } catch (NoSuchMethodException | SecurityException e) {

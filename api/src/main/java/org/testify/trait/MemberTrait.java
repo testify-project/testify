@@ -56,7 +56,7 @@ public interface MemberTrait<T extends Member> {
      * @return the member declaring class name.
      */
     default String getDeclaringClassName() {
-        return getMember().getDeclaringClass().getSimpleName();
+        return getDeclaringClass().getSimpleName();
     }
 
     /**

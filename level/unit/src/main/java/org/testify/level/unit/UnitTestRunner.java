@@ -29,6 +29,7 @@ import org.testify.TestReifier;
 import org.testify.TestRunner;
 import org.testify.annotation.Cut;
 import org.testify.core.util.ServiceLocatorUtil;
+import org.testify.instantiator.ObjectInstantiator;
 import org.testify.tools.Discoverable;
 
 /**
@@ -63,7 +64,8 @@ public class UnitTestRunner implements TestRunner {
             //fallback to using Objenesis
             testContext.debug("Could not create a new instance of class under test {}, using Obenesis to create it.",
                     cutDescriptor.getTypeName());
-            newInstance = ObjenesisHelper.getInstantiatorOf(cutType).newInstance();
+            ObjectInstantiator<?> instantiatorOf = ObjenesisHelper.getInstantiatorOf(cutType);
+            newInstance = instantiatorOf.newInstance();
         }
 
         Object cutInstance = newInstance;
@@ -75,9 +77,10 @@ public class UnitTestRunner implements TestRunner {
         if (collaboratorMethod.isPresent()) {
             MethodDescriptor methodDescriptor = collaboratorMethod.get();
             Optional<Object> collaboratorMethodResult;
+            Optional<Object> methodInstance = methodDescriptor.getInstance();
 
-            if (methodDescriptor.getInstance().isPresent()) {
-                collaboratorMethodResult = methodDescriptor.invokeMethod();
+            if (methodInstance.isPresent()) {
+                collaboratorMethodResult = methodDescriptor.invoke(methodInstance.get());
             } else {
                 collaboratorMethodResult = methodDescriptor.invoke(testInstance);
             }
@@ -108,7 +111,7 @@ public class UnitTestRunner implements TestRunner {
                     match = cutDescriptor.findFieldDescriptor(testFieldType);
                 }
 
-                if (match.isPresent() && testFieldDescriptor.isReplaceable()) {
+                if (match.isPresent() && testFieldDescriptor.isInjectable()) {
                     cutFieldDescriptor = match.get();
                     Optional cutValue = cutFieldDescriptor.getValue(cutInstance);
                     Optional testValue = testFieldDescriptor.getValue(testInstance);

@@ -21,9 +21,9 @@ import org.testify.CutDescriptor;
 import org.testify.TestDescriptor;
 import org.testify.asm.ClassReader;
 import org.testify.core.analyzer.CutClassAnalyzer;
-import org.testify.core.analyzer.CutDescriptorBuilder;
+import org.testify.core.analyzer.DefaultCutDescriptor;
+import org.testify.core.analyzer.DefaultTestDescriptor;
 import org.testify.core.analyzer.TestClassAnalyzer;
-import org.testify.core.analyzer.TestDescriptorBuilder;
 
 /**
  * A utility class for analyzing classes.
@@ -36,13 +36,13 @@ public class AnalyzerUtil {
 
     public TestDescriptor analyzeTestClass(Class<?> testClass) {
         try {
-            TestDescriptorBuilder testDescriptorBuilder = new TestDescriptorBuilder(testClass);
-            TestClassAnalyzer testClassAnalyzer = new TestClassAnalyzer(testClass, testDescriptorBuilder);
+            TestDescriptor testDescriptor = DefaultTestDescriptor.of(testClass);
+            TestClassAnalyzer testClassAnalyzer = new TestClassAnalyzer(testClass, testDescriptor);
 
             ClassReader testReader = new ClassReader(testClass.getName());
             testReader.accept(testClassAnalyzer, ClassReader.SKIP_DEBUG);
 
-            return testDescriptorBuilder.build();
+            return testDescriptor;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Analysis of test class '%s' failed.", testClass.getSimpleName()), e);
         }
@@ -50,13 +50,13 @@ public class AnalyzerUtil {
 
     public CutDescriptor analyzeCutField(Field cutField) {
         try {
-            CutDescriptorBuilder builder = new CutDescriptorBuilder(cutField);
-            CutClassAnalyzer cutClassAnalyzer = new CutClassAnalyzer(cutField, builder);
+            CutDescriptor cutDescriptor = DefaultCutDescriptor.of(cutField);
+            CutClassAnalyzer cutClassAnalyzer = new CutClassAnalyzer(cutField, cutDescriptor);
 
             ClassReader cutReader = new ClassReader(cutField.getType().getName());
             cutReader.accept(cutClassAnalyzer, ClassReader.SKIP_DEBUG);
 
-            return builder.build();
+            return cutDescriptor;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Analysis of class under test '%s' failed.",
                     cutField.getType().getSimpleName()), e);

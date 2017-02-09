@@ -48,7 +48,7 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
 
         switch (event.getType()) {
             case INITIALIZATION_FINISHED:
-                Optional<ServiceInstance> optServiceInstance = testContext.getProperty(SERVICE_INSTANCE);
+                Optional<ServiceInstance> optServiceInstance = testContext.findProperty(SERVICE_INSTANCE);
                 ServiceInstance serviceInstance = optServiceInstance.get();
 
                 if (!testContext.getStartResources()) {

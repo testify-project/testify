@@ -71,7 +71,7 @@ public class SpringServiceInstance implements ServiceInstance {
     }
 
     @Override
-    public boolean isRunning() {
+    public Boolean isRunning() {
         return context.isActive() && context.isRunning();
     }
 
@@ -117,7 +117,7 @@ public class SpringServiceInstance implements ServiceInstance {
         if (qualifiers == null || qualifiers.length == 0) {
             if (token.isSubtypeOf(Provider.class)) {
                 rawType = token.resolveType(Provider.class.getTypeParameters()[0]).getRawType();
-                instance = new DefaultServiceProvider(this, rawType);
+                instance = DefaultServiceProvider.of(this, rawType);
             } else if (token.isSubtypeOf(Optional.class)) {
                 rawType = token.resolveType(Optional.class.getTypeParameters()[0]).getRawType();
                 instance = Optional.ofNullable(context.getBean(rawType));

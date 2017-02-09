@@ -15,9 +15,10 @@
  */
 package org.testify.core.analyzer.inspector;
 
+import org.testify.TestDescriptor;
 import org.testify.annotation.Scan;
 import org.testify.core.analyzer.TestAnnotationInspector;
-import org.testify.core.analyzer.TestDescriptorBuilder;
+import org.testify.core.analyzer.TestDescriptorProperties;
 import org.testify.tools.Discoverable;
 
 /**
@@ -34,8 +35,8 @@ public class ScanInspector implements TestAnnotationInspector<Scan> {
     }
 
     @Override
-    public void inspect(TestDescriptorBuilder builder, Class<?> annotatedType, Scan scan) throws Exception {
-        builder.addScan(scan);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Scan scan) throws Exception {
+        testDescriptor.addListElement(TestDescriptorProperties.SCANS, scan);
     }
 
 }

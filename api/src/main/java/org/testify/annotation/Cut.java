@@ -34,15 +34,15 @@ public @interface Cut {
 
     /**
      * <p>
-     * Indicates whether a mock that delegates to the class under test instance
-     * is created. This is useful if you wish to stub or verify a package
-     * private methods of the class under test.
+     * Indicates whether the class under test instance is a virtual instance
+     * (delegated mock). This is useful if you wish to stub or verify package
+     * private methods of the class under test or verify certain interactions.
      * </p>
      * <p>
-     * By default a delegating mock is not created.
+     * By default the cut class is not a virtual instance.
      * </p>
      *
-     * @return true if a delegating mock is create, false otherwise.
+     * @return true if a virtual instance is created, false otherwise.
      */
     boolean value() default false;
 }

@@ -23,6 +23,7 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
+import org.testify.ContainerProvider;
 
 /**
  * An annotation for specifying a container based resource that should be
@@ -163,6 +164,6 @@ public @interface RequiresContainer {
      *
      * @return required container provider implementation class.
      */
-    Class<?> provider() default void.class;
+    Class<? extends ContainerProvider> provider() default ContainerProvider.class;
 
 }

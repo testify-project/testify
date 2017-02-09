@@ -36,8 +36,8 @@
         <module>tools</module>
         <module>external</module>
         <module>api</module>
-        <module>core</module>
         <module>mock</module>
+        <module>core</module>
         <module>container</module>
         <module>di</module>
         <module>level</module>
@@ -387,6 +387,10 @@
                         <excludedClasses>
                             <param>org.testify.*.*BadTestSetup</param>
                         </excludedClasses>
+                        <excludedMethods>
+                            <param>equals</param>
+                            <param>hashCode</param>
+                        </excludedMethods>
                         <exportLineCoverage>true</exportLineCoverage>
                         <outputFormats>
                             <outputFormat>HTML</outputFormat>
@@ -558,6 +562,14 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.4</version>
+                <configuration>
+                    <onlyAnalyze>org.testify.*</onlyAnalyze>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

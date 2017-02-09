@@ -31,18 +31,36 @@ public class DefaultParameterDescriptor implements ParameterDescriptor {
     private final Parameter parameter;
     private final Integer index;
 
+    /**
+     * Create a new parameter descriptor instance from the given parameter and
+     * index.
+     *
+     * @param parameter the parameter instance
+     * @param index the parameter index
+     * @return a parameter descriptor instance
+     */
+    public static ParameterDescriptor of(Parameter parameter, Integer index) {
+        return new DefaultParameterDescriptor(parameter, index);
+    }
+
     DefaultParameterDescriptor(Parameter parameter, Integer index) {
         this.parameter = parameter;
         this.index = index;
     }
 
-    public static ParameterDescriptor of(Parameter parameter, Integer index) {
-        return new DefaultParameterDescriptor(parameter, index);
+    @Override
+    public Parameter getAnnotatedElement() {
+        return parameter;
     }
 
     @Override
     public String getName() {
         return parameter.getName();
+    }
+
+    @Override
+    public Integer getIndex() {
+        return index;
     }
 
     @Override
@@ -53,21 +71,6 @@ public class DefaultParameterDescriptor implements ParameterDescriptor {
     @Override
     public Type getGenericType() {
         return parameter.getParameterizedType();
-    }
-
-    @Override
-    public Parameter getAnnotatedElement() {
-        return parameter;
-    }
-
-    @Override
-    public Parameter getParameter() {
-        return parameter;
-    }
-
-    @Override
-    public Integer getIndex() {
-        return index;
     }
 
     @Override
@@ -96,10 +99,7 @@ public class DefaultParameterDescriptor implements ParameterDescriptor {
 
     @Override
     public String toString() {
-        return "ParameterDescriptor{"
-                + "parameter=" + parameter
-                + ", index=" + index
-                + '}';
+        return "DefaultParameterDescriptor{" + "parameter=" + parameter + ", index=" + index + '}';
     }
 
 }

@@ -33,15 +33,4 @@ public interface MethodDescriptor extends MethodTrait {
      */
     Optional<Object> getInstance();
 
-    /**
-     * Invoke the method using the underlying instance and the given arguments.
-     *
-     * @param args method arguments
-     *
-     * @return optional with method return value, empty optional otherwise
-     */
-    default Optional<Object> invokeMethod(Object... args) {
-        return invoke(getInstance().get(), args);
-    }
-
 }

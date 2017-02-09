@@ -17,13 +17,13 @@ package org.testify.core.analyzer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import java.util.stream.Collectors;
 import org.testify.FieldDescriptor;
 import org.testify.MethodDescriptor;
 import org.testify.TestDescriptor;
@@ -40,24 +40,27 @@ import org.testify.annotation.Scan;
  */
 public class DefaultTestDescriptor implements TestDescriptor {
 
+    private final Map<String, Object> properties;
     private final Class<?> testClass;
-    private Application application;
-    private MethodDescriptor collaboratorMethod;
-    private Field cutField;
-    private List<MethodDescriptor> configHandlers;
-    private List<Module> modules;
-    private List<Scan> scans;
-    private List<RequiresContainer> containers;
-    private List<RequiresResource> resources;
-    private List<FieldDescriptor> fieldDescriptors;
-    private Map<DescriptorKey, FieldDescriptor> fieldCache;
 
-    DefaultTestDescriptor(Class<?> testClass) {
-        this.testClass = testClass;
+    /**
+     * Create a new test descriptors for the given test class.
+     *
+     * @param testClass the test class the test descriptor describes
+     * @return a test descriptor instance
+     */
+    public static TestDescriptor of(Class<?> testClass) {
+        return new DefaultTestDescriptor(testClass, new HashMap<>());
     }
 
-    public static TestDescriptor of(Class<?> testClass) {
-        return new DefaultTestDescriptor(testClass);
+    DefaultTestDescriptor(Class<?> testClass, Map<String, Object> properties) {
+        this.testClass = testClass;
+        this.properties = properties;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     @Override
@@ -77,126 +80,84 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     @Override
     public Optional<Application> getApplication() {
-        return ofNullable(application);
+        return findProperty(TestDescriptorProperties.APPLICATION);
     }
 
     @Override
     public Optional<Field> getCutField() {
-        return ofNullable(this.cutField);
-    }
-
-    @Override
-    public Optional<MethodDescriptor> getCollaboratorProvider() {
-        return ofNullable(collaboratorMethod);
-    }
-
-    @Override
-    public List<RequiresResource> getRequiresResources() {
-        return resources;
-    }
-
-    @Override
-    public List<RequiresContainer> getRequiresContainers() {
-        return containers;
+        return findProperty(TestDescriptorProperties.CUT_FIELD);
     }
 
     @Override
     public List<Module> getModules() {
-        return modules;
+        return findList(TestDescriptorProperties.MODULES);
     }
 
     @Override
     public List<Scan> getScans() {
-        return scans;
+        return findList(TestDescriptorProperties.SCANS);
     }
 
     @Override
-    public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
-        return ofNullable(fieldCache.get(new DescriptorKey(type, name)));
+    public List<RequiresResource> getRequiresResources() {
+        return findList(TestDescriptorProperties.REQUIRES_RESOURCES);
     }
 
     @Override
-    public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
-        List<FieldDescriptor> matches = fieldCache.values()
-                .parallelStream()
-                .filter(p -> p.isSupertypeOf(type))
-                .collect(Collectors.toList());
-
-        return matches.size() == 1 ? ofNullable(matches.get(0)) : empty();
+    public List<RequiresContainer> getRequiresContainers() {
+        return findList(TestDescriptorProperties.REQUIRES_CONTAINERS);
     }
 
     @Override
-    public List<FieldDescriptor> getFieldDescriptors() {
-        return fieldDescriptors;
+    public Optional<MethodDescriptor> getCollaboratorProvider() {
+        return findProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER);
     }
 
     @Override
     public List<MethodDescriptor> getConfigHandlers() {
-        return configHandlers;
+        return findList(TestDescriptorProperties.CONFIG_HANDLERS);
+    }
+
+    @Override
+    public Collection<FieldDescriptor> getFieldDescriptors() {
+        return findList(TestDescriptorProperties.FIELD_DESCRIPTORS);
+    }
+
+    @Override
+    public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+
+        DescriptorKey descriptorKey = DescriptorKey.of(type);
+        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+
+        if (fieldDescriptor == null) {
+            fieldDescriptor = fieldDescriptors.values()
+                    .parallelStream()
+                    .filter(p -> p.isSupertypeOf(type))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        return ofNullable(fieldDescriptor);
+    }
+
+    @Override
+    public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
+                = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+
+        DescriptorKey descriptorKey = DescriptorKey.of(type, name);
+        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+
+        return ofNullable(fieldDescriptor);
     }
 
     @Override
     public Optional<MethodDescriptor> findConfigHandler(Type parameterType) {
-        return configHandlers.parallelStream()
+        return getConfigHandlers()
+                .parallelStream()
                 .filter(p -> p.hasParameterTypes(parameterType))
                 .findFirst();
-    }
-
-    void setApplication(Application application) {
-        this.application = application;
-    }
-
-    void setCollaboratorMethod(MethodDescriptor collaboratorMethod) {
-        this.collaboratorMethod = collaboratorMethod;
-    }
-
-    void setCutField(Field cutField) {
-        this.cutField = cutField;
-    }
-
-    void setConfigHandlers(List<MethodDescriptor> configHandlers) {
-        this.configHandlers = configHandlers;
-    }
-
-    void setModules(List<Module> modules) {
-        this.modules = modules;
-    }
-
-    void setScans(List<Scan> scans) {
-        this.scans = scans;
-    }
-
-    void setContainers(List<RequiresContainer> containers) {
-        this.containers = containers;
-    }
-
-    void setResources(List<RequiresResource> resources) {
-        this.resources = resources;
-    }
-
-    void setFieldDescriptors(List<FieldDescriptor> fieldDescriptors) {
-        this.fieldDescriptors = fieldDescriptors;
-    }
-
-    void setFieldCache(Map<DescriptorKey, FieldDescriptor> fieldCache) {
-        this.fieldCache = fieldCache;
-    }
-
-    @Override
-    public String toString() {
-        return "TestDescriptor{"
-                + "testClass=" + testClass
-                + ", application=" + application
-                + ", collaboratorMethod=" + collaboratorMethod
-                + ", cutField=" + cutField
-                + ", configHandlers=" + configHandlers
-                + ", modules=" + modules
-                + ", scans=" + scans
-                + ", containers=" + containers
-                + ", resources=" + resources
-                + ", testFields=" + fieldDescriptors
-                + ", fieldCache=" + fieldCache
-                + '}';
     }
 
     @Override
@@ -220,4 +181,10 @@ public class DefaultTestDescriptor implements TestDescriptor {
         final DefaultTestDescriptor other = (DefaultTestDescriptor) obj;
         return Objects.equals(this.testClass, other.testClass);
     }
+
+    @Override
+    public String toString() {
+        return "DefaultTestDescriptor{" + "testClass=" + testClass + '}';
+    }
+
 }

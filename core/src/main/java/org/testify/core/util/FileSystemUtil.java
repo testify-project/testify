@@ -29,8 +29,7 @@ import java.util.List;
 import static java.util.stream.Collectors.joining;
 
 /**
- * A utility class that provides common functionality for working with
- * resources.
+ * A utility class that provides functionality for working with file systems.
  *
  * @author saden
  */
@@ -38,53 +37,88 @@ public class FileSystemUtil {
 
     public static final FileSystemUtil INSTANCE = new FileSystemUtil();
 
-    public String createPath(String first, String... second) {
-        return Paths.get(first, second).normalize().toString();
+    /**
+     * Converts a path string, or a sequence of strings that when joined form a
+     * normalized path string.
+     *
+     * @param first the path string or initial part of the path string
+     * @param more additional strings to be joined to form the path string
+     * @return the resulting path string
+     */
+    public String createPath(String first, String... more) {
+        return Paths.get(first, more).normalize().toString();
     }
 
-    public void deleteDirectory(File directoryPath) {
-        final List<IOException> exceptions = new LinkedList<>();
+    /**
+     * Delete the given directory.
+     *
+     * @param directoryPath the path of the directory
+     */
+    public void deleteDirectory(String directoryPath) {
+        List<IOException> exceptions = new LinkedList<>();
+        File file = Paths.get(directoryPath).normalize().toFile();
 
         try {
-            Files.walkFileTree(directoryPath.toPath(), new SimpleFileVisitor<Path>() {
-
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.delete(file);
-
-                    return CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-                    if (e == null) {
-                        Files.delete(dir);
-                    }
-
-                    exceptions.add(e);
-
-                    return CONTINUE;
-                }
-            });
+            Files.walkFileTree(file.toPath(), new DeleteDirectoryFileVisitor(exceptions));
         } catch (IOException e) {
             String msg = exceptions.stream()
                     .map(IOException::getMessage)
                     .collect(joining("\n", "[", "]"));
 
-            throw new IllegalStateException(msg);
+            throw new IllegalStateException(msg, e);
         }
     }
 
+    /**
+     * Recreate the given directory. Recreating a directory entails deleting the
+     * content of the directory and then recreating the directory. If the
+     * directory does not exist it will simply be created.
+     *
+     * @param directoryPath the directory that will be recreated
+     * @return a file instance representing the recreated directory
+     */
     public File recreateDirectory(String directoryPath) {
-        File file = Paths.get(directoryPath).normalize().toFile();
+        Path path = Paths.get(directoryPath).normalize();
+        File file = path.toFile();
 
         if (file.exists()) {
-            deleteDirectory(file);
+            deleteDirectory(path.toString());
         }
 
         file.mkdirs();
 
         return file;
+    }
+
+    /**
+     * A File Visitor implementation that walks through a directory and deletes
+     * its content.
+     */
+    private static class DeleteDirectoryFileVisitor extends SimpleFileVisitor<Path> {
+
+        private final List<IOException> exceptions;
+
+        DeleteDirectoryFileVisitor(List<IOException> exceptions) {
+            this.exceptions = exceptions;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            Files.delete(file);
+
+            return CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
+            if (e == null) {
+                Files.delete(dir);
+            } else {
+                exceptions.add(e);
+            }
+
+            return CONTINUE;
+        }
     }
 
 }

@@ -100,7 +100,7 @@ public class UnitTestVerifier implements TestVerifier {
 
         if (descriptor.isPresent()) {
             CutDescriptor cutDescriptor = descriptor.get();
-            List<ParameterDescriptor> paramDescriptors = cutDescriptor.getParameterDescriptors();
+            Collection<ParameterDescriptor> paramDescriptors = cutDescriptor.getParameterDescriptors();
 
             String cutClassName = cutDescriptor.getTypeName();
 

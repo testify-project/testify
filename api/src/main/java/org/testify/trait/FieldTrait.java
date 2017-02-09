@@ -48,7 +48,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
     default void setValue(Object instance, Object value) {
         doPrivileged((PrivilegedAction<Object>) () -> {
             try {
-                Field field = getMember();
+                Field field = getAnnotatedElement();
                 field.setAccessible(true);
                 field.set(instance, value);
 
@@ -64,16 +64,17 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
     /**
      * Get the field value for the given instance.
      *
+     * @param <T> the value type
      * @param instance the instance whose field value will be retrieved
      * @return an optional with the field value, empty optional otherwise
      */
-    default Optional<Object> getValue(Object instance) {
-        return doPrivileged((PrivilegedAction<Optional<Object>>) () -> {
+    default <T> Optional<T> getValue(Object instance) {
+        return doPrivileged((PrivilegedAction<Optional<T>>) () -> {
             try {
-                Field field = getMember();
+                Field field = getAnnotatedElement();
                 field.setAccessible(true);
 
-                return ofNullable(field.get(instance));
+                return ofNullable((T) field.get(instance));
             } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException e) {
@@ -90,6 +91,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
      */
     default void init(Object instance) {
         Optional<Fixture> fixtureAnnotaiton = getAnnotation(Fixture.class);
+
         if (fixtureAnnotaiton.isPresent()) {
             Fixture fixture = fixtureAnnotaiton.get();
             Optional<Object> fieldValue = getValue(instance);
@@ -112,6 +114,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
      */
     default void destroy(Object instance) {
         Optional<Fixture> fixtureAnnotaiton = getAnnotation(Fixture.class);
+
         if (fixtureAnnotaiton.isPresent()) {
             Fixture fixture = fixtureAnnotaiton.get();
             Optional<Object> fieldValue = getValue(instance);
@@ -121,7 +124,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
 
                 if (!destroyMethod.isEmpty()) {
                     invoke(value, destroyMethod);
-                } else if (fixture.autoClose() && instance instanceof AutoCloseable) {
+                } else if (fixture.autoClose() && value instanceof AutoCloseable) {
                     invoke(value, "close");
                 }
             }

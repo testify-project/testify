@@ -15,9 +15,10 @@
  */
 package org.testify.core.analyzer.inspector;
 
+import org.testify.TestDescriptor;
 import org.testify.annotation.RequiresContainer;
 import org.testify.core.analyzer.TestAnnotationInspector;
-import org.testify.core.analyzer.TestDescriptorBuilder;
+import org.testify.core.analyzer.TestDescriptorProperties;
 import org.testify.tools.Discoverable;
 
 /**
@@ -34,8 +35,8 @@ public class RequiresContainerInspector implements TestAnnotationInspector<Requi
     }
 
     @Override
-    public void inspect(TestDescriptorBuilder builder, Class<?> annotatedType, RequiresContainer requiresContainer) throws Exception {
-        builder.addRequiresContainer(requiresContainer);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, RequiresContainer requiresContainer) throws Exception {
+        testDescriptor.addListElement(TestDescriptorProperties.REQUIRES_CONTAINERS, requiresContainer);
     }
 
 }

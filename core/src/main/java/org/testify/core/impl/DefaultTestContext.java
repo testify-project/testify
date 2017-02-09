@@ -34,76 +34,54 @@ public class DefaultTestContext implements TestContext {
 
     private final Boolean startResources;
     private final Object testInstance;
-    private final MethodDescriptor methodDescriptor;
     private final TestDescriptor testDescriptor;
-    private final CutDescriptor cutDescriptor;
+    private final MethodDescriptor methodDescriptor;
     private final TestReifier testReifier;
+    private final Map<String, Object> properties;
     private final Map<String, String> dependencies;
 
     public DefaultTestContext(
             Boolean startResources,
             Object testInstance,
+            TestDescriptor testDescriptor,
             MethodDescriptor methodDescriptor,
-            TestDescriptor descriptor,
-            CutDescriptor cutDescriptor,
             TestReifier testReifier,
+            Map<String, Object> properties,
             Map<String, String> dependencies) {
+        this.testDescriptor = testDescriptor;
         this.methodDescriptor = methodDescriptor;
         this.startResources = startResources;
         this.testInstance = testInstance;
-        this.testDescriptor = descriptor;
-        this.cutDescriptor = cutDescriptor;
         this.testReifier = testReifier;
+        this.properties = properties;
         this.dependencies = dependencies;
     }
 
-    /**
-     * Get a unique name to identify the test context.
-     *
-     * @return a unqiue name
-     */
     @Override
-    public String getName() {
-        return getClassName() + "." + getMethodName();
+    public Map<String, Object> getProperties() {
+        return this.properties;
     }
 
-    /**
-     * The name of the test method associated with the test context.
-     *
-     * @return test method name.
-     */
-    @Override
-    public String getMethodName() {
-        return methodDescriptor.getName();
-    }
-
-    /**
-     * Get test class associated with the test context.
-     *
-     * @return the test class instance.
-     */
-    @Override
-    public Class<?> getTestClass() {
-        return methodDescriptor.getDeclaringClass();
-    }
-
-    /**
-     * The simple name of the test class.
-     *
-     * @return the test class simple name.
-     */
     @Override
     public String getClassName() {
         return methodDescriptor.getDeclaringClassName();
     }
 
-    /**
-     * Determine whether test resources such as required resources and container
-     * resources should be eagerly started. Note that in certain instances the
-     * start of resources has to be delayed until
-     *
-     * @return true if the resources should be started, false otherwise.
-     */
+    @Override
+    public String getMethodName() {
+        return methodDescriptor.getName();
+    }
+
+    @Override
+    public String getName() {
+        return getClassName() + "." + getMethodName();
+    }
+
+    @Override
+    public Class<?> getTestClass() {
+        return methodDescriptor.getDeclaringClass();
+    }
+
     @Override
     public Boolean getStartResources() {
         return startResources;
@@ -120,11 +98,6 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public Optional<CutDescriptor> getCutDescriptor() {
-        return Optional.ofNullable(cutDescriptor);
-    }
-
-    @Override
     public TestReifier getTestReifier() {
         return testReifier;
     }
@@ -132,6 +105,16 @@ public class DefaultTestContext implements TestContext {
     @Override
     public Map<String, String> getDependencies() {
         return dependencies;
+    }
+
+    @Override
+    public Optional<CutDescriptor> getCutDescriptor() {
+        return findProperty(TestContextProperties.CUT_DESCRIPTOR);
+    }
+
+    @Override
+    public <T> Optional<T> getCutInstance() {
+        return findProperty(TestContextProperties.CUT_INSTANCE);
     }
 
     @Override
@@ -159,6 +142,15 @@ public class DefaultTestContext implements TestContext {
         }
 
         return Objects.equals(this.testInstance, other.testInstance);
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultTestContext{"
+                + "startResources=" + startResources
+                + ", testDescriptor=" + testDescriptor
+                + ", methodDescriptor=" + methodDescriptor
+                + '}';
     }
 
 }

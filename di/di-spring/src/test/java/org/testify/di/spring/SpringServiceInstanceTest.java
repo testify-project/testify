@@ -27,8 +27,8 @@ import org.springframework.beans.factory.support.BeanDefinitionDefaults;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.testify.core.util.ModuleImpl;
-import org.testify.core.util.ScanImpl;
+import org.testify.core.annotation.DefaultModule;
+import org.testify.core.annotation.DefaultScan;
 import org.testify.di.fixture.autowired.Greeting;
 import org.testify.di.fixture.autowired.impl.Haye;
 import org.testify.di.fixture.autowired.impl.Hello;
@@ -126,7 +126,7 @@ public class SpringServiceInstanceTest {
 
     @Test
     public void givenModuleAddModuleShouldAddModule() {
-        ModuleImpl module = new ModuleImpl(TestModule.class, Boolean.TRUE);
+        DefaultModule module = new DefaultModule(TestModule.class);
         cut.addModules(module);
 
         WiredContract contract = context.getBean(WiredContract.class);
@@ -141,7 +141,7 @@ public class SpringServiceInstanceTest {
         context = new AnnotationConfigApplicationContext();
         cut = new SpringServiceInstance(context);
 
-        cut.addScans(new ScanImpl("org.testify.di.fixture.module"));
+        cut.addScans(new DefaultScan("org.testify.di.fixture.module"));
         context.refresh();
 
         WiredContract greeting = cut.getService(WiredContract.class);

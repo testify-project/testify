@@ -40,7 +40,7 @@ public class DefaultInstance<T> implements Instance<T> {
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance) {
-        return new DefaultInstance(instance);
+        return new DefaultInstance(instance, null, null);
     }
 
     /**
@@ -48,11 +48,11 @@ public class DefaultInstance<T> implements Instance<T> {
      *
      * @param <T> the underlying instance type
      * @param instance the instance object
-     * @param name the name name associated with the object
+     * @param name the name associated with the object
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance, String name) {
-        return new DefaultInstance(instance, name);
+        return new DefaultInstance(instance, name, null);
     }
 
     /**
@@ -64,38 +64,22 @@ public class DefaultInstance<T> implements Instance<T> {
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance, Class<? super T> contract) {
-        return new DefaultInstance(instance, contract);
+        return new DefaultInstance(instance, null, contract);
     }
 
     /**
      * <p>
      * Create an instance with the given instance object, name and contract.
      * </p>
-     * <p>
-     * Please note that if a contract is present any existing implementations of
-     * the contract will be replaced by this instance.
-     * </p>
      *
      * @param <T> the underlying instance type
      * @param instance the instance object
-     * @param name the name name associated with the object
+     * @param name the name associated with the object
      * @param contract the contract implemented by the instance
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance, String name, Class<? super T> contract) {
         return new DefaultInstance(instance, name, contract);
-    }
-
-    DefaultInstance(T instance) {
-        this(instance, null, null);
-    }
-
-    DefaultInstance(T instance, String name) {
-        this(instance, name, null);
-    }
-
-    DefaultInstance(T instance, Class<? super T> contract) {
-        this(instance, null, contract);
     }
 
     DefaultInstance(T instance, String name, Class<? super T> contract) {

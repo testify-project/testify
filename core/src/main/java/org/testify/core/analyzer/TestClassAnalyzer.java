@@ -27,6 +27,7 @@ import java.util.List;
 import static java.util.stream.Stream.of;
 import org.testify.FieldDescriptor;
 import org.testify.MethodDescriptor;
+import org.testify.TestDescriptor;
 import org.testify.annotation.CollaboratorProvider;
 import org.testify.annotation.ConfigHandler;
 import org.testify.annotation.Cut;
@@ -54,12 +55,12 @@ public class TestClassAnalyzer extends ClassVisitor {
 
     private int cutCount = 0;
     private final Class<?> testClass;
-    private final TestDescriptorBuilder testDescriptorBuilder;
+    private final TestDescriptor testDescriptor;
 
-    public TestClassAnalyzer(Class<?> testClass, TestDescriptorBuilder testDescriptorBuilder) {
+    public TestClassAnalyzer(Class<?> testClass, TestDescriptor testDescriptor) {
         super(ASM5);
         this.testClass = testClass;
-        this.testDescriptorBuilder = testDescriptorBuilder;
+        this.testDescriptor = testDescriptor;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class TestClassAnalyzer extends ClassVisitor {
                     for (Annotation annotation : annotations) {
                         for (TestAnnotationInspector inspector : inspectors) {
                             if (inspector.handles(annotation.annotationType())) {
-                                inspector.inspect(testDescriptorBuilder, annotationClass, annotation);
+                                inspector.inspect(testDescriptor, annotationClass, annotation);
                             }
 
                         }
@@ -87,7 +88,7 @@ public class TestClassAnalyzer extends ClassVisitor {
                     for (TestAnnotationInspector inspector : inspectors) {
                         if (inspector.handles(annotationClass)) {
                             Annotation annotation = testClass.getDeclaredAnnotation(annotationClass);
-                            inspector.inspect(testDescriptorBuilder, testClass, annotation);
+                            inspector.inspect(testDescriptor, testClass, annotation);
                         }
                     }
                 }
@@ -118,11 +119,18 @@ public class TestClassAnalyzer extends ClassVisitor {
 
                 Cut cut = field.getDeclaredAnnotation(Cut.class);
                 if (cut != null) {
-                    testDescriptorBuilder.cutField(field);
+                    testDescriptor.addProperty(TestDescriptorProperties.CUT_FIELD, field);
                     cutCount++;
                 } else {
-                    FieldDescriptor fieldDescriptor = new DefaultFieldDescriptor(field);
-                    testDescriptorBuilder.addFieldDescriptor(fieldDescriptor);
+                    FieldDescriptor fieldDescriptor = DefaultFieldDescriptor.of(field);
+                    java.lang.reflect.Type fieldType = fieldDescriptor.getGenericType();
+                    String fieldName = fieldDescriptor.getName();
+                    DescriptorKey typeKey = DescriptorKey.of(fieldType);
+                    DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
+
+                    testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
+                    testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
+                    testDescriptor.addListElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
                 }
 
             } catch (SecurityException
@@ -157,10 +165,10 @@ public class TestClassAnalyzer extends ClassVisitor {
 
                 if (method.getDeclaredAnnotation(ConfigHandler.class) != null) {
                     MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                    testDescriptorBuilder.addConfigHandler(methodDescriptor);
+                    testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
                 } else if (method.getDeclaredAnnotation(CollaboratorProvider.class) != null) {
                     MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                    testDescriptorBuilder.collaboratorMethod(methodDescriptor);
+                    testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
                 }
 
             } catch (NoSuchMethodException | SecurityException e) {

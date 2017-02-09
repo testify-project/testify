@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.testify.guava.common.reflect.TypeToken;
 
 /**
@@ -92,24 +93,52 @@ public interface TypeTrait {
      * @param <T> the return type
      * @param instance the instance the underlying method is invoked from
      * @param methodName the method name
-     * @param args method arguments
+     * @param methodArgs method arguments
      *
      * @return optional containing return value, empty optional otherwise
      */
-    default <T> Optional<T> invoke(Object instance, String methodName, Object... args) {
-
+    default <T> Optional<T> invoke(Object instance, String methodName, Object... methodArgs) {
         return AccessController.doPrivileged((PrivilegedAction<Optional<T>>) () -> {
             try {
-                Method method = getType().getMethod(methodName);
+                Class[] methodArgTypes = Stream.of(methodArgs)
+                        .map(Object::getClass)
+                        .toArray(Class[]::new);
+
+                Method method = findMethod(instance.getClass(), methodName, methodArgTypes);
                 method.setAccessible(true);
 
-                return Optional.ofNullable((T) method.invoke(instance));
-            } catch (NoSuchMethodException
-                    | SecurityException
+                T result = (T) method.invoke(instance, methodArgs);
+
+                return Optional.ofNullable(result);
+            } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException
                     | InvocationTargetException e) {
                 throw new IllegalStateException(e);
+            }
+        });
+    }
+
+    /**
+     * Find a method with the given name and argument types.
+     *
+     * @param type type that will be inspected for the method
+     * @param methodName the method name
+     * @param methodArgTypes the method argument types
+     * @return found method or throws {@link IllegalStateException}
+     */
+    default Method findMethod(Class<?> type, String methodName, Class<?>... methodArgTypes) {
+        return AccessController.doPrivileged((PrivilegedAction<Method>) () -> {
+            try {
+                return type.getDeclaredMethod(methodName, methodArgTypes);
+            } catch (NoSuchMethodException | SecurityException e) {
+                Class<?> superType = type.getSuperclass();
+
+                if (superType == null) {
+                    throw new IllegalStateException(e);
+                } else {
+                    return findMethod(superType, methodName, methodArgTypes);
+                }
             }
         });
     }

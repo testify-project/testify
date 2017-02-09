@@ -32,21 +32,17 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
     private final Method method;
     private final Object instance;
 
-    DefaultMethodDescriptor(Method method) {
-        this(method, null);
+    public static MethodDescriptor of(Method method) {
+        return new DefaultMethodDescriptor(method, null);
+    }
+
+    public static MethodDescriptor of(Method method, Object instance) {
+        return new DefaultMethodDescriptor(method, instance);
     }
 
     DefaultMethodDescriptor(Method method, Object instance) {
         this.method = method;
         this.instance = instance;
-    }
-
-    public static MethodDescriptor of(Method method) {
-        return new DefaultMethodDescriptor(method);
-    }
-
-    public static MethodDescriptor of(Method method, Object instance) {
-        return new DefaultMethodDescriptor(method, instance);
     }
 
     @Override
@@ -61,8 +57,9 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.method);
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.method);
+        hash = 89 * hash + Objects.hashCode(this.instance);
         return hash;
     }
 
@@ -78,12 +75,15 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
             return false;
         }
         final DefaultMethodDescriptor other = (DefaultMethodDescriptor) obj;
-        return Objects.equals(this.method, other.method);
+        if (!Objects.equals(this.method, other.method)) {
+            return false;
+        }
+        return Objects.equals(this.instance, other.instance);
     }
 
     @Override
     public String toString() {
-        return "MethodDescriptor{" + "method=" + method + '}';
+        return "DefaultMethodDescriptor{" + "method=" + method + ", instance=" + instance + '}';
     }
 
 }

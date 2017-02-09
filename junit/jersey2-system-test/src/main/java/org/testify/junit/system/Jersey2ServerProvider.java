@@ -145,7 +145,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig> {
     public void stop() {
         try {
             TestContext testContext = LOCAL_TEST_CONTEXT.get();
-            Optional<HttpServer> servletContainer = testContext.getProperty(APP_SERVLET_CONTAINER);
+            Optional<HttpServer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
             HttpServer httpServer = servletContainer.get();
             httpServer.shutdown().get();
             LOCAL_TEST_CONTEXT.remove();

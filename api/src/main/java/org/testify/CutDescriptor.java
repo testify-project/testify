@@ -17,10 +17,11 @@ package org.testify;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import org.testify.trait.FieldTrait;
 import org.testify.trait.MockTrait;
+import org.testify.trait.PropertiesTrait;
 
 /**
  * A contract that defines methods to access properties of or perform operations
@@ -28,7 +29,7 @@ import org.testify.trait.MockTrait;
  *
  * @author saden
  */
-public interface CutDescriptor extends FieldTrait, MockTrait {
+public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
 
     /**
      * Get the constructor of the class under test class.
@@ -43,7 +44,7 @@ public interface CutDescriptor extends FieldTrait, MockTrait {
      *
      * @return a list with field descriptor, empty list otherwise
      */
-    List<FieldDescriptor> getFieldDescriptors();
+    Collection<FieldDescriptor> getFieldDescriptors();
 
     /**
      * Get a list of parameter descriptors for all the parameters associated
@@ -51,7 +52,7 @@ public interface CutDescriptor extends FieldTrait, MockTrait {
      *
      * @return a list with parameter descriptor, empty list otherwise
      */
-    List<ParameterDescriptor> getParameterDescriptors();
+    Collection<ParameterDescriptor> getParameterDescriptors();
 
     /**
      * Find the descriptor for a field with the given type and name on the class
@@ -99,14 +100,5 @@ public interface CutDescriptor extends FieldTrait, MockTrait {
      * @return true if type is the same or super type, false otherwise
      */
     Boolean isCutClass(Type type);
-
-    /**
-     * Create a new instance of the class under test using the given constructor
-     * arguments.
-     *
-     * @param args the constructor arguments
-     * @return a new instance of the class under test
-     */
-    Object newInstance(Object... args);
 
 }

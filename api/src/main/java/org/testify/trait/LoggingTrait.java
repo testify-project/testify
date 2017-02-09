@@ -15,6 +15,8 @@
  */
 package org.testify.trait;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -29,17 +31,12 @@ import org.slf4j.helpers.MessageFormatter;
 public interface LoggingTrait extends ReportingTrait {
 
     /**
-     * The logger logging messages are delegated to.
-     */
-    Logger LOGGER = LoggerFactory.getLogger("testify");
-
-    /**
      * Get the underlying logger log messages are delegated to.
      *
      * @return logger instance.
      */
     default Logger getLogger() {
-        return LOGGER;
+        return LoggerFactory.getLogger("testify");
     }
 
     /**
@@ -97,8 +94,8 @@ public interface LoggingTrait extends ReportingTrait {
      * @param args message format arguments.
      */
     default void trace(String messageFormat, Object... args) {
-        String message = getFormattedMessage(messageFormat, args);
-        LOGGER.debug(message);
+        String message = formatMessage(messageFormat, args);
+        getLogger().trace(message);
     }
 
     /**
@@ -108,8 +105,8 @@ public interface LoggingTrait extends ReportingTrait {
      * @param args message format arguments.
      */
     default void debug(String messageFormat, Object... args) {
-        String message = getFormattedMessage(messageFormat, args);
-        LOGGER.debug(message);
+        String message = formatMessage(messageFormat, args);
+        getLogger().debug(message);
     }
 
     /**
@@ -119,10 +116,10 @@ public interface LoggingTrait extends ReportingTrait {
      * @param args message format arguments.
      */
     default void info(String messageFormat, Object... args) {
-        String message = getFormattedMessage(messageFormat, args);
+        String message = formatMessage(messageFormat, args);
 
-        LOGGER.info(message);
-        info(message);
+        getLogger().info(message);
+        reportInformation(message);
     }
 
     /**
@@ -132,10 +129,10 @@ public interface LoggingTrait extends ReportingTrait {
      * @param args message format arguments.
      */
     default void warn(String messageFormat, Object... args) {
-        String message = getFormattedMessage(messageFormat, args);
+        String message = formatMessage(messageFormat, args);
 
-        LOGGER.warn(message);
-        warn(message);
+        getLogger().warn(message);
+        reportWarning(message);
     }
 
     /**
@@ -145,10 +142,10 @@ public interface LoggingTrait extends ReportingTrait {
      * @param args message format arguments.
      */
     default void error(String messageFormat, Object... args) {
-        String message = getFormattedMessage(messageFormat, args);
+        String message = formatMessage(messageFormat, args);
 
-        LOGGER.error(message);
-        warn(message);
+        getLogger().error(message);
+        reportError(message);
     }
 
     /**
@@ -160,8 +157,8 @@ public interface LoggingTrait extends ReportingTrait {
      * @param args message format arguments
      * @return a formatted message
      */
-    default String getFormattedMessage(String messageFormat, Object... args) {
-        if (args == null || args.length == 0) {
+    default String formatMessage(String messageFormat, Object... args) {
+        if (args.length == 0) {
             return messageFormat;
         }
 
@@ -183,7 +180,21 @@ public interface LoggingTrait extends ReportingTrait {
             formattingTuple = MessageFormatter.arrayFormat(messageFormat, args);
         }
 
-        return formattingTuple.getMessage();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(formattingTuple.getMessage());
+
+        if (formattingTuple.getThrowable() != null) {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+
+            formattingTuple.getThrowable().printStackTrace(printWriter);
+
+            sb.append("\n");
+            sb.append(stringWriter.toString());
+        }
+
+        return sb.toString();
     }
 
 }

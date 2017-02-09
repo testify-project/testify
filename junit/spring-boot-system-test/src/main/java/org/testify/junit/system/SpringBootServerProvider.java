@@ -137,8 +137,8 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
 
             application.run();
 
-            Optional<ServletContext> servletContext = testContext.getProperty(APP_SERVLET_CONTEXT);
-            Optional<EmbeddedServletContainer> servletContainer = testContext.getProperty(APP_SERVLET_CONTAINER);
+            Optional<ServletContext> servletContext = testContext.findProperty(APP_SERVLET_CONTEXT);
+            Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
             EmbeddedServletContainer container = servletContainer.get();
             ServletContext context = servletContext.get();
 
@@ -159,7 +159,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     @Override
     public void stop() {
         TestContext testContext = LOCAL_TEST_CONTEXT.get();
-        Optional<EmbeddedServletContainer> servletContainer = testContext.getProperty(APP_SERVLET_CONTAINER);
+        Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
 
         if (servletContainer.isPresent()) {
             EmbeddedServletContainer container = servletContainer.get();

@@ -18,8 +18,10 @@ package org.testify;
 import java.util.Optional;
 
 /**
- * A contract that defines methods for creating and getting information about a
- * resource instance.
+ * A contract that defines methods to get information about a resource instance.
+ * A resource instance consists of a server, an optional client that can be used
+ * to communicate with the server, and properties associated with a resource
+ * instance.
  *
  * @author saden
  * @param <S> the server type

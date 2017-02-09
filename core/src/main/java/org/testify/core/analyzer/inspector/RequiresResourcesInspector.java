@@ -15,10 +15,11 @@
  */
 package org.testify.core.analyzer.inspector;
 
+import org.testify.TestDescriptor;
 import org.testify.annotation.RequiresResource;
 import org.testify.annotation.RequiresResources;
 import org.testify.core.analyzer.TestAnnotationInspector;
-import org.testify.core.analyzer.TestDescriptorBuilder;
+import org.testify.core.analyzer.TestDescriptorProperties;
 import org.testify.tools.Discoverable;
 
 /**
@@ -35,9 +36,9 @@ public class RequiresResourcesInspector implements TestAnnotationInspector<Requi
     }
 
     @Override
-    public void inspect(TestDescriptorBuilder builder, Class<?> annotatedType, RequiresResources requiresResources) throws Exception {
-        for (RequiresResource requiresResource : requiresResources.value()) {
-            builder.addRequiresResource(requiresResource);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, RequiresResources annotation) throws Exception {
+        for (RequiresResource requiresResource : annotation.value()) {
+            testDescriptor.addListElement(TestDescriptorProperties.REQUIRES_RESOURCES, requiresResource);
         }
     }
 

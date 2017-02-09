@@ -26,6 +26,17 @@
         </properties>
     </action>
     <action>
+        <actionName>CUSTOM-clean install -skipTests</actionName>
+        <displayName>clean install -skipTests</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <properties>
+            <skipTests>true</skipTests>
+        </properties>
+    </action>
+    <action>
         <actionName>CUSTOM-clean install -skipTests (parallel)</actionName>
         <displayName>clean install -skipTests (parallel)</displayName>
         <goals>
@@ -94,4 +105,13 @@
             <goal>-TC1</goal>
         </goals>
     </action>
+    <action>
+            <actionName>CUSTOM-site site:Stage (parallel)</actionName>
+            <displayName>site site:Stage (parallel)</displayName>
+            <goals>
+                <goal>site</goal>
+                <goal>site:stage</goal>
+                <goal>-TC1</goal>
+            </goals>
+        </action>
 </actions>

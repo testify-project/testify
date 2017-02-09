@@ -36,14 +36,14 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
     String getName();
 
     /**
-     * The simple name of the test class.
+     * Get the simple name of the test class.
      *
-     * @return the test class simple name.
+     * @return the test class simple name
      */
     String getClassName();
 
     /**
-     * The name of the test method associated with the test context.
+     * Get the name of the test method associated with the test context.
      *
      * @return test method name
      */
@@ -52,12 +52,12 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
     /**
      * Get test class associated with the test context.
      *
-     * @return the test class instance.
+     * @return the test class instance
      */
     Class<?> getTestClass();
 
     /**
-     * The test class descriptor.
+     * Get the test class descriptor.
      *
      * @return the test class descriptor.
      */
@@ -71,16 +71,24 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
     Optional<CutDescriptor> getCutDescriptor();
 
     /**
-     * Test class instance.
+     * Get the test class instance.
      *
      * @return an instance of the test class.
      */
     Object getTestInstance();
 
     /**
-     * The test reifier associated with the test context.
+     * get the cut class instance.
      *
-     * @return test refier instance.
+     * @param <T> cut instance type
+     * @return an instance of the cut class.
+     */
+    <T> Optional<T> getCutInstance();
+
+    /**
+     * Get the test reifier associated with the test context.
+     *
+     * @return test refier instance
      */
     TestReifier getTestReifier();
 
@@ -89,19 +97,18 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
      * the class required in the classpath is the key and human readable
      * description is the value.
      *
-     * @return a map that contains required dependencies.
+     * @return a map that contains required dependencies
      */
     Map<String, String> getDependencies();
 
     /**
-     * Determine whether test resources such as required resources or container
-     * resources should be eagerly started. Note that during integration tests
-     * required resources and containers can be started right before the test
-     * case is executed but in system tests the start of resources and
-     * containers must be delayed until the application server is started and
-     * running.
+     * Indicates whether test resources such as required or container resources
+     * should be eagerly started. Note that during integration tests required
+     * resources and containers can be started right before the test case is
+     * executed but in system tests the start of resources and containers must
+     * be delayed until the application server is started and running.
      *
-     * @return true if the resources should be started, false otherwise.
+     * @return true if resources should be started immediately, false otherwise
      */
     Boolean getStartResources();
 

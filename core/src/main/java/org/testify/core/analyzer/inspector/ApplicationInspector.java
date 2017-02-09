@@ -15,10 +15,11 @@
  */
 package org.testify.core.analyzer.inspector;
 
+import org.testify.TestDescriptor;
 import org.testify.annotation.Application;
 import org.testify.annotation.Module;
 import org.testify.core.analyzer.TestAnnotationInspector;
-import org.testify.core.analyzer.TestDescriptorBuilder;
+import org.testify.core.analyzer.TestDescriptorProperties;
 import org.testify.tools.Discoverable;
 
 /**
@@ -35,8 +36,8 @@ public class ApplicationInspector implements TestAnnotationInspector<Application
     }
 
     @Override
-    public void inspect(TestDescriptorBuilder builder, Class<?> annotatedType, Application app) throws Exception {
-        builder.application(app);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Application application) throws Exception {
+        testDescriptor.addProperty(TestDescriptorProperties.APPLICATION, application);
     }
 
 }

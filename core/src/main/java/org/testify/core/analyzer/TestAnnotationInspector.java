@@ -16,6 +16,7 @@
 package org.testify.core.analyzer;
 
 import java.lang.annotation.Annotation;
+import org.testify.TestDescriptor;
 
 /**
  * Interface for inspecting annotations on a class.
@@ -27,6 +28,6 @@ public interface TestAnnotationInspector<T extends Annotation> {
 
     boolean handles(Class<?> annotationType);
 
-    void inspect(TestDescriptorBuilder builder, Class<?> annotatedType, T annotation) throws Exception;
+    void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, T annotation) throws Exception;
 
 }

@@ -17,17 +17,13 @@ package org.testify.core.analyzer;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import static java.security.AccessController.doPrivileged;
-import java.security.PrivilegedAction;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import java.util.stream.Collectors;
 import org.testify.CutDescriptor;
 import org.testify.FieldDescriptor;
 import org.testify.ParameterDescriptor;
@@ -42,18 +38,20 @@ import org.testify.guava.common.reflect.TypeToken;
 public class DefaultCutDescriptor implements CutDescriptor {
 
     private final Field field;
-    private Constructor<?> constructor;
-    private List<FieldDescriptor> fieldDescriptors;
-    private Map<DescriptorKey, FieldDescriptor> fieldCache;
-    private List<ParameterDescriptor> parameterDescriptors;
-    private Map<DescriptorKey, ParameterDescriptor> parameterCache;
+    private final Map<String, Object> properties;
 
-    DefaultCutDescriptor(Field field) {
-        this.field = field;
+    public static DefaultCutDescriptor of(Field field) {
+        return new DefaultCutDescriptor(field, new HashMap<>());
     }
 
-    public static CutDescriptor of(Field field) {
-        return new DefaultCutDescriptor(field);
+    DefaultCutDescriptor(Field field, Map<String, Object> properties) {
+        this.field = field;
+        this.properties = properties;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return this.properties;
     }
 
     @Override
@@ -72,27 +70,15 @@ public class DefaultCutDescriptor implements CutDescriptor {
     }
 
     @Override
-    public Object newInstance(Object... args) {
-        return doPrivileged((PrivilegedAction<Object>) () -> {
-            try {
-                constructor.setAccessible(true);
-
-                return constructor.newInstance(args);
-            } catch (SecurityException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalStateException(e);
-            }
-
-        });
+    public ClassLoader getClassLoader() {
+        return getType().getClassLoader();
     }
 
     @Override
     public Constructor<?> getConstructor() {
-        return constructor;
-    }
+        Optional<Constructor<?>> result = findProperty(CutDescriptorProperties.CONSTRUCTOR);
 
-    @Override
-    public ClassLoader getClassLoader() {
-        return getType().getClassLoader();
+        return result.get();
     }
 
     @Override
@@ -101,75 +87,87 @@ public class DefaultCutDescriptor implements CutDescriptor {
     }
 
     @Override
-    public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
-        return ofNullable(fieldCache.get(new DescriptorKey(type, name)));
-    }
-
-    @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
-        List<FieldDescriptor> matches = fieldCache.values()
-                .parallelStream()
-                .filter(p -> p.isSupertypeOf(type))
-                .collect(Collectors.toList());
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
+                = findMap(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
-        return matches.size() == 1 ? ofNullable(matches.get(0)) : empty();
+        DescriptorKey descriptorKey = DescriptorKey.of(type);
+        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+
+        if (fieldDescriptor == null) {
+            fieldDescriptor = fieldDescriptors.values()
+                    .parallelStream()
+                    .filter(p -> p.isSupertypeOf(type))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        return ofNullable(fieldDescriptor);
     }
 
     @Override
-    public List<FieldDescriptor> getFieldDescriptors() {
-        return fieldDescriptors;
+    public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
+                = findMap(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+
+        DescriptorKey descriptorKey = DescriptorKey.of(type, name);
+        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+
+        return ofNullable(fieldDescriptor);
     }
 
     @Override
-    public Optional<ParameterDescriptor> findParameterDescriptor(Type type, String name) {
-        return ofNullable(parameterCache.get(new DescriptorKey(type, name)));
-    }
-
-    @Override
-    public List<ParameterDescriptor> getParameterDescriptors() {
-        return parameterDescriptors;
+    public Collection<FieldDescriptor> getFieldDescriptors() {
+        return findList(CutDescriptorProperties.FIELD_DESCRIPTORS);
     }
 
     @Override
     public Optional<ParameterDescriptor> findParameterDescriptor(Type type) {
-        List<ParameterDescriptor> matches = parameterCache.values()
-                .parallelStream()
-                .filter(p -> p.isSupertypeOf(type))
-                .collect(Collectors.toList());
+        Map<DescriptorKey, ParameterDescriptor> paramterDescriptors
+                = findMap(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
 
-        return matches.size() == 1 ? ofNullable(matches.get(0)) : empty();
+        DescriptorKey descriptorKey = DescriptorKey.of(type);
+        ParameterDescriptor parameterDescriptor = paramterDescriptors.get(descriptorKey);
+
+        if (parameterDescriptor == null) {
+            parameterDescriptor = paramterDescriptors.values()
+                    .parallelStream()
+                    .filter(p -> p.isSupertypeOf(type))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        return ofNullable(parameterDescriptor);
     }
 
-    void setConstructor(Constructor<?> constructor) {
-        this.constructor = constructor;
+    @Override
+    public Optional<ParameterDescriptor> findParameterDescriptor(Type type, String name) {
+        Map<DescriptorKey, ParameterDescriptor> paramterDescriptors
+                = findMap(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
+
+        DescriptorKey descriptorKey = DescriptorKey.of(type, name);
+        ParameterDescriptor parameterDescriptor = paramterDescriptors.get(descriptorKey);
+
+        return ofNullable(parameterDescriptor);
     }
 
-    void setFieldDescriptors(List<FieldDescriptor> fieldDescriptors) {
-        this.fieldDescriptors = fieldDescriptors;
-    }
-
-    void setFieldCache(Map<DescriptorKey, FieldDescriptor> fieldTypeAndNameCache) {
-        this.fieldCache = fieldTypeAndNameCache;
-    }
-
-    void setParameterDescriptors(List<ParameterDescriptor> parameterDescriptors) {
-        this.parameterDescriptors = parameterDescriptors;
-    }
-
-    void setParameterCache(Map<DescriptorKey, ParameterDescriptor> parameterCache) {
-        this.parameterCache = parameterCache;
+    @Override
+    public Collection<ParameterDescriptor> getParameterDescriptors() {
+        return findList(CutDescriptorProperties.PARAMETER_DESCRIPTORS);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.field);
-        hash = 53 * hash + Objects.hashCode(this.constructor);
+        hash = 23 * hash + Objects.hashCode(this.field);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
@@ -177,16 +175,13 @@ public class DefaultCutDescriptor implements CutDescriptor {
             return false;
         }
         final DefaultCutDescriptor other = (DefaultCutDescriptor) obj;
-        if (!Objects.equals(this.field, other.field)) {
-            return false;
-        }
 
-        return Objects.equals(this.constructor, other.constructor);
+        return Objects.equals(this.field, other.field);
     }
 
     @Override
     public String toString() {
-        return "CutDescriptor{" + "field=" + field + ", constructor=" + constructor + '}';
+        return "DefaultCutDescriptor{" + "field=" + field + '}';
     }
 
 }

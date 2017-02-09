@@ -17,10 +17,11 @@ package org.testify.core.analyzer.inspector;
 
 import java.lang.reflect.Method;
 import org.testify.MethodDescriptor;
+import org.testify.TestDescriptor;
 import org.testify.annotation.ConfigHandler;
 import org.testify.core.analyzer.DefaultMethodDescriptor;
 import org.testify.core.analyzer.TestAnnotationInspector;
-import org.testify.core.analyzer.TestDescriptorBuilder;
+import org.testify.core.analyzer.TestDescriptorProperties;
 import static org.testify.guava.common.base.Preconditions.checkState;
 import org.testify.tools.Discoverable;
 
@@ -38,23 +39,25 @@ public class ConfigHandlerInspector implements TestAnnotationInspector<ConfigHan
     }
 
     @Override
-    public void inspect(TestDescriptorBuilder builder, Class<?> annotatedType, ConfigHandler configHandler) throws Exception {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, ConfigHandler configHandler) throws Exception {
         Class<?>[] handlerClasses = configHandler.value();
 
         checkState(handlerClasses.length != 0,
-                "The value of @ConfigHandler annotation on '%s' must be specified.",
+                "@ConfigHandler value attribite on '%s' must be specified.",
                 annotatedType.getName());
 
         for (Class<?> handlerClass : handlerClasses) {
             Object instance = handlerClass.newInstance();
             Method[] methods = handlerClass.getDeclaredMethods();
+
             for (Method method : methods) {
                 method.setAccessible(true);
 
                 MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
-                builder.addConfigHandler(methodDescriptor);
+                testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
             }
         }
+
     }
 
 }

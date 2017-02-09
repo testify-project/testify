@@ -34,12 +34,12 @@ public class DefaultServerInstance<T> implements ServerInstance<T> {
      * Create a server instance with the given base URI and test context.
      *
      * @param <T> the underlying server type
-     * @param baseUri the server's base uri
+     * @param baseURI the server's base uri
      * @param server the underlying server instance
      * @return a server instance
      */
-    public static <T> ServerInstance<T> of(URI baseUri, T server) {
-        return new DefaultServerInstance<>(baseUri, server);
+    public static <T> ServerInstance<T> of(URI baseURI, T server) {
+        return new DefaultServerInstance<>(baseURI, server);
     }
 
     DefaultServerInstance(URI baseURI, T server) {

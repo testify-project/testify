@@ -22,6 +22,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import org.testify.ResourceProvider;
 
 /**
  * <p>
@@ -52,7 +53,7 @@ public @interface RequiresResource {
      *
      * @return the required resource implementation provider class.
      */
-    Class<?> value();
+    Class<? extends ResourceProvider> value();
 
     /**
      * <p>

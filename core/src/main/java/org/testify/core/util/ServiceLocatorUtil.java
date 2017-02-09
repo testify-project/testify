@@ -24,7 +24,8 @@ import static java.util.stream.StreamSupport.stream;
 import static org.testify.guava.common.base.Preconditions.checkState;
 
 /**
- * A utility class to locate services.
+ * A utility class that uses {@link ServiceLoader} mechanism to locate service
+ * descriptors under "META-INF/services" folder.
  *
  * @author saden
  */
@@ -42,7 +43,9 @@ public class ServiceLocatorUtil {
     public <T> Optional<T> findOne(Class<T> type) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
 
-        return stream(serviceLoader.spliterator(), true).distinct().findFirst();
+        return stream(serviceLoader.spliterator(), true)
+                .distinct()
+                .findFirst();
     }
 
     /**
@@ -55,7 +58,9 @@ public class ServiceLocatorUtil {
     public <T> List<T> findAll(Class<T> type) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
 
-        return stream(serviceLoader.spliterator(), true).distinct().collect(toList());
+        return stream(serviceLoader.spliterator(), true)
+                .distinct()
+                .collect(toList());
     }
 
     /**
@@ -65,12 +70,15 @@ public class ServiceLocatorUtil {
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
-     * @return the implementation instance, empty otherwise
+     * @return an implementation of the service, throws an exception otherwise
      */
     public <T> T getOne(Class<T> contract) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
-        List<T> result = stream(serviceLoader.spliterator(), true).distinct().collect(toList());
+        List<T> result = stream(serviceLoader.spliterator(), true).
+                distinct()
+                .collect(toList());
+
         String name = contract.getName();
 
         checkState(!result.isEmpty(),
@@ -92,7 +100,7 @@ public class ServiceLocatorUtil {
      * @param <T> the SPI type
      * @param contract the SPI contract
      * @param implementation the implementation type of the contract
-     * @return the implementation instance, empty otherwise
+     * @return an implementation of the service, throws an exception otherwise
      */
     public <T> T getOne(Class<T> contract, Class<? extends T> implementation) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
@@ -102,14 +110,68 @@ public class ServiceLocatorUtil {
                 .distinct()
                 .collect(toList());
 
-        checkState(
-                !result.isEmpty(),
+        String contractName = contract.getName();
+        String implementationName = implementation.getName();
+
+        checkState(!result.isEmpty(),
                 "Could not find '%s' implementaiton of '%s' contract in the classpath. "
                 + "Please insure an implementation is in the",
-                implementation, contract.getName()
-        );
+                implementationName, contractName);
 
         return result.get(0);
+    }
+
+    /**
+     * Get an implementation of the contract. If an implementation is not found
+     * in the classpath then get the default implementation.
+     *
+     * @param <T> the SPI type
+     * @param contract the SPI contract
+     * @param defaultImplementation the default implementation of the contract
+     * @return an implementation instance, default implementation otherwise
+     */
+    public <T> T getOneIfPresent(Class<T> contract, Class<? extends T> defaultImplementation) {
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
+
+        List<T> result = stream(serviceLoader.spliterator(), true)
+                .distinct()
+                .collect(toList());
+
+        String contractName = contract.getName();
+        String defaultImplementationName = defaultImplementation.getClass().getName();
+
+        checkState(!result.isEmpty(),
+                "Could not find an implementaiton of '%s' contract in the classpath."
+                + "Please insure an implementation of '%s' contract is in the classpath",
+                contractName, contractName);
+
+        Object[] implementations = result.stream()
+                .filter(p -> p.getClass().equals(defaultImplementation))
+                .toArray();
+
+        checkState(result.size() <= 2,
+                "Found '%d' implementaitons of '%s' contract in the classpath (%s). "
+                + "Please insure only one implementation of '%s' contract is in the classpath",
+                result.size() - 1, contractName, Arrays.toString(implementations), contractName);
+
+        T defaultImplementationService = null;
+
+        for (T service : result) {
+            Class<?> serviceType = service.getClass();
+
+            if (serviceType.equals(defaultImplementation)) {
+                defaultImplementationService = service;
+            } else {
+                return service;
+            }
+        }
+
+        checkState(defaultImplementationService != null,
+                "Could not find an default implementation '%s' of '%s' contract in the classpath."
+                + "Please insure that the default implementation is in the classpath",
+                defaultImplementationName, contractName);
+
+        return defaultImplementationService;
     }
 
     /**

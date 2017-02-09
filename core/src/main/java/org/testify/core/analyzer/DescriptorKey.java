@@ -29,8 +29,12 @@ public class DescriptorKey {
     private final Type type;
     private final String name;
 
-    public DescriptorKey(Type type) {
-        this(type, null);
+    public static DescriptorKey of(Type type) {
+        return new DescriptorKey(type, null);
+    }
+
+    public static DescriptorKey of(Type type, String name) {
+        return new DescriptorKey(type, name);
     }
 
     public DescriptorKey(Type type, String name) {

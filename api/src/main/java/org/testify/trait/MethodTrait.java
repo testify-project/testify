@@ -49,7 +49,7 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
      * @return a list of parameter types, empty list otherwise
      */
     default List<Class> getParameterTypes() {
-        return of(getMember().getParameterTypes()).collect(toList());
+        return of(getAnnotatedElement().getParameterTypes()).collect(toList());
     }
 
     /**
@@ -58,7 +58,7 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
      * @return the method return type
      */
     default Class<?> getReturnType() {
-        return getMember().getReturnType();
+        return getAnnotatedElement().getReturnType();
     }
 
     /**
@@ -67,39 +67,46 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
      * @param parameterTypes the parameter types
      * @return true if the method has the given parameter types, false otherwise
      */
-    default boolean hasParameterTypes(Type... parameterTypes) {
-        Class<?>[] methodParameterTypes = getMember().getParameterTypes();
+    default Boolean hasParameterTypes(Type... parameterTypes) {
+        Method method = getAnnotatedElement();
+        Class<?>[] methodParameterTypes = method.getParameterTypes();
 
-        if (parameterTypes == null || parameterTypes.length != methodParameterTypes.length) {
-            return false;
-        }
+        boolean matches = true;
 
-        for (int i = 0; i < methodParameterTypes.length; i++) {
-            TypeToken token = TypeToken.of(methodParameterTypes[i]);
+        if (parameterTypes.length == methodParameterTypes.length) {
+            for (int i = 0; i < methodParameterTypes.length; i++) {
+                TypeToken token = TypeToken.of(methodParameterTypes[i]);
 
-            if (!token.isSupertypeOf(parameterTypes[i])) {
-                return false;
+                if (!token.isSupertypeOf(parameterTypes[i])) {
+                    matches = false;
+                    break;
+                }
             }
+        } else {
+            matches = false;
         }
 
-        return true;
+        return matches;
     }
 
     /**
      * Invoke the method on the given instance with the given arguments.
      *
+     * @param <T> the return type
      * @param instance the instance the underlying method is invoked from
      * @param args method arguments
      *
      * @return optional with method return value, empty optional otherwise
      */
-    default Optional<Object> invoke(Object instance, Object... args) {
-        return AccessController.doPrivileged((PrivilegedAction<Optional<Object>>) () -> {
+    default <T> Optional<T> invoke(Object instance, Object... args) {
+        return AccessController.doPrivileged((PrivilegedAction<Optional<T>>) () -> {
             try {
-                Method member = getMember();
-                member.setAccessible(true);
+                Method method = getAnnotatedElement();
+                method.setAccessible(true);
 
-                return Optional.ofNullable(member.invoke(instance, args));
+                T result = (T) method.invoke(instance, args);
+
+                return Optional.ofNullable(result);
             } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException

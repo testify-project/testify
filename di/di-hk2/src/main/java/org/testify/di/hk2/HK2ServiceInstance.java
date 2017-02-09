@@ -67,7 +67,7 @@ public class HK2ServiceInstance implements ServiceInstance {
     }
 
     @Override
-    public boolean isRunning() {
+    public Boolean isRunning() {
         return locator.getState() == RUNNING;
     }
 

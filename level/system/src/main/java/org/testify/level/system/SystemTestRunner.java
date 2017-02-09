@@ -66,7 +66,7 @@ public class SystemTestRunner implements TestRunner {
         ClientInstance clientInstance = clientProvider.create(testContext, clientConfig);
 
         //add constants to the service instance provided by the server
-        serviceInstance = testContext.<ServiceInstance>getProperty(SERVICE_INSTANCE).get();
+        serviceInstance = testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE).get();
         serviceInstance.addConstant(testContext, null, TestContext.class);
         serviceInstance.addConstant(serverInstance, null, ServerInstance.class);
         serviceInstance.addConstant(clientInstance, null, ClientInstance.class);

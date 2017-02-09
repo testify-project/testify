@@ -17,6 +17,7 @@ package org.testify;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,29 +33,6 @@ import org.testify.guava.common.collect.ImmutableSet;
  * @author saden
  */
 public interface ServiceInstance {
-
-    /**
-     * Determine if the service instance is running.
-     *
-     * @return true if the service is running, false otherwise.
-     */
-    default boolean isRunning() {
-        return false;
-    }
-
-    /**
-     * Initialize the service instance.
-     */
-    default void init() {
-
-    }
-
-    /**
-     * Destroy the service instance.
-     */
-    default void destroy() {
-
-    }
 
     /**
      * Get the context object associated with the service instance.
@@ -100,6 +78,65 @@ public interface ServiceInstance {
      * @param modules an array of modules
      */
     void addModules(Module... modules);
+
+    /**
+     * Replace all services that implement the given {@link Instance} as well as
+     * override the name and/or contract defined in the instance with the given
+     * overrideName and overrideContract. Note that if overrideName is used if
+     * it is not null or empty and overrideConctract is used if it is not null
+     * or equal to Class.class.
+     *
+     * @param <T> the instance type
+     * @param instance the instance
+     * @param overrideName the override name
+     * @param overrideContract the override contract
+     */
+    default <T> void replace(Instance<T> instance, String overrideName, Class overrideContract) {
+        T constant = instance.getInstance();
+        Optional<String> nameResult = instance.getName();
+        Optional<Class<? super T>> contractResult = instance.getContract();
+
+        String name = null;
+
+        if (overrideName != null && !overrideName.isEmpty()) {
+            name = overrideName;
+        } else if (nameResult.isPresent()) {
+            name = nameResult.get();
+        }
+
+        Class<? super T> contract = null;
+
+        if (overrideContract != null && !Class.class.equals(overrideContract)) {
+            contract = overrideContract;
+        } else if (contractResult.isPresent()) {
+            contract = contractResult.get();
+        }
+
+        replace(constant, name, contract);
+    }
+
+    /**
+     * Determine if the service instance is running.
+     *
+     * @return true if the service is running, false otherwise.
+     */
+    default Boolean isRunning() {
+        return false;
+    }
+
+    /**
+     * Initialize the service instance.
+     */
+    default void init() {
+
+    }
+
+    /**
+     * Destroy the service instance.
+     */
+    default void destroy() {
+
+    }
 
     /**
      * <p>

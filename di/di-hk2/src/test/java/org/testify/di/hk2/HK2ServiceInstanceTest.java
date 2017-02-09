@@ -25,8 +25,8 @@ import org.glassfish.hk2.utilities.NamedImpl;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Before;
 import org.junit.Test;
-import org.testify.core.util.ModuleImpl;
-import org.testify.core.util.ScanImpl;
+import org.testify.core.annotation.DefaultModule;
+import org.testify.core.annotation.DefaultScan;
 import org.testify.di.fixture.autowired.Greeting;
 import org.testify.di.fixture.autowired.impl.Haye;
 import org.testify.di.fixture.autowired.impl.Hello;
@@ -101,7 +101,7 @@ public class HK2ServiceInstanceTest {
 
     @Test
     public void givenModuleAddModuleShouldAddModule() {
-        ModuleImpl module = new ModuleImpl(TestModule.class, Boolean.FALSE);
+        DefaultModule module = new DefaultModule(TestModule.class);
         cut.addModules(module);
 
         WiredContract contract = context.getService(WiredContract.class);
@@ -116,7 +116,7 @@ public class HK2ServiceInstanceTest {
         context = ServiceLocatorFactory.getInstance().create(null);
         cut = new HK2ServiceInstance(context);
 
-        cut.addScans(new ScanImpl("META-INF/hk2-locator/default"));
+        cut.addScans(new DefaultScan("META-INF/hk2-locator/default"));
 
         Haye greeting = cut.getService(Haye.class);
         assertThat(greeting).isNotNull();

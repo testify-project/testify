@@ -19,8 +19,9 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 
 /**
- * A contract that defines methods for creating and getting information about an
- * instance object.
+ * A contract that defines an instance object. An instance represents the
+ * properties of an object in the dependency injection framework in use and how
+ * the object is made available for injection into test classes and fixtures.
  *
  * @author saden
  * @param <T> the instance object type
@@ -35,24 +36,21 @@ public interface Instance<T> {
     T getInstance();
 
     /**
-     * Get the name of instance.
+     * Get the name of instance. If present it represents the service name
+     * associated with the instance and may be used to qualify the service.
      *
-     * @return a instance name
+     * @return optional with instance name, empty optional otherwise
      */
     default Optional<String> getName() {
         return empty();
     }
 
     /**
-     * <p>
-     * The contract implemented by the instance.
-     * </p>
-     * <p>
-     * Please note that if a contract is present any existing implementations of
-     * the contract will be replaced by this instance.
-     * </p>
+     * The contract implemented by the instance. If present any existing
+     * implementations of the contract in the dependency injection framework
+     * will be replaced by this instance.
      *
-     * @return the contract type
+     * @return optional with instance contract type, empty optional otherwise
      */
     default Optional<Class<? super T>> getContract() {
         return empty();

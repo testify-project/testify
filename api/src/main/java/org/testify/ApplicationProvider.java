@@ -19,8 +19,9 @@ package org.testify;
  * A contract that defines methods for starting and stopping an application.
  *
  * @author saden
+ * @param <T> application initializer type
  */
-public interface ApplicationProvider {
+public interface ApplicationProvider<T> {
 
     /**
      * Start the application using the given test context.
@@ -28,7 +29,7 @@ public interface ApplicationProvider {
      * @param testContext the test context
      * @return an application instance.
      */
-    ApplicationInstance start(TestContext testContext);
+    ApplicationInstance<T> start(TestContext testContext);
 
     /**
      * Stop the application.

@@ -43,7 +43,7 @@ public interface ReportingTrait {
      *
      * @param message the message format
      */
-    default void info(String message) {
+    default void reportInformation(String message) {
         INFO.add(message);
     }
 
@@ -70,7 +70,7 @@ public interface ReportingTrait {
      *
      * @param message the message format
      */
-    default void error(String message) {
+    default void reportError(String message) {
         ERRORS.add(message);
     }
 
@@ -97,7 +97,7 @@ public interface ReportingTrait {
      *
      * @param message the message format
      */
-    default void warn(String message) {
+    default void reportWarning(String message) {
         WARNINGS.add(message);
     }
 

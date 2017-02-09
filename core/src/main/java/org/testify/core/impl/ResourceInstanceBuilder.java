@@ -26,6 +26,7 @@ import org.testify.ResourceInstance;
  * @author saden
  * @param <S> server resource instance type
  * @param <C> client resource instance type
+ * @see ResourceInstance
  */
 public class ResourceInstanceBuilder<S, C> {
 
@@ -36,11 +37,11 @@ public class ResourceInstanceBuilder<S, C> {
     /**
      * Set the server with the given instance.
      *
-     * @param instance the server instance
+     * @param server the server instance
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> server(S instance) {
-        this.server = new DefaultInstance(instance, null, null);
+    public ResourceInstanceBuilder<S, C> server(S server) {
+        this.server = new DefaultInstance(server, null, null);
 
         return this;
     }
@@ -48,12 +49,12 @@ public class ResourceInstanceBuilder<S, C> {
     /**
      * Set the server with the given instance and name.
      *
-     * @param instance the server instance
+     * @param server the server instance
      * @param name the server name
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> server(S instance, String name) {
-        this.server = new DefaultInstance(instance, name, null);
+    public ResourceInstanceBuilder<S, C> server(S server, String name) {
+        this.server = new DefaultInstance(server, name, null);
 
         return this;
     }
@@ -61,12 +62,12 @@ public class ResourceInstanceBuilder<S, C> {
     /**
      * Set the server with the given instance, name, contract.
      *
-     * @param instance the server instance
+     * @param server the server instance
      * @param contract the server contract
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> server(S instance, Class<? super S> contract) {
-        this.server = new DefaultInstance(instance, null, contract);
+    public ResourceInstanceBuilder<S, C> server(S server, Class<? super S> contract) {
+        this.server = new DefaultInstance(server, null, contract);
 
         return this;
     }
@@ -74,13 +75,13 @@ public class ResourceInstanceBuilder<S, C> {
     /**
      * Set the server with the given instance, name, contract.
      *
-     * @param instance the server instance
+     * @param server the server instance
      * @param name the server name
      * @param contract the server contract
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> server(S instance, String name, Class<? super S> contract) {
-        this.server = new DefaultInstance(instance, name, contract);
+    public ResourceInstanceBuilder<S, C> server(S server, String name, Class<? super S> contract) {
+        this.server = new DefaultInstance(server, name, contract);
 
         return this;
     }
@@ -137,14 +138,39 @@ public class ResourceInstanceBuilder<S, C> {
         return this;
     }
 
+    /**
+     * Associate the specified value with the specified key in the resource
+     * instance.
+     *
+     * @param name the name with which the specified value is to be associated
+     * @param value the value to be associated with the specified key
+     * @return this object
+     */
     public ResourceInstanceBuilder<S, C> property(String name, Object value) {
         this.properties.put(name, value);
 
         return this;
     }
 
+    /**
+     * Associate the given properties with the resource instance.
+     *
+     * @param properties a map that contains key value pairs.
+     * @return this object
+     */
+    public ResourceInstanceBuilder<S, C> properties(Map<String, Object> properties) {
+        this.properties.putAll(properties);
+
+        return this;
+    }
+
+    /**
+     * Build and return a resource instance based on the builder state.
+     *
+     * @return a resource instance
+     */
     public ResourceInstance<S, C> build() {
-        return new DefaultResourceInstance<>(server, client, properties);
+        return DefaultResourceInstance.of(server, client, properties);
     }
 
 }

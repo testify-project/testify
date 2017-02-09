@@ -31,11 +31,32 @@ public class DefaultServiceProvider implements Provider {
     private final Class type;
     private final Annotation[] qualifiers;
 
-    public DefaultServiceProvider(ServiceInstance serviceInstance, Class type) {
-        this(serviceInstance, type, null);
+    /**
+     * Create a new provider instance with the given service instance and
+     * service type.
+     *
+     * @param serviceInstance the underlying service instance
+     * @param type the service type
+     * @return a provider instance
+     */
+    public static Provider of(ServiceInstance serviceInstance, Class type) {
+        return new DefaultServiceProvider(serviceInstance, type, null);
     }
 
-    public DefaultServiceProvider(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
+    /**
+     * Create a new provider instance with the given service instance, service
+     * type, and service qualifiers.
+     *
+     * @param serviceInstance the underlying service instance
+     * @param type the service type
+     * @param qualifiers the service qualifiers
+     * @return a provider instance
+     */
+    public static Provider of(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
+        return new DefaultServiceProvider(serviceInstance, type, qualifiers);
+    }
+
+    DefaultServiceProvider(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
         this.serviceInstance = serviceInstance;
         this.type = type;
         this.qualifiers = qualifiers;

@@ -26,31 +26,38 @@ import org.testify.annotation.Application;
  *
  * @author saden
  */
-public class DefaultApplicationInstance implements ApplicationInstance {
+public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
 
-    private final Application application;
     private final TestContext testContext;
-    private final Object servletContainerInitializer;
-    private final Set<Class<?>> servletContainerInitializerHandlers;
+    private final Application application;
+    private final T initializer;
+    private final Set<Class<?>> handlers;
 
-    public static ApplicationInstance of(Application application,
-            TestContext testContext,
-            Object servletContainerInitializer,
-            Set<Class<?>> servletContainerInitializerHandlers) {
-        return new DefaultApplicationInstance(application,
-                testContext,
-                servletContainerInitializer,
-                servletContainerInitializerHandlers);
+    /**
+     * Create a new application instance.
+     *
+     * @param <T> application initializer type
+     * @param testContext the test context
+     * @param application the application annotation
+     * @param initializer the application initializer
+     * @param handlers the application initializer handlers
+     * @return an application instance
+     */
+    public static <T> ApplicationInstance of(TestContext testContext,
+            Application application,
+            T initializer,
+            Set<Class<?>> handlers) {
+        return new DefaultApplicationInstance(testContext, application, initializer, handlers);
     }
 
-    DefaultApplicationInstance(Application application,
-            TestContext testContext,
-            Object servletContainerInitializer,
-            Set<Class<?>> servletContainerInitializerHandlers) {
+    DefaultApplicationInstance(TestContext testContext,
+            Application application,
+            T initializer,
+            Set<Class<?>> handlers) {
         this.application = application;
         this.testContext = testContext;
-        this.servletContainerInitializer = servletContainerInitializer;
-        this.servletContainerInitializerHandlers = servletContainerInitializerHandlers;
+        this.initializer = initializer;
+        this.handlers = handlers;
     }
 
     @Override
@@ -64,13 +71,13 @@ public class DefaultApplicationInstance implements ApplicationInstance {
     }
 
     @Override
-    public <T> T getServletContainerInitializer() {
-        return (T) servletContainerInitializer;
+    public T getInitializer() {
+        return initializer;
     }
 
     @Override
-    public Set<Class<?>> getServletContainerInitializerHandlers() {
-        return servletContainerInitializerHandlers;
+    public Set<Class<?>> getHandlers() {
+        return handlers;
     }
 
     @Override
@@ -78,8 +85,8 @@ public class DefaultApplicationInstance implements ApplicationInstance {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.application);
         hash = 23 * hash + Objects.hashCode(this.testContext);
-        hash = 23 * hash + Objects.hashCode(this.servletContainerInitializer);
-        hash = 23 * hash + Objects.hashCode(this.servletContainerInitializerHandlers);
+        hash = 23 * hash + Objects.hashCode(this.initializer);
+        hash = 23 * hash + Objects.hashCode(this.handlers);
         return hash;
     }
 
@@ -101,19 +108,19 @@ public class DefaultApplicationInstance implements ApplicationInstance {
         if (!Objects.equals(this.testContext, other.testContext)) {
             return false;
         }
-        if (!Objects.equals(this.servletContainerInitializer, other.servletContainerInitializer)) {
+        if (!Objects.equals(this.initializer, other.initializer)) {
             return false;
         }
-        return Objects.equals(this.servletContainerInitializerHandlers, other.servletContainerInitializerHandlers);
+        return Objects.equals(this.handlers, other.handlers);
     }
 
     @Override
     public String toString() {
         return "DefaultApplicationInstance{"
-                + "application=" + application
                 + ", testContext=" + testContext
-                + ", servletContainerInitializer=" + servletContainerInitializer
-                + ", servletContainerInitializerHandlers=" + servletContainerInitializerHandlers
+                + "application=" + application
+                + ", initializer=" + initializer
+                + ", handlers=" + handlers
                 + '}';
     }
 

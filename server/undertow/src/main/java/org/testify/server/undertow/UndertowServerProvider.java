@@ -64,13 +64,13 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo> {
     @Override
     public DeploymentInfo configure(TestContext testContext) {
         applicationProvider = ServiceLocatorUtil.INSTANCE.getOne(ApplicationProvider.class);
-        ApplicationInstance applicationInstance = applicationProvider.start(testContext);
+        ApplicationInstance<ServletContainerInitializer> applicationInstance = applicationProvider.start(testContext);
 
         try {
             String name = testContext.getName();
 
-            Set<Class<?>> handles = applicationInstance.getServletContainerInitializerHandlers();
-            ServletContainerInitializer initializerInstance = applicationInstance.getServletContainerInitializer();
+            Set<Class<?>> handles = applicationInstance.getHandlers();
+            ServletContainerInitializer initializerInstance = applicationInstance.getInitializer();
 
             ImmediateInstanceFactory<ServletContainerInitializer> factory = new ImmediateInstanceFactory<>(initializerInstance);
             URI uri = URI.create("http://0.0.0.0:0/");

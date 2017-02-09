@@ -41,11 +41,5 @@ public interface ParameterDescriptor extends AnnotationTrait<Parameter>, TypeTra
      */
     String getName();
 
-    /**
-     * Get the underlying parameter object.
-     *
-     * @return the underlying parameter object.
-     */
-    Parameter getParameter();
 
 }
