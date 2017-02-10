@@ -23,10 +23,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for specifying a list of required resource for testings that
- * should be configured, started and stopped before and after each test run.
- * This annotation exists to allow {@link RequiresResource} to be repeatable and
- * direct usage of it is discouraged.
+ * A repeatable meta-annotation for {@link RequiresResource}.
  *
  * @author saden
  */
@@ -36,9 +33,9 @@ import java.lang.annotation.Target;
 public @interface RequiresResources {
 
     /**
-     * Specifies a list of required resources that should be loaded.
+     * Specifies a list of {@link RequiresResource} annotations.
      *
-     * @return an array of required resources classes.
+     * @return an array of RequiresResource annotations.
      */
     RequiresResource[] value();
 

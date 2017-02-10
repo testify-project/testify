@@ -17,6 +17,7 @@ package org.testify.annotation;
 
 import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import java.lang.annotation.Retention;
@@ -25,24 +26,29 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation for:
+ * An annotation used to specifying a provider of the class under test's
+ * collaborators. This annotation can be placed on a test class or method. This
+ * is useful for configuring a class under test whose collaborator(s) can not be
+ * faked or virtualized (i.e. a {@link java.net.URL} collaborator which is a
+ * final class). Note that if this annotation is placed on:
  * </p>
  * <ul>
- * <li>denoting a method in a test class as a provider of collaborators for the
- * class under test</li>
- * <li>specifying at the test class level a class that contains a method that
- * provides collaborators for the class under test.</li>
+ * <li>
+ * a test class method then this method will be called to provide the class
+ * under test's collaborators.
+ * </li>
+ * <li>
+ * the test class and {@link CollaboratorProvider#value() } is specified then a
+ * method within {@link CollaboratorProvider#value() } class will be called to
+ * provide collaborators for the class under test.
+ * </li>
  * </ul>
- * <p>
- * This is useful for configuring a class under test whose collaborator(s) can
- * not be faked or virtualized (i.e. a collaborator that final class).
- * </p>
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
-@Target({ANNOTATION_TYPE, TYPE, METHOD})
+@Target({ANNOTATION_TYPE, TYPE, METHOD, FIELD})
 public @interface CollaboratorProvider {
 
     /**

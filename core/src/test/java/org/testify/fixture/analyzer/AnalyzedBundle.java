@@ -19,17 +19,17 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.testify.annotation.Bundle;
 import org.testify.annotation.RequiresContainer;
-import org.testify.annotation.TestGroup;
 
 /**
  *
  * @author saden
  */
+@Bundle
 @RequiresContainer("postgres")
-@TestGroup
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AnalyzedGroup {
+public @interface AnalyzedBundle {
 
 }

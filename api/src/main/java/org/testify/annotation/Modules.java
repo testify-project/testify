@@ -23,9 +23,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for specifying a list of modules that should loaded before and
- * after each test run. This annotation exists to allow {@link Module} to be
- * repeatable and direct usage of it is discouraged.
+ * A repeatable meta-annotation for {@link Module}.
  *
  * @author saden
  */
@@ -35,9 +33,9 @@ import java.lang.annotation.Target;
 public @interface Modules {
 
     /**
-     * Specifies a list of modules that will be loaded.
+     * Specifies a list of {@link Module} annotations.
      *
-     * @return an array of modules.
+     * @return an array of Module annotations.
      */
     Module[] value();
 

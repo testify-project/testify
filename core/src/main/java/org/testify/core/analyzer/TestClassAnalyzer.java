@@ -31,7 +31,6 @@ import org.testify.TestDescriptor;
 import org.testify.annotation.CollaboratorProvider;
 import org.testify.annotation.ConfigHandler;
 import org.testify.annotation.Cut;
-import org.testify.annotation.TestGroup;
 import org.testify.asm.AnnotationVisitor;
 import org.testify.asm.ClassVisitor;
 import org.testify.asm.FieldVisitor;
@@ -42,6 +41,7 @@ import static org.testify.asm.Type.getMethodType;
 import static org.testify.asm.Type.getType;
 import org.testify.core.util.ServiceLocatorUtil;
 import static org.testify.guava.common.base.Preconditions.checkState;
+import org.testify.annotation.Bundle;
 
 /**
  * A class visitor implementation that performs analysis on the test class.
@@ -71,9 +71,9 @@ public class TestClassAnalyzer extends ClassVisitor {
                 Class annotationClass = getClass(type.getClassName());
                 List<TestAnnotationInspector> inspectors = ServiceLocatorUtil.INSTANCE.getAll(TestAnnotationInspector.class);
 
-                //if the annotation class is annotated with TestGroup meta annotation
+                //if the annotation class is annotated with Bundle meta annotation
                 //then inspect anotations on the annotation class
-                if (annotationClass.isAnnotationPresent(TestGroup.class)) {
+                if (annotationClass.isAnnotationPresent(Bundle.class)) {
                     Annotation[] annotations = annotationClass.getDeclaredAnnotations();
 
                     for (Annotation annotation : annotations) {

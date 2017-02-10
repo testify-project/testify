@@ -22,10 +22,22 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used on test class fields to inject mocks of the class under
- * test's collaborators. Please note that if the field is initialized with a
- * mock instance the value of the field will be used and injected into the class
- * under test.
+ * <p>
+ * An annotation that can be placed on unit, integration and system test class
+ * fields to denote the fields as a fake collaborators. Fake collaborators are
+ * mock instance of collaborators and allow us to mock functionality and verify
+ * interaction between the Class Under Test and the collaborator in isolation.
+ * Note that if the value of the test class field is already initialized with:
+ * </p>
+ * <ul>
+ * <li>a mock instance of the collaborator then this mock instance will be used
+ * and injected into the class under test.
+ * </li>
+ * <li>
+ * a concrete instance of the collaborator then a mock instances that delegates
+ * to the field value will be created and injected into the class under test.
+ * </li>
+ * </ul>
  *
  * @author saden
  */
@@ -43,8 +55,8 @@ public @interface Fake {
      * </p>
      * <p>
      * By default this value is set to "" to enable auto detection. If you wish
-     * to not rely on auto detection you can explicitly specify the field name
-     * of the class under test.
+     * to not rely on auto detection you can explicitly specify the name of the
+     * class under test field associated with the test field.
      * </p>
      *
      * @return the class under test field name.

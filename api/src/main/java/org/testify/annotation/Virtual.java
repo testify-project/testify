@@ -23,15 +23,12 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation used on test class fields to inject a virtual instance of the
- * class under test's collaborators. Please note fields annotated with this
- * annotation are mock instances that delegate to the real instance if not
- * explictly mocked.
- * </p>
- * <p>
- * This is useful when it is impractical to call certain methods of the real
- * collaborators (i.e. a method that calls a third-party service to process a
- * credit card charge).
+ * An annotation that can be placed on unit, integration and system test class
+ * fields to denote the fields as a virtual collaborator. Virtual collaborators
+ * are mock instances that delegate to a real instance of the collaborator of
+ * the Class Under Test and are useful if you wish to mock certain functionality
+ * (i.e. a method that calls a third-party service to process a credit card
+ * charge) and delegate other functionality to the real collaborator instance.
  * </p>
  *
  * @author saden
@@ -50,8 +47,8 @@ public @interface Virtual {
      * </p>
      * <p>
      * By default this value is set to "" to enable auto detection. If you wish
-     * to not rely on auto detection you can explicitly specify the field name
-     * of the class under test.
+     * to not rely on auto detection you can explicitly specify the name of the
+     * class under test field associated with the test field.
      * </p>
      *
      * @return the class under test field name.

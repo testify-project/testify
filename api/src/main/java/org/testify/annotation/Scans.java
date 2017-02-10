@@ -23,9 +23,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for specifying a list of resources in the classpath that should
- * scanned and loaded before and after each test run. This annotation exists to
- * allow {@link Scan} to be repeatable and direct usage of it is discouraged.
+ * A repeatable meta-annotation for {@link Scan}.
  *
  * @author saden
  */
@@ -35,10 +33,9 @@ import java.lang.annotation.Target;
 public @interface Scans {
 
     /**
-     * Specifies a list of resources in the classpath that will be scanned and
-     * loaded.
+     * Specifies a list of {@link Scan} annotations.
      *
-     * @return an array of resource to scan.
+     * @return an array of Scan annotations.
      */
     Scan[] value();
 

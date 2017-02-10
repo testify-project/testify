@@ -22,8 +22,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used on single field of a test class to denote the field as the
- * class under test and to instruct the framework to inject its collaborators.
+ * An annotation used on single test class field to denote the field as the
+ * Class Under Test (CUT).
  *
  * @author saden
  */

@@ -24,10 +24,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for specifying a module that should be loaded before each test
- * run. This is useful for integration and system tests that require the loading
- * of services (i.e. Spring's Java Config, HK2's AbstractBinder, or Guice's
- * AbstractModule)
+ * An annotation that can be placed on integration and system tests to load a
+ * module that contains services before each test run (i.e. Spring's Java
+ * Config, HK2's AbstractBinder, or Guice's AbstractModule)
  *
  * @author saden
  */

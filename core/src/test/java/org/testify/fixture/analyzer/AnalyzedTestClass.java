@@ -32,7 +32,7 @@ import org.testify.annotation.Scan;
  */
 @Scan("org.testify.fixture.analyzer")
 @Module(AnalyzedModule.class)
-@AnalyzedGroup
+@AnalyzedBundle
 @ConfigHandler(AnalyzedConfigHandler.class)
 public class AnalyzedTestClass {
 

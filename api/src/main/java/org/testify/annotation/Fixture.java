@@ -25,21 +25,45 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation used on classes or fields to denote them as test fixture.
+ * An annotation that can be placed on test related classes or test class fields
+ * to denote them as test fixture. Note that if this annotation is placed on:
  * </p>
- * <p>
- * Please note that classes with this annotation will be managed. If values for
- * {@link #init()} and {@link #destroy()} are specified classes and fields with
- * this annotation will be initialized and destroyed before and after each test
- * case.
- * </p>
- * <p>
- * In the event that this annotation is placed on a module class the
- * bindings/configuration defined in the module will take precedence over other
- * bindings defined in other modules. This is useful if you wish to substitute
- * certain bindings for testing purpose only (i.e. bind and load a different
- * DataSource than the one for production).
- * </p>
+ * <ul>
+ * <li>
+ * a test class field then the value of the field can be
+ * {@link Fixture#init() initialized} or {@link Fixture#destroy() destroyed}
+ * before and after each test run:
+ * <pre>
+ * <code>
+ * {@literal @}Module(MyModule.class)
+ *  public class MyModuleServiceiT {
+ *
+ *     {@literal @}Cut
+ *     {@literal @}Fixture(init = "init", destroy = "destroy")
+ *      MyService cut;
+ *
+ * }
+ * </code>
+ * </pre>
+ * </li>
+ * <li>
+ * a module class the services defined in the module will take precedence over
+ * services defined in other modules. This is useful if you wish to substitute
+ * certain services for testing purpose (i.e. load a different DataSource than
+ * the one for production during test runs):
+ * <pre>
+ * <code>
+ * {@literal @}Fixture
+ *  public class MyModule {
+ *
+ *     ...
+ *
+ * }
+ * </code>
+ * </pre>
+ *
+ * </li>
+ * </ul>
  *
  * @author saden
  */

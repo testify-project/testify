@@ -22,8 +22,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used on test class fields to inject real instance of the class
- * under test's collaborators.
+ * An annotation that can be placed on integration and system test class fields
+ * to denote the field as a real collaborator of the Class Under Test.
  *
  * @author saden
  */
@@ -41,8 +41,8 @@ public @interface Real {
      * </p>
      * <p>
      * By default this value is set to "" to enable auto detection. If you wish
-     * to not rely on auto detection you can explicitly specify the field name
-     * of the class under test.
+     * to not rely on auto detection you can explicitly specify the name of the
+     * class under test field associated with the test field.
      * </p>
      *
      * @return the class under test field name.

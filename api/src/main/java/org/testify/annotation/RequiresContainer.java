@@ -26,12 +26,12 @@ import java.util.concurrent.TimeUnit;
 import org.testify.ContainerProvider;
 
 /**
- * An annotation for specifying a container based resource that should be
- * configured, started before and stopped each test run. This is useful when
- * performing system tests using real production environment (i.e. using real
- * PostgresSQL or Cassandra Cluster). It's also useful when performing
- * integration tests where simulating external resources is not prudent (i.e.
- * testing database specific features).
+ * An annotation that can be placed on integration and system tests to specify
+ * container based resources that should be loaded, configured, started, stopped
+ * before and after each test run. This is useful when performing system tests
+ * using real production environment (i.e. using real PostgresSQL or Cassandra
+ * Cluster). It's also useful when performing integration tests where simulating
+ * external resources is not prudent (i.e. testing database specific features).
  *
  * @author saden
  */

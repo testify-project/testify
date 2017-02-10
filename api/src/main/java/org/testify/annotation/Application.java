@@ -23,10 +23,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for specifying an application that should be configured,
- * started, and stopped before each test run. This is useful for performing
- * system tests using various application frameworks (i.e. Jersey 2, Spring
- * Boot, Spring MVC, etc).
+ * An annotation that can be placed on system test to specify an application
+ * that should be loaded, configured, started, and stopped before and after each
+ * test run (i.e. Jersey 2, Spring Boot, Spring MVC, etc).
  *
  * @author saden
  */
@@ -37,7 +36,7 @@ public @interface Application {
 
     /**
      * The class of the application under test that will be configured, started
-     * and stopped after each test run.
+     * and stopped before and after each test run.
      *
      * @return the application class.
      */

@@ -24,10 +24,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for specifying a list of resources in the classpath that should
- * scanned and loaded before each test run. This is useful for integration and
- * system tests that utilize a dependency injection framework with resource
- * scanning support (i.e. Spring package or HK2 descriptor scanning).
+ * An annotation that can be placed on integration and system tests to load a
+ * resources that contains services before each test run (i.e. Spring service
+ * fully qualified package name, HK2 service locator descriptor classpath).
  *
  * @author saden
  */

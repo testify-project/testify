@@ -22,14 +22,35 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * A meta-annotation that identifies a test group annotation. A test group
- * annotation provide the ability to define, group, and use one or more testify
- * annotations in a reusable manner.
+ * <p>
+ * A meta-annotation that identifies an annotation as test group. A test group
+ * annotation provide the ability to define, group, and use one or more Testify
+ * annotations in a reusable manner in your test classes and avoid annotation
+ * bloat.
+ * </p>
+ * <pre>
+ * <code>
+ * {@literal @}Bundle
+ {@literal @}Module(MyModule.class)
+ * {@literal @}RequiresContainer("postgres")
+ * {@literal @}Target(ElementType.TYPE)
+ * {@literal @}Retention(RetentionPolicy.RUNTIME)
+ *  public @interface MyModuleGroup { }
+ *
+ *
+ * {@literal @}MyModuleGroup
+ *  public class MyModuleServiceiT {
+ *
+ *     ...
+ *
+ * }
+ * </code>
+ * </pre>
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
 @Target(ANNOTATION_TYPE)
-public @interface TestGroup {
+public @interface Bundle {
 }

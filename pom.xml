@@ -23,7 +23,7 @@
 
     <groupId>org.testify</groupId>
     <artifactId>parent</artifactId>
-    <version>0.1.4-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>Testify</name>
@@ -61,7 +61,7 @@
         <netbeans.hint.license.inceptionYear>2016</netbeans.hint.license.inceptionYear>
 
         <!-- Build Dependency Versions -->
-        <buildtools.version>1.0.0-SNAPSHOT</buildtools.version>
+        <buildtools.version>0.9.0-SNAPSHOT</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.1</plugin.resource>

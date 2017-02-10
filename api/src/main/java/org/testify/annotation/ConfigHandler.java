@@ -25,19 +25,22 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation for:
+ * An annotation that can be placed on a test class or test class method to
+ * configure various functions before each integration and system test run (i.e.
+ * HK2 ServiceLocator, Spring Application Context, required container, required
+ * resources, etc). Note that if the annotation is placed on:
  * </p>
  * <ul>
- * <li>denoting a method in a test class as a configuration handler method</li>
- * <li>specify at the test class level classes that contain configuration
- * handlers method</li>
+ * <li>
+ * a test class method then this configuration method will be called to perform
+ * pre-test run configuration.
+ * </li>
+ * <li>
+ * the test class and {@link ConfigHandler#value() } is specified then a
+ * configuration method within {@link ConfigHandler#value() } class will be
+ * called to perform pre-test run configuration.
+ * </li>
  * </ul>
- * <p>
- * This is useful for configuring various functions before each integration and
- * system test run (i.e. HK2 ServiceLocator, Spring Application Context,
- * required container, required resources, etc) and sharing configuration
- * handler methods between multiple classes .
- * </p>
  *
  * @author saden
  */

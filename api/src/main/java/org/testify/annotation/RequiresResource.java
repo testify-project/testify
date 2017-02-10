@@ -26,13 +26,12 @@ import org.testify.ResourceProvider;
 
 /**
  * <p>
- * An annotation for specifying a resource required for testing that must be
- * configured, started before each test and stopped after each test. This is
- * useful for integration and system tests that require an external resource to
- * be loaded before a test is executed (i.e. an in-memory database).
+ * An annotation that can be placed on integration and system tests to specify
+ * resources that must be loaded, configured, started, stopped before and after
+ * each test case (i.e. an in-memory database).
  * </p>
  * <p>
- * Typically an external resource consists of a server component and client
+ * Note that an external resource consists of a server component and client
  * component (optional). For example, if a test class requires an in-memory
  * database then the database {@link javax.sql.DataSource} can be thought of as
  * the server component and the {@link java.sql.Connection} to the DataSource as
@@ -75,11 +74,11 @@ public @interface RequiresResource {
      * <p>
      * Specifies the required resource's server component name. This useful for
      * giving the server resource instance a unique name that can be used to
-     * qualify and distinguish it from other similar requires.
+     * qualify and distinguish it from other similar services.
      * </p>
      * <p>
-     * Note that if the name is not specified the name will be provided by the
-     * required resource implementation provider class.
+     * Note that if the name is not specified the name provided by the required
+     * resource implementation will be used.
      * </p>
      *
      * @return a the required resource's server component name.
@@ -105,11 +104,11 @@ public @interface RequiresResource {
      * <p>
      * Specifies the required resource's client component name. This useful for
      * giving the client resource instance a unique name that can be used to
-     * qualify and distinguish it from other similar requires.
+     * qualify and distinguish it from other similar services.
      * </p>
      * <p>
-     * Note that if the name is not specified the name will be provided by the
-     * required resource implementation provider class.
+     * Note that if the name is not specified the name provided by the required
+     * resource implementation will be used.
      * </p>
      *
      * @return a the required resource's client component name.

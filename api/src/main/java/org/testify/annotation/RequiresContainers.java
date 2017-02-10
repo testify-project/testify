@@ -23,10 +23,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for specifying a list of required containers that should be
- * configured, started and stopped before and after each test run. This
- * annotation exists to allow {@link RequiresContainer} to be repeatable and
- * direct usage of it is discouraged.
+ * A repeatable meta-annotation for {@link RequiresContainer}.
  *
  * @author saden
  */
@@ -36,9 +33,9 @@ import java.lang.annotation.Target;
 public @interface RequiresContainers {
 
     /**
-     * Specifies a list of required containers that should be loaded.
+     * Specifies a list of {@link RequiresContainer} annotations.
      *
-     * @return an array of required containers classes.
+     * @return an array of RequiresContainer annotations.
      */
     RequiresContainer[] value();
 
