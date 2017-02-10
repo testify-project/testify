@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/testify-project/testify.svg?branch=develop)](https://travis-ci.org/testify-project/testify)
 [![Stories in Progress](https://badge.waffle.io/testify-project/testify.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/testify-project/testify)
 [![Stories in Ready](https://badge.waffle.io/testify-project/testify.svg?label=ready&title=Ready)](http://waffle.io/testify-project/testify)
-[![Join the chat at https://gitter.im/testify-project/testify](https://badges.gitter.im/testify-project/testify.svg)](https://gitter.im/testify-project/testify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat on Gitter](https://badges.gitter.im/testify-project/Lobby.svg)](https://gitter.im/testify-project/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![CodecovIO](https://codecov.io/github/testify-project/testify/coverage.svg?branch=develop)](https://codecov.io/github/testify-project/testify?branch=develop)
 [![Latest Release](https://img.shields.io/github/release/testify-project/testify.svg)](https://github.com/testify-project/testify/releases/latest)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fitbur.testify/parent/badge.svg?style=flat)](http://repo1.maven.org/maven2/com/fitbur/testify/)
