@@ -1,4 +1,4 @@
-[org.testify.junit.fixture.scan.ScanGreeterService]S
+[org.testifyproject.junit.fixture.scan.ScanGreeterService]S
 
-[org.testify.junit.fixture.scan.ScanGreetingService]S
-contract={org.testify.junit.fixture.scan.ScanGreetingContract}
+[org.testifyproject.junit.fixture.scan.ScanGreetingService]S
+contract={org.testifyproject.junit.fixture.scan.ScanGreetingContract}

@@ -1,0 +1,206 @@
+/*
+ * Copyright 2016-2017 Testify Project.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.testifyproject.core.analyzer;
+
+import static java.lang.Class.forName;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import static java.security.AccessController.doPrivileged;
+import java.security.PrivilegedAction;
+import java.util.Arrays;
+import java.util.List;
+import static java.util.stream.Stream.of;
+import org.testifyproject.FieldDescriptor;
+import org.testifyproject.MethodDescriptor;
+import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Bundle;
+import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.annotation.ConfigHandler;
+import org.testifyproject.annotation.Cut;
+import org.testifyproject.asm.AnnotationVisitor;
+import org.testifyproject.asm.ClassVisitor;
+import org.testifyproject.asm.FieldVisitor;
+import org.testifyproject.asm.MethodVisitor;
+import static org.testifyproject.asm.Opcodes.ASM5;
+import org.testifyproject.asm.Type;
+import static org.testifyproject.asm.Type.getMethodType;
+import static org.testifyproject.asm.Type.getType;
+import org.testifyproject.core.util.ServiceLocatorUtil;
+import static org.testifyproject.guava.common.base.Preconditions.checkState;
+
+/**
+ * A class visitor implementation that performs analysis on the test class.
+ *
+ * @author saden
+ */
+public class TestClassAnalyzer extends ClassVisitor {
+
+    public static final String CONSTRUCTOR_NAME = "<init>";
+    public static final String STATIC_NAME = "<cinit>";
+
+    private int cutCount = 0;
+    private final Class<?> testClass;
+    private final TestDescriptor testDescriptor;
+
+    public TestClassAnalyzer(Class<?> testClass, TestDescriptor testDescriptor) {
+        super(ASM5);
+        this.testClass = testClass;
+        this.testDescriptor = testDescriptor;
+    }
+
+    @Override
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        return doPrivileged((PrivilegedAction<AnnotationVisitor>) () -> {
+            try {
+                Type type = getType(desc);
+                Class annotationClass = getClass(type.getClassName());
+                List<TestAnnotationInspector> inspectors = ServiceLocatorUtil.INSTANCE.getAll(TestAnnotationInspector.class);
+
+                //if the annotation class is annotated with Bundle meta annotation
+                //then inspect anotations on the annotation class
+                if (annotationClass.isAnnotationPresent(Bundle.class)) {
+                    Annotation[] annotations = annotationClass.getDeclaredAnnotations();
+
+                    for (Annotation annotation : annotations) {
+                        for (TestAnnotationInspector inspector : inspectors) {
+                            if (inspector.handles(annotation.annotationType())) {
+                                inspector.inspect(testDescriptor, annotationClass, annotation);
+                            }
+
+                        }
+                    }
+                } else {
+                    for (TestAnnotationInspector inspector : inspectors) {
+                        if (inspector.handles(annotationClass)) {
+                            Annotation annotation = testClass.getDeclaredAnnotation(annotationClass);
+                            inspector.inspect(testDescriptor, testClass, annotation);
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                checkState(false,
+                        "Could not analyze annotations in test class '%s'.\n%s",
+                        testClass.getName(), e.getMessage());
+            }
+
+            return null;
+        });
+    }
+
+    @Override
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        return doPrivileged((PrivilegedAction<FieldVisitor>) () -> {
+
+            try {
+                Field field = testClass.getDeclaredField(name);
+
+                //make the field accessible
+                field.setAccessible(true);
+
+                //remove final modifier from the field
+                Field modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+                Cut cut = field.getDeclaredAnnotation(Cut.class);
+                if (cut != null) {
+                    testDescriptor.addProperty(TestDescriptorProperties.CUT_FIELD, field);
+                    cutCount++;
+                } else {
+                    FieldDescriptor fieldDescriptor = DefaultFieldDescriptor.of(field);
+                    java.lang.reflect.Type fieldType = fieldDescriptor.getGenericType();
+                    String fieldName = fieldDescriptor.getName();
+                    DescriptorKey typeKey = DescriptorKey.of(fieldType);
+                    DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
+
+                    testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
+                    testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
+                    testDescriptor.addListElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+                }
+
+            }
+            catch (SecurityException
+                    | NoSuchFieldException
+                    | IllegalAccessException
+                    | IllegalArgumentException e) {
+                checkState(false,
+                        "Could not alter modifiers of field '%s' in test class '%s'.\n%s",
+                        name, testClass.getName(), e.getMessage());
+            }
+
+            return null;
+        });
+    }
+
+    @Override
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        if (CONSTRUCTOR_NAME.equals(name) || STATIC_NAME.equals(name)) {
+            return null;
+        }
+        return doPrivileged((PrivilegedAction<MethodVisitor>) () -> {
+            Type type = getMethodType(desc);
+            Class[] parameterTypes = of(type.getArgumentTypes())
+                    .sequential()
+                    .map(Type::getClassName)
+                    .map(this::getClass)
+                    .toArray(Class[]::new);
+            try {
+
+                Method method = testClass.getDeclaredMethod(name, parameterTypes);
+                method.setAccessible(true);
+
+                if (method.getDeclaredAnnotation(ConfigHandler.class) != null) {
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
+                    testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+                } else if (method.getDeclaredAnnotation(CollaboratorProvider.class) != null) {
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
+                    testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
+                }
+
+            }
+            catch (NoSuchMethodException | SecurityException e) {
+                checkState(false,
+                        "Method with '%s' parameters not accessible in '%s' class.",
+                        Arrays.toString(parameterTypes), testClass.getName());
+            }
+
+            return null;
+        });
+    }
+
+    @Override
+    public void visitEnd() {
+        checkState(cutCount <= 1,
+                "Found more than one class under test in test class %s. Please insure "
+                + "that the test class has only one field annotated with @Cut.",
+                testClass.getName());
+    }
+
+    private Class<?> getClass(String className) {
+        try {
+            return forName(className);
+        }
+        catch (ClassNotFoundException e) {
+            checkState(false, "Class '%s' not found in the classpath.", className);
+            //not reachable;
+            throw new IllegalStateException(e);
+        }
+    }
+
+}

@@ -106,12 +106,12 @@
         </goals>
     </action>
     <action>
-            <actionName>CUSTOM-site site:Stage (parallel)</actionName>
-            <displayName>site site:Stage (parallel)</displayName>
-            <goals>
-                <goal>site</goal>
-                <goal>site:stage</goal>
-                <goal>-TC1</goal>
-            </goals>
-        </action>
+        <actionName>CUSTOM-site site:Stage (parallel)</actionName>
+        <displayName>site site:Stage (parallel)</displayName>
+        <goals>
+            <goal>site</goal>
+            <goal>site:stage</goal>
+            <goal>-TC1</goal>
+        </goals>
+    </action>
 </actions>

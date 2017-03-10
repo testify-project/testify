@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2016-2017 Sharmarke Aden.
+    Copyright 2016-2017 Testify Project.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.testify</groupId>
+    <groupId>org.testifyproject</groupId>
     <artifactId>parent</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -33,8 +33,6 @@
     <url>https://testify-project.github.io/testify</url>
 
     <modules>
-        <module>tools</module>
-        <module>external</module>
         <module>api</module>
         <module>mock</module>
         <module>core</module>
@@ -51,17 +49,16 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.version>3.0.5</maven.version>
-        <maven.years>2015, 2016</maven.years>
+        <maven.version>3.3.3</maven.version>
 
         <!-- IDE Hints -->
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <netbeans.checkstyle.format>true</netbeans.checkstyle.format>
         <netbeans.hint.license>apache20</netbeans.hint.license>
-        <netbeans.hint.license.inceptionYear>2016</netbeans.hint.license.inceptionYear>
+        <netbeans.inceptionYear>2016</netbeans.inceptionYear>
 
         <!-- Build Dependency Versions -->
-        <buildtools.version>0.9.0-SNAPSHOT</buildtools.version>
+        <buildtools.version>0.9.1</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.1</plugin.resource>
@@ -85,13 +82,8 @@
         <!-- Test Dependencies -->
         <junit.version>4.12</junit.version>
         <testng.version>6.9.10</testng.version>
-        <mockito.version>2.5.4</mockito.version>
+        <mockito.version>2.6.2</mockito.version>
         <assertj.version>3.5.2</assertj.version>
-
-        <!-- Logging Dependencies -->
-        <slf4j.version>1.7.18</slf4j.version>
-        <logback.version>1.1.6</logback.version>
-        <jansi.version>1.11</jansi.version>
 
         <!-- General Dependencies -->
         <javax.inject.version>1</javax.inject.version>
@@ -110,11 +102,7 @@
         <jsoup.version>1.9.2</jsoup.version>
         <javax.transaction.version>1.2</javax.transaction.version>
         <javax.interceptor.version>1.2</javax.interceptor.version>
-        <postgressql.version>9.4.1207</postgressql.version>
-
-        <!-- Misc Dependencies -->
-        <checkstyle.version>7.0</checkstyle.version>
-        
+        <postgressql.version>9.4.1207</postgressql.version> 
     </properties>
 
     <prerequisites>
@@ -124,8 +112,8 @@
     <inceptionYear>2016</inceptionYear>
 
     <organization>
-        <name>Sharmarke Aden</name>
-        <url>https://testify-project.github.io/testify</url>
+        <name>Testify Project</name>
+        <url>http://testifyproject.org</url>
     </organization>
 
     <developers>
@@ -136,6 +124,7 @@
             <url>https://github.com/saden1</url>
             <roles>
                 <role>Founder</role>
+                <role>Lead</role>
             </roles>
         </developer>
     </developers>
@@ -265,6 +254,9 @@
                     </executions>
                     <configuration>
                         <quiet>true</quiet>
+                        <sourceFileIncludes>
+                            <include>org/testifyproject/**/.java</include>
+                        </sourceFileIncludes>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -285,10 +277,7 @@
                     <version>${plugin.surefire}</version>
                     <configuration>
                         <argLine>${jacocoSurefireArgs} -client -Xms512m -Xmx2048m</argLine>
-                        <forkCount>1</forkCount>
-                        <reuseForks>true</reuseForks>
-                        <parallel>classesAndMethods</parallel>
-                        <useUnlimitedThreads>true</useUnlimitedThreads>
+                        <failIfNoTests>false</failIfNoTests>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -304,6 +293,7 @@
                     </executions>
                     <configuration>
                         <argLine>${jacocoFailesafeArgs} -client -Xms512m -Xmx2048m</argLine>
+                        <failIfNoTests>false</failIfNoTests>
                         <forkCount>0.75C</forkCount>
                         <reuseForks>false</reuseForks>
                         <parallel>classes</parallel>
@@ -379,13 +369,13 @@
                         <historyOutputLocation>${project.build.directory}/pit.history</historyOutputLocation>
                         <timeoutConstant>10000</timeoutConstant>
                         <targetClasses>
-                            <param>org.testify.*</param>
+                            <param>org.testifyproject.*</param>
                         </targetClasses>
                         <targetTests>
-                            <param>org.testify.*</param>
+                            <param>org.testifyproject.*</param>
                         </targetTests>
                         <excludedClasses>
-                            <param>org.testify.*.*BadTestSetup</param>
+                            <param>org.testifyproject.*.*BadTestSetup</param>
                         </excludedClasses>
                         <excludedMethods>
                             <param>equals</param>
@@ -411,8 +401,8 @@
                     </executions>
                     <dependencies>
                         <dependency>
-                            <groupId>org.testify</groupId>
-                            <artifactId>build-tools</artifactId>
+                            <groupId>org.testifyproject.buildtools</groupId>
+                            <artifactId>coding-conventions</artifactId>
                             <version>${buildtools.version}</version>
                         </dependency>
                         <dependency>
@@ -443,6 +433,7 @@
                             <exclude>src/test/resources/**</exclude>
                             <exclude>src/main/resources/**</exclude>
                             <exclude>nbproject/**</exclude>
+                            <exclude>secrets/**</exclude>
                             <exclude>archetype.properties</exclude>
                         </excludes>
                     </configuration>
@@ -460,14 +451,9 @@
                     </executions>
                     <dependencies>
                         <dependency>
-                            <groupId>org.testify</groupId>
-                            <artifactId>build-tools</artifactId>
+                            <groupId>org.testifyproject.buildtools</groupId>
+                            <artifactId>coding-conventions</artifactId>
                             <version>${buildtools.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>${checkstyle.version}</version>
                         </dependency>
                     </dependencies>
                     <configuration>
@@ -521,12 +507,8 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${plugin.javadoc}</version>
                 <configuration>
-                    <sourcepath>
-                        ${basedir}/api/src/main/java;
-                        ${basedir}/core/src/main/java;
-                    </sourcepath>
-                    <doctitle>Testify API Documentation</doctitle>
-                    <windowtitle>Testify API Documentation</windowtitle>
+                    <doctitle>Testify Documentation</doctitle>
+                    <windowtitle>Testify Documentation</windowtitle>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -568,7 +550,7 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>3.0.4</version>
                 <configuration>
-                    <onlyAnalyze>org.testify.*</onlyAnalyze>
+                    <onlyAnalyze>org.testifyproject.*</onlyAnalyze>
                 </configuration>
             </plugin>
             <plugin>
@@ -616,6 +598,12 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.tools</groupId>
+            <artifactId>test-logger</artifactId>
+            <version>${buildtools.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

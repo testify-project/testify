@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <actionName>CUSTOM-clean verify site site:stage -Pbuild</actionName>
+        <displayName>clean verify site site:stage -Pbuild</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>verify</goal>
+            <goal>site</goal>
+            <goal>site:stage</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>build</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+            <actionName>CUSTOM-testify.categories</actionName>
+            <displayName>testify.categories</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <jpda.listen>maven</jpda.listen>
+                <testify.categories>unit</testify.categories>
+            </properties>
+        </action>
+</actions>

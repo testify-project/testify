@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2016-2017 Sharmarke Aden.
+    Copyright 2016-2017 Testify Project.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,11 +25,12 @@
         <artifactId>maven-fluido-skin</artifactId>
         <version>1.5</version>
     </skin>
+
     <bannerLeft>
         <name>Testify</name>
         <title>Testify</title>
-        <src>images/testify_light_3240x1080.svg</src>
-        <href>https:testifyio.github.io/testify-site</href>
+        <src>img/testify_light_3240x1080.svg</src>
+        <href>http://testifyproject.org</href>
         <width>324</width>
     </bannerLeft>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2016-2017 Sharmarke Aden.
+    Copyright 2016-2017 Testify Project.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.testify.mock</groupId>
+        <groupId>org.testifyproject.mock</groupId>
         <artifactId>mock</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
@@ -30,20 +30,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.testify</groupId>
+            <groupId>org.testifyproject</groupId>
             <artifactId>api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.testify.tools</groupId>
+            <groupId>org.testifyproject.tools</groupId>
             <artifactId>service-generator</artifactId>
-            <version>${project.version}</version>
+            <version>${buildtools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <scope>compile</scope>
-            <version>${mockito.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
