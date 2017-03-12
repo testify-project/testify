@@ -39,7 +39,7 @@
         <module>container</module>
         <module>di</module>
         <module>level</module>
-        <module>junit</module>
+        <module>junit4</module>
         <module>client</module>
         <module>server</module>
     </modules>

@@ -44,7 +44,7 @@
 
         <!-- Test Deps -->
         <dependency>
-            <groupId>org.testifyproject.junit</groupId>
+            <groupId>org.testifyproject.junit4</groupId>
             <artifactId>unit-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

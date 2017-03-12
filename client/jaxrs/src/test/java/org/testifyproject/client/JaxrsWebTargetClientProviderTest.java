@@ -29,7 +29,7 @@ import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Fake;
-import org.testifyproject.junit.UnitTest;
+import org.testifyproject.junit4.UnitTest;
 
 /**
  *
