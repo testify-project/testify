@@ -54,8 +54,7 @@ public class IntegrationTestVerifier implements TestVerifier {
             testContext.getDependencies().entrySet().parallelStream().forEach(p -> {
                 try {
                     forName(p.getKey());
-                }
-                catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException e) {
                     checkState(false,
                             "'%s' not found. Please insure '%s' is in the classpath.",
                             p.getKey(), p.getValue());
@@ -92,8 +91,7 @@ public class IntegrationTestVerifier implements TestVerifier {
             requiresResources.parallelStream().map(RequiresResource::value).forEach(p -> {
                 try {
                     p.getDeclaredConstructor();
-                }
-                catch (NoSuchMethodException e) {
+                } catch (NoSuchMethodException e) {
                     checkState(false,
                             "Required Resource '%s' defined in test class '%s' does not have a zero "
                             + "argument default constructor. Please insure that the required resource "

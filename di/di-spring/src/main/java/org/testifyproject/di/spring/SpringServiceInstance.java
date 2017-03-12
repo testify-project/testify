@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import static java.util.stream.Collectors.toList;
@@ -103,6 +104,19 @@ public class SpringServiceInstance implements ServiceInstance {
     }
 
     @Override
+    public <T> T getService(Type type, String name) {
+        TypeToken<?> token = TypeToken.of(type);
+        Class rawType = token.getRawType();
+
+        //if the desired type is the application context itself then return it
+        if (token.isSupertypeOf(context.getClass())) {
+            return (T) context;
+        }
+
+        return (T) context.getBean(name, rawType);
+    }
+
+    @Override
     public <T> T getService(Type type, Annotation... qualifiers) {
         TypeToken<?> token = TypeToken.of(type);
         Class rawType = token.getRawType();
@@ -139,8 +153,7 @@ public class SpringServiceInstance implements ServiceInstance {
             } else if (rawType.isInterface()) {
                 try {
                     instance = context.getBean(rawType);
-                }
-                catch (BeansException e) {
+                } catch (BeansException e) {
                     //we could find the bean by its raw type. maybe this bean is
                     //a dynamically created bean so lets try another method to
                     //find the bean by looking at all possible beans of that type
@@ -163,9 +176,10 @@ public class SpringServiceInstance implements ServiceInstance {
             }
 
         } else {
-            Annotation qualifier = qualifiers[0];
-            Class<? extends Annotation> qualifierType = qualifier.annotationType();
-            String[] beanNames = context.getBeanNamesForAnnotation(qualifierType);
+            Annotation annotation = qualifiers[0];
+            Class<? extends Annotation> annotationType = annotation.annotationType();
+            String[] beanNames = context.getBeanNamesForAnnotation(annotationType);
+
             for (String beanName : beanNames) {
                 Class<?> beanType = context.getType(beanName);
                 if (token.isSupertypeOf(beanType)) {
@@ -173,6 +187,11 @@ public class SpringServiceInstance implements ServiceInstance {
                     break;
                 }
             }
+
+            if (instance == null) {
+
+            }
+
         }
 
         return (T) instance;
@@ -253,6 +272,34 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public Set<Class<? extends Annotation>> getCustomQualifiers() {
         return CUSTOM_QUALIFIER;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.context);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SpringServiceInstance other = (SpringServiceInstance) obj;
+
+        return Objects.equals(this.context, other.context);
+    }
+
+    @Override
+    public String toString() {
+        return "SpringServiceInstance{" + "context=" + context + '}';
     }
 
 }

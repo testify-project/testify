@@ -22,17 +22,18 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import static com.google.inject.util.Modules.combine;
 import static com.google.inject.util.Modules.override;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Qualifier;
 import org.testifyproject.Instance;
 import org.testifyproject.ServiceInstance;
@@ -56,7 +57,7 @@ public class GuiceServiceInstance implements ServiceInstance {
 
     static {
         INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, com.google.inject.Inject.class, Real.class);
-        NAME_ANNOTATIONS = ImmutableSet.of(Named.class, com.google.inject.name.Named.class);
+        NAME_ANNOTATIONS = ImmutableSet.of(javax.inject.Named.class, Named.class);
         CUSTOM_QUALIFIER = ImmutableSet.of(Qualifier.class, BindingAnnotation.class);
     }
 
@@ -86,6 +87,13 @@ public class GuiceServiceInstance implements ServiceInstance {
     @Override
     public <T> T getContext() {
         return (T) injector;
+    }
+
+    @Override
+    public <T> T getService(Type type, String name) {
+        updateInjector();
+
+        return (T) injector.getInstance(Key.get(type, Names.named(name)));
     }
 
     @Override
@@ -188,8 +196,7 @@ public class GuiceServiceInstance implements ServiceInstance {
                     this.modules.add(instance);
                 }
             }
-        }
-        catch (IllegalAccessException | InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             throw new IllegalStateException("Could not create an instance of the module", e);
         }
     }
@@ -207,6 +214,34 @@ public class GuiceServiceInstance implements ServiceInstance {
     @Override
     public Set<Class<? extends Annotation>> getCustomQualifiers() {
         return CUSTOM_QUALIFIER;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 37 * hash + Objects.hashCode(this.injector);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GuiceServiceInstance other = (GuiceServiceInstance) obj;
+
+        return Objects.equals(this.injector, other.injector);
+    }
+
+    @Override
+    public String toString() {
+        return "GuiceServiceInstance{" + "injector=" + injector + '}';
     }
 
 }

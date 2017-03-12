@@ -60,8 +60,7 @@ public class FileSystemUtil {
 
         try {
             Files.walkFileTree(file.toPath(), new DeleteDirectoryFileVisitor(exceptions));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             String msg = exceptions.stream()
                     .map(IOException::getMessage)
                     .collect(joining("\n", "[", "]"));

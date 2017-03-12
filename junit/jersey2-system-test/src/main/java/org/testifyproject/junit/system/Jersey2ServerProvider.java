@@ -51,7 +51,7 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class Jersey2ServerProvider implements ServerProvider<ResourceConfig> {
+public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, HttpServer> {
 
     private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
     private static final Map<String, DynamicType.Loaded<?>> REBASED_CLASSES = new ConcurrentHashMap<>();
@@ -96,14 +96,14 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig> {
             resourceConfig = testContext.getTestReifier().configure(testContext, resourceConfig);
 
             return resourceConfig;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             throw new IllegalStateException(t);
         }
     }
 
     @Override
-    public ServerInstance start(ResourceConfig configuration) {
+    @SuppressWarnings("UseSpecificCatch")
+    public ServerInstance<HttpServer> start(ResourceConfig configuration) {
         try {
             TestContext testContext = LOCAL_TEST_CONTEXT.get();
 
@@ -137,8 +137,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig> {
                     null);
 
             return DefaultServerInstance.of(baseUri, container);
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw new IllegalStateException("Could not start Jersey 2 Application", e);
         }
     }
@@ -151,9 +150,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig> {
             HttpServer httpServer = servletContainer.get();
             httpServer.shutdown().get();
             LOCAL_TEST_CONTEXT.remove();
-        }
-        catch (ExecutionException | InterruptedException e) {
-
+        } catch (ExecutionException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
     }

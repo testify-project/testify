@@ -93,6 +93,13 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
     TestReifier getTestReifier();
 
     /**
+     * Get the mock provider associated with the test context.
+     *
+     * @return mock provider instance
+     */
+    MockProvider getMockProvider();
+
+    /**
      * Get dependencies required to run the tests. The fully qualified name of
      * the class required in the classpath is the key and human readable
      * description is the value.

@@ -54,6 +54,34 @@ public @interface Application {
     Class<? extends ClientProvider> clientProvider() default ClientProvider.class;
 
     /**
+     * <p>
+     * Specifies the client name. This useful for giving the client instance a
+     * unique name that can be used to qualify and distinguish it from other
+     * similar services.
+     * </p>
+     * <p>
+     * Note that the default client name is "applicationClient".
+     * </p>
+     *
+     * @return a the client name.
+     */
+    String clientName() default "applicationClient";
+
+    /**
+     * <p>
+     * Specifies the contract implemented by the client. This useful for getting
+     * the client instance by its contract.
+     * </p>
+     * <p>
+     * Note that if the client contract class is not specified the client
+     * instance will be injectable by its implementation class only.
+     * </p>
+     *
+     * @return the client contract class
+     */
+    Class<?> clientContract() default void.class;
+
+    /**
      * Specifies the class that provides
      * {@link ServerProvider server provider implementation}. If a provider is
      * not specified one will be discovered in the class path.
@@ -61,5 +89,33 @@ public @interface Application {
      * @return server provider implementation class.
      */
     Class<? extends ServerProvider> serverProvider() default ServerProvider.class;
+
+    /**
+     * <p>
+     * Specifies the server name. This useful for giving the server instance a
+     * unique name that can be used to qualify and distinguish it from other
+     * similar services.
+     * </p>
+     * <p>
+     * Note that the default server name is "applicationServer".
+     * </p>
+     *
+     * @return a the server name.
+     */
+    String serverName() default "applicationServer";
+
+    /**
+     * <p>
+     * Specifies the contract implemented by the server. This useful for getting
+     * the server instance by its contract.
+     * </p>
+     * <p>
+     * Note that if the server contract class is not specified the server
+     * instance will be injectable by its implementation class only.
+     * </p>
+     *
+     * @return the server contract class
+     */
+    Class<?> serverContract() default void.class;
 
 }

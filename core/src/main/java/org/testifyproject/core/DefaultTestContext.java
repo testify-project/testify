@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -33,30 +34,14 @@ import org.testifyproject.TestReifier;
  */
 public class DefaultTestContext implements TestContext {
 
-    private final StartStrategy resourceStartStrategy;
-    private final Object testInstance;
-    private final TestDescriptor testDescriptor;
-    private final MethodDescriptor methodDescriptor;
-    private final TestReifier testReifier;
-    private final Map<String, Object> properties;
-    private final Map<String, String> dependencies;
-
-    public DefaultTestContext(
-            StartStrategy resourceStartStrategy,
-            Object testInstance,
-            TestDescriptor testDescriptor,
-            MethodDescriptor methodDescriptor,
-            TestReifier testReifier,
-            Map<String, Object> properties,
-            Map<String, String> dependencies) {
-        this.testDescriptor = testDescriptor;
-        this.methodDescriptor = methodDescriptor;
-        this.resourceStartStrategy = resourceStartStrategy;
-        this.testInstance = testInstance;
-        this.testReifier = testReifier;
-        this.properties = properties;
-        this.dependencies = dependencies;
-    }
+    private StartStrategy resourceStartStrategy;
+    private Object testInstance;
+    private TestDescriptor testDescriptor;
+    private MethodDescriptor methodDescriptor;
+    private TestReifier testReifier;
+    private MockProvider mockProvider;
+    private Map<String, Object> properties;
+    private Map<String, String> dependencies;
 
     @Override
     public Map<String, Object> getProperties() {
@@ -104,6 +89,11 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
+    public MockProvider getMockProvider() {
+        return mockProvider;
+    }
+
+    @Override
     public Map<String, String> getDependencies() {
         return dependencies;
     }
@@ -116,6 +106,38 @@ public class DefaultTestContext implements TestContext {
     @Override
     public <T> Optional<T> getCutInstance() {
         return findProperty(TestContextProperties.CUT_INSTANCE);
+    }
+
+    void setResourceStartStrategy(StartStrategy resourceStartStrategy) {
+        this.resourceStartStrategy = resourceStartStrategy;
+    }
+
+    void setTestInstance(Object testInstance) {
+        this.testInstance = testInstance;
+    }
+
+    void setTestDescriptor(TestDescriptor testDescriptor) {
+        this.testDescriptor = testDescriptor;
+    }
+
+    void setMethodDescriptor(MethodDescriptor methodDescriptor) {
+        this.methodDescriptor = methodDescriptor;
+    }
+
+    void setTestReifier(TestReifier testReifier) {
+        this.testReifier = testReifier;
+    }
+
+    void setMockProvider(MockProvider mockProvider) {
+        this.mockProvider = mockProvider;
+    }
+
+    void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    void setDependencies(Map<String, String> dependencies) {
+        this.dependencies = dependencies;
     }
 
     @Override

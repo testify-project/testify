@@ -14,15 +14,15 @@
         </activatedProfiles>
     </action>
     <action>
-            <actionName>CUSTOM-testify.categories</actionName>
-            <displayName>testify.categories</displayName>
-            <goals>
-                <goal>clean</goal>
-                <goal>install</goal>
-            </goals>
-            <properties>
-                <jpda.listen>maven</jpda.listen>
-                <testify.categories>unit</testify.categories>
-            </properties>
-        </action>
+        <actionName>CUSTOM-testify.categories</actionName>
+        <displayName>testify.categories</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <properties>
+            <jpda.listen>maven</jpda.listen>
+            <testify.categories>unit</testify.categories>
+        </properties>
+    </action>
 </actions>

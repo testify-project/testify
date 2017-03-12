@@ -21,7 +21,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
-import org.testifyproject.ServerInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.DefaultClientInstance;
 import org.testifyproject.tools.Discoverable;
@@ -35,13 +34,10 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class JaxrsWebTargetClientProvider implements ClientProvider<ClientBuilder, WebTarget> {
 
-    private ServerInstance serverInstance;
     private Client client;
 
     @Override
-    public ClientBuilder configure(TestContext testContext, ServerInstance serverInstance) {
-        this.serverInstance = serverInstance;
-
+    public ClientBuilder configure(TestContext testContext, URI baseURI) {
         ClientBuilder builder = ClientBuilder.newBuilder();
         builder.register(new ErrorClientResponseFilter());
 
@@ -49,13 +45,11 @@ public class JaxrsWebTargetClientProvider implements ClientProvider<ClientBuilde
     }
 
     @Override
-    public ClientInstance<WebTarget> create(TestContext testContext, ClientBuilder clientBuilder) {
-        this.client = clientBuilder.build();
-
-        URI baseURI = serverInstance.getBaseURI();
+    public ClientInstance<WebTarget> create(TestContext testContext, URI baseURI, ClientBuilder clientBuilder) {
+        client = clientBuilder.build();
         WebTarget webTarget = client.target(baseURI);
 
-        return DefaultClientInstance.of(baseURI, webTarget, WebTarget.class);
+        return DefaultClientInstance.of(webTarget, WebTarget.class);
     }
 
     @Override

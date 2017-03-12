@@ -15,10 +15,12 @@
  */
 package org.testifyproject.level.system;
 
+import java.net.URI;
 import java.util.Optional;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.CutDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.ReificationProvider;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
@@ -54,11 +56,38 @@ public class SystemTestRunner implements TestRunner, LoggingTrait {
         this.testContext = testContext;
         TestReifier testReifier = testContext.getTestReifier();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        MockProvider mockProvider = testContext.getMockProvider();
         Object testInstance = testContext.getTestInstance();
         Application application = testDescriptor.getApplication().get();
 
         SystemTestVerifier verifier = new SystemTestVerifier(testContext);
         verifier.dependency();
+
+        //create and initalize mock fields. this is necessary so we can configure
+        //expected interaction prior to making a call to the application
+        //endpoints
+        testDescriptor.getFieldDescriptors()
+                .parallelStream()
+                .filter(p -> p.getFake().isPresent())
+                .forEach(fieldDescriptor -> {
+                    Optional<Object> result = fieldDescriptor.getValue(testInstance);
+                    Object value;
+
+                    if (result.isPresent()) {
+                        value = result.get();
+
+                        //if a value is aready present and is not a mock instance
+                        //then create a virtual mock.
+                        if (!mockProvider.isMock(value)) {
+                            value = mockProvider.createVirtual(fieldDescriptor.getType(), value);
+                        }
+                    } else {
+                        value = mockProvider.createFake(fieldDescriptor.getType());
+                    }
+
+                    fieldDescriptor.setValue(testInstance, value);
+                });
+
         verifier.configuration();
 
         //create server provider instance
@@ -78,13 +107,14 @@ public class SystemTestRunner implements TestRunner, LoggingTrait {
         serviceInstance = testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE).get();
         //add constants to the service instance to make them available for injection
         serviceInstance.addConstant(testContext, null, TestContext.class);
-        serviceInstance.addConstant(serverInstance, null, ServerInstance.class);
 
-        //add the underlying server to the dependency injection service
-        addConstant(serviceInstance,
-                serverInstance.getServer(),
-                serverInstance.getName(),
-                serverInstance.getContract());
+        //add the client instance itself to the dependency injection service
+        String serverInstanceName = serverProvider.getClass().getSimpleName();
+        Class serverInstanceContract = ServerInstance.class;
+        serviceInstance.addConstant(serverInstance, serverInstanceName, serverInstanceContract);
+
+        //add the underlying server instance to the dependency injection service
+        serviceInstance.replace(serverInstance, application.serverName(), application.serverContract());
 
         //create client provider instance
         Class<? extends ClientProvider> clientProviderType = application.clientProvider();
@@ -96,18 +126,20 @@ public class SystemTestRunner implements TestRunner, LoggingTrait {
 
         //inject the client provider with services
         serviceInstance.inject(clientProvider);
-        //configure and create the client
-        Object clientConfig = clientProvider.configure(testContext, serverInstance);
-        clientConfig = testReifier.configure(testContext, clientConfig);
-        ClientInstance clientInstance = clientProvider.create(testContext, clientConfig);
-        String clientProviderName = clientProvider.getClass().getSimpleName();
-        serviceInstance.addConstant(clientInstance, clientProviderName, ClientInstance.class);
 
-        //add the underlying client to the dependency injection service
-        addConstant(serviceInstance,
-                clientInstance.getClient(),
-                clientInstance.getName(),
-                clientInstance.getContract());
+        //configure and create the client
+        URI baseURI = serverInstance.getBaseURI();
+        Object clientConfig = clientProvider.configure(testContext, baseURI);
+        clientConfig = testReifier.configure(testContext, clientConfig);
+        ClientInstance clientInstance = clientProvider.create(testContext, baseURI, clientConfig);
+
+        //add the client instance itself to the dependency injection service
+        String clientInstanceName = clientProvider.getClass().getSimpleName();
+        Class clientInstanceContract = ClientInstance.class;
+        serviceInstance.addConstant(clientInstance, clientInstanceName, clientInstanceContract);
+
+        //add the underlying client instance to the dependency injection service
+        serviceInstance.replace(clientInstance, application.clientName(), application.clientContract());
 
         //reifiy the test class
         reificationProvider = ServiceLocatorUtil.INSTANCE.getOne(ReificationProvider.class);

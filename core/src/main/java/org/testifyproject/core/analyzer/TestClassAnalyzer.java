@@ -92,8 +92,7 @@ public class TestClassAnalyzer extends ClassVisitor {
                         }
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 checkState(false,
                         "Could not analyze annotations in test class '%s'.\n%s",
                         testClass.getName(), e.getMessage());
@@ -134,8 +133,7 @@ public class TestClassAnalyzer extends ClassVisitor {
                     testDescriptor.addListElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
                 }
 
-            }
-            catch (SecurityException
+            } catch (SecurityException
                     | NoSuchFieldException
                     | IllegalAccessException
                     | IllegalArgumentException e) {
@@ -173,8 +171,7 @@ public class TestClassAnalyzer extends ClassVisitor {
                     testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
                 }
 
-            }
-            catch (NoSuchMethodException | SecurityException e) {
+            } catch (NoSuchMethodException | SecurityException e) {
                 checkState(false,
                         "Method with '%s' parameters not accessible in '%s' class.",
                         Arrays.toString(parameterTypes), testClass.getName());
@@ -195,8 +192,7 @@ public class TestClassAnalyzer extends ClassVisitor {
     private Class<?> getClass(String className) {
         try {
             return forName(className);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             checkState(false, "Class '%s' not found in the classpath.", className);
             //not reachable;
             throw new IllegalStateException(e);

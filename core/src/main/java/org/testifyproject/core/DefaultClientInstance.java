@@ -15,9 +15,9 @@
  */
 package org.testifyproject.core;
 
-import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
+import static java.util.Optional.ofNullable;
 import org.testifyproject.ClientInstance;
 
 /**
@@ -28,34 +28,18 @@ import org.testifyproject.ClientInstance;
  */
 public class DefaultClientInstance<T> implements ClientInstance<T> {
 
-    private final URI baseURI;
     private final T client;
-    private final String name;
     private final Class<? extends T> contract;
 
     /**
      * Create a new client client instance from the given parameters.
      *
      * @param <T> the client type
-     * @param baseURI base URI used by the client to communicate with the server
      * @param client the underlying client instance
      * @return a client instance
      */
-    public static <T> ClientInstance of(URI baseURI, T client) {
-        return new DefaultClientInstance(baseURI, client, null, null);
-    }
-
-    /**
-     * Create a new client client instance from the given parameters.
-     *
-     * @param <T> the client type
-     * @param baseURI base URI used by the client to communicate with the server
-     * @param client the underlying client instance
-     * @param name the name associated with the client
-     * @return a client instance
-     */
-    public static <T> ClientInstance of(URI baseURI, T client, String name) {
-        return new DefaultClientInstance(baseURI, client, name, null);
+    public static <T> ClientInstance of(T client) {
+        return new DefaultClientInstance(client, null);
     }
 
     /**
@@ -64,63 +48,34 @@ public class DefaultClientInstance<T> implements ClientInstance<T> {
      * implementation's {@link Class#getSimpleName() simple class name}.
      *
      * @param <T> the client type
-     * @param baseURI base URI used by the client to communicate with the server
      * @param client the underlying client instance
      * @param contract the contract implemented by the client
      * @return a client instance
      */
-    public static <T> ClientInstance of(URI baseURI, T client, Class<? extends T> contract) {
-        return new DefaultClientInstance(baseURI, client, null, contract);
+    public static <T> ClientInstance of(T client, Class<? extends T> contract) {
+        return new DefaultClientInstance(client, contract);
     }
 
-    /**
-     * Create a new client client instance from the given parameters.
-     *
-     * @param <T> the client type
-     * @param baseURI base URI used by the client to communicate with the server
-     * @param client the underlying client instance
-     * @param name the name associated with the client
-     * @param contract the contract implemented by the client
-     * @return a client instance
-     */
-    public static <T> ClientInstance of(URI baseURI, T client, String name, Class<? extends T> contract) {
-        return new DefaultClientInstance(baseURI, client, name, contract);
-    }
-
-    DefaultClientInstance(URI baseURI, T client, String name, Class<? extends T> contract) {
-        this.baseURI = baseURI;
+    DefaultClientInstance(T client, Class<? extends T> contract) {
         this.client = client;
-        this.name = name;
         this.contract = contract;
     }
 
     @Override
-    public URI getBaseURI() {
-        return baseURI;
-    }
-
-    @Override
-    public T getClient() {
+    public T getInstance() {
         return client;
     }
 
     @Override
-    public Optional<String> getName() {
-        return Optional.ofNullable(name);
-    }
-
-    @Override
     public Optional<Class<? extends T>> getContract() {
-        return Optional.ofNullable(contract);
+        return ofNullable(contract);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.baseURI);
-        hash = 79 * hash + Objects.hashCode(this.client);
-        hash = 79 * hash + Objects.hashCode(this.name);
-        hash = 79 * hash + Objects.hashCode(this.contract);
+        hash = 17 * hash + Objects.hashCode(this.client);
+        hash = 17 * hash + Objects.hashCode(this.contract);
         return hash;
     }
 
@@ -136,12 +91,6 @@ public class DefaultClientInstance<T> implements ClientInstance<T> {
             return false;
         }
         final DefaultClientInstance<?> other = (DefaultClientInstance<?>) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.baseURI, other.baseURI)) {
-            return false;
-        }
         if (!Objects.equals(this.client, other.client)) {
             return false;
         }
@@ -150,12 +99,7 @@ public class DefaultClientInstance<T> implements ClientInstance<T> {
 
     @Override
     public String toString() {
-        return "DefaultClientInstance{"
-                + "baseURI=" + baseURI
-                + ", client=" + client
-                + ", name=" + name
-                + ", contract=" + contract
-                + '}';
+        return "DefaultClientInstance{" + "client=" + client + ", contract=" + contract + '}';
     }
 
 }

@@ -28,7 +28,7 @@ import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RequiresContainer;
 import org.testifyproject.junit.fixture.GreeterApplication;
-import org.testifyproject.junit.fixture.need.PostgresAbstractModule;
+import org.testifyproject.junit.fixture.need.PostgresModule;
 
 /**
  * Test Greeter Resource inside the container from the client perspective real
@@ -39,7 +39,7 @@ import org.testifyproject.junit.fixture.need.PostgresAbstractModule;
  * @author saden
  */
 @Application(GreeterApplication.class)
-@Module(PostgresAbstractModule.class)
+@Module(PostgresModule.class)
 @RequiresContainer(value = "postgres", version = "9.4")
 @RunWith(Jersey2SystemTest.class)
 public class GreeterResourceRequiresContainerST {
@@ -53,7 +53,7 @@ public class GreeterResourceRequiresContainerST {
         String phrase = "Hello";
 
         //Act
-        Response result = cut.getClient()
+        Response result = cut.getInstance()
                 .path("/")
                 .request()
                 .post(Entity.json(phrase));

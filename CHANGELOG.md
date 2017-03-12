@@ -14,13 +14,15 @@ was added, changed, deprecated, removed, fix and security fixes.
 ## [Unreleased]
 ### Added
 - API module which defines contracts and annotations
-- Core module which implements and provides common implementation of API contracts, utility classes as well as the ability to parse test and class under test classes
+- Core module which implements and provides:
+ - Common implementation of API contracts
+ - Ability to parse test classes and classes under test
+ - Utility classes
 - Mockito and EasyMock implementations of the MockProvider contract
 - Docker implementation of ContainerProvider contract
 - Spring, HK2, and Guice DI implementations of the ServiceProvider contract
-- Unit, Integration, System test implementation TestRunner and TestVerifier contracts
-- JUnit test runner implementations for Spring, HK2, Guice, Spring Boot, Spring Servlet MVC, Jersey 2
+- Unit, Integration, and System test implementations of TestRunner and TestVerifier contracts
+- JUnit 4 test runner implementations for Spring, HK2, Guice, Spring Boot, Spring Servlet MVC, Jersey 2
 - JAX-RS implementation of the ClientProvider contract
 - Undertow implementation of the ServerProvider contract
-- Tools module that contains various helper tools (generate services, providing logging, test categories)
-- External module that provides shaded libs
+

@@ -47,6 +47,16 @@ public interface ServiceInstance {
      *
      * @param <T> the service type
      * @param type the service type
+     * @param name the service name
+     * @return an instance of the service
+     */
+    <T> T getService(Type type, String name);
+
+    /**
+     * Get a service with the given qualifiers.
+     *
+     * @param <T> the service type
+     * @param type the service type
      * @param qualifiers the service qualifiers
      * @return an instance of the service
      */
@@ -63,7 +73,9 @@ public interface ServiceInstance {
 
     /**
      * Replace all services that implement the given contract with the given
-     * name and instance.
+     * name and instance. If services that implement the contract are not found
+     * this method should behave like
+     * {@link #addConstant(java.lang.Object, java.lang.String, java.lang.Class)}.
      *
      * @param instance the service instance
      * @param name the name of the service
@@ -106,7 +118,7 @@ public interface ServiceInstance {
 
         Class<? extends T> contract = null;
 
-        if (overrideContract != null && !Class.class.equals(overrideContract)) {
+        if (overrideContract != null && !void.class.equals(overrideContract)) {
             contract = overrideContract;
         } else if (contractResult.isPresent()) {
             contract = contractResult.get();

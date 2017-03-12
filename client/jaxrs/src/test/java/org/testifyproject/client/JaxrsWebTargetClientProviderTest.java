@@ -25,9 +25,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import org.testifyproject.ClientInstance;
-import org.testifyproject.ServerInstance;
+import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Fake;
@@ -44,52 +42,48 @@ public class JaxrsWebTargetClientProviderTest {
     JaxrsWebTargetClientProvider cut;
 
     @Fake
-    TestContext testContext;
-
-    @Fake
-    ServerInstance serverInstance;
-
-    @Fake
     Client client;
 
     @Test
     public void givenNullConfigureShouldReturnClientBuilder() {
-        cut.configure(testContext, null);
+        cut.configure(mock(TestContext.class), null);
     }
 
     @Test
     public void givenServerInstanceConfigureShouldReturn() {
-        ClientBuilder result = cut.configure(testContext, serverInstance);
+        TestContext testContext = mock(TestContext.class);
+        URI baseURI = URI.create("http://test.server");
+        ClientBuilder result = cut.configure(testContext, baseURI);
 
         assertThat(result).isNotNull();
-        verifyZeroInteractions(serverInstance);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullConfigurationCreateShouldThrowException() {
+        TestContext testContext = mock(TestContext.class);
+        URI baseURI = URI.create("http://test.server");
         ClientBuilder clientBuilder = null;
-        cut.create(testContext, clientBuilder);
+
+        cut.create(testContext, baseURI, clientBuilder);
     }
 
     @Test
     public void givenClientBuilderCreateShouldReturnClientInstance() {
-        ClientBuilder clientBuilder = mock(ClientBuilder.class);
+        TestContext testContext = mock(TestContext.class);
         URI baseURI = URI.create("http://test.server");
+        ClientBuilder clientBuilder = mock(ClientBuilder.class);
         WebTarget webTarget = mock(WebTarget.class);
 
-        given(serverInstance.getBaseURI()).willReturn(baseURI);
         given(clientBuilder.build()).willReturn(client);
         given(client.target(baseURI)).willReturn(webTarget);
 
-        ClientInstance<WebTarget> result = cut.create(testContext, clientBuilder);
+        Instance<WebTarget> result = cut.create(testContext, baseURI, clientBuilder);
 
         assertThat(result).isNotNull();
-        assertThat(result.getBaseURI()).isEqualTo(baseURI);
-        assertThat(result.getClient()).isEqualTo(webTarget);
+        assertThat(result.getInstance()).isEqualTo(webTarget);
         assertThat(result.getContract()).contains(WebTarget.class);
 
         verify(clientBuilder).build();
-        verify(serverInstance).getBaseURI();
         verify(client).target(baseURI);
     }
 

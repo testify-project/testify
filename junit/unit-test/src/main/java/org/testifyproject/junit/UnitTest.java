@@ -19,8 +19,8 @@ import static java.util.Collections.EMPTY_MAP;
 import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestCategory;
 import org.testifyproject.TestRunner;
+import org.testifyproject.core.TestCategory;
 import org.testifyproject.junit.core.TestifyJUnit4TestRunner;
 import org.testifyproject.level.unit.UnitTestRunner;
 

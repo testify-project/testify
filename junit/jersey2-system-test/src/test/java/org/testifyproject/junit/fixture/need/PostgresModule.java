@@ -25,7 +25,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
  *
  * @author saden
  */
-public class PostgresAbstractModule extends AbstractBinder {
+public class PostgresModule extends AbstractBinder {
 
     @Override
     protected void configure() {

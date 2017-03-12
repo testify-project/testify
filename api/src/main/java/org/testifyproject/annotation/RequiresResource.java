@@ -72,62 +72,60 @@ public @interface RequiresResource {
 
     /**
      * <p>
-     * Specifies the required resource's server component name. This useful for
-     * giving the server resource instance a unique name that can be used to
-     * qualify and distinguish it from other similar services.
+     * Specifies the required resource's server name. This useful for giving the
+     * server resource instance a unique name that can be used to qualify and
+     * distinguish it from other similar services.
      * </p>
      * <p>
      * Note that if the name is not specified the name provided by the required
      * resource implementation will be used.
      * </p>
      *
-     * @return a the required resource's server component name.
+     * @return the required resource's server name.
      */
     String serverName() default "";
 
     /**
      * <p>
-     * Specifies the required resource's server component contract class. This
-     * useful for getting the server resource by its contract as well or its
-     * implementation class.
+     * Specifies the contract implemented by the required resource server class.
+     * This useful for getting the server resource by its contract.
      * </p>
      * <p>
      * Note that if the server contract class is not specified the server
      * resource instance will be injectable by its implementation class only.
      * </p>
      *
-     * @return a the required resource's server component contract class.
+     * @return the required resource's server contract class.
      */
-    Class<?> serverContract() default Class.class;
+    Class<?> serverContract() default void.class;
 
     /**
      * <p>
-     * Specifies the required resource's client component name. This useful for
-     * giving the client resource instance a unique name that can be used to
-     * qualify and distinguish it from other similar services.
+     * Specifies the required resource's client name. This useful for giving the
+     * client resource instance a unique name that can be used to qualify and
+     * distinguish it from other similar services.
      * </p>
      * <p>
      * Note that if the name is not specified the name provided by the required
      * resource implementation will be used.
      * </p>
      *
-     * @return a the required resource's client component name.
+     * @return the required resource's client name.
      */
     String clientName() default "";
 
     /**
      * <p>
-     * Specifies the required resource's client component contract class. This
-     * useful for getting the client resource by its contract as well or its
-     * implementation class.
+     * Specifies the contract implemented by the required resource client class.
+     * This useful for getting the client resource by its contract.
      * </p>
      * <p>
      * Note that if the client contract class is not specified the client
      * resource instance will be injectable by its implementation class only.
      * </p>
      *
-     * @return a the required resource's client component contract class.
+     * @return the required resource's client contract class.
      */
-    Class<?> clientContract() default Class.class;
+    Class<?> clientContract() default void.class;
 
 }

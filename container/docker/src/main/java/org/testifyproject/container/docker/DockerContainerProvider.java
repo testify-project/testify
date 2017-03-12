@@ -151,8 +151,7 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
             });
 
             return new DockerContainerInstance(inspectResponse.getName(), host, ports);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -171,8 +170,7 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
             client.waitContainerCmd(containerId)
                     .exec(new WaitCallback(testContext, containerId))
                     .awaitCompletion();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
 

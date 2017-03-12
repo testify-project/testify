@@ -53,8 +53,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
                 field.set(instance, value);
 
                 return null;
-            }
-            catch (SecurityException
+            } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException e) {
                 throw new IllegalStateException(e);
@@ -76,8 +75,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
                 field.setAccessible(true);
 
                 return ofNullable((T) field.get(instance));
-            }
-            catch (SecurityException
+            } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException e) {
                 throw new IllegalStateException(e);

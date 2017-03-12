@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core;
 
-import java.net.URI;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,69 +27,32 @@ import org.testifyproject.ClientInstance;
 public class DefaultClientInstanceTest {
 
     ClientInstance<Object> cut;
-    URI baseURI;
     Object client;
-    String name;
     Class<Object> contract;
 
     @Before
     public void init() {
-        baseURI = URI.create("uri://test.server");
         client = new Object();
-        name = "name";
         contract = Object.class;
 
-        cut = DefaultClientInstance.of(baseURI, client, name, contract);
+        cut = DefaultClientInstance.of(client, contract);
 
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getClient()).isEqualTo(client);
-        assertThat(cut.getName()).contains(name);
+        assertThat(cut.getInstance()).isEqualTo(client);
         assertThat(cut.getContract()).contains(contract);
     }
 
     @Test
     public void givenBaseURIAndClientOfShouldReturn() {
-        cut = DefaultClientInstance.of(baseURI, client);
+        cut = DefaultClientInstance.of(client);
 
         assertThat(cut).isNotNull();
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getClient()).isEqualTo(client);
-        assertThat(cut.getName()).isEmpty();
+        assertThat(cut.getInstance()).isEqualTo(client);
         assertThat(cut.getContract()).isEmpty();
-    }
-
-    @Test
-    public void givenNameOfShouldReturn() {
-        cut = DefaultClientInstance.of(baseURI, client, name);
-
-        assertThat(cut).isNotNull();
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getClient()).isEqualTo(client);
-        assertThat(cut.getName()).contains(name);
-        assertThat(cut.getContract()).isEmpty();
-    }
-
-    @Test
-    public void givenContractOfShouldReturn() {
-        cut = DefaultClientInstance.of(baseURI, client, contract);
-
-        assertThat(cut).isNotNull();
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getClient()).isEqualTo(client);
-        assertThat(cut.getName()).isEmpty();
-        assertThat(cut.getContract()).contains(contract);
-    }
-
-    @Test
-    public void callToGetBaseURIShouldReturnURI() {
-        URI result = cut.getBaseURI();
-
-        assertThat(result).isEqualTo(baseURI);
     }
 
     @Test
     public void callToGetClientShouldReturnClient() {
-        Object result = cut.getClient();
+        Object result = cut.getInstance();
 
         assertThat(result).isEqualTo(client);
     }
@@ -112,7 +74,7 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ClientInstance<Object> uneuqual = DefaultClientInstance.of(baseURI, new Object());
+        ClientInstance<Object> uneuqual = DefaultClientInstance.of(new Object());
 
         assertThat(cut).isNotEqualTo(uneuqual);
         assertThat(cut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -126,8 +88,7 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ClientInstance<Object> equal
-                = DefaultClientInstance.of(baseURI, client, name, contract);
+        ClientInstance<Object> equal = DefaultClientInstance.of(client, contract);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
@@ -139,9 +100,7 @@ public class DefaultClientInstanceTest {
 
         assertThat(result).contains(
                 "DefaultClientInstance",
-                "baseURI",
                 "client",
-                "name",
                 "contract"
         );
     }

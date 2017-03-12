@@ -59,7 +59,7 @@ import org.testifyproject.trait.LoggingTrait;
  * @author saden
  */
 @Discoverable
-public class SpringBootServerProvider implements ServerProvider<SpringApplicationBuilder>, LoggingTrait {
+public class SpringBootServerProvider implements ServerProvider<SpringApplicationBuilder, EmbeddedServletContainer>, LoggingTrait {
 
     private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
     private static final Map<String, DynamicType.Loaded<?>> REBASED_CLASSES = new ConcurrentHashMap<>();
@@ -142,7 +142,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     }
 
     @Override
-    public ServerInstance start(SpringApplicationBuilder configuration) {
+    public ServerInstance<EmbeddedServletContainer> start(SpringApplicationBuilder configuration) {
         try {
             debug("starting spring boot application");
             SpringApplication application = configuration.build();

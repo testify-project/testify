@@ -15,10 +15,6 @@
  */
 package org.testifyproject;
 
-import java.net.URI;
-import java.util.Optional;
-import static java.util.Optional.empty;
-
 /**
  * A contract that defines methods for retrieving information about a client and
  * communicating with web resources running inside of the server.
@@ -26,14 +22,7 @@ import static java.util.Optional.empty;
  * @author saden
  * @param <T> the target type
  */
-public interface ClientInstance<T> {
-
-    /**
-     * Get the base URI used by the client to communicate with the server.
-     *
-     * @return the base server URI used by the client.
-     */
-    URI getBaseURI();
+public interface ClientInstance<T> extends Instance<T> {
 
     /**
      * Get a client instance that can be used to communicate with web resources
@@ -41,26 +30,7 @@ public interface ClientInstance<T> {
      *
      * @return a client instance.
      */
-    T getClient();
+    @Override
+    T getInstance();
 
-    /**
-     * Get the name of client instance. If present it represents a qualifier for
-     * the client instance.
-     *
-     * @return optional with client name, empty optional otherwise
-     */
-    default Optional<String> getName() {
-        return empty();
-    }
-
-    /**
-     * The contract implemented by the client instance. If present any existing
-     * implementations of the contract in the dependency injection framework
-     * will be replaced by the client instance returned by {@link #getClient()}.
-     *
-     * @return optional with client contract type, empty optional otherwise
-     */
-    default Optional<Class<? extends T>> getContract() {
-        return empty();
-    }
 }

@@ -70,8 +70,7 @@ public class ReflectionUtil {
                     }
                 }
                 return instance;
-            }
-            catch (IllegalAccessException
+            } catch (IllegalAccessException
                     | IllegalArgumentException
                     | InstantiationException
                     | NoSuchMethodException

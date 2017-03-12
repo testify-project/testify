@@ -110,8 +110,7 @@ public interface TypeTrait {
                 T result = (T) method.invoke(instance, methodArgs);
 
                 return Optional.ofNullable(result);
-            }
-            catch (SecurityException
+            } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException
                     | InvocationTargetException e) {
@@ -132,8 +131,7 @@ public interface TypeTrait {
         return AccessController.doPrivileged((PrivilegedAction<Method>) () -> {
             try {
                 return type.getDeclaredMethod(methodName, methodArgTypes);
-            }
-            catch (NoSuchMethodException | SecurityException e) {
+            } catch (NoSuchMethodException | SecurityException e) {
                 Class<?> superType = type.getSuperclass();
 
                 if (superType == null) {

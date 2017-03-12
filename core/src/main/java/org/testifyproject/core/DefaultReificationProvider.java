@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.testifyproject.ClientInstance;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
@@ -32,6 +33,7 @@ import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
@@ -75,6 +77,7 @@ public class DefaultReificationProvider implements ReificationProvider {
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
+        Optional<Application> applicationResult = testDescriptor.getApplication();
         Optional<CutDescriptor> cutDescriptorResult = testContext.getCutDescriptor();
 
         Set<Class<? extends Annotation>> nameQualifers = serviceInstance.getNameQualifers();
@@ -89,10 +92,22 @@ public class DefaultReificationProvider implements ReificationProvider {
             CutDescriptor cutDescriptor = cutDescriptorResult.get();
             Cut cut = cutDescriptor.getCut();
             Class type = cutDescriptor.getType();
+            Object cutInstance;
 
-            Annotation[] qualifierAnnotations = cutDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
+            if (applicationResult.isPresent()) {
+                Application application = applicationResult.get();
 
-            Object cutInstance = serviceInstance.getService(type, qualifierAnnotations);
+                if (ClientInstance.class.isAssignableFrom(type)) {
+                    cutInstance = serviceInstance.getService(type);
+                } else {
+                    cutInstance = serviceInstance.getService(type, application.clientName());
+                }
+            } else {
+                Annotation[] qualifierAnnotations
+                        = cutDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
+
+                cutInstance = serviceInstance.getService(type, qualifierAnnotations);
+            }
 
             cutDescriptor.setValue(testInstance, cutInstance);
             TestReifier testReifier = testContext.getTestReifier();

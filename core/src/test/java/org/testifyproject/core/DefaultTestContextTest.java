@@ -26,6 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -44,6 +45,7 @@ public class DefaultTestContextTest {
     TestDescriptor testDescriptor;
     MethodDescriptor methodDescriptor;
     TestReifier testReifier;
+    MockProvider mockProvider;
     Map<String, Object> properties;
     Map<String, String> dependencies;
 
@@ -54,16 +56,20 @@ public class DefaultTestContextTest {
         testDescriptor = mock(TestDescriptor.class);
         methodDescriptor = mock(MethodDescriptor.class);
         testReifier = mock(TestReifier.class);
+        mockProvider = mock(MockProvider.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
         dependencies = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = new DefaultTestContext(resourceStartStrategy,
-                testInstance,
-                testDescriptor,
-                methodDescriptor,
-                testReifier,
-                properties,
-                dependencies);
+        cut = new DefaultTestContextBuilder()
+                .resourceStartStrategy(resourceStartStrategy)
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .methodDescriptor(methodDescriptor)
+                .testReifier(testReifier)
+                .mockProvider(mockProvider)
+                .properties(properties)
+                .dependencies(dependencies)
+                .build();
     }
 
     @Test
@@ -131,6 +137,13 @@ public class DefaultTestContextTest {
     }
 
     @Test
+    public void callToGetMockProviderShouldReturn() {
+        MockProvider result = cut.getMockProvider();
+
+        assertThat(result).isEqualTo(mockProvider);
+    }
+
+    @Test
     public void callToGetDependenciesShouldReturn() {
         Map<String, String> result = cut.getDependencies();
 
@@ -168,13 +181,15 @@ public class DefaultTestContextTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        TestContext uneuqual = new DefaultTestContext(resourceStartStrategy,
-                testInstance,
-                testDescriptor,
-                null,
-                testReifier,
-                properties,
-                dependencies);
+        TestContext uneuqual = new DefaultTestContextBuilder()
+                .resourceStartStrategy(resourceStartStrategy)
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .methodDescriptor(null)
+                .testReifier(testReifier)
+                .properties(properties)
+                .dependencies(dependencies)
+                .build();
 
         assertThat(cut).isNotEqualTo(uneuqual);
         assertThat(cut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -183,18 +198,20 @@ public class DefaultTestContextTest {
     @Test
     public void givenSameInstancesShouldBeEqual() {
         assertThat(cut).isEqualTo(cut);
-
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        TestContext equal = new DefaultTestContext(resourceStartStrategy,
-                testInstance,
-                testDescriptor,
-                methodDescriptor,
-                testReifier,
-                properties,
-                dependencies);
+        TestContext equal = new DefaultTestContextBuilder()
+                .resourceStartStrategy(resourceStartStrategy)
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .methodDescriptor(methodDescriptor)
+                .testReifier(testReifier)
+                .mockProvider(mockProvider)
+                .properties(properties)
+                .dependencies(dependencies)
+                .build();
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());

@@ -78,8 +78,7 @@ public class CutClassAnalyzer extends ClassVisitor {
                 cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
                 cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
                 cutDescriptor.addListElement(CutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
-            }
-            catch (SecurityException
+            } catch (SecurityException
                     | NoSuchFieldException
                     | IllegalAccessException
                     | IllegalArgumentException e) {
@@ -127,8 +126,7 @@ public class CutClassAnalyzer extends ClassVisitor {
                         cutDescriptor.addListElement(CutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
                     }
 
-                }
-                catch (NoSuchMethodException | SecurityException e) {
+                } catch (NoSuchMethodException | SecurityException e) {
                     checkState(false,
                             "Constructor with '%s' parameters not accessible in '%s' class.",
                             Arrays.toString(parameterTypes), cutField.getDeclaringClass().getTypeName());
@@ -143,8 +141,7 @@ public class CutClassAnalyzer extends ClassVisitor {
     private Class<?> getClass(org.testifyproject.asm.Type type) {
         try {
             return forName(type.getInternalName().replace('/', '.'));
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             checkState(false, "Class '%s' not found in the classpath.", type.getClassName());
             //not reachable;
             throw new IllegalStateException(e);

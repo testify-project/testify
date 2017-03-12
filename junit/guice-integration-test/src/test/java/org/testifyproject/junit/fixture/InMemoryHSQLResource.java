@@ -56,8 +56,7 @@ public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, Da
                     .server(server, DataSource.class)
                     .client(client, Connection.class)
                     .build();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -69,8 +68,7 @@ public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, Da
                     .createStatement()
                     .executeQuery("SHUTDOWN");
             client.close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new IllegalStateException(e);
         }
     }

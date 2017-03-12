@@ -51,8 +51,7 @@ public class UnitTestVerifier implements TestVerifier {
         testContext.getDependencies().entrySet().parallelStream().forEach(p -> {
             try {
                 Class.forName(p.getKey());
-            }
-            catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 checkState(false,
                         "'%s' not found. Please insure '%s' dependency is in the classpath.",
                         p.getKey(), p.getValue());

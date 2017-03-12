@@ -25,13 +25,14 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.ContainerInstance;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.RequiresContainer;
 import static org.testifyproject.container.docker.DockerContainerProvider.DEFAULT_DAEMON_URI;
-import org.testifyproject.core.DefaultTestContext;
+import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
@@ -68,17 +69,20 @@ public class DockerContainerProviderTest {
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         TestReifier testReifier = mock(TestReifier.class);
+        MockProvider mockProvider = mock(MockProvider.class);
         Map<String, Object> properties = mock(Map.class);
         Map<String, String> dependencies = mock(Map.class);
 
-        TestContext testContext = new DefaultTestContext(
-                resourceStartStrategy,
-                testInstance,
-                testDescriptor,
-                methodDescriptor,
-                testReifier,
-                properties,
-                dependencies);
+        TestContext testContext = new DefaultTestContextBuilder()
+                .resourceStartStrategy(resourceStartStrategy)
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .methodDescriptor(methodDescriptor)
+                .testReifier(testReifier)
+                .mockProvider(mockProvider)
+                .properties(properties)
+                .dependencies(dependencies)
+                .build();
 
         RequiresContainer delegate = ReflectionUtil.INSTANCE.newInstance(RequiresContainer.class);
         RequiresContainer requiresContainer = mock(RequiresContainer.class, delegatesTo(delegate));

@@ -16,8 +16,6 @@
 package org.testifyproject;
 
 import java.net.URI;
-import java.util.Optional;
-import static java.util.Optional.empty;
 
 /**
  * A contract that defines methods for retrieving information about the running
@@ -26,7 +24,7 @@ import static java.util.Optional.empty;
  * @author saden
  * @param <T> the underlying server instance type.
  */
-public interface ServerInstance<T> {
+public interface ServerInstance<T> extends Instance<T> {
 
     /**
      * The server base URI.
@@ -40,27 +38,7 @@ public interface ServerInstance<T> {
      *
      * @return the underlying server instance
      */
-    T getServer();
-
-    /**
-     * Get the name of server instance. If present it represents a qualifier for
-     * the server instance.
-     *
-     * @return optional with server name, empty optional otherwise
-     */
-    default Optional<String> getName() {
-        return empty();
-    }
-
-    /**
-     * The contract implemented by the server instance. If present any existing
-     * implementations of the contract in the dependency injection framework
-     * will be replaced by the server instance returned by {@link #getServer()}.
-     *
-     * @return optional with server contract type, empty optional otherwise
-     */
-    default Optional<Class<? extends T>> getContract() {
-        return empty();
-    }
+    @Override
+    T getInstance();
 
 }

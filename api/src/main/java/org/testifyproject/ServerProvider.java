@@ -20,8 +20,9 @@ package org.testifyproject;
  *
  * @author saden
  * @param <T> the server configuration type
+ * @param <S> the server instance type
  */
-public interface ServerProvider<T> {
+public interface ServerProvider<T, S> {
 
     /**
      * Configure the server using the given test context.
@@ -37,7 +38,7 @@ public interface ServerProvider<T> {
      * @param configuration server configuration object
      * @return a server instance
      */
-    ServerInstance start(T configuration);
+    ServerInstance<S> start(T configuration);
 
     /**
      * Stop the server.

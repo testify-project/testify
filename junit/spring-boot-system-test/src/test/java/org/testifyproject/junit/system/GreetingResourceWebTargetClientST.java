@@ -21,9 +21,13 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit.fixture.servlet.GreeterServletApplication;
+import org.testifyproject.junit.fixture.web.service.GreetingService;
 
 /**
  *
@@ -36,12 +40,21 @@ public class GreetingResourceWebTargetClientST {
     @Cut
     WebTarget cut;
 
+    @Fake
+    GreetingService greetingService;
+
     @Test
     public void givenClientInstanceGetGreetingResourceShouldReturn() {
+        String greeting = "Hi";
+        given(greetingService.getGreeting()).willReturn(greeting);
+
         Response result = cut.path("/").request().get();
+
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
-        assertThat(result.readEntity(String.class)).isEqualTo("Hello");
+        assertThat(result.readEntity(String.class)).isEqualTo(greeting);
+
+        verify(greetingService).getGreeting();
     }
 
 }

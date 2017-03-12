@@ -22,9 +22,13 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit.fixture.GreeterApplication;
+import org.testifyproject.junit.fixture.service.GreetingService;
 
 @RunWith(Jersey2SystemTest.class)
 @Application(GreeterApplication.class)
@@ -33,14 +37,18 @@ public class GreetingResourceWebTargetST {
     @Cut
     WebTarget cut;
 
+    @Fake
+    GreetingService greetingService;
+
     @Test
     public void verifyInjections() {
         //Arrange
         String phrase = "Hello";
 
+        willDoNothing().given(greetingService).save(phrase);
+
         //Act
-        Response result = cut
-                .path("/")
+        Response result = cut.path("/")
                 .request()
                 .post(Entity.json(phrase));
 
@@ -48,6 +56,7 @@ public class GreetingResourceWebTargetST {
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
         assertThat(result.hasEntity()).isFalse();
-    }
 
+        verify(greetingService).save(phrase);
+    }
 }

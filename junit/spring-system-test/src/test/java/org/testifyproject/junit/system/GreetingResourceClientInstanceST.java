@@ -35,7 +35,7 @@ public class GreetingResourceClientInstanceST {
 
     @Test
     public void verifyInjections() {
-        Response result = cut.getClient().path("/").request().get();
+        Response result = cut.getInstance().path("/").request().get();
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
         assertThat(result.readEntity(String.class)).isEqualTo("Hello");

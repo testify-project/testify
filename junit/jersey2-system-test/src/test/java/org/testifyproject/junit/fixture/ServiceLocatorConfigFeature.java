@@ -51,8 +51,7 @@ public class ServiceLocatorConfigFeature implements Feature {
             Populator populator = dcs.getPopulator();
             populator.populate(new ClasspathDescriptorFileFinder());
             dc.commit();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         }
 

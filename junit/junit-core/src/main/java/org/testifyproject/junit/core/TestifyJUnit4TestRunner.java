@@ -38,12 +38,12 @@ import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestCategory;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
-import org.testifyproject.core.DefaultTestContext;
+import org.testifyproject.core.DefaultTestContextBuilder;
+import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.util.AnalyzerUtil;
@@ -102,8 +102,6 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
     public void run(RunNotifier runNotifier) {
         Description description = getDescription();
         TestifyJUnit4RunNotifier notifier = new TestifyJUnit4RunNotifier(runNotifier, description);
-        MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
-        assert mockProvider != null;
 
         try {
             debug("Creating Statement");
@@ -202,17 +200,20 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
 
         debug("creating test context for test run {}#{}", javaClass.getName(), method.getName());
         TestReifier testReifier = ServiceLocatorUtil.INSTANCE.getOne(TestReifier.class);
+        MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+
         Map<String, Object> properties = new HashMap<>();
 
-        TestContext testContext = new DefaultTestContext(
-                getResourceStartStrategy(),
-                testInstance,
-                testDescriptor,
-                methodDescriptor,
-                testReifier,
-                properties,
-                getDependencies()
-        );
+        TestContext testContext = new DefaultTestContextBuilder()
+                .resourceStartStrategy(getResourceStartStrategy())
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .methodDescriptor(methodDescriptor)
+                .testReifier(testReifier)
+                .mockProvider(mockProvider)
+                .properties(properties)
+                .dependencies(getDependencies())
+                .build();
 
         Optional<Field> cutField = testDescriptor.getCutField();
 

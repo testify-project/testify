@@ -15,35 +15,42 @@
  */
 package org.testifyproject.junit.system;
 
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit.fixture.servlet.GreeterServletApplication;
-import org.testifyproject.junit.fixture.web.resource.GreetingResource;
 import org.testifyproject.junit.fixture.web.service.GreetingService;
 
-@RunWith(SpringBootSystemTest.class)
+@RunWith(SpringSystemTest.class)
 @Application(GreeterServletApplication.class)
-public class GreetingResourceInContainerFakeST {
+public class GreetingResourceWebTargetClientST {
 
     @Cut
-    GreetingResource cut;
+    WebTarget cut;
 
     @Fake
     GreetingService greetingService;
 
     @Test
-    public void verifyInContainerFakeInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greetingService)
-                .isNotNull()
-                .isSameAs(cut.getGreetingService());
+    public void givenClientInstanceGetGreetingResourceShouldReturn() {
+        String greeting = "Hi";
+        given(greetingService.getGreeting()).willReturn(greeting);
 
-        assertThat(Mockito.mockingDetails(greetingService).isMock()).isTrue();
+        Response result = cut.path("/").request().get();
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
+        assertThat(result.readEntity(String.class)).isEqualTo(greeting);
+
+        verify(greetingService).getGreeting();
     }
 
 }

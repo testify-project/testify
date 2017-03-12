@@ -17,8 +17,8 @@ package org.testifyproject.junit.core;
 
 import org.junit.runner.Description;
 import org.junit.runner.manipulation.Filter;
-import org.testifyproject.TestCategory;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
 

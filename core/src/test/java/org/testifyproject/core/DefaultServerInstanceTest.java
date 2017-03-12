@@ -30,21 +30,18 @@ public class DefaultServerInstanceTest {
     ServerInstance<Object> cut;
     URI baseURI;
     Object server;
-    String name;
     Class<Object> contract;
 
     @Before
     public void init() {
         baseURI = URI.create("uri://test.server");
         server = new Object();
-        name = "name";
         contract = Object.class;
 
-        cut = DefaultServerInstance.of(baseURI, server, name, contract);
+        cut = DefaultServerInstance.of(baseURI, server, contract);
 
         assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getServer()).isEqualTo(server);
-        assertThat(cut.getName()).contains(name);
+        assertThat(cut.getInstance()).isEqualTo(server);
         assertThat(cut.getContract()).contains(contract);
     }
 
@@ -54,19 +51,17 @@ public class DefaultServerInstanceTest {
 
         assertThat(cut).isNotNull();
         assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getServer()).isEqualTo(server);
-        assertThat(cut.getName()).isEmpty();
+        assertThat(cut.getInstance()).isEqualTo(server);
         assertThat(cut.getContract()).isEmpty();
     }
 
     @Test
     public void givenNameOfShouldReturn() {
-        cut = DefaultServerInstance.of(baseURI, server, name);
+        cut = DefaultServerInstance.of(baseURI, server);
 
         assertThat(cut).isNotNull();
         assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getServer()).isEqualTo(server);
-        assertThat(cut.getName()).contains(name);
+        assertThat(cut.getInstance()).isEqualTo(server);
         assertThat(cut.getContract()).isEmpty();
     }
 
@@ -76,8 +71,7 @@ public class DefaultServerInstanceTest {
 
         assertThat(cut).isNotNull();
         assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getServer()).isEqualTo(server);
-        assertThat(cut.getName()).isEmpty();
+        assertThat(cut.getInstance()).isEqualTo(server);
         assertThat(cut.getContract()).contains(contract);
     }
 
@@ -90,7 +84,7 @@ public class DefaultServerInstanceTest {
 
     @Test
     public void callToGetServerShouldReturnServer() {
-        Object result = cut.getServer();
+        Object result = cut.getInstance();
 
         assertThat(result).isEqualTo(server);
     }
@@ -127,7 +121,7 @@ public class DefaultServerInstanceTest {
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         ServerInstance<Object> equal
-                = DefaultServerInstance.of(baseURI, server, name, contract);
+                = DefaultServerInstance.of(baseURI, server, contract);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
@@ -137,13 +131,12 @@ public class DefaultServerInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = cut.toString();
 
-        assertThat(result)
-                .contains("DefaultServerInstance",
-                        "baseURI",
-                        "server",
-                        "name",
-                        "contract"
-                );
+        assertThat(result).contains(
+                "DefaultServerInstance",
+                "baseURI",
+                "server",
+                "contract"
+        );
     }
 
 }

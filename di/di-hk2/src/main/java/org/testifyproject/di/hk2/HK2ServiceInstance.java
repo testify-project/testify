@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,6 +33,7 @@ import org.glassfish.hk2.api.ServiceLocator;
 import static org.glassfish.hk2.api.ServiceLocatorState.RUNNING;
 import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.BuilderHelper;
+import org.glassfish.hk2.utilities.NamedImpl;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addOneConstant;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
 import org.testifyproject.ServiceInstance;
@@ -88,6 +90,11 @@ public class HK2ServiceInstance implements ServiceInstance {
     @Override
     public ServiceLocator getContext() {
         return locator;
+    }
+
+    @Override
+    public <T> T getService(Type type, String name) {
+        return locator.getService(type, new NamedImpl(name));
     }
 
     @Override
@@ -163,8 +170,7 @@ public class HK2ServiceInstance implements ServiceInstance {
             }
 
             config.commit();
-        }
-        catch (MultiException | InstantiationException | IllegalAccessException e) {
+        } catch (MultiException | InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException("Could not add the module to the service instance", e);
         }
     }
@@ -182,8 +188,7 @@ public class HK2ServiceInstance implements ServiceInstance {
             }
 
             dc.commit();
-        }
-        catch (IOException | MultiException e) {
+        } catch (IOException | MultiException e) {
             throw new IllegalStateException("Could not populate service instance", e);
         }
     }
@@ -201,6 +206,34 @@ public class HK2ServiceInstance implements ServiceInstance {
     @Override
     public Set<Class<? extends Annotation>> getCustomQualifiers() {
         return CUSTOM_QUALIFIER;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.locator);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final HK2ServiceInstance other = (HK2ServiceInstance) obj;
+
+        return Objects.equals(this.locator, other.locator);
+    }
+
+    @Override
+    public String toString() {
+        return "HK2ServiceInstance{" + "locator=" + locator + '}';
     }
 
 }

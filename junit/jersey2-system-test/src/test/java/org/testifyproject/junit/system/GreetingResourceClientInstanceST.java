@@ -40,7 +40,7 @@ public class GreetingResourceClientInstanceST {
         String phrase = "Hello";
 
         //Act
-        Response result = cut.getClient()
+        Response result = cut.getInstance()
                 .path("/")
                 .request()
                 .post(Entity.json(phrase));

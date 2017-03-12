@@ -31,8 +31,8 @@ public class GreetingResource {
     private final GreetingService greetingService;
 
     @Autowired
-    GreetingResource(GreetingService service) {
-        this.greetingService = service;
+    GreetingResource(GreetingService greetingService) {
+        this.greetingService = greetingService;
     }
 
     @RequestMapping(path = "/", method = RequestMethod.GET)

@@ -68,8 +68,7 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
             HK2DescriptorPopulator testPopulator = new HK2DescriptorPopulator(classLoader, defaultResource);
             populator.populate(testPopulator);
             dc.commit();
-        }
-        catch (MultiException | IOException e) {
+        } catch (MultiException | IOException e) {
             throw new IllegalStateException("Could not create HK2 Service Locator", e);
         }
 
@@ -94,8 +93,7 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
             Class<?> extrasUtilitiesClass = Class.forName(className);
             Method method = extrasUtilitiesClass.getMethod(methodName, ServiceLocator.class);
             method.invoke(null, serviceLocator);
-        }
-        catch (ClassNotFoundException
+        } catch (ClassNotFoundException
                 | NoSuchMethodException
                 | SecurityException
                 | IllegalAccessException

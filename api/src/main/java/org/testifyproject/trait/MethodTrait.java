@@ -107,8 +107,7 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
                 T result = (T) method.invoke(instance, args);
 
                 return Optional.ofNullable(result);
-            }
-            catch (SecurityException
+            } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException
                     | InvocationTargetException e) {
