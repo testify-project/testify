@@ -16,36 +16,32 @@ major.minor.patch
 ## Performing Release
 - Start release:
 ```bash
-# replace x.x.x with release semantic version
-$ git flow release start x.x.x
+RELEASE_VERSION=x.x.x
+DEVELOPMENT_VERSION=x.x.x-SNAPSHOT
+$ git flow release start $RELEASE_VERSION
 ```
 - Update the project version in pom files:
 ```bash
-# replace x.x.x with release semantic version
-$ mvn versions:set -DnewVersion=x.x.x
+$ mvn versions:set -DnewVersion=$RELEASE_VERSION
 ```
 - Update CHANGELOG.md:
 - Commit the changes:
 ```bash
-# replace x.x.x with release semantic version
-$ git commit -m "Updated version to x.x.x" .
+$ git commit -m "Prepare release $RELEASE_VERSION" .
 ```
 - Finish the release:
 ```bash
-# replace x.x.x with release semantic version
-$ git flow release finish x.x.x # release semantic version
+$ git flow release finish $RELEASE_VERSION
 ```
 - Update next development project version in pom files:
 ```bash
-# replace x.x.x with next development semantic version
-$ mvn versions:set -DnewVersion=x.x.x-SNAPSHOT
+$ mvn versions:set -DnewVersion=$DEVELOPMENT_VERSION
 ```
 - Commit the updated pom files:
 ```bash
-# replace x.x.x with next development semantic version
-$ git commit -m "Updated next development version to x.x.x-SNAPSHOT" .
+$ git commit -m "Updated next development version to $DEVELOPMENT_VERSION" .
 ```
-- Push changes in develop and master branches and tags to remote repository:
+- Push changes, develop, master branches and tags to remote repository:
 ```bash
 $ git push origin develop master --tags
 ```
