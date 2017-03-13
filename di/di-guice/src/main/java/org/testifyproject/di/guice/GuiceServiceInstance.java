@@ -15,7 +15,6 @@
  */
 package org.testifyproject.di.guice;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -29,7 +28,6 @@ import static com.google.inject.util.Modules.override;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -99,6 +97,7 @@ public class GuiceServiceInstance implements ServiceInstance {
     @Override
     public <T> T getService(Type type, Annotation... qualifiers) {
         updateInjector();
+
         if (qualifiers == null || qualifiers.length == 0) {
             return (T) injector.getInstance(Key.get(type));
         } else {
@@ -107,71 +106,22 @@ public class GuiceServiceInstance implements ServiceInstance {
     }
 
     private synchronized void updateInjector() {
-        if (running) {
-            return;
+        if (!running) {
+
+            Module constantModule = GuiceAbstractModule.of(constants);
+            Module replacementModule = GuiceAbstractModule.of(replacements);
+
+            //Combine the modules defined in the test class with testify's constant
+            //modules, then replace binding definitions with testify replacements
+            //and the modules designated as test modules.
+            Module serviceModule = combine(combine(modules), constantModule);
+            Module testModule = combine(testModules);
+            Module module = override(serviceModule).with(replacementModule, testModule);
+
+            //create a guice injector
+            injector = Guice.createInjector(Stage.DEVELOPMENT, module);
+            running = true;
         }
-
-        AbstractModule constantModule = new AbstractModule() {
-            @Override
-            protected void configure() {
-                while (constants.peek() != null) {
-                    Instance constant = constants.poll();
-                    Object instance = constant.getInstance();
-                    Class instanceType = instance.getClass();
-                    Optional<String> name = constant.getName();
-                    Optional<Class> contract = constant.getContract();
-
-                    if (name.isPresent() && contract.isPresent()) {
-                        bind(Key.get(contract.get(), Names.named(name.get()))).toInstance(instance);
-                        bind(Key.get(instanceType, Names.named(name.get()))).toInstance(instance);
-                    } else if (name.isPresent()) {
-                        bind(instanceType).annotatedWith(Names.named(name.get())).toInstance(instance);
-                    } else if (contract.isPresent()) {
-                        bind(contract.get()).toInstance(instance);
-                    } else {
-                        bind(instanceType).toInstance(instance);
-                    }
-                }
-            }
-        };
-
-        AbstractModule replacementModule = new AbstractModule() {
-            @Override
-            protected void configure() {
-                while (replacements.peek() != null) {
-                    Instance constant = replacements.poll();
-                    Object instance = constant.getInstance();
-                    Class instanceType = instance.getClass();
-                    Optional<String> name = constant.getName();
-                    Optional<Class> contract = constant.getContract();
-
-                    if (name.isPresent() && contract.isPresent()) {
-                        bind(Key.get(contract.get(), Names.named(name.get()))).toInstance(instance);
-                        bind(Key.get(instanceType, Names.named(name.get()))).toInstance(instance);
-                    } else if (name.isPresent()) {
-                        bind(instanceType).annotatedWith(Names.named(name.get())).toInstance(instance);
-                    } else if (contract.isPresent()) {
-                        bind(contract.get()).toInstance(instance);
-                    } else {
-                        bind(instanceType).toInstance(instance);
-                        for (Class type : instanceType.getInterfaces()) {
-                            bind(type).toInstance(instance);
-                        }
-                    }
-                }
-            }
-        };
-
-        //Combine the modules defined in the test class with testify's constant
-        //modules, then replace binding definitions with testify replacements
-        //and the modules designated as test modules.
-        Module serviceModule = combine(combine(modules), constantModule);
-        Module testModule = combine(testModules);
-        Module module = override(serviceModule).with(replacementModule, testModule);
-
-        //create a guice injector
-        injector = Guice.createInjector(Stage.DEVELOPMENT, module);
-        running = true;
     }
 
     @Override
