@@ -184,7 +184,7 @@
             <url>http://oss.sonatype.org/content/repositories/releases</url>
             <releases>
                 <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
+                <updatePolicy>always</updatePolicy>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
