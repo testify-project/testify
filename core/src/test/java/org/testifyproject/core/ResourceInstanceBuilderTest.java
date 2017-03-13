@@ -42,7 +42,7 @@ public class ResourceInstanceBuilderTest {
     public void givenServerInstanceBuildShouldReturn() {
         Object server = mock(Object.class);
 
-        ResourceInstance result = cut.server(server).build();
+        ResourceInstance result = cut.server(server, "server").build();
 
         assertThat(result).isNotNull();
 
@@ -90,7 +90,7 @@ public class ResourceInstanceBuilderTest {
     public void givenClientInstanceBuildShouldReturn() {
         Object client = mock(Object.class);
 
-        ResourceInstance result = cut.client(client).build();
+        ResourceInstance result = cut.client(client, "client").build();
 
         assertThat(result).isNotNull();
 

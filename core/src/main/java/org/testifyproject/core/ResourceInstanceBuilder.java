@@ -35,18 +35,6 @@ public class ResourceInstanceBuilder<S, C> {
     private final Map<String, Object> properties = new HashMap<>();
 
     /**
-     * Set the server with the given instance.
-     *
-     * @param server the server instance
-     * @return this object
-     */
-    public ResourceInstanceBuilder<S, C> server(S server) {
-        this.server = new DefaultInstance(server, null, null);
-
-        return this;
-    }
-
-    /**
      * Set the server with the given instance and name.
      *
      * @param server the server instance
@@ -69,18 +57,6 @@ public class ResourceInstanceBuilder<S, C> {
      */
     public ResourceInstanceBuilder<S, C> server(S server, String name, Class<? super S> contract) {
         this.server = new DefaultInstance(server, name, contract);
-
-        return this;
-    }
-
-    /**
-     * Set the client with the given instance.
-     *
-     * @param client the client instance
-     * @return this object
-     */
-    public ResourceInstanceBuilder<S, C> client(C client) {
-        this.client = new DefaultInstance(client, null, null);
 
         return this;
     }
