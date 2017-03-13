@@ -28,7 +28,6 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.instantiator.ObjectInstantiator;
 import org.testifyproject.tools.Discoverable;
 
@@ -72,7 +71,7 @@ public class UnitTestRunner implements TestRunner {
         Object testInstance = testContext.getTestInstance();
 
         Optional<MethodDescriptor> collaboratorMethod = testDescriptor.getCollaboratorProvider();
-        MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+        MockProvider mockProvider = testContext.getMockProvider();
 
         if (collaboratorMethod.isPresent()) {
             MethodDescriptor methodDescriptor = collaboratorMethod.get();

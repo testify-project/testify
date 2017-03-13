@@ -147,45 +147,45 @@ public class ServiceLocatorUtilTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullContractAndImplementationGetOneIfPresentShouldThrowException() {
+    public void givenNullContractAndImplementationGetOneOrDefaultShouldThrowException() {
         Class<MultiImplmentationContract> contract = null;
         Class<SecondMultiImplmentationContract> defaultImplementation = SecondMultiImplmentationContract.class;
 
-        cut.getOneIfPresent(contract, defaultImplementation);
+        cut.getOneOrDefault(contract, defaultImplementation);
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenContractAndNullImplementationGetOneIfPresentShouldThrowException() {
+    public void givenContractAndNullImplementationGetOneOrDefaultShouldThrowException() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<? extends MultiImplmentationContract> defaultImplementation = null;
 
-        cut.getOneIfPresent(contract, defaultImplementation);
+        cut.getOneOrDefault(contract, defaultImplementation);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void givenContractWithoutImplementationGetOneIfPresentShouldThrowException() {
+    public void givenContractWithoutImplementationGetOneOrDefaultShouldThrowException() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
         Class<NoImplementationConract> defaultImplementation = NoImplementationConract.class;
 
-        cut.getOneIfPresent(contract, defaultImplementation);
+        cut.getOneOrDefault(contract, defaultImplementation);
     }
 
     @Test
-    public void givenContractWithMultipleImplementationAndDefaultImplementationGetOneIfPresentShouldReturnFoundImplementation() {
+    public void givenContractWithMultipleImplementationAndDefaultImplementationGetOneOrDefaultShouldReturnFoundImplementation() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<SecondMultiImplmentationContract> defaultImplementation = SecondMultiImplmentationContract.class;
 
-        MultiImplmentationContract result = cut.getOneIfPresent(contract, defaultImplementation);
+        MultiImplmentationContract result = cut.getOneOrDefault(contract, defaultImplementation);
 
         assertThat(result).isInstanceOf(FirstMultiImplmentationContract.class);
     }
 
     @Test
-    public void givenContractWithSingleImplementationAndDefaultImplementationGetOneIfPresentShouldReturnDefaultImplementation() {
+    public void givenContractWithSingleImplementationAndDefaultImplementationGetOneOrDefaultShouldReturnDefaultImplementation() {
         Class<SingleImplementationContract> contract = SingleImplementationContract.class;
         Class<SingleImplementationContractImpl> defaultImplementation = SingleImplementationContractImpl.class;
 
-        SingleImplementationContract result = cut.getOneIfPresent(contract, defaultImplementation);
+        SingleImplementationContract result = cut.getOneOrDefault(contract, defaultImplementation);
 
         assertThat(result).isInstanceOf(SingleImplementationContractImpl.class);
     }

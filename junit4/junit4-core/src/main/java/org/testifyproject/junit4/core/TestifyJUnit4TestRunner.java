@@ -43,11 +43,13 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.DefaultTestContextBuilder;
+import org.testifyproject.core.DefaultTestReifier;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.mock.MockitoMockProvider;
 import org.testifyproject.trait.LoggingTrait;
 
 /**
@@ -70,7 +72,8 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         super(testClass);
         try {
             filter(TestifyJUnit4CategoryFilter.of(level));
-        } catch (NoTestsRemainException e) {
+        }
+        catch (NoTestsRemainException e) {
             //we can ignore this exception
             debug("No test remain");
         }
@@ -108,14 +111,18 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
             Statement statement = classBlock(notifier);
             debug("Evaluating Statement");
             statement.evaluate();
-        } catch (AssumptionViolatedException e) {
+        }
+        catch (AssumptionViolatedException e) {
             notifier.addFailedAssumption(e);
-        } catch (StoppedByUserException e) {
+        }
+        catch (StoppedByUserException e) {
             throw e;
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             notifier.addFailure(t);
             notifier.pleaseStop();
-        } finally {
+        }
+        finally {
         }
     }
 
@@ -136,10 +143,12 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         } else {
             try {
                 runLeaf(methodBlock(method), description, notifier);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 notifier.addFailure(t);
                 notifier.pleaseStop();
-            } finally {
+            }
+            finally {
                 if (!isIgnored(method)) {
                     Optional<TestUnit> result = TestUnitHolder.INSTANCE.get();
 
@@ -182,7 +191,8 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
             debug("creating instance of test class {}", javaClass.getName());
             testInstance = createTest();
             testUnit.setTestInstance(testInstance);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
         }
 
@@ -199,12 +209,15 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
 
         debug("creating test context for test run {}#{}", javaClass.getName(), method.getName());
-        TestReifier testReifier = ServiceLocatorUtil.INSTANCE.getOne(TestReifier.class);
-        MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOne(MockProvider.class);
+
+        TestReifier testReifier = ServiceLocatorUtil.INSTANCE
+                .getOneOrDefault(TestReifier.class, DefaultTestReifier.class);
+        MockProvider mockProvider = ServiceLocatorUtil.INSTANCE
+                .getOneOrDefault(MockProvider.class, MockitoMockProvider.class);
 
         Map<String, Object> properties = new HashMap<>();
 
-        TestContext testContext = new DefaultTestContextBuilder()
+        TestContext testContext = DefaultTestContextBuilder.builder()
                 .resourceStartStrategy(getResourceStartStrategy())
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)

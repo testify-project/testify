@@ -29,11 +29,9 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Virtual;
-import org.testifyproject.core.util.ServiceLocatorUtil;
 import static org.testifyproject.guava.common.base.Preconditions.checkState;
 import org.testifyproject.guava.common.reflect.TypeToken;
 import org.testifyproject.instantiator.ObjectInstantiator;
-import org.testifyproject.mock.MockitoMockProvider;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -87,7 +85,7 @@ public class DefaultTestReifier implements TestReifier {
     @Override
     public void reify(TestContext testContext, Object cutInstance) {
         testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
-            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOneIfPresent(MockProvider.class, MockitoMockProvider.class);
+            MockProvider mockProvider = testContext.getMockProvider();
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
             Object testInstance = testContext.getTestInstance();
@@ -164,7 +162,7 @@ public class DefaultTestReifier implements TestReifier {
     @Override
     public void reify(TestContext testContext, Object cutInstance, Object... collaborators) {
         testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
-            MockProvider mockProvider = ServiceLocatorUtil.INSTANCE.getOneIfPresent(MockProvider.class, MockitoMockProvider.class);
+            MockProvider mockProvider = testContext.getMockProvider();
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
             Object testInstance = testContext.getTestInstance();
             Set<FieldDescriptor> ignoredDescriptors = new HashSet<>();

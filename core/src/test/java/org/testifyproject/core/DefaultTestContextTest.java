@@ -60,7 +60,7 @@ public class DefaultTestContextTest {
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
         dependencies = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = new DefaultTestContextBuilder()
+        cut = DefaultTestContextBuilder.builder()
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
@@ -181,7 +181,7 @@ public class DefaultTestContextTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        TestContext uneuqual = new DefaultTestContextBuilder()
+        TestContext uneuqual = DefaultTestContextBuilder.builder()
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
@@ -202,7 +202,7 @@ public class DefaultTestContextTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        TestContext equal = new DefaultTestContextBuilder()
+        TestContext equal = DefaultTestContextBuilder.builder()
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)

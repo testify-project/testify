@@ -36,6 +36,15 @@ public class DefaultTestContextBuilder {
     private Map<String, Object> properties = new ConcurrentHashMap<>();
     private Map<String, String> dependencies = Collections.EMPTY_MAP;
 
+    /**
+     * Create a new instance of DefaultTestContextBuilder.
+     *
+     * @return a new instance
+     */
+    public static DefaultTestContextBuilder builder() {
+        return new DefaultTestContextBuilder();
+    }
+
     public DefaultTestContextBuilder resourceStartStrategy(StartStrategy resourceStartStrategy) {
         this.resourceStartStrategy = resourceStartStrategy;
         return this;

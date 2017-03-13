@@ -84,7 +84,7 @@ public class DefaultReificationProvider implements ReificationProvider {
         Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
         Set<Class<? extends Annotation>> injectionAnnotations = serviceInstance.getInjectionAnnotations();
 
-        MockProvider mockProvider = serviceLocatorUtil.getOne(MockProvider.class);
+        MockProvider mockProvider = testContext.getMockProvider();
 
         //if we are performing unit or integration test then get the cut class
         //from the service instance.

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.concurrent.atomic.AtomicReference;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static org.testifyproject.guava.common.base.Preconditions.checkState;
@@ -127,51 +128,56 @@ public class ServiceLocatorUtil {
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
-     * @param defaultImplementation the default implementation of the contract
+     * @param defaultImplementation the implementation of the contract
      * @return an implementation instance, default implementation otherwise
      */
-    public <T> T getOneIfPresent(Class<T> contract, Class<? extends T> defaultImplementation) {
+    public <T> T getOneOrDefault(Class<T> contract, Class<? extends T> defaultImplementation) {
+        String contractName = contract.getName();
+        String implementationName = defaultImplementation.getName();
+
+        AtomicReference<T> contractRef = new AtomicReference<>();
+        AtomicReference<T> implementationRef = new AtomicReference<>();
+
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
-        List<T> result = stream(serviceLoader.spliterator(), true)
+        List<T> services = stream(serviceLoader.spliterator(), true)
                 .distinct()
+                .filter(service -> {
+                    if (service.getClass().equals(defaultImplementation)) {
+                        implementationRef.compareAndSet(null, service);
+                    } else {
+                        contractRef.compareAndSet(null, service);
+                    }
+
+                    return true;
+                })
                 .collect(toList());
 
-        String contractName = contract.getName();
-        String defaultImplementationName = defaultImplementation.getClass().getName();
-
-        checkState(!result.isEmpty(),
-                "Could not find an implementaiton of '%s' contract in the classpath."
-                + "Please insure an implementation of '%s' contract is in the classpath",
-                contractName, contractName);
-
-        Object[] implementations = result.stream()
-                .filter(p -> p.getClass().equals(defaultImplementation))
-                .toArray();
-
-        checkState(result.size() <= 2,
+        checkState(services.size() <= 2,
                 "Found '%d' implementaitons of '%s' contract in the classpath (%s). "
-                + "Please insure only one implementation of '%s' contract is in the classpath",
-                result.size() - 1, contractName, Arrays.toString(implementations), contractName);
+                + "Please insure two or less implementation of '%s' contract including '%s' "
+                + "are in the classpath",
+                services.size() - 1,
+                contractName,
+                Arrays.toString(services.toArray()),
+                contractName,
+                implementationName
+        );
 
-        T defaultImplementationService = null;
+        T instance = null;
 
-        for (T service : result) {
-            Class<?> serviceType = service.getClass();
-
-            if (serviceType.equals(defaultImplementation)) {
-                defaultImplementationService = service;
-            } else {
-                return service;
-            }
+        if (contractRef.get() != null) {
+            instance = contractRef.get();
+        } else if (implementationRef.get() != null) {
+            instance = implementationRef.get();
         }
 
-        checkState(defaultImplementationService != null,
-                "Could not find an default implementation '%s' of '%s' contract in the classpath."
-                + "Please insure that the default implementation is in the classpath",
-                defaultImplementationName, contractName);
+        checkState(instance != null,
+                "Could not find an implementation of '%s' contract in the classpath."
+                + "Please insure that at least 1 implementation is in the classpath",
+                implementationName, contractName);
 
-        return defaultImplementationService;
+        return instance;
     }
 
     /**

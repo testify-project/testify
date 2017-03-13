@@ -35,6 +35,15 @@ public class ResourceInstanceBuilder<S, C> {
     private final Map<String, Object> properties = new HashMap<>();
 
     /**
+     * Create a new instance of ResourceInstanceBuilder.
+     *
+     * @return a new instance
+     */
+    public static ResourceInstanceBuilder builder() {
+        return new ResourceInstanceBuilder();
+    }
+
+    /**
      * Set the server with the given instance and name. When choosing a name for
      * the resource it is best to choose a name that reflect the resource being
      * provided to avoid potential collision with names used by other resource
