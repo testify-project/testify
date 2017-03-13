@@ -70,22 +70,6 @@ public class ResourceInstanceBuilderTest {
     }
 
     @Test
-    public void givenServerInstanceAndContractBuildShouldReturn() {
-        Object server = mock(Object.class);
-        Class contract = Object.class;
-
-        ResourceInstance result = cut.server(server, contract).build();
-
-        assertThat(result).isNotNull();
-
-        Instance serverInstance = result.getServer();
-        assertThat(serverInstance).isNotNull();
-        assertThat(serverInstance.getInstance()).isEqualTo(server);
-        assertThat(serverInstance.getName()).isEmpty();
-        assertThat(serverInstance.getContract()).contains(contract);
-    }
-
-    @Test
     public void givenServerInstanceAndNameAndContractBuildShouldReturn() {
         Object server = mock(Object.class);
         String name = "name";
@@ -139,26 +123,6 @@ public class ResourceInstanceBuilderTest {
         assertThat(clientInstance.getInstance()).isEqualTo(client);
         assertThat(clientInstance.getName()).contains(name);
         assertThat(clientInstance.getContract()).isEmpty();
-    }
-
-    @Test
-    public void givenClientInstanceAndContractBuildShouldReturn() {
-        Object client = mock(Object.class);
-        Class contract = Object.class;
-
-        ResourceInstance result = cut.client(client, contract).build();
-
-        assertThat(result).isNotNull();
-
-        Optional<Instance<Object>> clientInstanceResult = result.getClient();
-        assertThat(clientInstanceResult).isPresent();
-
-        Instance<Object> clientInstance = clientInstanceResult.get();
-
-        assertThat(clientInstance).isNotNull();
-        assertThat(clientInstance.getInstance()).isEqualTo(client);
-        assertThat(clientInstance.getName()).isEmpty();
-        assertThat(clientInstance.getContract()).contains(contract);
     }
 
     @Test

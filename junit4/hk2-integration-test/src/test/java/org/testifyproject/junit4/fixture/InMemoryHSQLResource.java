@@ -53,8 +53,8 @@ public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, Da
             client = dataSource.getConnection();
 
             return new ResourceInstanceBuilder<DataSource, Connection>()
-                    .server(server, DataSource.class)
-                    .client(client, Connection.class)
+                    .server(server, "inmemoryHSQLDataSource", DataSource.class)
+                    .client(client, "inmemoryHSQLConnection", Connection.class)
                     .build();
         } catch (SQLException e) {
             throw new IllegalStateException(e);

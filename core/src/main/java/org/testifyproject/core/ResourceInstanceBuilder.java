@@ -63,19 +63,6 @@ public class ResourceInstanceBuilder<S, C> {
      * Set the server with the given instance, name, contract.
      *
      * @param server the server instance
-     * @param contract the server contract
-     * @return this object
-     */
-    public ResourceInstanceBuilder<S, C> server(S server, Class<? super S> contract) {
-        this.server = new DefaultInstance(server, null, contract);
-
-        return this;
-    }
-
-    /**
-     * Set the server with the given instance, name, contract.
-     *
-     * @param server the server instance
      * @param name the server name
      * @param contract the server contract
      * @return this object
@@ -107,19 +94,6 @@ public class ResourceInstanceBuilder<S, C> {
      */
     public ResourceInstanceBuilder<S, C> client(C client, String name) {
         this.client = new DefaultInstance(client, name, null);
-
-        return this;
-    }
-
-    /**
-     * Set the client with the given instance, name, contract.
-     *
-     * @param client the client instance
-     * @param contract the client contract
-     * @return this object
-     */
-    public ResourceInstanceBuilder<S, C> client(C client, Class<? super C> contract) {
-        this.client = new DefaultInstance(client, null, contract);
 
         return this;
     }
