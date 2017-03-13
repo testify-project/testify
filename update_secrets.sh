@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016-2017 Testify Project.
+# Copyright 2015, 2016 Testify Project.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +16,7 @@
 #
 set -e
 
-if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-    echo "Decrypting Secrets"
-    openssl aes-256-cbc -K $encrypted_1b2bc6d866cb_key -iv $encrypted_1b2bc6d866cb_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
-    tar --strip-components 1 -xzf secrets.tar.gz
-    gpg --fast-import testifybot.asc
-    eval "$(ssh-agent -s)"
-    ssh-add testifybot_rsa
-fi
-
-echo "MAVEN_OPTS='-client -Xms512m -Xmx2048m'" > ~/.mavenrc
-
-echo "Before Install Operations All Done!"
+rm -f secrets.tar.gz secrets.tar.gz.enc
+tar -czvf secrets.tar.gz secrets
+travis login --github-token f3e6bfa87ccf7b563b4b2190a8ed58b92a983103
+travis encrypt-file secrets.tar.gz
