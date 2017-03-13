@@ -39,24 +39,9 @@ public class ResourceInstanceBuilderTest {
     }
 
     @Test
-    public void givenServerInstanceBuildShouldReturn() {
-        Object server = mock(Object.class);
-
-        ResourceInstance result = cut.server(server, "server").build();
-
-        assertThat(result).isNotNull();
-
-        Instance serverInstance = result.getServer();
-        assertThat(serverInstance).isNotNull();
-        assertThat(serverInstance.getInstance()).isEqualTo(server);
-        assertThat(serverInstance.getName()).isEmpty();
-        assertThat(serverInstance.getContract()).isEmpty();
-    }
-
-    @Test
     public void givenServerInstanceAndNameBuildShouldReturn() {
         Object server = mock(Object.class);
-        String name = "name";
+        String name = "server";
 
         ResourceInstance result = cut.server(server, name).build();
 
@@ -72,7 +57,7 @@ public class ResourceInstanceBuilderTest {
     @Test
     public void givenServerInstanceAndNameAndContractBuildShouldReturn() {
         Object server = mock(Object.class);
-        String name = "name";
+        String name = "server";
         Class contract = Object.class;
 
         ResourceInstance result = cut.server(server, name, contract).build();
@@ -87,28 +72,9 @@ public class ResourceInstanceBuilderTest {
     }
 
     @Test
-    public void givenClientInstanceBuildShouldReturn() {
-        Object client = mock(Object.class);
-
-        ResourceInstance result = cut.client(client, "client").build();
-
-        assertThat(result).isNotNull();
-
-        Optional<Instance<Object>> clientInstanceResult = result.getClient();
-        assertThat(clientInstanceResult).isPresent();
-
-        Instance<Object> clientInstance = clientInstanceResult.get();
-
-        assertThat(clientInstance).isNotNull();
-        assertThat(clientInstance.getInstance()).isEqualTo(client);
-        assertThat(clientInstance.getName()).isEmpty();
-        assertThat(clientInstance.getContract()).isEmpty();
-    }
-
-    @Test
     public void givenClientInstanceAndNameBuildShouldReturn() {
         Object client = mock(Object.class);
-        String name = "name";
+        String name = "client";
 
         ResourceInstance result = cut.client(client, name).build();
 
@@ -128,7 +94,7 @@ public class ResourceInstanceBuilderTest {
     @Test
     public void givenClientInstanceAndNameAndContractBuildShouldReturn() {
         Object client = mock(Object.class);
-        String name = "name";
+        String name = "client";
         Class contract = Object.class;
 
         ResourceInstance result = cut.client(client, name, contract).build();

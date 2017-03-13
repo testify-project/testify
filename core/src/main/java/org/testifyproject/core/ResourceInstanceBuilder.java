@@ -35,7 +35,10 @@ public class ResourceInstanceBuilder<S, C> {
     private final Map<String, Object> properties = new HashMap<>();
 
     /**
-     * Set the server with the given instance and name.
+     * Set the server with the given instance and name. When choosing a name for
+     * the resource it is best to choose a name that reflect the resource being
+     * provided to avoid potential collision with names used by other resource
+     * provider (i.e. "myAwesomeResourceServer").
      *
      * @param server the server instance
      * @param name the server name
@@ -48,7 +51,10 @@ public class ResourceInstanceBuilder<S, C> {
     }
 
     /**
-     * Set the server with the given instance, name, contract.
+     * Set the server with the given instance, name, contract. When choosing a
+     * name for the resource it is best to choose a name that reflect the
+     * resource being provided to avoid potential collision with names used by
+     * other resource provider (i.e. "myAwesomeResourceServer").
      *
      * @param server the server instance
      * @param name the server name
@@ -62,7 +68,10 @@ public class ResourceInstanceBuilder<S, C> {
     }
 
     /**
-     * Set the client with the given instance and name.
+     * Set the client with the given instance and name. When choosing a name for
+     * the resource it is best to choose a name that reflect the resource being
+     * provided to avoid potential collision with names used by other resource
+     * provider (i.e. "myAwesomeResourceClient").
      *
      * @param client the client instance
      * @param name the client name
@@ -75,7 +84,10 @@ public class ResourceInstanceBuilder<S, C> {
     }
 
     /**
-     * Set the client with the given instance, name, contract.
+     * Set the client with the given instance, name, contract. When choosing a
+     * name for the resource it is best to choose a name that reflect the
+     * resource being provided to avoid potential collision with names used by
+     * other resource provider (i.e. "myAwesomeResourceClient").
      *
      * @param client the client instance
      * @param name the client name
