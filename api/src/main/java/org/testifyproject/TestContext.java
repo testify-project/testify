@@ -86,9 +86,16 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
     <T> Optional<T> getCutInstance();
 
     /**
+     * Get the test runner associated with the test context.
+     *
+     * @return test runner instance
+     */
+    TestRunner getTestRunner();
+
+    /**
      * Get the test reifier associated with the test context.
      *
-     * @return test refier instance
+     * @return test reifier instance
      */
     TestReifier getTestReifier();
 
@@ -98,6 +105,13 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
      * @return mock provider instance
      */
     MockProvider getMockProvider();
+
+    /**
+     * Get the service instance associated with the test context.
+     *
+     * @return an optional with service instance, empty optional otherwise
+     */
+    Optional<ServiceInstance> getServiceInstance();
 
     /**
      * Get dependencies required to run the tests. The fully qualified name of

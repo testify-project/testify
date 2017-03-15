@@ -15,6 +15,7 @@
  */
 package org.testifyproject.junit4.core;
 
+import org.testifyproject.core.TestContextHolder;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -36,7 +37,6 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.MDC;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
-import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -51,6 +51,7 @@ import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.mock.MockitoMockProvider;
 import org.testifyproject.trait.LoggingTrait;
+import org.testifyproject.MockProvider;
 
 /**
  * Base class for all Testify Unit Runners. This class analyzes the test class,
@@ -72,8 +73,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         super(testClass);
         try {
             filter(TestifyJUnit4CategoryFilter.of(level));
-        }
-        catch (NoTestsRemainException e) {
+        } catch (NoTestsRemainException e) {
             //we can ignore this exception
             debug("No test remain");
         }
@@ -103,74 +103,63 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
 
     @Override
     public void run(RunNotifier runNotifier) {
-        Description description = getDescription();
-        TestifyJUnit4RunNotifier notifier = new TestifyJUnit4RunNotifier(runNotifier, description);
+        Description testDescription = getDescription();
+        TestifyJUnit4RunNotifier notifier = TestifyJUnit4RunNotifier.of(runNotifier, testDescription);
 
         try {
             debug("Creating Statement");
             Statement statement = classBlock(notifier);
             debug("Evaluating Statement");
             statement.evaluate();
-        }
-        catch (AssumptionViolatedException e) {
+        } catch (AssumptionViolatedException e) {
             notifier.addFailedAssumption(e);
-        }
-        catch (StoppedByUserException e) {
+        } catch (StoppedByUserException e) {
             throw e;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             notifier.addFailure(t);
             notifier.pleaseStop();
-        }
-        finally {
         }
     }
 
     @Override
     protected void runChild(final FrameworkMethod method, RunNotifier runNotifier) {
-        Description description = describeChild(method);
+        Description methodDescription = describeChild(method);
         TestClass testClass = getTestClass();
         Class<?> javaClass = testClass.getJavaClass();
 
-        TestUnitHolder.INSTANCE.create();
         TestifyJUnit4RunNotifier notifier = (TestifyJUnit4RunNotifier) runNotifier;
 
         MDC.put("test", javaClass.getSimpleName());
         MDC.put("method", method.getName());
 
         if (isIgnored(method)) {
-            notifier.fireTestIgnored(description);
+            notifier.fireTestIgnored(methodDescription);
         } else {
             try {
-                runLeaf(methodBlock(method), description, notifier);
-            }
-            catch (Throwable t) {
+                runLeaf(methodBlock(method), methodDescription, notifier);
+            } catch (Throwable t) {
                 notifier.addFailure(t);
                 notifier.pleaseStop();
-            }
-            finally {
+            } finally {
                 if (!isIgnored(method)) {
-                    Optional<TestUnit> result = TestUnitHolder.INSTANCE.get();
+                    Optional<TestContext> result = TestContextHolder.INSTANCE.get();
 
                     if (result.isPresent()) {
-                        TestUnit testUnit = result.get();
-                        TestContext testContext = testUnit.getTestContext();
+                        TestContext testContext = result.get();
 
                         debug("performing cleanup of '{}'", testContext.getName());
 
                         if (testContext.hasErrors()) {
                             debug("reporting test context errors");
 
-                            testContext.getErrors()
-                                    .stream()
-                                    .forEach(failure -> {
-                                        notifier.addFailure(new IllegalStateException(failure));
-                                    });
+                            testContext.getErrors().stream().forEach(failure -> {
+                                notifier.addFailure(new IllegalStateException(failure));
+                            });
                         }
 
-                        TestRunner testRunner = testUnit.getTestRunner();
+                        TestRunner testRunner = testContext.getTestRunner();
                         testRunner.stop();
-                        TestUnitHolder.INSTANCE.remove();
+                        TestContextHolder.INSTANCE.remove();
                     }
                 }
             }
@@ -183,37 +172,38 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         Class<?> javaClass = testClass.getJavaClass();
         debug("test class classloader: {}", javaClass.getClassLoader());
 
-        TestUnit testUnit = TestUnitHolder.INSTANCE.get().get();
-
         Object testInstance;
 
         try {
             debug("creating instance of test class {}", javaClass.getName());
             testInstance = createTest();
-            testUnit.setTestInstance(testInstance);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
 
         debug("creating test decriptor for test class {}", javaClass.getName());
         TestDescriptor testDescriptor = AnalyzerUtil.INSTANCE.analyzeTestClass(javaClass);
-        testUnit.setTestDescriptor(testDescriptor);
 
         Method method = frameworkMethod.getMethod();
-        testUnit.setTestMethod(method);
         MDC.put("test", javaClass.getSimpleName());
         MDC.put("method", method.getName());
 
         debug("creating method decriptor for test method {}#{}", javaClass.getName(), method.getName());
         MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
 
-        debug("creating test context for test run {}#{}", javaClass.getName(), method.getName());
-
+        Class<TestReifier> testReifierType = TestReifier.class;
+        debug("getting '{}' implementation from the classpath", testReifierType.getName());
         TestReifier testReifier = ServiceLocatorUtil.INSTANCE
-                .getOneOrDefault(TestReifier.class, DefaultTestReifier.class);
+                .getOneOrDefault(testReifierType, DefaultTestReifier.class);
+
+        Class<MockProvider> mockProviderType = MockProvider.class;
+        debug("getting '{}' implementation from the classpath", mockProviderType.getName());
         MockProvider mockProvider = ServiceLocatorUtil.INSTANCE
-                .getOneOrDefault(MockProvider.class, MockitoMockProvider.class);
+                .getOneOrDefault(mockProviderType, MockitoMockProvider.class);
+
+        Class<? extends TestRunner> testRunnerClass = getTestRunnerClass();
+        debug("getting '{}' implementation from the classpath", testRunnerClass.getName());
+        TestRunner testRunner = ServiceLocatorUtil.INSTANCE.getOne(TestRunner.class, testRunnerClass);
 
         Map<String, Object> properties = new HashMap<>();
 
@@ -222,6 +212,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
+                .testRunner(testRunner)
                 .testReifier(testReifier)
                 .mockProvider(mockProvider)
                 .properties(properties)
@@ -234,13 +225,6 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
             CutDescriptor cutDescriptor = AnalyzerUtil.INSTANCE.analyzeCutField(cutField.get());
             testContext.addProperty(TestContextProperties.CUT_DESCRIPTOR, cutDescriptor);
         }
-
-        testUnit.setTestContext(testContext);
-        Class<? extends TestRunner> testRunnerClass = getTestRunnerClass();
-
-        debug("getting test runner implementation '{}' from the class path", testRunnerClass.getName());
-        TestRunner testRunner = ServiceLocatorUtil.INSTANCE.getOne(TestRunner.class, testRunnerClass);
-        testUnit.setTestRunner(testRunner);
 
         debug("starting test runner '{}'", testRunnerClass.getName());
         testRunner.start(testContext);

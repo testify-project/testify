@@ -16,7 +16,6 @@
 package org.testifyproject.junit4.system;
 
 import java.net.URI;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -46,10 +45,12 @@ import static org.testifyproject.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testifyproject.bytebuddy.matcher.ElementMatchers.not;
 import org.testifyproject.bytebuddy.pool.TypePool;
 import org.testifyproject.core.DefaultServerInstance;
+import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTEXT;
+import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.LoggingTrait;
 
@@ -62,8 +63,8 @@ import org.testifyproject.trait.LoggingTrait;
 public class SpringBootServerProvider implements ServerProvider<SpringApplicationBuilder, EmbeddedServletContainer>, LoggingTrait {
 
     private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
-    private static final Map<String, DynamicType.Loaded<?>> REBASED_CLASSES = new ConcurrentHashMap<>();
-    private static final InheritableThreadLocal<TestContext> LOCAL_TEST_CONTEXT = new InheritableThreadLocal<>();
+    private static final Map<String, DynamicType.Loaded<?>> DYNAMIC_CLASSES = new ConcurrentHashMap<>();
+    private static final TestContextHolder TEST_CONTEXT_HOLDER = TestContextHolder.INSTANCE;
 
     @Override
     public SpringApplicationBuilder configure(TestContext testContext) {
@@ -71,25 +72,26 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
         TestReifier testReifier = testContext.getTestReifier();
 
         debug("setting test context");
-        LOCAL_TEST_CONTEXT.set(testContext);
+        TEST_CONTEXT_HOLDER.set(testContext);
 
-        SpringBootInterceptor interceptor = new SpringBootInterceptor(LOCAL_TEST_CONTEXT);
+        SpringApplicationInterceptor springApplicationInterceptor
+                = new SpringApplicationInterceptor(TEST_CONTEXT_HOLDER);
 
-        ClassFileLocator locator = ClassFileLocator.ForClassLoader.ofClassPath();
+        ClassFileLocator fileLocator = ClassFileLocator.ForClassLoader.ofClassPath();
         TypePool typePool = TypePool.Default.ofClassPath();
         ClassLoader classLoader = testDescriptor.getTestClassLoader();
 
         String applicationClassName = "org.springframework.boot.SpringApplication";
 
-        REBASED_CLASSES.computeIfAbsent(applicationClassName, className -> {
+        DYNAMIC_CLASSES.computeIfAbsent(applicationClassName, className -> {
             debug("rebasing spring application class: {}", className);
 
             TypeDescription typeDescription = typePool.describe(className).resolve();
 
             return BYTE_BUDDY
-                    .rebase(typeDescription, locator)
+                    .rebase(typeDescription, fileLocator)
                     .method(not(isDeclaredBy(Object.class)))
-                    .intercept(MethodDelegation.to(interceptor)
+                    .intercept(MethodDelegation.to(springApplicationInterceptor)
                             .filter(not(isDeclaredBy(Object.class)))
                             .defineAmbiguityResolver(
                                     MethodNameEqualityResolver.INSTANCE,
@@ -99,17 +101,20 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
                     .load(classLoader, ClassLoadingStrategy.Default.INJECTION);
         });
 
+        ApplicationContextInterceptor applicationContextInterceptor
+                = new ApplicationContextInterceptor(TEST_CONTEXT_HOLDER);
+
         String applicationContextClassName = "org.springframework.boot.context.embedded.EmbeddedWebApplicationContext";
 
-        REBASED_CLASSES.computeIfAbsent(applicationContextClassName, className -> {
+        DYNAMIC_CLASSES.computeIfAbsent(applicationContextClassName, className -> {
             debug("rebasing spring embedded web application context class: {}", className);
             TypeDescription typeDescription = typePool.describe(className).resolve();
 
             return BYTE_BUDDY
-                    .rebase(typeDescription, locator)
+                    .rebase(typeDescription, fileLocator)
                     .method(not(isDeclaredBy(Object.class)))
                     .intercept(
-                            to(interceptor)
+                            to(applicationContextInterceptor)
                                     .filter(not(isDeclaredBy(Object.class)))
                                     .defineAmbiguityResolver(
                                             MethodNameEqualityResolver.INSTANCE,
@@ -121,11 +126,11 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
 
         Application application = testDescriptor.getApplication().get();
 
-        Set<Object> sources = new LinkedHashSet<>();
-        sources.add(application.value());
+        Set<Object> sources = ImmutableSet.of(application.value());
 
         testDescriptor.getModules()
-                .parallelStream()
+                .stream()
+                .sequential()
                 .map(p -> p.value())
                 .forEach(sources::add);
 
@@ -146,7 +151,8 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
         try {
             debug("starting spring boot application");
             SpringApplication application = configuration.build();
-            TestContext testContext = LOCAL_TEST_CONTEXT.get();
+            Optional<TestContext> result = TEST_CONTEXT_HOLDER.get();
+            TestContext testContext = result.get();
 
             testContext.addProperty(APP, application);
             testContext.addProperty(APP_NAME, testContext.getName());
@@ -177,7 +183,8 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     @Override
     public void stop() {
         debug("stopping spring application");
-        TestContext testContext = LOCAL_TEST_CONTEXT.get();
+        Optional<TestContext> result = TEST_CONTEXT_HOLDER.get();
+        TestContext testContext = result.get();
         Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
 
         if (servletContainer.isPresent()) {
@@ -186,7 +193,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
             container.stop();
         }
 
-        LOCAL_TEST_CONTEXT.remove();
+        TEST_CONTEXT_HOLDER.remove();
     }
 
 }

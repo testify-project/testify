@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
-import org.testifyproject.MockProvider;
 import org.testifyproject.ReificationProvider;
 import org.testifyproject.RequiresProvider;
 import org.testifyproject.ServiceInstance;
@@ -37,6 +36,7 @@ import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.MockProvider;
 
 /**
  * An implementation of the ReificationProvider SPI contract.

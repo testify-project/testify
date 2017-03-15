@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.fixture.servlet;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Import;
-import org.testifyproject.junit4.fixture.web.GreeterWebConfig;
+package org.testifyproject.junit4.fixture.common;
 
 /**
  *
  * @author saden
  */
-@SpringBootApplication
-@Import(GreeterWebConfig.class)
-public class GreeterServletApplication extends SpringBootServletInitializer {
+public class CutClass {
 
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(GreeterServletApplication.class, args);
+    public String sayHello() {
+        return "Hello!";
     }
-
 }

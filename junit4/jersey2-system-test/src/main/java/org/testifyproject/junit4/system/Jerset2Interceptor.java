@@ -24,12 +24,12 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer;
 import org.glassfish.jersey.server.ApplicationHandler;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
-import org.testifyproject.TestContext;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
+import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 
@@ -43,10 +43,10 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
  */
 public class Jerset2Interceptor {
 
-    private final InheritableThreadLocal<TestContext> localTestContext;
+    private final TestContextHolder testContextHolder;
 
-    Jerset2Interceptor(InheritableThreadLocal<TestContext> localTestContext) {
-        this.localTestContext = localTestContext;
+    Jerset2Interceptor(TestContextHolder testContextHolder) {
+        this.testContextHolder = testContextHolder;
     }
 
     @RuntimeType
@@ -65,19 +65,20 @@ public class Jerset2Interceptor {
             boolean secure,
             SSLEngineConfigurator sslEngineConfigurator,
             boolean start) throws Exception {
-        ApplicationHandler applicationHandler = handler.getApplicationHandler();
-        ServiceLocator serviceLocator = applicationHandler.getServiceLocator();
-        TestContext testContext = localTestContext.get();
-        serviceLocator = testContext.getTestReifier().configure(testContext, serviceLocator);
 
-        ServiceProvider<ServiceLocator> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
+        testContextHolder.execute(testContext -> {
+            ApplicationHandler applicationHandler = handler.getApplicationHandler();
+            ServiceLocator serviceLocator = applicationHandler.getServiceLocator();
+            serviceLocator = testContext.getTestReifier().configure(testContext, serviceLocator);
 
-        ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceLocator);
-        serviceProvider.postConfigure(testContext, serviceInstance);
-        testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
+            ServiceProvider<ServiceLocator> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
+
+            ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceLocator);
+            serviceProvider.postConfigure(testContext, serviceInstance);
+            testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
+        });
 
         return zuper.call();
-
     }
 
 }

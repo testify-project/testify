@@ -26,10 +26,10 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
+import org.testifyproject.MockProvider;
 
 /**
  * A custom Spring bean post processor used to get and createFake service

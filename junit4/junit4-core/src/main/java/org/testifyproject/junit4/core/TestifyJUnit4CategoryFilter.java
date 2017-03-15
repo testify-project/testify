@@ -29,6 +29,11 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class TestifyJUnit4CategoryFilter extends Filter {
 
+    /**
+     * Filter description.
+     */
+    public static final String FILTER_DESCRIPTION = "test level and dynamic categories filter";
+
     private final TestCategory.Level level;
 
     /**
@@ -38,7 +43,7 @@ public class TestifyJUnit4CategoryFilter extends Filter {
      *
      * @return a filter instance.
      */
-    public static final Filter of(TestCategory.Level level) {
+    public static final TestifyJUnit4CategoryFilter of(TestCategory.Level level) {
         return new TestifyJUnit4CategoryFilter(level);
     }
 
@@ -54,6 +59,7 @@ public class TestifyJUnit4CategoryFilter extends Filter {
         Boolean shouldRun = true;
 
         if (testifyCategories != null) {
+
             String[] categories = testifyCategories.split(",");
 
             ImmutableList<Enum> desiredCategories = ImmutableList.<Enum>builder()
@@ -84,7 +90,7 @@ public class TestifyJUnit4CategoryFilter extends Filter {
 
     @Override
     public String describe() {
-        return "test categories filter";
+        return FILTER_DESCRIPTION;
     }
 
 }

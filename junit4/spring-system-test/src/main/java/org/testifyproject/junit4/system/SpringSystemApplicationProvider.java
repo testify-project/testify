@@ -36,7 +36,9 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriori
 import static org.testifyproject.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testifyproject.bytebuddy.matcher.ElementMatchers.not;
 import org.testifyproject.bytebuddy.pool.TypePool;
+import org.testifyproject.core.ApplicationInstanceProperties;
 import org.testifyproject.core.DefaultApplicationInstance;
+import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -49,14 +51,14 @@ public class SpringSystemApplicationProvider implements ApplicationProvider {
 
     private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
     private static final Map<String, DynamicType.Loaded<?>> REBASED_CLASSES = new ConcurrentHashMap<>();
-    private static final InheritableThreadLocal<ApplicationInstance> LOCAL_APPLICATION_INSTANCE = new InheritableThreadLocal<>();
+    private static final TestContextHolder TEST_CONTEXT_HOLDER = TestContextHolder.INSTANCE;
 
     @Override
     public ApplicationInstance start(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Application application = testDescriptor.getApplication().get();
 
-        SpringSystemInterceptor interceptor = new SpringSystemInterceptor(LOCAL_APPLICATION_INSTANCE);
+        SpringSystemInterceptor interceptor = new SpringSystemInterceptor(TEST_CONTEXT_HOLDER);
 
         ClassFileLocator locator = ClassFileLocator.ForClassLoader.ofClassPath();
         TypePool typePool = TypePool.Default.ofClassPath();
@@ -99,15 +101,18 @@ public class SpringSystemApplicationProvider implements ApplicationProvider {
         SpringServletContainerInitializer initializer = new SpringServletContainerInitializer();
 
         ApplicationInstance<SpringServletContainerInitializer> applicationInstance
-                = DefaultApplicationInstance.of(testContext, application, initializer, handlers);
+                = DefaultApplicationInstance.of(testContext, application);
 
-        LOCAL_APPLICATION_INSTANCE.set(applicationInstance);
+        applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER, initializer);
+        applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_HANDLERS, handlers);
+
+        TEST_CONTEXT_HOLDER.set(testContext);
 
         return applicationInstance;
     }
 
     @Override
     public void stop() {
-        LOCAL_APPLICATION_INSTANCE.remove();
+        TEST_CONTEXT_HOLDER.remove();
     }
 }

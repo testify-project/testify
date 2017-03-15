@@ -32,17 +32,28 @@ import org.testifyproject.trait.LoggingTrait;
 public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrait {
 
     private final RunNotifier runNotifier;
-    private final Description description;
+    private final Description testDescription;
 
-    public TestifyJUnit4RunNotifier(RunNotifier runNotifier, Description description) {
+    /**
+     * Create new instance of TestifyJUnit4RunNotifier.
+     *
+     * @param runNotifier the underlying notifier
+     * @param testDescription the test description
+     * @return a test notifier instance
+     */
+    public static TestifyJUnit4RunNotifier of(RunNotifier runNotifier, Description testDescription) {
+        return new TestifyJUnit4RunNotifier(runNotifier, testDescription);
+    }
+
+    TestifyJUnit4RunNotifier(RunNotifier runNotifier, Description testDescription) {
         this.runNotifier = runNotifier;
-        this.description = description;
-
+        this.testDescription = testDescription;
     }
 
     @Override
     public void fireTestAssumptionFailed(Failure failure) {
-        String methodName = failure.getDescription().getMethodName();
+        Description description = failure.getDescription();
+        String methodName = description.getMethodName();
         Throwable throwable = failure.getException();
 
         if (methodName == null) {
@@ -56,7 +67,8 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
 
     @Override
     public void fireTestFailure(Failure failure) {
-        String methodName = failure.getDescription().getMethodName();
+        Description description = failure.getDescription();
+        String methodName = description.getMethodName();
         Throwable throwable = failure.getException();
 
         if (methodName == null) {
@@ -91,7 +103,7 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
             addMultipleFailureException((MultipleFailureException) t);
         } else {
 
-            Failure failure = new Failure(description, t);
+            Failure failure = new Failure(testDescription, t);
             runNotifier.fireTestFailure(failure);
         }
     }
@@ -103,7 +115,7 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
     }
 
     public void addFailedAssumption(AssumptionViolatedException e) {
-        Failure failure = new Failure(description, e);
+        Failure failure = new Failure(testDescription, e);
         runNotifier.fireTestAssumptionFailed(failure);
     }
 

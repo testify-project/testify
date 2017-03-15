@@ -44,6 +44,7 @@ import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.core.ApplicationInstanceProperties;
 import org.testifyproject.core.DefaultServerInstance;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
@@ -70,8 +71,15 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
         try {
             String name = testContext.getName();
 
-            Set<Class<?>> handles = applicationInstance.getHandlers();
-            ServletContainerInitializer initializerInstance = applicationInstance.getInitializer();
+            Optional<Set<Class<?>>> handlersProperties
+                    = applicationInstance.findProperty(ApplicationInstanceProperties.SERVLET_HANDLERS);
+
+            Set<Class<?>> handles = handlersProperties.get();
+
+            Optional<ServletContainerInitializer> initializerProperties
+                    = applicationInstance.findProperty(ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER);
+
+            ServletContainerInitializer initializerInstance = initializerProperties.get();
 
             ImmediateInstanceFactory<ServletContainerInitializer> factory = new ImmediateInstanceFactory<>(initializerInstance);
             URI uri = URI.create("http://0.0.0.0:0/");
@@ -92,7 +100,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
                     .addServlet(servletInfo);
 
             return deploymentInfo;
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             throw new IllegalStateException(e);
         }
     }
@@ -125,7 +134,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
                     null);
 
             return DefaultServerInstance.of(baseURI, undertow);
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             throw new IllegalStateException("Could not start Undertow Server", e);
         }
     }
@@ -180,7 +190,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     public Optional<Field> findField(Class<?> type, String name) {
         try {
             return of(type.getDeclaredField(name));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return empty();
         }
     }
@@ -190,7 +201,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
             field.setAccessible(true);
 
             return (T) field.get(instance);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }

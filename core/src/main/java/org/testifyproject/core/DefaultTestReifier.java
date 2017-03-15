@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
-import org.testifyproject.MockProvider;
 import org.testifyproject.ObjenesisHelper;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -33,6 +32,7 @@ import static org.testifyproject.guava.common.base.Preconditions.checkState;
 import org.testifyproject.guava.common.reflect.TypeToken;
 import org.testifyproject.instantiator.ObjectInstantiator;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.MockProvider;
 
 /**
  * An implementation of {@link TestReifier} contract.

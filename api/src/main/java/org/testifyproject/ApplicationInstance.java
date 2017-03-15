@@ -15,9 +15,8 @@
  */
 package org.testifyproject;
 
-import java.util.Collections;
-import java.util.Set;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.trait.PropertiesTrait;
 
 /**
  * A contract that defines methods for retrieving information about an
@@ -26,7 +25,7 @@ import org.testifyproject.annotation.Application;
  * @author saden
  * @param <T> the application initializer type
  */
-public interface ApplicationInstance<T> {
+public interface ApplicationInstance<T> extends PropertiesTrait {
 
     /**
      * Get the application annotation.
@@ -42,19 +41,4 @@ public interface ApplicationInstance<T> {
      */
     TestContext getTestContext();
 
-    /**
-     * Get the application initializer class.
-     *
-     * @return the application initializer
-     */
-    T getInitializer();
-
-    /**
-     * Get the application initializer handler types.
-     *
-     * @return a set of application initializer handlers types
-     */
-    default Set<Class<?>> getHandlers() {
-        return Collections.emptySet();
-    }
 }

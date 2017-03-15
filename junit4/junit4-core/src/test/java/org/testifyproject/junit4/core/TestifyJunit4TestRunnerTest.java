@@ -13,38 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.junit4.core;
 
-import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Answers;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import org.junit.runner.RunWith;
+import org.testifyproject.annotation.Cut;
+import org.testifyproject.junit4.fixture.common.CutClass;
+import org.testifyproject.junit4.fixture.FunctionalTest;
 
 /**
  *
  * @author saden
  */
-public class ApplicationInstanceTest {
+@RunWith(FunctionalTest.class)
+public class TestifyJunit4TestRunnerTest {
 
-    ApplicationInstance<Object> cut;
-
-    @Before
-    public void init() {
-        cut = mock(ApplicationInstance.class, Answers.CALLS_REAL_METHODS);
-    }
+    @Cut
+    CutClass cut;
 
     @Test
-    public void callToGet() {
-        Set result = cut.getHandlers();
-
-        assertThat(result).isEmpty();;
-
-        verify(cut).getHandlers();
-        verifyNoMoreInteractions(cut);
+    public void runWithFunctionalTest() {
+        assertThat(true).isTrue();
     }
 
 }

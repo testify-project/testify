@@ -15,7 +15,7 @@
  */
 package org.testifyproject.core;
 
-import java.util.Set;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
@@ -33,17 +33,14 @@ public class DefaultApplicationInstanceTest {
 
     TestContext testContext;
     Application application;
-    Object initializer;
-    Set<Class<?>> handlers;
+    Map properties;
 
     public DefaultApplicationInstanceTest() {
         testContext = mock(TestContext.class);
         application = mock(Application.class);
-        initializer = mock(Object.class);
+        properties = mock(Map.class);
 
-        handlers = mock(Set.class);
-
-        cut = DefaultApplicationInstance.of(testContext, application, initializer, handlers);
+        cut = DefaultApplicationInstance.of(testContext, application, properties);
     }
 
     @Test
@@ -51,8 +48,7 @@ public class DefaultApplicationInstanceTest {
         assertThat(cut).isNotNull();
         assertThat(cut.getTestContext()).isEqualTo(testContext);
         assertThat(cut.getApplication()).isEqualTo(application);
-        assertThat(cut.getInitializer()).isEqualTo(initializer);
-        assertThat(cut.getHandlers()).isEqualTo(handlers);
+        assertThat(cut.getProperties()).isEqualTo(properties);
     }
 
     @Test
@@ -71,7 +67,7 @@ public class DefaultApplicationInstanceTest {
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         ApplicationInstance<Object> unequal
-                = DefaultApplicationInstance.of(null, null, null, null);
+                = DefaultApplicationInstance.of(null, null, null);
 
         assertThat(cut).isNotEqualTo(unequal);
         assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -85,7 +81,7 @@ public class DefaultApplicationInstanceTest {
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         ApplicationInstance<Object> equal
-                = DefaultApplicationInstance.of(testContext, application, initializer, handlers);
+                = DefaultApplicationInstance.of(testContext, application, properties);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
@@ -99,8 +95,7 @@ public class DefaultApplicationInstanceTest {
                 "DefaultApplicationInstance",
                 "testContext",
                 "application",
-                "initializer",
-                "handlers");
+                "properties");
     }
 
 }

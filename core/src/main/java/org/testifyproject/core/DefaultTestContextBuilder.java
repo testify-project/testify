@@ -19,11 +19,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.MethodDescriptor;
-import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.TestRunner;
+import org.testifyproject.MockProvider;
 
 public class DefaultTestContextBuilder {
 
@@ -32,7 +33,9 @@ public class DefaultTestContextBuilder {
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
     private TestReifier testReifier;
+    private TestRunner testRunner;
     private MockProvider mockProvider;
+
     private Map<String, Object> properties = new ConcurrentHashMap<>();
     private Map<String, String> dependencies = Collections.EMPTY_MAP;
 
@@ -62,6 +65,11 @@ public class DefaultTestContextBuilder {
 
     public DefaultTestContextBuilder methodDescriptor(MethodDescriptor methodDescriptor) {
         this.methodDescriptor = methodDescriptor;
+        return this;
+    }
+
+    public DefaultTestContextBuilder testRunner(TestRunner testRunner) {
+        this.testRunner = testRunner;
         return this;
     }
 
@@ -96,6 +104,7 @@ public class DefaultTestContextBuilder {
         testContext.setTestDescriptor(testDescriptor);
         testContext.setTestInstance(testInstance);
         testContext.setTestReifier(testReifier);
+        testContext.setTestRunner(testRunner);
 
         return testContext;
     }

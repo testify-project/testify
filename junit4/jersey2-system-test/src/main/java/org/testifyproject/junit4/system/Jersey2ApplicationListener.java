@@ -26,6 +26,7 @@ import org.testifyproject.RequiresProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
+import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 
@@ -37,19 +38,22 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
  */
 public class Jersey2ApplicationListener implements ApplicationEventListener {
 
-    private final InheritableThreadLocal<TestContext> localTestContext;
     private List<RequiresProvider> requiresProviders;
+    private final TestContextHolder testContextHolder;
 
-    Jersey2ApplicationListener(InheritableThreadLocal<TestContext> localTestContext) {
-        this.localTestContext = localTestContext;
+    Jersey2ApplicationListener(TestContextHolder testContextHolder) {
+        this.testContextHolder = testContextHolder;
     }
 
     @Override
     public void onEvent(ApplicationEvent event) {
-        TestContext testContext = localTestContext.get();
+        TestContext testContext = testContextHolder.get().get();
 
         switch (event.getType()) {
             case INITIALIZATION_FINISHED:
+                MDC.put("test", testContext.getTestName());
+                MDC.put("method", testContext.getMethodName());
+
                 Optional<ServiceInstance> optServiceInstance = testContext.findProperty(SERVICE_INSTANCE);
                 ServiceInstance serviceInstance = optServiceInstance.get();
 
@@ -58,8 +62,6 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
                     requiresProviders.forEach(p -> p.start(testContext, serviceInstance));
                 }
 
-                MDC.put("test", testContext.getTestName());
-                MDC.put("method", testContext.getMethodName());
                 break;
             case DESTROY_FINISHED:
                 if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {

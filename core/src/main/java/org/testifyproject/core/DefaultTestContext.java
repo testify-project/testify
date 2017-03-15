@@ -21,10 +21,12 @@ import java.util.Optional;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.TestRunner;
 
 /**
  * A small context class that contains reference to the test testInstance, the
@@ -38,6 +40,7 @@ public class DefaultTestContext implements TestContext {
     private Object testInstance;
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
+    private TestRunner testRunner;
     private TestReifier testReifier;
     private MockProvider mockProvider;
     private Map<String, Object> properties;
@@ -84,6 +87,11 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
+    public TestRunner getTestRunner() {
+        return testRunner;
+    }
+
+    @Override
     public TestReifier getTestReifier() {
         return testReifier;
     }
@@ -91,6 +99,11 @@ public class DefaultTestContext implements TestContext {
     @Override
     public MockProvider getMockProvider() {
         return mockProvider;
+    }
+
+    @Override
+    public Optional<ServiceInstance> getServiceInstance() {
+        return findProperty(TestContextProperties.SERVICE_INSTANCE);
     }
 
     @Override
@@ -122,6 +135,10 @@ public class DefaultTestContext implements TestContext {
 
     void setMethodDescriptor(MethodDescriptor methodDescriptor) {
         this.methodDescriptor = methodDescriptor;
+    }
+
+    void setTestRunner(TestRunner testRunner) {
+        this.testRunner = testRunner;
     }
 
     void setTestReifier(TestReifier testReifier) {

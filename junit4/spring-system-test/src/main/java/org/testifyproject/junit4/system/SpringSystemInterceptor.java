@@ -19,10 +19,8 @@ import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
-import org.testifyproject.ApplicationInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
-import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
@@ -31,6 +29,7 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriori
 import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
+import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 
@@ -44,10 +43,10 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
  */
 public class SpringSystemInterceptor {
 
-    private final InheritableThreadLocal<ApplicationInstance> localApplicationInstance;
+    private final TestContextHolder testContextHolder;
 
-    SpringSystemInterceptor(InheritableThreadLocal<ApplicationInstance> localApplicationInstance) {
-        this.localApplicationInstance = localApplicationInstance;
+    SpringSystemInterceptor(TestContextHolder testContextHolder) {
+        this.testContextHolder = testContextHolder;
     }
 
     @RuntimeType
@@ -63,33 +62,35 @@ public class SpringSystemInterceptor {
     @RuntimeType
     public void configureAndRefreshWebApplicationContext(@SuperCall Callable<ConfigurableWebApplicationContext> zuper,
             @Argument(0) ConfigurableWebApplicationContext applicationContext) throws Exception {
-        ApplicationInstance applicationInstance = localApplicationInstance.get();
-        TestContext testContext = applicationInstance.getTestContext();
-        TestReifier testReifier = testContext.getTestReifier();
-        applicationContext = testReifier.configure(testContext, applicationContext);
 
-        ServiceProvider<ConfigurableApplicationContext> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
-        ServiceInstance serviceInstance = serviceProvider.configure(testContext, applicationContext);
+        testContextHolder.execute(testContext -> {
+            TestReifier testReifier = testContext.getTestReifier();
+
+            ConfigurableWebApplicationContext configuredApplicationContext
+                    = testReifier.configure(testContext, applicationContext);
+
+            ServiceProvider<ConfigurableApplicationContext> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
+            ServiceInstance serviceInstance = serviceProvider.configure(testContext, configuredApplicationContext);
+            testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
+        });
 
         zuper.call();
-
-        testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
     }
 
     @RuntimeType
     public Class<?>[] getServletConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
-        ApplicationInstance applicationInstance = localApplicationInstance.get();
-        TestContext testContext = applicationInstance.getTestContext();
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
         Class<?>[] result = zuper.call();
 
-        Stream<Class<?>> acutalModules = Stream.of(result);
-        Stream<Class<?>> testModules = testDescriptor.getModules()
-                .stream()
-                .map(p -> p.value());
+        return testContextHolder.execute(testContext -> {
+            TestDescriptor testDescriptor = testContext.getTestDescriptor();
+            Stream<Class<?>> acutalModules = Stream.of(result);
+            Stream<Class<?>> testModules = testDescriptor.getModules()
+                    .stream()
+                    .map(p -> p.value());
 
-        return Stream.concat(testModules, acutalModules).toArray(Class[]::new);
+            return Stream.concat(testModules, acutalModules).toArray(Class[]::new);
+        });
     }
 
 }

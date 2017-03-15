@@ -31,10 +31,10 @@ import org.glassfish.hk2.api.ServiceHandle;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
+import org.testifyproject.MockProvider;
 
 /**
  * A custom HK2 injection resolve used to get and createFake service instances

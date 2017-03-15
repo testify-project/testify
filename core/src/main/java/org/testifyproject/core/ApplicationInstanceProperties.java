@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.fixture.servlet;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Import;
-import org.testifyproject.junit4.fixture.web.GreeterWebConfig;
+package org.testifyproject.core;
 
 /**
+ * A class that defines a list of common
+ * {@link org.testifyproject.ApplicationInstance application instance}
+ * properties.
  *
  * @author saden
  */
-@SpringBootApplication
-@Import(GreeterWebConfig.class)
-public class GreeterServletApplication extends SpringBootServletInitializer {
+public class ApplicationInstanceProperties {
 
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(GreeterServletApplication.class, args);
+    public static final String SERVLET_CONTAINER_INITIALIZER = "servlet.container.initializer";
+    public static final String SERVLET_HANDLERS = "servlet.handlers";
+
+    private ApplicationInstanceProperties() {
     }
 
 }

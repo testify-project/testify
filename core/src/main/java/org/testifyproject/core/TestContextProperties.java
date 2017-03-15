@@ -16,7 +16,8 @@
 package org.testifyproject.core;
 
 /**
- * A class that defines a list of common test context properties.
+ * A class that defines a list of common
+ * {@link org.testifyproject.TestContext test context} properties.
  *
  * @author saden
  */

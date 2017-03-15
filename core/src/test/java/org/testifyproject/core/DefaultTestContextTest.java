@@ -27,10 +27,12 @@ import static org.mockito.Mockito.verify;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.TestRunner;
 
 /**
  *
@@ -44,6 +46,7 @@ public class DefaultTestContextTest {
     Object testInstance;
     TestDescriptor testDescriptor;
     MethodDescriptor methodDescriptor;
+    TestRunner testRunner;
     TestReifier testReifier;
     MockProvider mockProvider;
     Map<String, Object> properties;
@@ -56,6 +59,7 @@ public class DefaultTestContextTest {
         testDescriptor = mock(TestDescriptor.class);
         methodDescriptor = mock(MethodDescriptor.class);
         testReifier = mock(TestReifier.class);
+        testRunner = mock(TestRunner.class);
         mockProvider = mock(MockProvider.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
         dependencies = mock(Map.class, delegatesTo(new HashMap<>()));
@@ -65,6 +69,7 @@ public class DefaultTestContextTest {
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
+                .testRunner(testRunner)
                 .testReifier(testReifier)
                 .mockProvider(mockProvider)
                 .properties(properties)
@@ -130,6 +135,13 @@ public class DefaultTestContextTest {
     }
 
     @Test
+    public void callToGetTestRunnerShouldReturn() {
+        TestRunner result = cut.getTestRunner();
+
+        assertThat(result).isEqualTo(testRunner);
+    }
+
+    @Test
     public void callToGetTestReifierShouldReturn() {
         TestReifier result = cut.getTestReifier();
 
@@ -153,6 +165,13 @@ public class DefaultTestContextTest {
     @Test
     public void callToGetCutDescriptorShouldReturn() {
         Optional<CutDescriptor> result = cut.getCutDescriptor();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void callToGetServiceInstanceShouldReturn() {
+        Optional<ServiceInstance> result = cut.getServiceInstance();
 
         assertThat(result).isEmpty();
     }

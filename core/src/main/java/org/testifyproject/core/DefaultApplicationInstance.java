@@ -15,8 +15,9 @@
  */
 package org.testifyproject.core;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import org.testifyproject.ApplicationInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
@@ -30,8 +31,7 @@ public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
 
     private final TestContext testContext;
     private final Application application;
-    private final T initializer;
-    private final Set<Class<?>> handlers;
+    private final Map<String, Object> properties;
 
     /**
      * Create a new application instance.
@@ -39,25 +39,40 @@ public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
      * @param <T> application initializer type
      * @param testContext the test context
      * @param application the application annotation
-     * @param initializer the application initializer
-     * @param handlers the application initializer handlers
      * @return an application instance
      */
-    public static <T> ApplicationInstance of(TestContext testContext,
-            Application application,
-            T initializer,
-            Set<Class<?>> handlers) {
-        return new DefaultApplicationInstance(testContext, application, initializer, handlers);
+    public static <T> ApplicationInstance of(TestContext testContext, Application application) {
+        return new DefaultApplicationInstance(testContext, application, new LinkedHashMap<>());
     }
 
-    DefaultApplicationInstance(TestContext testContext,
+    /**
+     * Create a new application instance.
+     *
+     * @param <T> application initializer type
+     * @param testContext the test context
+     * @param application the application annotation
+     * @param properties the properties
+     * @return an application instance
+     */
+    public static <T> ApplicationInstance of(
+            TestContext testContext,
             Application application,
-            T initializer,
-            Set<Class<?>> handlers) {
+            Map<String, Object> properties) {
+        return new DefaultApplicationInstance(testContext, application, properties);
+    }
+
+    DefaultApplicationInstance(
+            TestContext testContext,
+            Application application,
+            Map<String, Object> properties) {
         this.application = application;
         this.testContext = testContext;
-        this.initializer = initializer;
-        this.handlers = handlers;
+        this.properties = properties;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     @Override
@@ -71,22 +86,11 @@ public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
     }
 
     @Override
-    public T getInitializer() {
-        return initializer;
-    }
-
-    @Override
-    public Set<Class<?>> getHandlers() {
-        return handlers;
-    }
-
-    @Override
     public int hashCode() {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(this.application);
         hash = 23 * hash + Objects.hashCode(this.testContext);
-        hash = 23 * hash + Objects.hashCode(this.initializer);
-        hash = 23 * hash + Objects.hashCode(this.handlers);
+        hash = 23 * hash + Objects.hashCode(this.properties);
         return hash;
     }
 
@@ -108,19 +112,15 @@ public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
         if (!Objects.equals(this.testContext, other.testContext)) {
             return false;
         }
-        if (!Objects.equals(this.initializer, other.initializer)) {
-            return false;
-        }
-        return Objects.equals(this.handlers, other.handlers);
+        return Objects.equals(this.properties, other.properties);
     }
 
     @Override
     public String toString() {
         return "DefaultApplicationInstance{"
-                + ", testContext=" + testContext
-                + "application=" + application
-                + ", initializer=" + initializer
-                + ", handlers=" + handlers
+                + "testContext=" + testContext
+                + ", application=" + application
+                + ", properties=" + properties
                 + '}';
     }
 

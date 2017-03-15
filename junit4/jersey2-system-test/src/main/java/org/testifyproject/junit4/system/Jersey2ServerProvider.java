@@ -40,6 +40,7 @@ import static org.testifyproject.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testifyproject.bytebuddy.matcher.ElementMatchers.not;
 import org.testifyproject.bytebuddy.pool.TypePool;
 import org.testifyproject.core.DefaultServerInstance;
+import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
@@ -55,15 +56,15 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
 
     private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
     private static final Map<String, DynamicType.Loaded<?>> REBASED_CLASSES = new ConcurrentHashMap<>();
-    private static final InheritableThreadLocal<TestContext> LOCAL_TEST_CONTEXT = new InheritableThreadLocal<>();
+    private static final TestContextHolder TEST_CONTEXT_HOLDER = TestContextHolder.INSTANCE;
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
     public ResourceConfig configure(TestContext testContext) {
         try {
-            LOCAL_TEST_CONTEXT.set(testContext);
+            TEST_CONTEXT_HOLDER.set(testContext);
 
-            Jerset2Interceptor interceptor = new Jerset2Interceptor(LOCAL_TEST_CONTEXT);
+            Jerset2Interceptor interceptor = new Jerset2Interceptor(TEST_CONTEXT_HOLDER);
 
             ClassFileLocator locator = ClassFileLocator.ForClassLoader.ofClassPath();
             TypePool typePool = TypePool.Default.ofClassPath();
@@ -90,7 +91,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
             Application app = testContext.getTestDescriptor().getApplication().get();
 
             ResourceConfig resourceConfig = (ResourceConfig) app.value().newInstance();
-            Jersey2ApplicationListener listener = new Jersey2ApplicationListener(LOCAL_TEST_CONTEXT);
+            Jersey2ApplicationListener listener = new Jersey2ApplicationListener(TEST_CONTEXT_HOLDER);
             resourceConfig.register(listener);
 
             resourceConfig = testContext.getTestReifier().configure(testContext, resourceConfig);
@@ -105,7 +106,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
     @SuppressWarnings("UseSpecificCatch")
     public ServerInstance<HttpServer> start(ResourceConfig configuration) {
         try {
-            TestContext testContext = LOCAL_TEST_CONTEXT.get();
+            TestContext testContext = TEST_CONTEXT_HOLDER.get().get();
 
             testContext.addProperty(APP, configuration);
             testContext.addProperty(APP_NAME, testContext.getName());
@@ -145,11 +146,11 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
     @Override
     public void stop() {
         try {
-            TestContext testContext = LOCAL_TEST_CONTEXT.get();
+            TestContext testContext = TEST_CONTEXT_HOLDER.get().get();
             Optional<HttpServer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
             HttpServer httpServer = servletContainer.get();
             httpServer.shutdown().get();
-            LOCAL_TEST_CONTEXT.remove();
+            TEST_CONTEXT_HOLDER.remove();
         } catch (ExecutionException | InterruptedException e) {
             throw new IllegalStateException(e);
         }

@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.fixture.servlet;
+package org.testifyproject.junit4.fixture.filter;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Import;
-import org.testifyproject.junit4.fixture.web.GreeterWebConfig;
+import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.RequiresContainer;
+import org.testifyproject.junit4.fixture.common.CutClass;
 
 /**
  *
  * @author saden
  */
-@SpringBootApplication
-@Import(GreeterWebConfig.class)
-public class GreeterServletApplication extends SpringBootServletInitializer {
+@RequiresContainer("test")
+public class RequiresContainerTestClass {
 
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(GreeterServletApplication.class, args);
-    }
+    @Cut
+    CutClass cut;
 
 }
