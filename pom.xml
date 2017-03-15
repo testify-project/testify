@@ -63,6 +63,7 @@
         <!-- Plugin Versions -->
         <plugin.resource>3.0.1</plugin.resource>
         <plugin.compiler>3.5.1</plugin.compiler>
+        <plugin.jar>3.0.2</plugin.jar>
         <plugin.surefire>2.19.1</plugin.surefire>
         <plugin.failsafe>2.19.1</plugin.failsafe>
         <plugin.checkstyle>2.17</plugin.checkstyle>
@@ -247,6 +248,10 @@
                             <parameters />
                         </compilerArguments>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${plugin.jar}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
