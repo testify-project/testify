@@ -72,6 +72,20 @@
         </activatedProfiles>
     </action>
     <action>
+        <actionName>CUSTOM-clean install -Pbuild -skipTests</actionName>
+        <displayName>clean install -Pbuild -skipTests</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+        </goals>
+        <properties>
+            <skipTests>true</skipTests>
+        </properties>
+        <activatedProfiles>
+            <activatedProfile>build</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
         <actionName>CUSTOM-clean install -Pbuild</actionName>
         <displayName>clean install -Pbuild</displayName>
         <goals>
@@ -114,4 +128,5 @@
             <goal>-TC1</goal>
         </goals>
     </action>
+    
 </actions>

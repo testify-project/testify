@@ -32,17 +32,24 @@
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>${mockito.version}</classifier>
-                        </configuration>
-                    </execution>
-                </executions>
+                <version>${plugin.jar}</version>
+                <configuration>
+                    <classifier>${mockito.version}</classifier>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${plugin.javadoc}</version>
+                <configuration>
+                    <classifier>javadoc-${mockito.version}</classifier>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${plugin.source}</version>
+                <configuration>
+                    <classifier>sources-${mockito.version}</classifier>
+                </configuration>
             </plugin>
         </plugins>
     </build>
