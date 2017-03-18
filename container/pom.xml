@@ -30,9 +30,11 @@
 
     <name>Container</name>
     <description>Parent module of ContainerProvider SPI Contract implementations</description>
+
     <modules>
         <module>docker</module>
     </modules>
+
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>

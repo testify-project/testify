@@ -36,10 +36,10 @@ import org.testifyproject.junit4.UnitTest;
  * @author saden
  */
 @RunWith(UnitTest.class)
-public class JaxrsWebTargetClientProviderTest {
+public class WebTargetClientProviderTest {
 
     @Cut
-    JaxrsWebTargetClientProvider cut;
+    WebTargetClientProvider cut;
 
     @Fake
     Client client;

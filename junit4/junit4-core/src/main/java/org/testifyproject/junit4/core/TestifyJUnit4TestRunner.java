@@ -15,7 +15,6 @@
  */
 package org.testifyproject.junit4.core;
 
-import org.testifyproject.core.TestContextHolder;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -37,6 +36,7 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.MDC;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -45,13 +45,13 @@ import org.testifyproject.TestRunner;
 import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.DefaultTestReifier;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.mock.MockitoMockProvider;
 import org.testifyproject.trait.LoggingTrait;
-import org.testifyproject.MockProvider;
 
 /**
  * Base class for all Testify Unit Runners. This class analyzes the test class,

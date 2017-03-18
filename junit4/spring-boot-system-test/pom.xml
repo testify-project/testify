@@ -83,6 +83,12 @@
             <version>${buildtools.version}</version>
         </dependency>
 
+        <!-- Annotation Processors Dependencies -->
+        <dependency>
+            <groupId>org.testifyproject.tools</groupId>
+            <artifactId>service-generator</artifactId>
+        </dependency>
+
         <!-- Spring Boot Deps -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -129,7 +135,7 @@
         </dependency>
         <dependency>
             <groupId>org.testifyproject.client</groupId>
-            <artifactId>jaxrs</artifactId>
+            <artifactId>jersey-client</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

@@ -24,9 +24,9 @@
         <version>0.9.0-SNAPSHOT</version>
     </parent>
     
-    <artifactId>jaxrs</artifactId>
-    <name>JAX-RS Client</name>
-    <description>A module that provides JAX-RS based ClientInstance</description>
+    <artifactId>jersey-client</artifactId>
+    <name>Jersey Client</name>
+    <description>A module that provides Jersey Client based ClientInstance</description>
 
     <build>
         <plugins>
@@ -69,7 +69,12 @@
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
             <version>${jersey.version}</version>
-            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Annotation Processors Dependencies -->
+        <dependency>
+            <groupId>org.testifyproject.tools</groupId>
+            <artifactId>service-generator</artifactId>
         </dependency>
     </dependencies>
 </project>

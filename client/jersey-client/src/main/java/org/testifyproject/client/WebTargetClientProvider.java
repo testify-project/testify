@@ -32,7 +32,7 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class JaxrsWebTargetClientProvider implements ClientProvider<ClientBuilder, WebTarget> {
+public class WebTargetClientProvider implements ClientProvider<ClientBuilder, WebTarget> {
 
     private Client client;
 

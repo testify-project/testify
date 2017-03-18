@@ -15,9 +15,14 @@
  */
 package org.testifyproject;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A contract that defines methods for getting information about a container.
@@ -27,41 +32,69 @@ import java.util.Optional;
 public interface ContainerInstance {
 
     /**
-     * Get the name of the container.
+     * Get a unique name associated with the container instance.
      *
-     * @return the required container IP address or hostname.
+     * @return the container name
      */
     String getName();
 
     /**
-     * Get the IP address or hostname of the container.
+     * Get the IP address of the container instance.
      *
-     * @return the container IP address or hostname.
+     * @return the container instance address
      */
-    String getHost();
+    InetAddress getAddress();
 
     /**
-     * Get a list containing ports exposed by the container.
+     * Get a mapping of container host ports and the local ports they map to.
+     * Note that the key presents the container host port and the value the
+     * local host port.
      *
-     * @return an immutable list containing exposed ports, empty list otherwise.
+     * @return an immutable map of port mappings, empty map otherwise
      */
-    List<Integer> getPorts();
+    Map<Integer, Integer> getMappedPorts();
 
     /**
-     * Find the first exposed host port.
+     * Get a list of ports exposed by the container instance.
      *
-     * @return optional of host port, empty optional otherwise.
+     * @return an immutable list of ports, empty list otherwise
      */
-    Optional<Integer> findFirstPort();
+    default List<Integer> getExposedPorts() {
+        return getMappedPorts().entrySet()
+                .stream()
+                .map(Map.Entry::getKey)
+                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
+    }
+
+    /**
+     * Find the first container exposed host port.
+     *
+     * @return optional of container host port, empty optional otherwise
+     */
+    default Optional<Integer> findFirstPort() {
+        return getMappedPorts().entrySet()
+                .stream()
+                .findFirst()
+                .map(Map.Entry::getKey);
+    }
 
     /**
      * Get a URI based on the given scheme and container port.
      *
      * @param scheme the scheme name
-     * @param containerPort the container port
+     * @param port the port
      *
-     * @return a URI.
+     * @return a URI
      */
-    URI getURI(String scheme, Integer containerPort);
+    default URI getURI(String scheme, Integer port) {
+        String uri = String.format(
+                "%s://%s:%d",
+                scheme,
+                getAddress().getHostAddress(),
+                port
+        );
+
+        return URI.create(uri);
+    }
 
 }

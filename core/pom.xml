@@ -40,11 +40,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
-            <version>${buildtools.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.testifyproject.external</groupId>
             <artifactId>external-asm</artifactId>
             <version>${buildtools.version}</version>
@@ -54,6 +49,11 @@
             <artifactId>external-objenesis</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
-    </dependencies>
 
+        <!-- Annotation Processors Dependencies -->
+        <dependency>
+            <groupId>org.testifyproject.tools</groupId>
+            <artifactId>service-generator</artifactId>
+        </dependency>
+    </dependencies>
 </project>

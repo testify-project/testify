@@ -16,20 +16,22 @@
 package org.testifyproject.container.docker;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import org.testifyproject.ContainerInstance;
 import org.testifyproject.ContainerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.RequiresContainer;
 import org.testifyproject.container.docker.callback.PullCallback;
 import org.testifyproject.container.docker.callback.WaitCallback;
+import org.testifyproject.core.DefaultContainerInstance;
 import org.testifyproject.failsafe.Failsafe;
 import org.testifyproject.failsafe.RetryPolicy;
 import org.testifyproject.github.dockerjava.api.DockerClient;
@@ -42,6 +44,7 @@ import org.testifyproject.github.dockerjava.core.DockerClientBuilder;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig.DockerClientConfigBuilder;
 import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
+import org.testifyproject.guava.common.net.InetAddresses;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -114,14 +117,16 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
                     .findFirst()
                     .get();
 
-            String host = containerNetwork.getIpAddress();
-            List<Integer> ports = networkSettings
+            InetAddress host = InetAddresses.forString(containerNetwork.getIpAddress());
+
+            Map<Integer, Integer> mappedPorts = networkSettings
                     .getPorts()
                     .getBindings()
                     .entrySet()
                     .parallelStream()
-                    .map(p -> p.getKey().getPort())
-                    .collect(collectingAndThen(toList(), Collections::unmodifiableList));
+                    .collect(collectingAndThen(toMap(
+                            k -> k.getKey().getPort(),
+                            v -> Integer.valueOf(v.getValue()[0].getHostPortSpec())), Collections::unmodifiableMap));
 
             if (requiresContainer.await()) {
                 RetryPolicy retryPolicy = new RetryPolicy()
@@ -132,9 +137,9 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
                         .withMaxRetries(requiresContainer.maxRetries())
                         .withMaxDuration(requiresContainer.maxDuration(), requiresContainer.unit());
 
-                ports.parallelStream().forEach(port -> Failsafe.with(retryPolicy).run(() -> {
-                    testContext.info("Waiting for '{}:{}' to be reachable", host, port);
-                    new Socket(host, port).close();
+                mappedPorts.entrySet().forEach(entry -> Failsafe.with(retryPolicy).run(() -> {
+                    testContext.info("Waiting for '{}:{}' to be reachable", host.getHostAddress(), entry.getKey());
+                    new Socket(host, entry.getKey()).close();
                 }));
             }
 
@@ -150,7 +155,7 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
                 }
             });
 
-            return new DockerContainerInstance(inspectResponse.getName(), host, ports);
+            return DefaultContainerInstance.of(inspectResponse.getName(), host, mappedPorts);
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }

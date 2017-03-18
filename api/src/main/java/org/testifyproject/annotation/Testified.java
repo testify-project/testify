@@ -40,7 +40,7 @@ public @interface Testified {
      * recommended convention is to use the fully qualified name of the code
      * generator (i.e. com.acme.generator.CodeGen).
      *
-     * @return
+     * @return the name of the code generator
      */
     String value();
 

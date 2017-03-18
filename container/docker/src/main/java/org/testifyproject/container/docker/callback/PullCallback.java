@@ -58,7 +58,9 @@ public class PullCallback implements ResultCallback<PullResponseItem> {
         ResponseItem.ProgressDetail details = item.getProgressDetail();
         String status = item.getStatus();
 
-        if (details != null && (details.getCurrent() != 0 && details.getTotal() != 0)) {
+        if (details != null
+                && details.getCurrent() != null
+                && details.getTotal() != null) {
             double current = details.getCurrent();
             double total = details.getTotal();
             double percent = (current / total) * 100;

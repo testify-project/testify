@@ -32,7 +32,7 @@
     <description>Parent module of Testify's ClientInstance SPI Contract implementations</description>
 
     <modules>
-        <module>jaxrs</module>
+        <module>jersey-client</module>
     </modules>
 
     <dependencies>

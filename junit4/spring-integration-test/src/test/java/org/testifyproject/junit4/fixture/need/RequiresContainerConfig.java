@@ -49,10 +49,10 @@ public class RequiresContainerConfig {
 
     @Bean
     @Primary
-    DataSource dataSourceProvider(ContainerInstance needInstance) {
+    DataSource dataSourceProvider(ContainerInstance containerInstance) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(needInstance.getHost());
-        dataSource.setPortNumber(needInstance.findFirstPort().get());
+        dataSource.setServerName(containerInstance.getAddress().getHostName());
+        dataSource.setPortNumber(containerInstance.findFirstPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

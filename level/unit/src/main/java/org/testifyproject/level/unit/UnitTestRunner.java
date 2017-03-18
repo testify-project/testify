@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.ObjenesisHelper;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -29,7 +30,6 @@ import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.instantiator.ObjectInstantiator;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.MockProvider;
 
 /**
  * A class used to run a integration test.

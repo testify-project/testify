@@ -38,7 +38,7 @@ public class DockerContainerConfig {
     @Bean
     DataSource dataSourceProvider(ContainerInstance containerInstance) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(containerInstance.getHost());
+        dataSource.setServerName(containerInstance.getAddress().getHostName());
         dataSource.setPortNumber(containerInstance.findFirstPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");

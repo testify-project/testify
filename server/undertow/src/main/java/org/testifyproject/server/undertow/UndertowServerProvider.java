@@ -100,8 +100,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
                     .addServlet(servletInfo);
 
             return deploymentInfo;
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw new IllegalStateException(e);
         }
     }
@@ -134,8 +133,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
                     null);
 
             return DefaultServerInstance.of(baseURI, undertow);
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw new IllegalStateException("Could not start Undertow Server", e);
         }
     }
@@ -190,8 +188,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     public Optional<Field> findField(Class<?> type, String name) {
         try {
             return of(type.getDeclaredField(name));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return empty();
         }
     }
@@ -201,8 +198,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
             field.setAccessible(true);
 
             return (T) field.get(instance);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }

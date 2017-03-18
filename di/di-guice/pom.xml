@@ -40,6 +40,12 @@
             <version>${guice.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Annotation Processors Dependencies -->
+        <dependency>
+            <groupId>org.testifyproject.tools</groupId>
+            <artifactId>service-generator</artifactId>
+        </dependency>
     </dependencies>
     
 </project>

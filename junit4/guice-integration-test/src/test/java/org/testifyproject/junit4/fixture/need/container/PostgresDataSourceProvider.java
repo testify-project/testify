@@ -32,19 +32,19 @@ import org.testifyproject.ContainerInstance;
  */
 public class PostgresDataSourceProvider implements Provider<DataSource> {
 
-    private final ContainerInstance instance;
+    private final ContainerInstance containerInstance;
 
     @Inject
-    PostgresDataSourceProvider(@Named("postgres") ContainerInstance instance) {
-        this.instance = instance;
+    PostgresDataSourceProvider(@Named("postgres") ContainerInstance containerInstance) {
+        this.containerInstance = containerInstance;
     }
 
     @Singleton
     @Override
     public DataSource get() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(instance.getHost());
-        dataSource.setPortNumber(instance.findFirstPort().get());
+        dataSource.setServerName(containerInstance.getAddress().getHostName());
+        dataSource.setPortNumber(containerInstance.findFirstPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");
