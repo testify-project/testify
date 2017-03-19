@@ -1,0 +1,40 @@
+sudo: false
+
+language: java
+
+jdk:
+    - oraclejdk8
+
+services:
+    - docker
+
+notifications:
+    email:
+        - builds@fitbur.com
+    on-success: change
+    on-failure: always
+
+cache:
+    apt: true
+    pip: true
+    directories:
+        - $HOME/.m2
+
+addons:
+    apt:
+        packages:
+            - gnupg
+            - net-tools
+
+before_install:
+    - ./before_install.sh
+    - pip install --user codecov
+    - sudo apt-get update -y
+    - sudo apt-get install docker-engine=1.11.2-0~trusty -o Dpkg::Options::="--force-confold" --force-yes -y
+
+script: ./script.sh
+
+after_success:
+    - codecov
+    - ./after_success.sh
+
