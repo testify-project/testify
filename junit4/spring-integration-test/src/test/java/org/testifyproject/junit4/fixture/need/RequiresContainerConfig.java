@@ -52,7 +52,7 @@ public class RequiresContainerConfig {
     DataSource dataSourceProvider(ContainerInstance containerInstance) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setServerName(containerInstance.getAddress().getHostName());
-        dataSource.setPortNumber(containerInstance.findFirstPort().get());
+        dataSource.setPortNumber(containerInstance.findFirstExposedPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

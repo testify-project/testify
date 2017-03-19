@@ -44,7 +44,7 @@ public class PostgresDataSourceProvider implements Provider<DataSource> {
     public DataSource get() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setServerName(containerInstance.getAddress().getHostName());
-        dataSource.setPortNumber(containerInstance.findFirstPort().get());
+        dataSource.setPortNumber(containerInstance.findFirstExposedPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

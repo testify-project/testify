@@ -15,14 +15,11 @@
  */
 package org.testifyproject;
 
+import static java.lang.String.format;
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A contract that defines methods for getting information about a container.
@@ -55,23 +52,12 @@ public interface ContainerInstance {
     Map<Integer, Integer> getMappedPorts();
 
     /**
-     * Get a list of ports exposed by the container instance.
+     * Find the first container exposed host port. This is a convenience method
+     * for getting a port from containers that expose at most one port.
      *
-     * @return an immutable list of ports, empty list otherwise
+     * @return optional of container host exposed port, empty optional otherwise
      */
-    default List<Integer> getExposedPorts() {
-        return getMappedPorts().entrySet()
-                .stream()
-                .map(Map.Entry::getKey)
-                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
-    }
-
-    /**
-     * Find the first container exposed host port.
-     *
-     * @return optional of container host port, empty optional otherwise
-     */
-    default Optional<Integer> findFirstPort() {
+    default Optional<Integer> findFirstExposedPort() {
         return getMappedPorts().entrySet()
                 .stream()
                 .findFirst()
@@ -87,12 +73,7 @@ public interface ContainerInstance {
      * @return a URI
      */
     default URI getURI(String scheme, Integer port) {
-        String uri = String.format(
-                "%s://%s:%d",
-                scheme,
-                getAddress().getHostAddress(),
-                port
-        );
+        String uri = format("%s://%s:%d", scheme, getAddress().getHostAddress(), port);
 
         return URI.create(uri);
     }

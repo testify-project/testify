@@ -17,7 +17,6 @@ package org.testifyproject;
 
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,27 +41,14 @@ public class ContainerInstanceTest {
     }
 
     @Test
-    public void callToGetExposedPortsShouldReturnExposedPorts() {
+    public void callToFindFirstExposedPortShouldReturnFirstPortFound() {
         Integer hostPort = 1000;
         Integer localPort = 2000;
         Map<Integer, Integer> mappedPorts = ImmutableMap.of(hostPort, localPort);
 
         given(cut.getMappedPorts()).willReturn(mappedPorts);
 
-        List<Integer> result = cut.getExposedPorts();
-
-        assertThat(result).containsExactly(hostPort);
-    }
-
-    @Test
-    public void callToFindFirstPortShouldReturnFirstPortFound() {
-        Integer hostPort = 1000;
-        Integer localPort = 2000;
-        Map<Integer, Integer> mappedPorts = ImmutableMap.of(hostPort, localPort);
-
-        given(cut.getMappedPorts()).willReturn(mappedPorts);
-
-        Optional<Integer> result = cut.findFirstPort();
+        Optional<Integer> result = cut.findFirstExposedPort();
 
         assertThat(result).contains(hostPort);
     }

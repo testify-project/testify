@@ -16,7 +16,14 @@
 #
 set -e
 
-rm -f secrets.tar.gz secrets.tar.gz.enc
-tar -czvf secrets.tar.gz secrets
-travis login --github-token f3e6bfa87ccf7b563b4b2190a8ed58b92a983103
-travis encrypt-file secrets.tar.gz
+if [ -z ${GITHUB_TOKEN+x} ]; then
+    echo "GITHUB_TOKEN variable is not set. Please set it to your GitHub Token."
+    exit 1;
+else
+    rm -f secrets.tar.gz secrets.tar.gz.enc
+    tar -czvf secrets.tar.gz secrets
+    travis login --github-token $GITHUB_TOKEN
+    travis encrypt-file secrets.tar.gz
+fi
+
+exit 0;
