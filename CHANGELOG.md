@@ -12,17 +12,19 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Security - Lists security fixes to security vulnerabilities
 
 ## [Unreleased]
+
+## [0.9.0] - 2017-03-19
 ### Added
-- API module which defines contracts and annotations
-- Core module which implements and provides:
+- API module that defines Testify API contracts and annotations
+- Core module that implements and provides:
  - Common implementation of API contracts
- - Ability to parse test classes and classes under test
+ - Test class and class under test analyzers
  - Utility classes
 - Mockito and EasyMock implementations of the MockProvider contract
 - Docker implementation of ContainerProvider contract
 - Spring, HK2, and Guice DI implementations of the ServiceProvider contract
 - Unit, Integration, and System test implementations of TestRunner and TestVerifier contracts
 - JUnit 4 test runner implementations for Spring, HK2, Guice, Spring Boot, Spring Servlet MVC, Jersey 2
-- JAX-RS implementation of the ClientProvider contract
+- Jersey Client implementation of the ClientProvider contract
 - Undertow implementation of the ServerProvider contract
 
