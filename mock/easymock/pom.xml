@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.mock</groupId>
         <artifactId>mock</artifactId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.9.2-SNAPSHOT</version>
     </parent>
     
     <artifactId>easymock</artifactId>
@@ -36,24 +36,17 @@
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>${plugin.jar}</version>
-                <configuration>
-                    <classifier>${easymock.version}</classifier>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${plugin.javadoc}</version>
-                <configuration>
-                    <classifier>javadoc-${easymock.version}</classifier>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${plugin.source}</version>
-                <configuration>
-                    <classifier>sources-${easymock.version}</classifier>
-                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>${easymock.version}</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
