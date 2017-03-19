@@ -13,6 +13,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.1] - 2017-03-19
+### Fixed
+- Bug were deployment of artifact to sonatype failed due to [missing main artifact](https://travis-ci.org/testify-project/testify/builds/212702576)
+
 ## [0.9.0] - 2017-03-19
 ### Added
 - API module that defines Testify API contracts and annotations

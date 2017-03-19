@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.client</groupId>
         <artifactId>client</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
     </parent>
     
     <artifactId>jersey-client</artifactId>
@@ -32,24 +32,17 @@
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>${plugin.jar}</version>
-                <configuration>
-                    <classifier>${jersey.version}</classifier>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${plugin.javadoc}</version>
-                <configuration>
-                    <classifier>javadoc-${jersey.version}</classifier>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${plugin.source}</version>
-                <configuration>
-                    <classifier>sources-${jersey.version}</classifier>
-                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>${jersey.version}</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
