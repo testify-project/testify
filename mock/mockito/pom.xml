@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.mock</groupId>
         <artifactId>mock</artifactId>
-        <version>0.9.0-SNAPSHOT</version>
+        <version>0.9.0</version>
     </parent>
 
     <artifactId>mockito</artifactId>
