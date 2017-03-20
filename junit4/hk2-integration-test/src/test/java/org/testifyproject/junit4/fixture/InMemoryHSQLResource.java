@@ -52,7 +52,7 @@ public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, Da
             server = dataSource;
             client = dataSource.getConnection();
 
-            return new ResourceInstanceBuilder<DataSource, Connection>()
+            return ResourceInstanceBuilder.builder()
                     .server(server, "inmemoryHSQLDataSource", DataSource.class)
                     .client(client, "inmemoryHSQLConnection", Connection.class)
                     .build();

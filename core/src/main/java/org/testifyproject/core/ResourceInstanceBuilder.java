@@ -15,7 +15,7 @@
  */
 package org.testifyproject.core;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
@@ -32,15 +32,15 @@ public class ResourceInstanceBuilder<S, C> {
 
     private Instance<S> server;
     private Instance<C> client;
-    private final Map<String, Object> properties = new HashMap<>();
+    private final Map<String, Object> properties = new LinkedHashMap<>();
 
     /**
      * Create a new instance of ResourceInstanceBuilder.
      *
      * @return a new instance
      */
-    public static ResourceInstanceBuilder builder() {
-        return new ResourceInstanceBuilder();
+    public static  ResourceInstanceBuilder builder() {
+        return new ResourceInstanceBuilder<>();
     }
 
     /**
@@ -70,7 +70,7 @@ public class ResourceInstanceBuilder<S, C> {
      * @param contract the server contract
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> server(S server, String name, Class<? super S> contract) {
+    public ResourceInstanceBuilder<S, C> server(S server, String name, Class<? extends S> contract) {
         this.server = new DefaultInstance(server, name, contract);
 
         return this;
@@ -103,7 +103,7 @@ public class ResourceInstanceBuilder<S, C> {
      * @param contract the client contract
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> client(C client, String name, Class<? super C> contract) {
+    public ResourceInstanceBuilder<S, C> client(C client, String name, Class<? extends C> contract) {
         this.client = new DefaultInstance(client, name, contract);
 
         return this;
