@@ -12,6 +12,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Security - Lists security fixes to security vulnerabilities
 
 ## [Unreleased]
+### Fixed
+- Bug in SpringBootServerProvider when trying to add a new element to an immutable map
+- Bug in HK2ServiceInstance that prevented the removal and replacement services
+- Bug in ResourceInstanceBuilder where builder methods used super instead of extends
 
 ## [0.9.1] - 2017-03-19
 ### Fixed

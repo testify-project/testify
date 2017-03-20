@@ -126,13 +126,15 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
 
         Application application = testDescriptor.getApplication().get();
 
-        Set<Object> sources = ImmutableSet.of(application.value());
+        ImmutableSet.Builder<Object> sourcesBuilder = ImmutableSet.builder().add(application.value());
 
         testDescriptor.getModules()
                 .stream()
                 .sequential()
                 .map(p -> p.value())
-                .forEach(sources::add);
+                .forEach(sourcesBuilder::add);
+
+        Set<Object> sources = sourcesBuilder.build();
 
         DefaultResourceLoader resourceLoader = new DefaultResourceLoader(classLoader);
 

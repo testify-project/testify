@@ -33,6 +33,9 @@ import org.glassfish.hk2.api.ServiceLocator;
 import static org.glassfish.hk2.api.ServiceLocatorState.RUNNING;
 import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.BuilderHelper;
+import static org.glassfish.hk2.utilities.BuilderHelper.createContractFilter;
+import static org.glassfish.hk2.utilities.BuilderHelper.createNameAndContractFilter;
+import static org.glassfish.hk2.utilities.BuilderHelper.createNameFilter;
 import org.glassfish.hk2.utilities.NamedImpl;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addOneConstant;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
@@ -124,36 +127,39 @@ public class HK2ServiceInstance implements ServiceInstance {
 
         if (name != null && contract != null) {
             addOneConstant(locator, instance, name, instanceType, contract);
+            addOneConstant(locator, instance, null, instanceType, contract);
         } else if (name != null) {
-            addOneConstant(locator, instance, name);
+            addOneConstant(locator, instance, name, instanceType);
+            addOneConstant(locator, instance, null, instanceType);
         } else if (contract != null) {
-            addOneConstant(locator, instance, null, contract);
+            addOneConstant(locator, instance, null, instanceType, contract);
         } else {
-            Class<?>[] interfaces = instance.getClass().getInterfaces();
+            Class<?>[] interfaces = instanceType.getInterfaces();
             Class<?>[] contracts = Arrays.copyOf(interfaces, interfaces.length + 1);
-            contracts[interfaces.length] = instance.getClass();
+            contracts[interfaces.length] = instanceType;
 
             addOneConstant(locator, instance, null, contracts);
         }
+
+        addOneConstant(locator, instance);
     }
 
     @Override
     public void replace(Object instance, String name, Class contract) {
         Class instanceType = instance.getClass();
 
-        IndexedFilter filter;
+        IndexedFilter filter = BuilderHelper.createContractFilter(instanceType.getTypeName());
+        removeFilter(locator, filter, true);
 
         if (name != null && contract != null) {
-            filter = BuilderHelper.createNameAndContractFilter(contract.getName(), name);
+            removeFilter(locator, createNameAndContractFilter(contract.getName(), name), true);
+            removeFilter(locator, createNameFilter(name), true);
+            removeFilter(locator, createContractFilter(contract.getName()), true);
         } else if (name != null) {
-            filter = BuilderHelper.createNameFilter(name);
+            removeFilter(locator, createNameFilter(name), true);
         } else if (contract != null) {
-            filter = BuilderHelper.createContractFilter(contract.getName());
-        } else {
-            filter = BuilderHelper.createContractFilter(instanceType.getTypeName());
+            removeFilter(locator, createContractFilter(contract.getName()), true);
         }
-
-        removeFilter(locator, filter, true);
 
         addConstant(instance, name, contract);
     }
