@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.container</groupId>
         <artifactId>container</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>docker</artifactId>
