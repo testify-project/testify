@@ -46,6 +46,13 @@ Please consider submitting a reproduction project via the a new [Github Issue][g
 ## Staying in Touch
 Hit us up on [Gitter][gitter].
 
+## Show Some Love
+Testify Project does not have a revenue source and depends on support from the open source community. If you believe in our mission please consider donating:
+
+[![Gratipay](https://img.shields.io/badge/Gratipay-Donate-red.svg)](https://gratipay.com/Testify-Project/)
+[![Flattr](https://img.shields.io/badge/Flattr-Donate-blue.svg)](https://flattr.com/submit/auto?fid=ropvn7&url=http%3A%2F%2Ftestifyproject.org)
+[![Bonfire](https://img.shields.io/badge/Bonfire-Get%20Swagg-green.svg)](https://www.bonfire.com/testify-project/)
+
 ## License
 The Testify is released under [Apache Software License, Version 2.0](LICENSE).
 
