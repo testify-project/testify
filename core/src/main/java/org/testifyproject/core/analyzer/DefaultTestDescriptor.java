@@ -28,9 +28,9 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.ContainerResource;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.RequiresContainer;
-import org.testifyproject.annotation.RequiresResource;
 import org.testifyproject.annotation.Scan;
 
 /**
@@ -99,12 +99,12 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<RequiresResource> getRequiresResources() {
+    public List<LocalResource> getLocalResources() {
         return findList(TestDescriptorProperties.REQUIRES_RESOURCES);
     }
 
     @Override
-    public List<RequiresContainer> getRequiresContainers() {
+    public List<ContainerResource> getContainerResources() {
         return findList(TestDescriptorProperties.REQUIRES_CONTAINERS);
     }
 

@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.junit4.fixture.common.CutClass;
 import org.testifyproject.junit4.fixture.FunctionalTest;
+import org.testifyproject.junit4.fixture.common.CutClass;
 
 /**
  *

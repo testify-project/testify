@@ -22,21 +22,21 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.RequiresContainer;
-import org.testifyproject.annotation.RequiresContainers;
+import org.testifyproject.annotation.ContainerResource;
+import org.testifyproject.annotation.ContainerResources;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 
 /**
  *
  * @author saden
  */
-public class RequiresContainersInspectorTest {
+public class ContainerResourcesInspectorTest {
 
-    RequiresContainersInspector cut;
+    ContainerResourcesInspector cut;
 
     @Before
     public void init() {
-        cut = new RequiresContainersInspector();
+        cut = new ContainerResourcesInspector();
     }
 
     @Test(expected = NullPointerException.class)
@@ -45,8 +45,8 @@ public class RequiresContainersInspectorTest {
     }
 
     @Test
-    public void callToHandlesRequiresContainersShouldReturnTrue() {
-        boolean result = cut.handles(RequiresContainers.class);
+    public void callToHandlesContainerResourcesShouldReturnTrue() {
+        boolean result = cut.handles(ContainerResources.class);
 
         assertThat(result).isTrue();
     }
@@ -55,10 +55,10 @@ public class RequiresContainersInspectorTest {
     public void givenParamtersInspectShouldAddProperty() throws Exception {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
-        RequiresContainers annotation = mock(RequiresContainers.class);
-        RequiresContainer element = mock(RequiresContainer.class);
+        ContainerResources annotation = mock(ContainerResources.class);
+        ContainerResource element = mock(ContainerResource.class);
 
-        given(annotation.value()).willReturn(new RequiresContainer[]{element});
+        given(annotation.value()).willReturn(new ContainerResource[]{element});
 
         cut.inspect(testDescriptor, annotatedType, annotation);
 

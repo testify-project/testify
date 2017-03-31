@@ -31,9 +31,9 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.ContainerResource;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.RequiresContainer;
-import org.testifyproject.annotation.RequiresResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -127,21 +127,21 @@ public class DefaultTestDescriptorTest {
     }
 
     @Test
-    public void callToGetRequiresResourcesShouldReturn() {
-        RequiresResource value = mock(RequiresResource.class);
+    public void callToGetLocalResourcesShouldReturn() {
+        LocalResource value = mock(LocalResource.class);
         properties.put(TestDescriptorProperties.REQUIRES_RESOURCES, ImmutableList.of(value));
 
-        List<RequiresResource> result = cut.getRequiresResources();
+        List<LocalResource> result = cut.getLocalResources();
 
         assertThat(result).containsExactly(value);
     }
 
     @Test
-    public void callToGetRequiresContainersShouldReturn() {
-        RequiresContainer value = mock(RequiresContainer.class);
+    public void callToGetContainerResourcesShouldReturn() {
+        ContainerResource value = mock(ContainerResource.class);
         properties.put(TestDescriptorProperties.REQUIRES_CONTAINERS, ImmutableList.of(value));
 
-        List<RequiresContainer> result = cut.getRequiresContainers();
+        List<ContainerResource> result = cut.getContainerResources();
 
         assertThat(result).containsExactly(value);
     }

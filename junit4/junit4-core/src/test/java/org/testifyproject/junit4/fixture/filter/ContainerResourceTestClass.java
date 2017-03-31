@@ -15,16 +15,16 @@
  */
 package org.testifyproject.junit4.fixture.filter;
 
+import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.RequiresContainer;
 import org.testifyproject.junit4.fixture.common.CutClass;
 
 /**
  *
  * @author saden
  */
-@RequiresContainer("test")
-public class RequiresContainerTestClass {
+@ContainerResource("test")
+public class ContainerResourceTestClass {
 
     @Cut
     CutClass cut;

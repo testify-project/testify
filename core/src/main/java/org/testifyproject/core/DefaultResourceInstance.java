@@ -23,7 +23,7 @@ import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
 
 /**
- * A class that contains server and client instances of a required resource.
+ * A class that contains server and client instances of a local resource.
  *
  * @author saden
  * @param <S> server resource instance type
@@ -31,7 +31,7 @@ import org.testifyproject.ResourceInstance;
  */
 public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
 
-    private final Instance<S> server;
+    private final Instance<S> instance;
     private final Instance<C> client;
     private final Map<String, Object> properties;
 
@@ -41,28 +41,28 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
      *
      * @param <S> server resource instance type
      * @param <C> client resource instance type
-     * @param server the server instance
+     * @param instance the underlying resource instance
      * @param client the client instance
      * @param properties the resource instance properties
      * @return a new resource instance
      */
-    public static <S, C> ResourceInstance<S, C> of(Instance<S> server,
+    public static <S, C> ResourceInstance<S, C> of(Instance<S> instance,
             Instance<C> client,
             Map<String, Object> properties) {
-        return new DefaultResourceInstance<>(server, client, properties);
+        return new DefaultResourceInstance<>(instance, client, properties);
     }
 
-    DefaultResourceInstance(Instance<S> server,
+    DefaultResourceInstance(Instance<S> instance,
             Instance<C> client,
             Map<String, Object> properties) {
-        this.server = server;
+        this.instance = instance;
         this.client = client;
         this.properties = properties;
     }
 
     @Override
-    public Instance<S> getServer() {
-        return server;
+    public Instance<S> getInstance() {
+        return instance;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.server);
+        hash = 97 * hash + Objects.hashCode(this.instance);
         hash = 97 * hash + Objects.hashCode(this.client);
         hash = 97 * hash + Objects.hashCode(this.properties);
         return hash;
@@ -96,7 +96,7 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
             return false;
         }
         final DefaultResourceInstance<?, ?> other = (DefaultResourceInstance<?, ?>) obj;
-        if (!Objects.equals(this.server, other.server)) {
+        if (!Objects.equals(this.instance, other.instance)) {
             return false;
         }
         if (!Objects.equals(this.client, other.client)) {
@@ -108,7 +108,7 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
     @Override
     public String toString() {
         return "DefaultResourceInstance{"
-                + "server=" + server
+                + "instance=" + instance
                 + ", client=" + client
                 + ", properties=" + properties
                 + '}';

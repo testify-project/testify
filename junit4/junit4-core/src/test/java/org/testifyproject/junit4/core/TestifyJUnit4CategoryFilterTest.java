@@ -24,8 +24,8 @@ import static org.mockito.Mockito.mock;
 import org.testifyproject.core.TestCategory;
 import static org.testifyproject.junit4.core.TestifyJUnit4CategoryFilter.FILTER_DESCRIPTION;
 import org.testifyproject.junit4.fixture.common.TestClass;
-import org.testifyproject.junit4.fixture.filter.RequiresContainerTestClass;
-import org.testifyproject.junit4.fixture.filter.RequiresResourceTestClass;
+import org.testifyproject.junit4.fixture.filter.ContainerResourceTestClass;
+import org.testifyproject.junit4.fixture.filter.LocalResourceTestClass;
 
 /**
  *
@@ -76,7 +76,7 @@ public class TestifyJUnit4CategoryFilterTest {
     @Test
     public void givenTestClassWithRequiredResourceShouldRunShouldReturnTrue() {
         Description description = mock(Description.class);
-        Class testClass = RequiresResourceTestClass.class;
+        Class testClass = LocalResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
         System.setProperty("testify.categories", "integ");
@@ -89,7 +89,7 @@ public class TestifyJUnit4CategoryFilterTest {
     @Test
     public void givenTestClassWithRequiredContainerShouldRunShouldReturnTrue() {
         Description description = mock(Description.class);
-        Class testClass = RequiresContainerTestClass.class;
+        Class testClass = ContainerResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
         System.setProperty("testify.categories", "integ");

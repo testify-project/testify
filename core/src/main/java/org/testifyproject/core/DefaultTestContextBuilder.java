@@ -19,12 +19,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
-import org.testifyproject.MockProvider;
 
 public class DefaultTestContextBuilder {
 

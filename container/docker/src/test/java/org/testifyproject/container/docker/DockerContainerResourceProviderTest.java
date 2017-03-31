@@ -30,8 +30,8 @@ import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
-import org.testifyproject.annotation.RequiresContainer;
-import static org.testifyproject.container.docker.DockerContainerProvider.DEFAULT_DAEMON_URI;
+import org.testifyproject.annotation.ContainerResource;
+import static org.testifyproject.container.docker.DockerContainerResourceProvider.DEFAULT_DAEMON_URI;
 import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
@@ -41,13 +41,13 @@ import static org.testifyproject.github.dockerjava.core.DockerClientConfig.creat
  *
  * @author saden
  */
-public class DockerContainerProviderTest {
+public class DockerContainerResourceProviderTest {
 
-    DockerContainerProvider cut;
+    DockerContainerResourceProvider cut;
 
     @Before
     public void init() {
-        cut = new DockerContainerProvider();
+        cut = new DockerContainerResourceProvider();
     }
 
     @After
@@ -84,16 +84,16 @@ public class DockerContainerProviderTest {
                 .dependencies(dependencies)
                 .build();
 
-        RequiresContainer delegate = ReflectionUtil.INSTANCE.newInstance(RequiresContainer.class);
-        RequiresContainer requiresContainer = mock(RequiresContainer.class, delegatesTo(delegate));
-        given(requiresContainer.value()).willReturn("postgres");
-        given(requiresContainer.version()).willReturn("9.4");
+        ContainerResource delegate = ReflectionUtil.INSTANCE.newInstance(ContainerResource.class);
+        ContainerResource containerResource = mock(ContainerResource.class, delegatesTo(delegate));
+        given(containerResource.value()).willReturn("postgres");
+        given(containerResource.version()).willReturn("9.4");
         given(testContext.getTestName()).willReturn("TestClass");
         given(testContext.getMethodName()).willReturn("testMethod");
 
         DockerClientConfig.DockerClientConfigBuilder builder = createDefaultConfigBuilder()
                 .withDockerHost(DEFAULT_DAEMON_URI);
-        ContainerInstance result = cut.start(testContext, requiresContainer, builder);
+        ContainerInstance result = cut.start(testContext, containerResource, builder);
         assertThat(result).isNotNull();
     }
 

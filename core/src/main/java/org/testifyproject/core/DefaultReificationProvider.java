@@ -25,8 +25,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.ReificationProvider;
-import org.testifyproject.RequiresProvider;
+import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
@@ -36,7 +37,6 @@ import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.MockProvider;
 
 /**
  * An implementation of the ReificationProvider SPI contract.
@@ -46,26 +46,27 @@ import org.testifyproject.MockProvider;
 @Discoverable
 public class DefaultReificationProvider implements ReificationProvider {
 
-    private ServiceLocatorUtil serviceLocatorUtil = ServiceLocatorUtil.INSTANCE;
-    private Queue<RequiresProvider> requiresProviders = new ConcurrentLinkedQueue<>();
+    private ServiceLocatorUtil serviceLocatorUtil;
+    private Queue<ResourceProvider> resourceProviders;
 
     public DefaultReificationProvider() {
+        this(ServiceLocatorUtil.INSTANCE, new ConcurrentLinkedQueue<>());
     }
 
-    public DefaultReificationProvider(ServiceLocatorUtil serviceLocatorUtil,
-            Queue<RequiresProvider> requiresProviders) {
-        this.requiresProviders = requiresProviders;
+    DefaultReificationProvider(ServiceLocatorUtil serviceLocatorUtil,
+            Queue<ResourceProvider> resourceProviders) {
+        this.resourceProviders = resourceProviders;
         this.serviceLocatorUtil = serviceLocatorUtil;
     }
 
     @Override
     public void start(TestContext testContext, ServiceInstance serviceInstance) {
         if (testContext.getResourceStartStrategy() == StartStrategy.Eager) {
-            List<RequiresProvider> foundRequiresProvider = serviceLocatorUtil.findAll(RequiresProvider.class);
+            List<ResourceProvider> foundResourceProviders = serviceLocatorUtil.findAll(ResourceProvider.class);
 
-            foundRequiresProvider.parallelStream().forEach(requiresProvider -> {
-                requiresProvider.start(testContext, serviceInstance);
-                requiresProviders.add(requiresProvider);
+            foundResourceProviders.parallelStream().forEach(resourceProvider -> {
+                resourceProvider.start(testContext, serviceInstance);
+                resourceProviders.add(resourceProvider);
             });
         }
 
@@ -176,7 +177,7 @@ public class DefaultReificationProvider implements ReificationProvider {
     @Override
     public void destroy(TestContext testContext, ServiceInstance serviceInstance) {
         if (testContext.getResourceStartStrategy() == StartStrategy.Eager) {
-            requiresProviders.forEach(RequiresProvider::stop);
+            resourceProviders.forEach(ResourceProvider::stop);
         }
     }
 

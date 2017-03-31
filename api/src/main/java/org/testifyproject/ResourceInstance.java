@@ -47,10 +47,10 @@ public interface ResourceInstance<S, C> {
     Optional<Instance<C>> getClient();
 
     /**
-     * Get the server instance associated with the resource.
+     * Get the underlying resource instance of the resource.
      *
-     * @return the server instance associated with the resource
+     * @return the instance associated with the resource
      */
-    Instance<S> getServer();
+    Instance<S> getInstance();
 
 }

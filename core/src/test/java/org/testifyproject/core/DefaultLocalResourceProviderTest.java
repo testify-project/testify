@@ -29,13 +29,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.ResourceInstance;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
@@ -43,23 +43,23 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  *
  * @author saden
  */
-public class DefaultRequiresResourceProviderTest {
+public class DefaultLocalResourceProviderTest {
 
-    DefaultRequiresResourceProvider cut;
+    DefaultLocalResourceProvider cut;
     ReflectionUtil reflectionUtil;
-    Queue<ResourceProvider> resourceProviders;
+    Queue<LocalResourceProvider> resourceProviders;
 
     @Before
     public void init() {
         reflectionUtil = mock(ReflectionUtil.class);
         resourceProviders = mock(Queue.class, delegatesTo(new ConcurrentLinkedQueue()));
 
-        cut = new DefaultRequiresResourceProvider(reflectionUtil, resourceProviders);
+        cut = new DefaultLocalResourceProvider(reflectionUtil, resourceProviders);
     }
 
     @Test
     public void verifyDefaultConstructor() {
-        DefaultRequiresResourceProvider result = new DefaultRequiresResourceProvider();
+        DefaultLocalResourceProvider result = new DefaultLocalResourceProvider();
 
         assertThat(result).isNotNull();
     }
@@ -73,21 +73,21 @@ public class DefaultRequiresResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithoutRequiresResourcesShouldDoNothing() {
+    public void callToStartWithoutLocalResourcesShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        List<RequiresResource> requiresContainers = ImmutableList.of();
+        List<LocalResource> containerResources = ImmutableList.of();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testDescriptor.getRequiresResources()).willReturn(requiresContainers);
+        given(testDescriptor.getLocalResources()).willReturn(containerResources);
 
         cut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestReifier();
-        verify(testDescriptor).getRequiresResources();
+        verify(testDescriptor).getLocalResources();
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
     }
 
@@ -97,10 +97,10 @@ public class DefaultRequiresResourceProviderTest {
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        RequiresResource requiresResource = mock(RequiresResource.class);
-        List<RequiresResource> requiresContainers = ImmutableList.of(requiresResource);
-        Class resourceProviderType = ResourceProvider.class;
-        ResourceProvider resourceProvider = mock(ResourceProvider.class);
+        LocalResource localResource = mock(LocalResource.class);
+        List<LocalResource> containerResources = ImmutableList.of(localResource);
+        Class resourceProviderType = LocalResourceProvider.class;
+        LocalResourceProvider resourceProvider = mock(LocalResourceProvider.class);
         Object configuration = mock(Object.class);
         TestReifier testReifier = mock(TestReifier.class);
         ResourceInstance resourceInstance = mock(ResourceInstance.class);
@@ -116,43 +116,43 @@ public class DefaultRequiresResourceProviderTest {
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestReifier()).willReturn(testReifier);
-        given(testDescriptor.getRequiresResources()).willReturn(requiresContainers);
-        given(requiresResource.value()).willReturn(resourceProviderType);
+        given(testDescriptor.getLocalResources()).willReturn(containerResources);
+        given(localResource.value()).willReturn(resourceProviderType);
         given(reflectionUtil.newInstance(resourceProviderType)).willReturn(resourceProvider);
         given(resourceProvider.configure(testContext)).willReturn(configuration);
         given(testReifier.configure(testContext, configuration)).willReturn(configuration);
         given(resourceProvider.start(testContext, configuration)).willReturn(resourceInstance);
-        given(resourceInstance.getServer()).willReturn(serverInstance);
-        given(requiresResource.serverName()).willReturn(serverName);
-        given(requiresResource.serverContract()).willReturn(serverContract);
+        given(resourceInstance.getInstance()).willReturn(serverInstance);
+        given(localResource.instanceName()).willReturn(serverName);
+        given(localResource.instanceContract()).willReturn(serverContract);
         willDoNothing().given(serviceInstance).replace(serverInstance, serverName, serverContract);
         given(resourceInstance.getClient()).willReturn(clientInstanceResult);
-        given(requiresResource.clientName()).willReturn(clientName);
-        given(requiresResource.clientContract()).willReturn(clientContract);
+        given(localResource.clientName()).willReturn(clientName);
+        given(localResource.clientContract()).willReturn(clientContract);
         willDoNothing().given(serviceInstance).replace(clientInstance, clientName, clientContract);
         willDoNothing().given(serviceInstance).addConstant(resourceInstance, null, resourceContract);
-        given(requiresResource.name()).willReturn(resourceName);
+        given(localResource.name()).willReturn(resourceName);
 
         cut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestReifier();
-        verify(testDescriptor).getRequiresResources();
-        verify(requiresResource).value();
+        verify(testDescriptor).getLocalResources();
+        verify(localResource).value();
         verify(reflectionUtil).newInstance(resourceProviderType);
         verify(serviceInstance).inject(resourceProvider);
         verify(resourceProvider).configure(testContext);
         verify(testReifier).configure(testContext, configuration);
         verify(resourceProvider).start(testContext, configuration);
-        verify(resourceInstance).getServer();
-        verify(requiresResource).serverName();
-        verify(requiresResource).serverContract();
+        verify(resourceInstance).getInstance();
+        verify(localResource).instanceName();
+        verify(localResource).instanceContract();
         verify(serviceInstance).replace(serverInstance, serverName, serverContract);
         verify(resourceInstance).getClient();
-        verify(requiresResource).clientName();
-        verify(requiresResource).clientContract();
+        verify(localResource).clientName();
+        verify(localResource).clientContract();
         verify(serviceInstance).replace(clientInstance, clientName, clientContract);
-        verify(requiresResource).name();
+        verify(localResource).name();
         verify(serviceInstance).addConstant(resourceInstance, null, resourceContract);
         verify(resourceProviders).add(resourceProvider);
 
@@ -165,10 +165,10 @@ public class DefaultRequiresResourceProviderTest {
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        RequiresResource requiresResource = mock(RequiresResource.class);
-        List<RequiresResource> requiresContainers = ImmutableList.of(requiresResource);
-        Class resourceProviderType = ResourceProvider.class;
-        ResourceProvider resourceProvider = mock(ResourceProvider.class);
+        LocalResource localResource = mock(LocalResource.class);
+        List<LocalResource> containerResources = ImmutableList.of(localResource);
+        Class resourceProviderType = LocalResourceProvider.class;
+        LocalResourceProvider resourceProvider = mock(LocalResourceProvider.class);
         Object configuration = mock(Object.class);
         TestReifier testReifier = mock(TestReifier.class);
         ResourceInstance resourceInstance = mock(ResourceInstance.class);
@@ -184,43 +184,43 @@ public class DefaultRequiresResourceProviderTest {
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestReifier()).willReturn(testReifier);
-        given(testDescriptor.getRequiresResources()).willReturn(requiresContainers);
-        given(requiresResource.value()).willReturn(resourceProviderType);
+        given(testDescriptor.getLocalResources()).willReturn(containerResources);
+        given(localResource.value()).willReturn(resourceProviderType);
         given(reflectionUtil.newInstance(resourceProviderType)).willReturn(resourceProvider);
         given(resourceProvider.configure(testContext)).willReturn(configuration);
         given(testReifier.configure(testContext, configuration)).willReturn(configuration);
         given(resourceProvider.start(testContext, configuration)).willReturn(resourceInstance);
-        given(resourceInstance.getServer()).willReturn(serverInstance);
-        given(requiresResource.serverName()).willReturn(serverName);
-        given(requiresResource.serverContract()).willReturn(serverContract);
+        given(resourceInstance.getInstance()).willReturn(serverInstance);
+        given(localResource.instanceName()).willReturn(serverName);
+        given(localResource.instanceContract()).willReturn(serverContract);
         willDoNothing().given(serviceInstance).replace(serverInstance, serverName, serverContract);
         given(resourceInstance.getClient()).willReturn(clientInstanceResult);
-        given(requiresResource.clientName()).willReturn(clientName);
-        given(requiresResource.clientContract()).willReturn(clientContract);
+        given(localResource.clientName()).willReturn(clientName);
+        given(localResource.clientContract()).willReturn(clientContract);
         willDoNothing().given(serviceInstance).replace(clientInstance, clientName, clientContract);
         willDoNothing().given(serviceInstance).addConstant(resourceInstance, resourceName, resourceContract);
-        given(requiresResource.name()).willReturn(resourceName);
+        given(localResource.name()).willReturn(resourceName);
 
         cut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestReifier();
-        verify(testDescriptor).getRequiresResources();
-        verify(requiresResource).value();
+        verify(testDescriptor).getLocalResources();
+        verify(localResource).value();
         verify(reflectionUtil).newInstance(resourceProviderType);
         verify(serviceInstance).inject(resourceProvider);
         verify(resourceProvider).configure(testContext);
         verify(testReifier).configure(testContext, configuration);
         verify(resourceProvider).start(testContext, configuration);
-        verify(resourceInstance).getServer();
-        verify(requiresResource).serverName();
-        verify(requiresResource).serverContract();
+        verify(resourceInstance).getInstance();
+        verify(localResource).instanceName();
+        verify(localResource).instanceContract();
         verify(serviceInstance).replace(serverInstance, serverName, serverContract);
         verify(resourceInstance).getClient();
-        verify(requiresResource).clientName();
-        verify(requiresResource).clientContract();
+        verify(localResource).clientName();
+        verify(localResource).clientContract();
         verify(serviceInstance).replace(clientInstance, clientName, clientContract);
-        verify(requiresResource).name();
+        verify(localResource).name();
         verify(serviceInstance).addConstant(resourceInstance, resourceName, resourceContract);
         verify(resourceProviders).add(resourceProvider);
 
@@ -237,7 +237,7 @@ public class DefaultRequiresResourceProviderTest {
 
     @Test
     public void callToStopWithElementsStopShouldStopContainerProvider() {
-        ResourceProvider resourceProvider = mock(ResourceProvider.class);
+        LocalResourceProvider resourceProvider = mock(LocalResourceProvider.class);
         resourceProviders.add(resourceProvider);
 
         cut.stop();

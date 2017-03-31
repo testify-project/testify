@@ -23,17 +23,20 @@ import javax.persistence.Query;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.annotation.Module;
 import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
-import org.testifyproject.junit4.fixture.need.common.GreetingEntity;
+import org.testifyproject.junit4.fixture.need.database.DatabaseModule;
+import org.testifyproject.junit4.fixture.need.database.GreetingEntity;
 
 /**
  *
  * @author saden
  */
-@RequiresResource(InMemoryHSQLResource.class)
-@RunWith(HK2IntegrationTest.class)
-public class RequiresResourceIT {
+@Module(DatabaseModule.class)
+@LocalResource(InMemoryHSQLResource.class)
+@RunWith(GuiceIntegrationTest.class)
+public class LocalResourceIT {
 
     @Inject
     EntityManagerFactory cut;

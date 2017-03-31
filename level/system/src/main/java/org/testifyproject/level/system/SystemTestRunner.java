@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.CutDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.ReificationProvider;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
@@ -34,7 +35,6 @@ import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.LoggingTrait;
-import org.testifyproject.MockProvider;
 
 /**
  * A class used to run a system test.

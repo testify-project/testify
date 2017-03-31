@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
-import org.testifyproject.RequiresProvider;
+import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
@@ -40,8 +40,7 @@ import org.testifyproject.trait.LoggingTrait;
 
 /**
  * A class that is called after the application context is refreshed to
- * initialize all the test requires and destroys the requires after the
- * application context is closed.
+ * initialize the test as well as start and stop test resources.
  *
  * @author saden
  */
@@ -53,7 +52,7 @@ public class SpringBeanFactoryPostProcessor implements
 
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
-    private List<RequiresProvider> requiresProviders;
+    private List<ResourceProvider> resourceProviders;
 
     public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance) {
         this.testContext = testContext;
@@ -145,15 +144,15 @@ public class SpringBeanFactoryPostProcessor implements
 
         //start all test requires
         if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-            requiresProviders = ServiceLocatorUtil.INSTANCE.findAll(RequiresProvider.class);
-            requiresProviders.forEach(p -> p.start(testContext, serviceInstance));
+            resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
+            resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
         }
     }
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-            requiresProviders.forEach(RequiresProvider::stop);
+            resourceProviders.forEach(ResourceProvider::stop);
         }
     }
 

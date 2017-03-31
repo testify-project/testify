@@ -18,25 +18,23 @@ package org.testifyproject.core.analyzer.inspector;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.RequiresResource;
-import org.testifyproject.annotation.RequiresResources;
+import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 
 /**
  *
  * @author saden
  */
-public class RequiresResourcesInspectorTest {
+public class ContainerResourceInspectorTest {
 
-    RequiresResourcesInspector cut;
+    ContainerResourceInspector cut;
 
     @Before
     public void init() {
-        cut = new RequiresResourcesInspector();
+        cut = new ContainerResourceInspector();
     }
 
     @Test(expected = NullPointerException.class)
@@ -45,8 +43,8 @@ public class RequiresResourcesInspectorTest {
     }
 
     @Test
-    public void callToHandlesRequiresResourcesShouldReturnTrue() {
-        boolean result = cut.handles(RequiresResources.class);
+    public void callToHandlesContainerResourceShouldReturnTrue() {
+        boolean result = cut.handles(ContainerResource.class);
 
         assertThat(result).isTrue();
     }
@@ -55,14 +53,11 @@ public class RequiresResourcesInspectorTest {
     public void givenParamtersInspectShouldAddProperty() throws Exception {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
-        RequiresResources annotation = mock(RequiresResources.class);
-        RequiresResource element = mock(RequiresResource.class);
-
-        given(annotation.value()).willReturn(new RequiresResource[]{element});
+        ContainerResource annotation = mock(ContainerResource.class);
 
         cut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.REQUIRES_RESOURCES, element);
+        verify(testDescriptor).addListElement(TestDescriptorProperties.REQUIRES_CONTAINERS, annotation);
     }
 
 }

@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * <code>
  * {@literal @}Bundle
  * {@literal @}Module(MyModule.class)
- * {@literal @}RequiresContainer("postgres")
+ * {@literal @}ContainerResource("postgres")
  * {@literal @}Target(ElementType.TYPE)
  * {@literal @}Retention(RetentionPolicy.RUNTIME)
  *  public @interface MyModuleGroup { }

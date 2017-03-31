@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.junit4.fixture.filter;
+
+import org.testifyproject.LocalResourceProvider;
+import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.junit4.fixture.common.CutClass;
 
 /**
- * An SPI contract for starting and stopping container and resource required by
- * a test class.
  *
  * @author saden
  */
-public interface RequiresProvider {
+@LocalResource(LocalResourceProvider.class)
+public class LocalResourceTestClass {
 
-    /**
-     * Start all the requires using the given test context and service instance.
-     *
-     * @param testContext the test context
-     * @param serviceInstance the service instance to use
-     */
-    void start(TestContext testContext, ServiceInstance serviceInstance);
-
-    /**
-     * Stop all test requires.
-     */
-    void stop();
+    @Cut
+    CutClass cut;
 
 }

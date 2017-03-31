@@ -21,20 +21,20 @@ import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 
 /**
  *
  * @author saden
  */
-public class RequiresResourceInspectorTest {
+public class LocalResourceInspectorTest {
 
-    RequiresResourceInspector cut;
+    LocalResourceInspector cut;
 
     @Before
     public void init() {
-        cut = new RequiresResourceInspector();
+        cut = new LocalResourceInspector();
     }
 
     @Test(expected = NullPointerException.class)
@@ -43,8 +43,8 @@ public class RequiresResourceInspectorTest {
     }
 
     @Test
-    public void callToHandlesRequiresResourceShouldReturnTrue() {
-        boolean result = cut.handles(RequiresResource.class);
+    public void callToHandlesLocalResourceShouldReturnTrue() {
+        boolean result = cut.handles(LocalResource.class);
 
         assertThat(result).isTrue();
     }
@@ -53,7 +53,7 @@ public class RequiresResourceInspectorTest {
     public void givenParamtersInspectShouldAddProperty() throws Exception {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
-        RequiresResource annotation = mock(RequiresResource.class);
+        LocalResource annotation = mock(LocalResource.class);
 
         cut.inspect(testDescriptor, annotatedType, annotation);
 

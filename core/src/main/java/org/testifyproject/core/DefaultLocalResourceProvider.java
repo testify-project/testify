@@ -20,38 +20,39 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.Instance;
-import org.testifyproject.RequiresProvider;
+import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An implementation of {@link RequiresProvider} that manages the starting and
- * stopping of {@link ResourceProvider} implementations required by the test
- * class.
+ * An implementation of {@link ResourceProvider} that manages the starting and
+ * stopping of {@link LocalResourceProvider} implementations required by the
+ * test class.
  *
  * @author saden
- * @see org.testifyproject.RequiresProvider
- * @see org.testifyproject.annotation.RequiresResource
+ * @see org.testifyproject.ResourceProvider
+ * @see org.testifyproject.annotation.LocalResource
  */
 @Discoverable
-public class DefaultRequiresResourceProvider implements RequiresProvider {
+public class DefaultLocalResourceProvider implements ResourceProvider {
 
-    private ReflectionUtil reflectionUtil = ReflectionUtil.INSTANCE;
-    private Queue<ResourceProvider> resourceProviders = new ConcurrentLinkedQueue<>();
+    private ReflectionUtil reflectionUtil;
+    private Queue<LocalResourceProvider> localResourceProviders;
 
-    public DefaultRequiresResourceProvider() {
+    public DefaultLocalResourceProvider() {
+        this(ReflectionUtil.INSTANCE, new ConcurrentLinkedQueue<>());
     }
 
-    public DefaultRequiresResourceProvider(ReflectionUtil reflectionUtil, Queue<ResourceProvider> resourceProviders) {
+    DefaultLocalResourceProvider(ReflectionUtil reflectionUtil, Queue<LocalResourceProvider> localResourceProviders) {
         this.reflectionUtil = reflectionUtil;
-        this.resourceProviders = resourceProviders;
+        this.localResourceProviders = localResourceProviders;
     }
 
     @Override
@@ -59,26 +60,26 @@ public class DefaultRequiresResourceProvider implements RequiresProvider {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         TestReifier testReifier = testContext.getTestReifier();
 
-        Collection<RequiresResource> requiresResources = testDescriptor.getRequiresResources();
+        Collection<LocalResource> localResources = testDescriptor.getLocalResources();
 
-        //get required resource annotations from the test class and for each
-        //required resource create a new instance, configure and start a
+        //get local resource annotations from the test class and for each
+        //local resource create a new instance, configure and start a
         //resource instance and addConfigHandler it to the service instance.
-        requiresResources.parallelStream().forEach(requiresResource -> {
-            Class<? extends ResourceProvider> resourceProviderType = requiresResource.value();
+        localResources.parallelStream().forEach(localResource -> {
+            Class<? extends LocalResourceProvider> resourceProviderType = localResource.value();
 
-            ResourceProvider resourceProvider = reflectionUtil.newInstance(resourceProviderType);
+            LocalResourceProvider resourceProvider = reflectionUtil.newInstance(resourceProviderType);
             serviceInstance.inject(resourceProvider);
             Object configuration = resourceProvider.configure(testContext);
             configuration = testReifier.configure(testContext, configuration);
 
             ResourceInstance<?, ?> resourceInstance = resourceProvider.start(testContext, configuration);
 
-            Instance<?> serverInstance = resourceInstance.getServer();
+            Instance<?> serverInstance = resourceInstance.getInstance();
 
             serviceInstance.replace(serverInstance,
-                    requiresResource.serverName(),
-                    requiresResource.serverContract());
+                    localResource.instanceName(),
+                    localResource.instanceContract());
 
             Optional<? extends Instance<?>> clientInstanceResult = resourceInstance.getClient();
 
@@ -86,11 +87,11 @@ public class DefaultRequiresResourceProvider implements RequiresProvider {
                 Instance<?> clientInstance = clientInstanceResult.get();
 
                 serviceInstance.replace(clientInstance,
-                        requiresResource.clientName(),
-                        requiresResource.clientContract());
+                        localResource.clientName(),
+                        localResource.clientContract());
             }
 
-            String resourceName = requiresResource.name();
+            String resourceName = localResource.name();
             Class<ResourceInstance> resourceContract = ResourceInstance.class;
 
             if (resourceName.isEmpty()) {
@@ -99,13 +100,13 @@ public class DefaultRequiresResourceProvider implements RequiresProvider {
                 serviceInstance.addConstant(resourceInstance, resourceName, resourceContract);
             }
 
-            resourceProviders.add(resourceProvider);
+            localResourceProviders.add(resourceProvider);
         });
     }
 
     @Override
     public void stop() {
-        resourceProviders.parallelStream().forEach(ResourceProvider::stop);
+        localResourceProviders.parallelStream().forEach(LocalResourceProvider::stop);
     }
 
 }

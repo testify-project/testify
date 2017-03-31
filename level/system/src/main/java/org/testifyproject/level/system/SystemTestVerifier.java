@@ -30,7 +30,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestVerifier;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.LocalResource;
 import static org.testifyproject.guava.common.base.Preconditions.checkState;
 
 /**
@@ -95,16 +95,16 @@ public class SystemTestVerifier implements TestVerifier {
 
             //insure need providers have default constructors.
             testContext.getTestDescriptor()
-                    .getRequiresResources()
+                    .getLocalResources()
                     .parallelStream()
-                    .map(RequiresResource::value)
+                    .map(LocalResource::value)
                     .forEach(p -> {
                         try {
                             p.getDeclaredConstructor();
                         } catch (NoSuchMethodException e) {
                             checkState(false,
                                     "Required Resource '%s' defined in test class '%s' does not have a zero "
-                                    + "argument default constructor. Please insure that the required resource "
+                                    + "argument default constructor. Please insure that the local resource "
                                     + "provider defines an accessible zero argument default constructor.",
                                     testClassName, p.getSimpleName()
                             );

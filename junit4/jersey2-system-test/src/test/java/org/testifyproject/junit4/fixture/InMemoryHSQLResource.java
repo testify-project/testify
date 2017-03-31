@@ -20,18 +20,18 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.hsqldb.jdbc.JDBCDataSource;
+import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.ResourceInstance;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.ResourceInstanceBuilder;
 
 /**
- * An implementation of ResourceProvider that provides an in-memory HSQL
- * DataSource and connection.
+ * An implementation of LocalResourceProvider that provides an in-memory HSQL
+ DataSource and connection.
  *
  * @author saden
  */
-public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, DataSource, Connection> {
+public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSource, DataSource, Connection> {
 
     private JDBCDataSource server;
     private Connection client;
@@ -53,7 +53,7 @@ public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, Da
             client = dataSource.getConnection();
 
             return ResourceInstanceBuilder.builder()
-                    .server(server, "inmemoryHSQLDataSource", DataSource.class)
+                    .instance(server, "inmemoryHSQLDataSource", DataSource.class)
                     .client(client, "inmemoryHSQLConnection", Connection.class)
                     .build();
         } catch (SQLException e) {

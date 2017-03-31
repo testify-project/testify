@@ -16,7 +16,6 @@
 package org.testifyproject.junit4.fixture.common;
 
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.junit4.fixture.common.CutClass;
 
 /**
  *

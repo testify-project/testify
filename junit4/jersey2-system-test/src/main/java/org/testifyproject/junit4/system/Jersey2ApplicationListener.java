@@ -22,7 +22,7 @@ import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.slf4j.MDC;
-import org.testifyproject.RequiresProvider;
+import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
@@ -32,13 +32,13 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
 
 /**
  * A Jersey 2 application event listeners that listens for application events to
- * initialize, start and stop test requires.
+ * initialize, start and stop test resources.
  *
  * @author saden
  */
 public class Jersey2ApplicationListener implements ApplicationEventListener {
 
-    private List<RequiresProvider> requiresProviders;
+    private List<ResourceProvider> resourceProviders;
     private final TestContextHolder testContextHolder;
 
     Jersey2ApplicationListener(TestContextHolder testContextHolder) {
@@ -58,14 +58,14 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
                 ServiceInstance serviceInstance = optServiceInstance.get();
 
                 if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-                    requiresProviders = ServiceLocatorUtil.INSTANCE.findAll(RequiresProvider.class);
-                    requiresProviders.forEach(p -> p.start(testContext, serviceInstance));
+                    resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
+                    resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
                 }
 
                 break;
             case DESTROY_FINISHED:
                 if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-                    requiresProviders.forEach(RequiresProvider::stop);
+                    resourceProviders.forEach(ResourceProvider::stop);
                 }
 
                 break;

@@ -70,11 +70,11 @@ public class TestifyJUnit4CategoryFilter extends Filter {
             ImmutableList.Builder<Enum> applicableCategoriesBuilder = ImmutableList.<Enum>builder()
                     .add(level);
 
-            if (!testDescriptor.getRequiresResources().isEmpty()) {
+            if (!testDescriptor.getLocalResources().isEmpty()) {
                 applicableCategoriesBuilder.add(TestCategory.Dynamic.Resource);
             }
 
-            if (!testDescriptor.getRequiresContainers().isEmpty()) {
+            if (!testDescriptor.getContainerResources().isEmpty()) {
                 applicableCategoriesBuilder.add(TestCategory.Dynamic.Container);
             }
 

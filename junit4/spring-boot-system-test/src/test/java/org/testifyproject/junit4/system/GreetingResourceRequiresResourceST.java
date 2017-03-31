@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.ConfigHandler;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Real;
-import org.testifyproject.annotation.RequiresResource;
 import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
 import org.testifyproject.junit4.fixture.common.UserEntity;
 import org.testifyproject.junit4.fixture.need.resource.InMemoryHSQLApplication;
@@ -36,7 +36,7 @@ import org.testifyproject.junit4.fixture.need.resource.InMemoryHSQLApplication;
  * @author saden
  */
 @Application(InMemoryHSQLApplication.class)
-@RequiresResource(InMemoryHSQLResource.class)
+@LocalResource(InMemoryHSQLResource.class)
 @RunWith(SpringBootSystemTest.class)
 public class GreetingResourceRequiresResourceST {
 

@@ -22,11 +22,11 @@ import javax.persistence.Query;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
-import org.testifyproject.annotation.RequiresResource;
 import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
-import org.testifyproject.junit4.fixture.need.RequiresResourceConfig;
+import org.testifyproject.junit4.fixture.need.LocalResourceConfig;
 import org.testifyproject.junit4.fixture.need.common.GreetingService;
 import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
 
@@ -34,10 +34,10 @@ import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
  *
  * @author saden
  */
-@Module(RequiresResourceConfig.class)
-@RequiresResource(InMemoryHSQLResource.class)
+@Module(LocalResourceConfig.class)
+@LocalResource(InMemoryHSQLResource.class)
 @RunWith(SpringIntegrationTest.class)
-public class RequiresResourceIT {
+public class LocalResourceIT {
 
     @Real
     EntityManagerFactory cut;

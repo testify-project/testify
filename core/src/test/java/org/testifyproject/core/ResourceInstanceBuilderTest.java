@@ -39,36 +39,36 @@ public class ResourceInstanceBuilderTest {
     }
 
     @Test
-    public void givenServerInstanceAndNameBuildShouldReturn() {
+    public void givenInstanceInstanceAndNameBuildShouldReturn() {
         Object server = mock(Object.class);
         String name = "server";
 
-        ResourceInstance result = cut.server(server, name).build();
+        ResourceInstance result = cut.instance(server, name).build();
 
         assertThat(result).isNotNull();
 
-        Instance serverInstance = result.getServer();
-        assertThat(serverInstance).isNotNull();
-        assertThat(serverInstance.getInstance()).isEqualTo(server);
-        assertThat(serverInstance.getName()).contains(name);
-        assertThat(serverInstance.getContract()).isEmpty();
+        Instance instance = result.getInstance();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getInstance()).isEqualTo(server);
+        assertThat(instance.getName()).contains(name);
+        assertThat(instance.getContract()).isEmpty();
     }
 
     @Test
-    public void givenServerInstanceAndNameAndContractBuildShouldReturn() {
+    public void givenInstanceInstanceAndNameAndContractBuildShouldReturn() {
         Object server = mock(Object.class);
         String name = "server";
         Class contract = Object.class;
 
-        ResourceInstance result = cut.server(server, name, contract).build();
+        ResourceInstance result = cut.instance(server, name, contract).build();
 
         assertThat(result).isNotNull();
 
-        Instance serverInstance = result.getServer();
-        assertThat(serverInstance).isNotNull();
-        assertThat(serverInstance.getInstance()).isEqualTo(server);
-        assertThat(serverInstance.getName()).contains(name);
-        assertThat(serverInstance.getContract()).contains(contract);
+        Instance instance = result.getInstance();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getInstance()).isEqualTo(server);
+        assertThat(instance.getName()).contains(name);
+        assertThat(instance.getContract()).contains(contract);
     }
 
     @Test

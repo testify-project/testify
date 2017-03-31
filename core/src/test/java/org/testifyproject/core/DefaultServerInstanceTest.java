@@ -83,7 +83,7 @@ public class DefaultServerInstanceTest {
     }
 
     @Test
-    public void callToGetServerShouldReturnServer() {
+    public void callToGetInstanceShouldReturnServer() {
         Object result = cut.getInstance();
 
         assertThat(result).isEqualTo(server);

@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.junit4.fixture.GreeterApplication;
 import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
 
@@ -45,7 +45,7 @@ import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
  * @author saden
  */
 @Application(GreeterApplication.class)
-@RequiresResource(InMemoryHSQLResource.class)
+@LocalResource(InMemoryHSQLResource.class)
 @RunWith(Jersey2SystemTest.class)
 public class GreeterResourceRequiresResourceST {
 

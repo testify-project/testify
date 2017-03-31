@@ -18,7 +18,6 @@ package org.testifyproject.junit4.fixture.need;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
@@ -30,7 +29,6 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
-import org.testifyproject.ContainerInstance;
 import org.testifyproject.junit4.fixture.need.common.DatabaseConfig;
 
 /**
@@ -40,25 +38,11 @@ import org.testifyproject.junit4.fixture.need.common.DatabaseConfig;
 @Import(DatabaseConfig.class)
 @EnableJpaRepositories
 @Configuration
-public class RequiresContainerConfig {
+public class LocalResourceConfig {
 
     @Bean
     static CommonAnnotationBeanPostProcessor annotationBeanPostProcessor() {
         return new CommonAnnotationBeanPostProcessor();
-    }
-
-    @Bean
-    @Primary
-    DataSource dataSourceProvider(ContainerInstance containerInstance) {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(containerInstance.getAddress().getHostName());
-        dataSource.setPortNumber(containerInstance.findFirstExposedPort().get());
-        //Default postgres image database name, user and postword
-        dataSource.setDatabaseName("postgres");
-        dataSource.setUser("postgres");
-        dataSource.setPassword("mysecretpassword");
-
-        return dataSource;
     }
 
     @Bean

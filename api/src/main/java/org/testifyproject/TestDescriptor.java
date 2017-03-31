@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.ContainerResource;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.RequiresContainer;
-import org.testifyproject.annotation.RequiresResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.trait.PropertiesTrait;
 
@@ -109,18 +109,18 @@ public interface TestDescriptor extends PropertiesTrait {
     List<Scan> getScans();
 
     /**
-     * Get a list of required containers associated with the test class.
+     * Get a list of container resources associated with the test class.
      *
-     * @return a list with required containers, empty list otherwise
+     * @return a list with container resources, empty list otherwise
      */
-    List<RequiresContainer> getRequiresContainers();
+    List<ContainerResource> getContainerResources();
 
     /**
-     * Get a list of required resources associated with the test class.
+     * Get a list of local resources associated with the test class.
      *
-     * @return a list with required resources, empty list otherwise
+     * @return a list with local resources, empty list otherwise
      */
-    List<RequiresResource> getRequiresResources();
+    List<LocalResource> getLocalResources();
 
     /**
      * Find the config handler associated with the test class capable of

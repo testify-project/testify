@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toMap;
 import org.testifyproject.ContainerInstance;
-import org.testifyproject.ContainerProvider;
+import org.testifyproject.ContainerResourceProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.annotation.RequiresContainer;
+import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.container.docker.callback.PullCallback;
 import org.testifyproject.container.docker.callback.WaitCallback;
 import org.testifyproject.core.DefaultContainerInstance;
@@ -48,12 +48,13 @@ import org.testifyproject.guava.common.net.InetAddresses;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A Docker implementation of {@link ContainerProvider SPI Contract}.
+ * A Docker implementation of {@link ContainerResourceProvider SPI Contract}.
  *
  * @author saden
  */
 @Discoverable
-public class DockerContainerProvider implements ContainerProvider<RequiresContainer, DockerClientConfigBuilder> {
+public class DockerContainerResourceProvider
+        implements ContainerResourceProvider<ContainerResource, DockerClientConfigBuilder> {
 
     public static final String DEFAULT_DAEMON_URI = "tcp://127.0.0.1:2375";
 
@@ -70,7 +71,7 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
 
     @Override
     public ContainerInstance start(TestContext testContext,
-            RequiresContainer requiresContainer,
+            ContainerResource containerResource,
             DockerClientConfigBuilder configBuilder) {
         try {
             this.testContext = testContext;
@@ -80,28 +81,28 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
             client = DockerClientBuilder.getInstance(clientConfig).build();
 
             CountDownLatch latch = new CountDownLatch(1);
-            if (requiresContainer.pull()) {
+            if (containerResource.pull()) {
                 //TODO: check value first and only pull if it doesn't exist locally
-                PullCallback callback = new PullCallback(testContext, requiresContainer, latch);
-                client.pullImageCmd(requiresContainer.value())
-                        .withTag(requiresContainer.version())
+                PullCallback callback = new PullCallback(testContext, containerResource, latch);
+                client.pullImageCmd(containerResource.value())
+                        .withTag(containerResource.version())
                         .exec(callback);
             } else {
                 latch.countDown();
             }
 
-            latch.await(requiresContainer.timeout(), requiresContainer.unit());
-            String image = requiresContainer.value() + ":" + requiresContainer.version();
+            latch.await(containerResource.timeout(), containerResource.unit());
+            String image = containerResource.value() + ":" + containerResource.version();
 
             CreateContainerCmd cmd = client.createContainerCmd(image);
             cmd.withPublishAllPorts(true);
 
-            if (!requiresContainer.cmd().isEmpty()) {
-                cmd.withCmd(requiresContainer.cmd());
+            if (!containerResource.cmd().isEmpty()) {
+                cmd.withCmd(containerResource.cmd());
             }
 
-            if (!requiresContainer.name().isEmpty()) {
-                cmd.withName(requiresContainer.name());
+            if (!containerResource.name().isEmpty()) {
+                cmd.withName(containerResource.name());
             }
 
             containerResponse = cmd.exec();
@@ -128,14 +129,14 @@ public class DockerContainerProvider implements ContainerProvider<RequiresContai
                             k -> k.getKey().getPort(),
                             v -> Integer.valueOf(v.getValue()[0].getHostPortSpec())), Collections::unmodifiableMap));
 
-            if (requiresContainer.await()) {
+            if (containerResource.await()) {
                 RetryPolicy retryPolicy = new RetryPolicy()
                         .retryOn(IOException.class)
-                        .withBackoff(requiresContainer.delay(),
-                                requiresContainer.maxDelay(),
-                                requiresContainer.unit())
-                        .withMaxRetries(requiresContainer.maxRetries())
-                        .withMaxDuration(requiresContainer.maxDuration(), requiresContainer.unit());
+                        .withBackoff(containerResource.delay(),
+                                containerResource.maxDelay(),
+                                containerResource.unit())
+                        .withMaxRetries(containerResource.maxRetries())
+                        .withMaxDuration(containerResource.maxDuration(), containerResource.unit());
 
                 mappedPorts.entrySet().forEach(entry -> Failsafe.with(retryPolicy).run(() -> {
                     testContext.info("Waiting for '{}:{}' to be reachable", host.getHostAddress(), entry.getKey());

@@ -16,29 +16,33 @@
 package org.testifyproject.junit4.integration;
 
 import java.util.List;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.RequiresContainer;
-import org.testifyproject.junit4.fixture.need.container.PostgresModule;
-import org.testifyproject.junit4.fixture.need.database.GreetingEntity;
+import org.testifyproject.annotation.Real;
+import org.testifyproject.junit4.fixture.need.ContainerResourceConfig;
+import org.testifyproject.junit4.fixture.need.common.GreetingService;
+import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
 
 /**
  *
  * @author saden
  */
-@RequiresContainer(value = "postgres", version = "9.4")
-@Module(PostgresModule.class)
-@RunWith(GuiceIntegrationTest.class)
-public class RequiresContainerIT {
+@Module(ContainerResourceConfig.class)
+@ContainerResource(value = "postgres", version = "9.4")
+@RunWith(SpringIntegrationTest.class)
+public class ContainerResourceIT {
 
-    @Inject
+    @Real
     EntityManagerFactory cut;
+
+    @Real
+    GreetingService greetingService;
 
     @Test
     public void givenHelloGreetShouldSaveHello() {
@@ -47,13 +51,13 @@ public class RequiresContainerIT {
         GreetingEntity entity = new GreetingEntity(phrase);
 
         //Act
-        EntityManager entityManager = cut.createEntityManager();
-        entityManager.getTransaction().begin();
-        entityManager.persist(entity);
-        entityManager.getTransaction().commit();
+        EntityManager em = cut.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(entity);
+        em.getTransaction().commit();
 
         //Assert
-        EntityManager em = cut.createEntityManager();
+        em = cut.createEntityManager();
         Query query = em.createQuery("SELECT e FROM GreetingEntity e");
         assertThat(query).isNotNull();
         List<GreetingEntity> entities = query.getResultList();

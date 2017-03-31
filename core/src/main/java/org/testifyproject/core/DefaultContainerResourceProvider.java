@@ -19,42 +19,43 @@ import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.ContainerInstance;
-import org.testifyproject.ContainerProvider;
-import org.testifyproject.RequiresProvider;
+import org.testifyproject.ContainerResourceProvider;
+import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
-import org.testifyproject.annotation.RequiresContainer;
+import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An implementation of {@link RequiresProvider} that manages the starting and
- * stopping of {@link ContainerProvider} implementations required by the test
- * class.
+ * An implementation of {@link ResourceProvider} that manages the starting and
+ * stopping of {@link ContainerResourceProvider} implementations required by the
+ * test class.
  *
  * @author saden
- * @see org.testifyproject.ContainerProvider
- * @see org.testifyproject.annotation.RequiresContainer
+ * @see org.testifyproject.ContainerResourceProvider
+ * @see org.testifyproject.annotation.ContainerResource
  */
 @Discoverable
-public class DefaultRequiresContainerProvider implements RequiresProvider {
+public class DefaultContainerResourceProvider implements ResourceProvider {
 
-    private ServiceLocatorUtil serviceLocatorUtil = ServiceLocatorUtil.INSTANCE;
-    private ReflectionUtil reflectionUtil = ReflectionUtil.INSTANCE;
-    private Queue<ContainerProvider> containerProviders = new ConcurrentLinkedQueue<>();
+    private ServiceLocatorUtil serviceLocatorUtil;
+    private ReflectionUtil reflectionUtil;
+    private Queue<ContainerResourceProvider> containerResourceProviders;
 
-    public DefaultRequiresContainerProvider() {
+    public DefaultContainerResourceProvider() {
+        this(ServiceLocatorUtil.INSTANCE, ReflectionUtil.INSTANCE, new ConcurrentLinkedQueue<>());
     }
 
-    public DefaultRequiresContainerProvider(ServiceLocatorUtil serviceLocatorUtil,
+    DefaultContainerResourceProvider(ServiceLocatorUtil serviceLocatorUtil,
             ReflectionUtil reflectionUtil,
-            Queue<ContainerProvider> containerProviders) {
+            Queue<ContainerResourceProvider> containerResourceProviders) {
         this.serviceLocatorUtil = serviceLocatorUtil;
         this.reflectionUtil = reflectionUtil;
-        this.containerProviders = containerProviders;
+        this.containerResourceProviders = containerResourceProviders;
     }
 
     @Override
@@ -62,23 +63,23 @@ public class DefaultRequiresContainerProvider implements RequiresProvider {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         TestReifier testReifier = testContext.getTestReifier();
 
-        Collection<RequiresContainer> requiresContainers = testDescriptor.getRequiresContainers();
+        Collection<ContainerResource> containerResources = testDescriptor.getContainerResources();
 
-        //get required container annotations from the test class and for each
-        //required container create a new instance, configure and start a
+        //get container resource annotations from the test class and for each
+        //container resource create a new instance, configure and start a
         //container instance and addConfigHandler it to the service instance.
-        requiresContainers.parallelStream().forEach(requiresContainer -> {
-            String serviceName = requiresContainer.name();
-            Class<? extends ContainerProvider> containerProviderType = requiresContainer.provider();
+        containerResources.parallelStream().forEach(containerResource -> {
+            String serviceName = containerResource.name();
+            Class<? extends ContainerResourceProvider> containerProviderType = containerResource.provider();
 
             if (serviceName.isEmpty()) {
-                serviceName = requiresContainer.value();
+                serviceName = containerResource.value();
             }
 
-            ContainerProvider containerProvider;
+            ContainerResourceProvider containerProvider;
 
-            if (ContainerProvider.class.equals(containerProviderType)) {
-                containerProvider = serviceLocatorUtil.getOne(ContainerProvider.class);
+            if (ContainerResourceProvider.class.equals(containerProviderType)) {
+                containerProvider = serviceLocatorUtil.getOne(ContainerResourceProvider.class);
             } else {
                 containerProvider = reflectionUtil.newInstance(containerProviderType);
             }
@@ -88,17 +89,17 @@ public class DefaultRequiresContainerProvider implements RequiresProvider {
             configuration = testReifier.configure(testContext, configuration);
 
             ContainerInstance containerInstance
-                    = containerProvider.start(testContext, requiresContainer, configuration);
+                    = containerProvider.start(testContext, containerResource, configuration);
 
             serviceInstance.addConstant(containerInstance, serviceName, ContainerInstance.class);
 
-            containerProviders.add(containerProvider);
+            containerResourceProviders.add(containerProvider);
         });
     }
 
     @Override
     public void stop() {
-        containerProviders.parallelStream().forEach(containerProvider -> {
+        containerResourceProviders.parallelStream().forEach(containerProvider -> {
             containerProvider.stop();
         });
     }

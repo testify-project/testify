@@ -24,13 +24,13 @@ import org.testifyproject.ResourceInstance;
  * A builder class used to construction ResourceInstance instances.
  *
  * @author saden
- * @param <S> server resource instance type
+ * @param <S> instance resource instance type
  * @param <C> client resource instance type
  * @see ResourceInstance
  */
 public class ResourceInstanceBuilder<S, C> {
 
-    private Instance<S> server;
+    private Instance<S> instance;
     private Instance<C> client;
     private final Map<String, Object> properties = new LinkedHashMap<>();
 
@@ -39,51 +39,54 @@ public class ResourceInstanceBuilder<S, C> {
      *
      * @return a new instance
      */
-    public static  ResourceInstanceBuilder builder() {
+    public static ResourceInstanceBuilder builder() {
         return new ResourceInstanceBuilder<>();
     }
 
     /**
-     * Set the server with the given instance and name. When choosing a name for
-     * the resource it is best to choose a name that reflect the resource being
-     * provided to avoid potential collision with names used by other resource
-     * provider (i.e. "myAwesomeResourceServer").
+     * Set the underlying resource instance to the given instance and name. When
+     * choosing a name for the resource instance it is best to choose a name
+     * that reflect the resource being provided to avoid potential collision
+     * with names used by other resource provider (i.e.
+     * "myAwesomeResourceServer").
      *
-     * @param server the server instance
-     * @param name the server name
+     * @param instance the underlying resource instance
+     * @param name the underlying resource instance name
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> server(S server, String name) {
-        this.server = new DefaultInstance(server, name, null);
+    public ResourceInstanceBuilder<S, C> instance(S instance, String name) {
+        this.instance = new DefaultInstance(instance, name, null);
 
         return this;
     }
 
     /**
-     * Set the server with the given instance, name, contract. When choosing a
-     * name for the resource it is best to choose a name that reflect the
-     * resource being provided to avoid potential collision with names used by
-     * other resource provider (i.e. "myAwesomeResourceServer").
+     * Set the underlying resource instance to the given instance, name,
+     * contract. When choosing a name for the resource instance it is best to
+     * choose a name that reflect the resource being provided to avoid potential
+     * collision with names used by other resource provider (i.e.
+     * "myAwesomeResourceServer").
      *
-     * @param server the server instance
-     * @param name the server name
-     * @param contract the server contract
+     * @param instance the underlying resource instance
+     * @param name the underlying resource instance name
+     * @param contract the underlying resource instance contract
      * @return this object
      */
-    public ResourceInstanceBuilder<S, C> server(S server, String name, Class<? extends S> contract) {
-        this.server = new DefaultInstance(server, name, contract);
+    public ResourceInstanceBuilder<S, C> instance(S instance, String name, Class<? extends S> contract) {
+        this.instance = new DefaultInstance(instance, name, contract);
 
         return this;
     }
 
     /**
-     * Set the client with the given instance and name. When choosing a name for
-     * the resource it is best to choose a name that reflect the resource being
-     * provided to avoid potential collision with names used by other resource
-     * provider (i.e. "myAwesomeResourceClient").
+     * Set the client of the underlying resource to the given client and name.
+     * When choosing a name for the resource client it is best to choose a name
+     * that reflect the resource being provided to avoid potential collision
+     * with names used by other resource provider (i.e.
+     * "myAwesomeResourceClient").
      *
-     * @param client the client instance
-     * @param name the client name
+     * @param client the underlying resource client instance
+     * @param name the underlying resource client name
      * @return this object
      */
     public ResourceInstanceBuilder<S, C> client(C client, String name) {
@@ -93,14 +96,15 @@ public class ResourceInstanceBuilder<S, C> {
     }
 
     /**
-     * Set the client with the given instance, name, contract. When choosing a
-     * name for the resource it is best to choose a name that reflect the
-     * resource being provided to avoid potential collision with names used by
-     * other resource provider (i.e. "myAwesomeResourceClient").
+     * Set the client of the underlying resource to the given client, name,
+     * contract. When choosing a name for the resource client it is best to
+     * choose a name that reflect the resource being provided to avoid potential
+     * collision with names used by other resource provider (i.e.
+     * "myAwesomeResourceClient").
      *
-     * @param client the client instance
-     * @param name the client name
-     * @param contract the client contract
+     * @param client the underlying resource client instance
+     * @param name the underlying resource client name
+     * @param contract the underlying resource client contract
      * @return this object
      */
     public ResourceInstanceBuilder<S, C> client(C client, String name, Class<? extends C> contract) {
@@ -110,7 +114,7 @@ public class ResourceInstanceBuilder<S, C> {
     }
 
     /**
-     * Associate the specified value with the specified key in the resource
+     * Associate the specified value with the specified name in the resource
      * instance.
      *
      * @param name the name with which the specified value is to be associated
@@ -141,7 +145,7 @@ public class ResourceInstanceBuilder<S, C> {
      * @return a resource instance
      */
     public ResourceInstance<S, C> build() {
-        return DefaultResourceInstance.of(server, client, properties);
+        return DefaultResourceInstance.of(instance, client, properties);
     }
 
 }

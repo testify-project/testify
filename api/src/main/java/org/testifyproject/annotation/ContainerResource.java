@@ -23,23 +23,22 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
-import org.testifyproject.ContainerProvider;
+import org.testifyproject.ContainerResourceProvider;
 
 /**
  * An annotation that can be placed on integration and system tests to specify
- * container based resources that should be loaded, configured, started, stopped
- * before and after each test run. This is useful when performing system tests
- * using real production environment (i.e. using real PostgresSQL or Cassandra
- * Cluster). It's also useful when performing integration tests where simulating
- * external resources is not prudent (i.e. testing database specific features).
+ * container based resources that should be fetched, configured, started,
+ * stopped before and after each test run. This is useful when performing
+ * integration and system tests using real production environment (i.e. using
+ * real PostgresSQL or Cassandra NoSQL).
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
 @Target({ANNOTATION_TYPE, TYPE})
-@Repeatable(RequiresContainers.class)
-public @interface RequiresContainer {
+@Repeatable(ContainerResources.class)
+public @interface ContainerResource {
 
     /**
      * The name of the container image.
@@ -159,11 +158,11 @@ public @interface RequiresContainer {
     TimeUnit unit() default TimeUnit.MILLISECONDS;
 
     /**
-     * Specifies the required container provider implementation class to use. If
+     * Specifies the container resource provider implementation class to use. If
      * a provider is not specified one will be discovered in the class path.
      *
-     * @return required container provider implementation class.
+     * @return container resource provider implementation class.
      */
-    Class<? extends ContainerProvider> provider() default ContainerProvider.class;
+    Class<? extends ContainerResourceProvider> provider() default ContainerResourceProvider.class;
 
 }

@@ -16,49 +16,47 @@
 package org.testifyproject;
 
 /**
- * A contract that defines methods to configure, start an stop a required
- * container.
+ * A contract that defines methods to configure, start an stop a local resource.
  *
  * @author saden
- * @param <S> the type of the required container instance
- * @param <T> the type required container configuration object
+ * @param <T> the configuration type
+ * @param <S> the server type
+ * @param <C> the client type
  */
-public interface ContainerProvider<S, T> {
+public interface LocalResourceProvider<T, S, C> {
 
     /**
      * <p>
-     * A method to configure a required container. Configuring a required
-     * container typically involves creating a configuration object so it can be
-     * further configured by a test class method annotated with
+     * A method to configure a local resource. Configuring a local resource
+     * for testing typically involves creating a configuration object that can
+     * be further configured by a test class method annotated with
      * {@link org.testifyproject.annotation.ConfigHandler}.
      * </p>
      * <p>
      * Note that implementation of this method should not do any work beyond
      * returning configuration object. That is to is to say it should be
-     * stateless and should not perform instantiation of the required container
-     * as that should be handled in {@link #start
-     * (org.testifyproject.TestContext, java.lang.Object, java.lang.Object)}
-     * method.
+     * stateless and should not perform instantiation of the local resource
+     * for testing as that should be handled in
+     * {@link #start(TestContext, java.lang.Object)} method.
      * </p>
      *
      * @param testContext the test context
-     * @return the required container configuration object
+     * @return the local resource configuration object
      */
     T configure(TestContext testContext);
 
     /**
-     * Start the required container with the given testContext and
+     * Start the local resource with the given testContext and
      * configuration.
      *
      * @param testContext the test context
-     * @param requiredContainer test class required container annotation
-     * @param configuration the required container configuration object
-     * @return a required container instance
+     * @param config the local resource configuration
+     * @return a local resource instance
      */
-    ContainerInstance start(TestContext testContext, S requiredContainer, T configuration);
+    ResourceInstance<S, C> start(TestContext testContext, T config);
 
     /**
-     * Stop the required container.
+     * Stop the local resource.
      */
     void stop();
 

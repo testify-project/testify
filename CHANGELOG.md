@@ -13,6 +13,15 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.3-SNAPSHOT]
+### Changed
+- Adopted Semantic Testing
+  - Changed @RequiresResource annotation to @LocalResource
+  - Changed @RequiresContainer annotation to @ContainerResource
+  - Changed ResourceProvder contract to LocalResourceProvider
+  - Changed ContainerProvider contract to ContainerResourceProvider
+  - Changed serverName and serverContract attributes in LocalResourceProvider to instanceName and instanceContract
+
 ## [0.9.2] - 2017-03-20
 ### Fixed
 - Bug in SpringBootServerProvider when trying to add a new element to an immutable map

@@ -50,12 +50,12 @@ public class TestDescriptorProperties {
     /**
      * Test Descriptor Requires Containers property key.
      */
-    public static final String REQUIRES_CONTAINERS = "requiresContainers";
+    public static final String REQUIRES_CONTAINERS = "containerResources";
 
     /**
      * Test Descriptor Requires Resources property key.
      */
-    public static final String REQUIRES_RESOURCES = "requiresResources";
+    public static final String REQUIRES_RESOURCES = "localResources";
 
     /**
      * Test Descriptor cut field property key.

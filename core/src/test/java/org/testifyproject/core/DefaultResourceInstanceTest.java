@@ -34,24 +34,24 @@ public class DefaultResourceInstanceTest {
 
     ResourceInstance<Object, Object> cut;
 
-    Instance<Object> server;
+    Instance<Object> instance;
     Instance<Object> client;
     Map<String, Object> properties;
 
     @Before
     public void init() {
-        server = mock(Instance.class);
+        instance = mock(Instance.class);
         client = mock(Instance.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = DefaultResourceInstance.of(server, client, properties);
+        cut = DefaultResourceInstance.of(instance, client, properties);
     }
 
     @Test
-    public void callToGetServerShouldReturnResourceInstance() {
-        Instance<Object> result = cut.getServer();
+    public void callToGetInstanceShouldReturnResourceInstance() {
+        Instance<Object> result = cut.getInstance();
 
-        assertThat(result).isEqualTo(server);
+        assertThat(result).isEqualTo(instance);
     }
 
     @Test
@@ -81,9 +81,9 @@ public class DefaultResourceInstanceTest {
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        ResourceInstance<Object, Object> instance = null;
+        ResourceInstance<Object, Object> resourceInstance = null;
 
-        assertThat(cut).isNotEqualTo(instance);
+        assertThat(cut).isNotEqualTo(resourceInstance);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class DefaultResourceInstanceTest {
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         ResourceInstance<Object, Object> uneuqual
-                = DefaultResourceInstance.of(server, null, null);
+                = DefaultResourceInstance.of(instance, null, null);
 
         assertThat(cut).isNotEqualTo(uneuqual);
         assertThat(cut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -111,7 +111,7 @@ public class DefaultResourceInstanceTest {
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         ResourceInstance<Object, Object> equal
-                = DefaultResourceInstance.of(server, client, properties);
+                = DefaultResourceInstance.of(instance, client, properties);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
@@ -121,7 +121,7 @@ public class DefaultResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = cut.toString();
 
-        assertThat(result).contains("DefaultResourceInstance", "server", "client", "properties");
+        assertThat(result).contains("DefaultResourceInstance", "instance", "client", "properties");
     }
 
 }

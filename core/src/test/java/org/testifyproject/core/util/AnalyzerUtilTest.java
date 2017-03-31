@@ -58,7 +58,7 @@ public class AnalyzerUtilTest {
                 .allMatch(p -> p.value().equals(AnalyzedModule.class));
         assertThat(result.getScans())
                 .allMatch(p -> p.value().equals("org.testifyproject.fixture.analyzer"));
-        assertThat(result.getRequiresContainers()).hasSize(1);
+        assertThat(result.getContainerResources()).hasSize(1);
         assertThat(result.getCollaboratorProvider()).isPresent();
     }
 

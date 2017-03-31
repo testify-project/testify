@@ -16,27 +16,27 @@
 package org.testifyproject.core.analyzer.inspector;
 
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.core.analyzer.TestAnnotationInspector;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An annotation inspector that processes {@link RequiresResource} annotations.
+ * An annotation inspector that processes {@link ContainerResource} annotations.
  *
  * @author saden
  */
 @Discoverable
-public class RequiresResourceInspector implements TestAnnotationInspector<RequiresResource> {
+public class ContainerResourceInspector implements TestAnnotationInspector<ContainerResource> {
 
     @Override
     public boolean handles(Class<?> annotationType) {
-        return RequiresResource.class.isAssignableFrom(annotationType);
+        return ContainerResource.class.isAssignableFrom(annotationType);
     }
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, RequiresResource requiresResource) throws Exception {
-        testDescriptor.addListElement(TestDescriptorProperties.REQUIRES_RESOURCES, requiresResource);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, ContainerResource containerResource) throws Exception {
+        testDescriptor.addListElement(TestDescriptorProperties.REQUIRES_CONTAINERS, containerResource);
     }
 
 }

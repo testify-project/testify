@@ -23,20 +23,20 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * A repeatable meta-annotation for {@link RequiresResource}.
+ * A repeatable meta-annotation for {@link ContainerResource}.
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
 @Target({ANNOTATION_TYPE, TYPE})
-public @interface RequiresResources {
+public @interface ContainerResources {
 
     /**
-     * Specifies a list of {@link RequiresResource} annotations.
+     * Specifies a list of {@link ContainerResource} annotations.
      *
-     * @return an array of RequiresResource annotations.
+     * @return an array of ContainerResource annotations.
      */
-    RequiresResource[] value();
+    ContainerResource[] value();
 
 }

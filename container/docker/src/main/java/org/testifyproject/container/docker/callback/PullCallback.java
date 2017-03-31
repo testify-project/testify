@@ -19,7 +19,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import org.testifyproject.TestContext;
-import org.testifyproject.annotation.RequiresContainer;
+import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.github.dockerjava.api.async.ResultCallback;
 import org.testifyproject.github.dockerjava.api.model.PullResponseItem;
 import org.testifyproject.github.dockerjava.api.model.ResponseItem;
@@ -33,10 +33,10 @@ import org.testifyproject.github.dockerjava.api.model.ResponseItem;
 public class PullCallback implements ResultCallback<PullResponseItem> {
 
     private final TestContext testContext;
-    private final RequiresContainer requiredContainer;
+    private final ContainerResource requiredContainer;
     private final CountDownLatch latch;
 
-    public PullCallback(TestContext testContext, RequiresContainer requiredContainer, CountDownLatch latch) {
+    public PullCallback(TestContext testContext, ContainerResource requiredContainer, CountDownLatch latch) {
         this.testContext = testContext;
         this.requiredContainer = requiredContainer;
         this.latch = latch;

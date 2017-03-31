@@ -22,7 +22,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
-import org.testifyproject.ResourceProvider;
+import org.testifyproject.LocalResourceProvider;
 
 /**
  * <p>
@@ -31,7 +31,7 @@ import org.testifyproject.ResourceProvider;
  * each test case (i.e. an in-memory database).
  * </p>
  * <p>
- * Note that an external resource consists of a server component and client
+ * Note that an local resource consists of a server component and client
  * component (optional). For example, if a test class requires an in-memory
  * database then the database {@link javax.sql.DataSource} can be thought of as
  * the server component and the {@link java.sql.Connection} to the DataSource as
@@ -44,64 +44,67 @@ import org.testifyproject.ResourceProvider;
 @Documented
 @Retention(RUNTIME)
 @Target({ANNOTATION_TYPE, TYPE})
-@Repeatable(RequiresResources.class)
-public @interface RequiresResource {
+@Repeatable(LocalResources.class)
+public @interface LocalResource {
 
     /**
-     * Specifies the required resource's implementation provider class.
+     * Specifies the local resource's implementation provider class.
      *
-     * @return the required resource implementation provider class.
+     * @return the local resource implementation provider class.
      */
-    Class<? extends ResourceProvider> value();
+    Class<? extends LocalResourceProvider> value();
 
     /**
      * <p>
-     * Specifies the name of the required resource. This is useful for injecting
-     * the client and server supplied by the resource provider into your test
-     * code.
+     * Specifies the name of the local resource. This is useful for injecting
+     * {@link org.testifyproject.ResourceInstance} provided by the
+     * {@link LocalResourceProvider} implementations specified in {@link #value()
+     * } into the test class.
      * </p>
      * <p>
-     * Note that if a test class requires multiple resources then name must be
-     * specified to resolve ambiguity as to which required resource should be
-     * injected into your test code.
+     * Note that if a test class requires multiple resources that provide
+     * similar local resources then name must be specified to resolve ambiguity
+     * as to which local resource should be injected into your test code.
      * </p>
      *
-     * @return the required resource name.
+     * @return the local resource name.
      */
     String name() default "";
 
     /**
      * <p>
-     * Specifies the required resource's server name. This useful for giving the
-     * server resource instance a unique name that can be used to qualify and
-     * distinguish it from other similar services.
+     * Specifies the underlying local resource instance name. This useful for
+     * giving the underlying resource instance a unique name that can be used to
+     * qualify and distinguish it from other similar services.
      * </p>
      * <p>
-     * Note that if the name is not specified the name provided by the required
+     * Note that if the name is not specified the name provided by the local
      * resource implementation will be used.
      * </p>
      *
-     * @return the required resource's server name.
+     * @return the underlying local resource instance name.
      */
-    String serverName() default "";
+    String instanceName() default "";
 
     /**
      * <p>
-     * Specifies the contract implemented by the required resource server class.
-     * This useful for getting the server resource by its contract.
+     * Specifies the contract implemented by the underlying local resource
+     * instance. This useful for getting the underlying resource instance by its
+     * contract.
      * </p>
      * <p>
-     * Note that if the server contract class is not specified the server
-     * resource instance will be injectable by its implementation class only.
+     * Note that if the underlying resource instance contract is not specified
+     * the underlying resource instance will be injectable by its implementation
+     * class only.
      * </p>
      *
-     * @return the required resource's server contract class.
+     * @return the contract implemented by the local resource instance.
      */
-    Class<?> serverContract() default void.class;
+    Class<?> instanceContract() default void.class;
 
     /**
      * <p>
-     * Specifies the required resource's client name. This useful for giving the
+     * Specifies the local resource's client name. This useful for giving the
      * client resource instance a unique name that can be used to qualify and
      * distinguish it from other similar services.
      * </p>
@@ -110,21 +113,21 @@ public @interface RequiresResource {
      * resource implementation will be used.
      * </p>
      *
-     * @return the required resource's client name.
+     * @return the local resource's client name.
      */
     String clientName() default "";
 
     /**
      * <p>
-     * Specifies the contract implemented by the required resource client class.
-     * This useful for getting the client resource by its contract.
+     * Specifies the contract implemented by the local resource client. This
+     * useful for getting the client resource by its contract.
      * </p>
      * <p>
-     * Note that if the client contract class is not specified the client
-     * resource instance will be injectable by its implementation class only.
+     * Note that if the client contract is not specified the client resource
+     * instance will be injectable by its implementation class only.
      * </p>
      *
-     * @return the required resource's client contract class.
+     * @return the local resource's client contract class.
      */
     Class<?> clientContract() default void.class;
 

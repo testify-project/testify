@@ -52,9 +52,11 @@ public class SpringServiceProvider implements ServiceProvider<ConfigurableApplic
 
         SpringServiceInstance serviceInstance = new SpringServiceInstance(serviceContext);
 
-        SpringBeanFactoryPostProcessor requiresPostProcessor = new SpringBeanFactoryPostProcessor(testContext, serviceInstance);
-        serviceContext.addBeanFactoryPostProcessor(requiresPostProcessor);
-        serviceContext.addApplicationListener(requiresPostProcessor);
+        SpringBeanFactoryPostProcessor postProcessor
+                = new SpringBeanFactoryPostProcessor(testContext, serviceInstance);
+
+        serviceContext.addBeanFactoryPostProcessor(postProcessor);
+        serviceContext.addApplicationListener(postProcessor);
 
         return serviceInstance;
     }
