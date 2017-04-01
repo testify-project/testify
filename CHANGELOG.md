@@ -16,11 +16,11 @@ was added, changed, deprecated, removed, fix and security fixes.
 ## [0.9.3-SNAPSHOT]
 ### Changed
 - Adopted Semantic Testing
-  - Changed @RequiresResource annotation to @LocalResource
-  - Changed @RequiresContainer annotation to @ContainerResource
-  - Changed ResourceProvder contract to LocalResourceProvider
-  - Changed ContainerProvider contract to ContainerResourceProvider
-  - Changed serverName and serverContract attributes in LocalResourceProvider to instanceName and instanceContract
+  - Changed serverName and serverContract attributes in RequiresResource to resourceName and resourceContract
+  - Renamed @RequiresResource annotation to @LocalResource
+  - Renamed @RequiresContainer annotation to @ContainerResource
+  - Renamed ResourceProvder contract to LocalResourceProvider
+  - Renamed ContainerProvider contract to ContainerResourceProvider
 
 ## [0.9.2] - 2017-03-20
 ### Fixed

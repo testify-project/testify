@@ -56,56 +56,52 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the name of the local resource. This is useful for injecting
-     * {@link org.testifyproject.ResourceInstance} provided by the
-     * {@link LocalResourceProvider} implementations specified in {@link #value()
-     * } into the test class.
+     * Specifies the name of the {@link org.testifyproject.ResourceInstance}
+     * provided by {@link #value() }.
      * </p>
      * <p>
      * Note that if a test class requires multiple resources that provide
-     * similar local resources then name must be specified to resolve ambiguity
-     * as to which local resource should be injected into your test code.
+     * similar resources then name must be specified to resolve ambiguity as to
+     * which resource instance should be injected into your test code.
      * </p>
      *
-     * @return the local resource name.
+     * @return the resource instance name.
      */
     String name() default "";
 
     /**
      * <p>
-     * Specifies the underlying local resource instance name. This useful for
-     * giving the underlying resource instance a unique name that can be used to
-     * qualify and distinguish it from other similar services.
+     * Specifies the underlying resource name. This useful for giving the
+     * underlying resource a unique name that can be used to qualify and
+     * distinguish it from other similar services.
      * </p>
      * <p>
      * Note that if the name is not specified the name provided by the local
      * resource implementation will be used.
      * </p>
      *
-     * @return the underlying local resource instance name.
+     * @return the underlying local resource name.
      */
-    String instanceName() default "";
+    String resourceName() default "";
 
     /**
      * <p>
-     * Specifies the contract implemented by the underlying local resource
-     * instance. This useful for getting the underlying resource instance by its
-     * contract.
+     * Specifies the contract implemented by the underlying resource. This
+     * useful for getting the underlying resource by its contract.
      * </p>
      * <p>
-     * Note that if the underlying resource instance contract is not specified
-     * the underlying resource instance will be injectable by its implementation
-     * class only.
+     * Note that if the underlying resource contract is not specified the
+     * underlying resource will be injectable by its implementation class only.
      * </p>
      *
-     * @return the contract implemented by the local resource instance.
+     * @return the contract implemented by the underlying resource.
      */
-    Class<?> instanceContract() default void.class;
+    Class<?> resourceContract() default void.class;
 
     /**
      * <p>
-     * Specifies the local resource's client name. This useful for giving the
-     * client resource instance a unique name that can be used to qualify and
+     * Specifies the resource's client name. This useful for giving the client
+     * resource instance a unique name that can be used to qualify and
      * distinguish it from other similar services.
      * </p>
      * <p>
@@ -113,21 +109,21 @@ public @interface LocalResource {
      * resource implementation will be used.
      * </p>
      *
-     * @return the local resource's client name.
+     * @return the resource's client name.
      */
     String clientName() default "";
 
     /**
      * <p>
-     * Specifies the contract implemented by the local resource client. This
-     * useful for getting the client resource by its contract.
+     * Specifies the contract implemented by the resource client. This useful
+     * for getting the client resource by its contract.
      * </p>
      * <p>
      * Note that if the client contract is not specified the client resource
      * instance will be injectable by its implementation class only.
      * </p>
      *
-     * @return the local resource's client contract class.
+     * @return the resource's client contract class.
      */
     Class<?> clientContract() default void.class;
 

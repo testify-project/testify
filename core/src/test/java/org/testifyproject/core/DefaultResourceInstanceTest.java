@@ -49,7 +49,7 @@ public class DefaultResourceInstanceTest {
 
     @Test
     public void callToGetInstanceShouldReturnResourceInstance() {
-        Instance<Object> result = cut.getInstance();
+        Instance<Object> result = cut.getResource();
 
         assertThat(result).isEqualTo(instance);
     }

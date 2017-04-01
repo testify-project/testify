@@ -75,11 +75,11 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
             ResourceInstance<?, ?> resourceInstance = resourceProvider.start(testContext, configuration);
 
-            Instance<?> serverInstance = resourceInstance.getInstance();
+            Instance<?> resource = resourceInstance.getResource();
 
-            serviceInstance.replace(serverInstance,
-                    localResource.instanceName(),
-                    localResource.instanceContract());
+            serviceInstance.replace(resource,
+                    localResource.resourceName(),
+                    localResource.resourceContract());
 
             Optional<? extends Instance<?>> clientInstanceResult = resourceInstance.getClient();
 

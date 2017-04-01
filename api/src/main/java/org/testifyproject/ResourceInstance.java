@@ -19,16 +19,16 @@ import java.util.Optional;
 
 /**
  * A contract that defines methods to get information about a resource instance.
- * A resource instance consists of a server, an optional client that can be used
- * to communicate with the server, and properties associated with a resource
+ * A resource instance consists of a resource, an optional client that can be used
+ * to communicate with the resource, and properties associated with a resource
  * instance.
  *
  * @author saden
- * @param <S> the server type
+ * @param <R> the resource type
  * @param <C> the client type
  * @see ResourceProvider
  */
-public interface ResourceInstance<S, C> {
+public interface ResourceInstance<R, C> {
 
     /**
      * Find property associated with the resource with the given name.
@@ -47,10 +47,10 @@ public interface ResourceInstance<S, C> {
     Optional<Instance<C>> getClient();
 
     /**
-     * Get the underlying resource instance of the resource.
+     * Get the underlying resource instance resource.
      *
-     * @return the instance associated with the resource
+     * @return the underlying resource associated with the resource instance
      */
-    Instance<S> getInstance();
+    Instance<R> getResource();
 
 }

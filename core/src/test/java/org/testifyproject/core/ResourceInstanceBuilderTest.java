@@ -43,11 +43,11 @@ public class ResourceInstanceBuilderTest {
         Object server = mock(Object.class);
         String name = "server";
 
-        ResourceInstance result = cut.instance(server, name).build();
+        ResourceInstance result = cut.resource(server, name).build();
 
         assertThat(result).isNotNull();
 
-        Instance instance = result.getInstance();
+        Instance instance = result.getResource();
         assertThat(instance).isNotNull();
         assertThat(instance.getInstance()).isEqualTo(server);
         assertThat(instance.getName()).contains(name);
@@ -60,15 +60,15 @@ public class ResourceInstanceBuilderTest {
         String name = "server";
         Class contract = Object.class;
 
-        ResourceInstance result = cut.instance(server, name, contract).build();
+        ResourceInstance result = cut.resource(server, name, contract).build();
 
         assertThat(result).isNotNull();
 
-        Instance instance = result.getInstance();
-        assertThat(instance).isNotNull();
-        assertThat(instance.getInstance()).isEqualTo(server);
-        assertThat(instance.getName()).contains(name);
-        assertThat(instance.getContract()).contains(contract);
+        Instance resource = result.getResource();
+        assertThat(resource).isNotNull();
+        assertThat(resource.getInstance()).isEqualTo(server);
+        assertThat(resource.getName()).contains(name);
+        assertThat(resource.getContract()).contains(contract);
     }
 
     @Test

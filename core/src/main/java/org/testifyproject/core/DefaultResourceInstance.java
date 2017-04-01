@@ -61,7 +61,7 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
     }
 
     @Override
-    public Instance<S> getInstance() {
+    public Instance<S> getResource() {
         return instance;
     }
 
