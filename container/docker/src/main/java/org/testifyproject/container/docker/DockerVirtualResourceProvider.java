@@ -25,13 +25,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toMap;
-import org.testifyproject.ContainerInstance;
-import org.testifyproject.ContainerResourceProvider;
+import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.container.docker.callback.PullCallback;
 import org.testifyproject.container.docker.callback.WaitCallback;
-import org.testifyproject.core.DefaultContainerInstance;
+import org.testifyproject.core.DefaultVirtualResourceInstance;
 import org.testifyproject.failsafe.Failsafe;
 import org.testifyproject.failsafe.RetryPolicy;
 import org.testifyproject.github.dockerjava.api.DockerClient;
@@ -46,15 +44,17 @@ import org.testifyproject.github.dockerjava.core.DockerClientConfig.DockerClient
 import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
 import org.testifyproject.guava.common.net.InetAddresses;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
- * A Docker implementation of {@link ContainerResourceProvider SPI Contract}.
+ * A Docker implementation of {@link VirtualResourceProvider SPI Contract}.
  *
  * @author saden
  */
 @Discoverable
-public class DockerContainerResourceProvider
-        implements ContainerResourceProvider<ContainerResource, DockerClientConfigBuilder> {
+public class DockerVirtualResourceProvider
+        implements VirtualResourceProvider<VirtualResource, DockerClientConfigBuilder> {
 
     public static final String DEFAULT_DAEMON_URI = "tcp://127.0.0.1:2375";
 
@@ -70,8 +70,8 @@ public class DockerContainerResourceProvider
     }
 
     @Override
-    public ContainerInstance start(TestContext testContext,
-            ContainerResource containerResource,
+    public VirtualResourceInstance start(TestContext testContext,
+            VirtualResource virtualResource,
             DockerClientConfigBuilder configBuilder) {
         try {
             this.testContext = testContext;
@@ -81,28 +81,28 @@ public class DockerContainerResourceProvider
             client = DockerClientBuilder.getInstance(clientConfig).build();
 
             CountDownLatch latch = new CountDownLatch(1);
-            if (containerResource.pull()) {
+            if (virtualResource.pull()) {
                 //TODO: check value first and only pull if it doesn't exist locally
-                PullCallback callback = new PullCallback(testContext, containerResource, latch);
-                client.pullImageCmd(containerResource.value())
-                        .withTag(containerResource.version())
+                PullCallback callback = new PullCallback(testContext, virtualResource, latch);
+                client.pullImageCmd(virtualResource.value())
+                        .withTag(virtualResource.version())
                         .exec(callback);
             } else {
                 latch.countDown();
             }
 
-            latch.await(containerResource.timeout(), containerResource.unit());
-            String image = containerResource.value() + ":" + containerResource.version();
+            latch.await(virtualResource.timeout(), virtualResource.unit());
+            String image = virtualResource.value() + ":" + virtualResource.version();
 
             CreateContainerCmd cmd = client.createContainerCmd(image);
             cmd.withPublishAllPorts(true);
 
-            if (!containerResource.cmd().isEmpty()) {
-                cmd.withCmd(containerResource.cmd());
+            if (!virtualResource.cmd().isEmpty()) {
+                cmd.withCmd(virtualResource.cmd());
             }
 
-            if (!containerResource.name().isEmpty()) {
-                cmd.withName(containerResource.name());
+            if (!virtualResource.name().isEmpty()) {
+                cmd.withName(virtualResource.name());
             }
 
             containerResponse = cmd.exec();
@@ -129,14 +129,14 @@ public class DockerContainerResourceProvider
                             k -> k.getKey().getPort(),
                             v -> Integer.valueOf(v.getValue()[0].getHostPortSpec())), Collections::unmodifiableMap));
 
-            if (containerResource.await()) {
+            if (virtualResource.await()) {
                 RetryPolicy retryPolicy = new RetryPolicy()
                         .retryOn(IOException.class)
-                        .withBackoff(containerResource.delay(),
-                                containerResource.maxDelay(),
-                                containerResource.unit())
-                        .withMaxRetries(containerResource.maxRetries())
-                        .withMaxDuration(containerResource.maxDuration(), containerResource.unit());
+                        .withBackoff(virtualResource.delay(),
+                                virtualResource.maxDelay(),
+                                virtualResource.unit())
+                        .withMaxRetries(virtualResource.maxRetries())
+                        .withMaxDuration(virtualResource.maxDuration(), virtualResource.unit());
 
                 mappedPorts.entrySet().forEach(entry -> Failsafe.with(retryPolicy).run(() -> {
                     testContext.info("Waiting for '{}:{}' to be reachable", host.getHostAddress(), entry.getKey());
@@ -156,7 +156,7 @@ public class DockerContainerResourceProvider
                 }
             });
 
-            return DefaultContainerInstance.of(inspectResponse.getName(), host, mappedPorts);
+            return DefaultVirtualResourceInstance.of(inspectResponse.getName(), host, mappedPorts);
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }

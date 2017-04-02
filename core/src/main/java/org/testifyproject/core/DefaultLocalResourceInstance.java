@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import org.testifyproject.Instance;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.LocalResourceInstance;
 
 /**
  * A class that contains server and client instances of a local resource.
@@ -29,7 +29,7 @@ import org.testifyproject.ResourceInstance;
  * @param <S> server resource instance type
  * @param <C> client resource instance type
  */
-public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
+public class DefaultLocalResourceInstance<S, C> implements LocalResourceInstance<S, C> {
 
     private final Instance<S> instance;
     private final Instance<C> client;
@@ -46,13 +46,13 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
      * @param properties the resource instance properties
      * @return a new resource instance
      */
-    public static <S, C> ResourceInstance<S, C> of(Instance<S> instance,
+    public static <S, C> LocalResourceInstance<S, C> of(Instance<S> instance,
             Instance<C> client,
             Map<String, Object> properties) {
-        return new DefaultResourceInstance<>(instance, client, properties);
+        return new DefaultLocalResourceInstance<>(instance, client, properties);
     }
 
-    DefaultResourceInstance(Instance<S> instance,
+    DefaultLocalResourceInstance(Instance<S> instance,
             Instance<C> client,
             Map<String, Object> properties) {
         this.instance = instance;
@@ -95,7 +95,7 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DefaultResourceInstance<?, ?> other = (DefaultResourceInstance<?, ?>) obj;
+        final DefaultLocalResourceInstance<?, ?> other = (DefaultLocalResourceInstance<?, ?>) obj;
         if (!Objects.equals(this.instance, other.instance)) {
             return false;
         }
@@ -107,7 +107,7 @@ public class DefaultResourceInstance<S, C> implements ResourceInstance<S, C> {
 
     @Override
     public String toString() {
-        return "DefaultResourceInstance{"
+        return "DefaultLocalResourceInstance{"
                 + "instance=" + instance
                 + ", client=" + client
                 + ", properties=" + properties

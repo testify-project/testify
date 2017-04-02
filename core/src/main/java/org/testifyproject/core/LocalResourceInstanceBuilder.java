@@ -18,29 +18,29 @@ package org.testifyproject.core;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.testifyproject.Instance;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.LocalResourceInstance;
 
 /**
- * A builder class used to construction ResourceInstance instances.
+ * A builder class used to construction LocalResourceInstance instances.
  *
  * @author saden
  * @param <R> resource resource resource type
  * @param <C> client resource resource type
- * @see ResourceInstance
+ * @see LocalResourceInstance
  */
-public class ResourceInstanceBuilder<R, C> {
+public class LocalResourceInstanceBuilder<R, C> {
 
     private Instance<R> resource;
     private Instance<C> client;
     private final Map<String, Object> properties = new LinkedHashMap<>();
 
     /**
-     * Create a new resource of ResourceInstanceBuilder.
+     * Create a new resource of LocalResourceInstanceBuilder.
      *
      * @return a new resource
      */
-    public static ResourceInstanceBuilder builder() {
-        return new ResourceInstanceBuilder<>();
+    public static LocalResourceInstanceBuilder builder() {
+        return new LocalResourceInstanceBuilder<>();
     }
 
     /**
@@ -53,7 +53,7 @@ public class ResourceInstanceBuilder<R, C> {
      * @param name the underlying resource name
      * @return this object
      */
-    public ResourceInstanceBuilder<R, C> resource(R resource, String name) {
+    public LocalResourceInstanceBuilder<R, C> resource(R resource, String name) {
         this.resource = new DefaultInstance(resource, name, null);
 
         return this;
@@ -70,7 +70,7 @@ public class ResourceInstanceBuilder<R, C> {
      * @param contract the underlying resource contract
      * @return this object
      */
-    public ResourceInstanceBuilder<R, C> resource(R resource, String name, Class<? extends R> contract) {
+    public LocalResourceInstanceBuilder<R, C> resource(R resource, String name, Class<? extends R> contract) {
         this.resource = new DefaultInstance(resource, name, contract);
 
         return this;
@@ -87,7 +87,7 @@ public class ResourceInstanceBuilder<R, C> {
      * @param name the underlying resource client name
      * @return this object
      */
-    public ResourceInstanceBuilder<R, C> client(C client, String name) {
+    public LocalResourceInstanceBuilder<R, C> client(C client, String name) {
         this.client = new DefaultInstance(client, name, null);
 
         return this;
@@ -105,7 +105,7 @@ public class ResourceInstanceBuilder<R, C> {
      * @param contract the underlying resource client contract
      * @return this object
      */
-    public ResourceInstanceBuilder<R, C> client(C client, String name, Class<? extends C> contract) {
+    public LocalResourceInstanceBuilder<R, C> client(C client, String name, Class<? extends C> contract) {
         this.client = new DefaultInstance(client, name, contract);
 
         return this;
@@ -119,7 +119,7 @@ public class ResourceInstanceBuilder<R, C> {
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public ResourceInstanceBuilder<R, C> property(String name, Object value) {
+    public LocalResourceInstanceBuilder<R, C> property(String name, Object value) {
         this.properties.put(name, value);
 
         return this;
@@ -131,7 +131,7 @@ public class ResourceInstanceBuilder<R, C> {
      * @param properties a map that contains key value pairs.
      * @return this object
      */
-    public ResourceInstanceBuilder<R, C> properties(Map<String, Object> properties) {
+    public LocalResourceInstanceBuilder<R, C> properties(Map<String, Object> properties) {
         this.properties.putAll(properties);
 
         return this;
@@ -142,8 +142,8 @@ public class ResourceInstanceBuilder<R, C> {
      *
      * @return a resource resource
      */
-    public ResourceInstance<R, C> build() {
-        return DefaultResourceInstance.of(resource, client, properties);
+    public LocalResourceInstance<R, C> build() {
+        return DefaultLocalResourceInstance.of(resource, client, properties);
     }
 
 }

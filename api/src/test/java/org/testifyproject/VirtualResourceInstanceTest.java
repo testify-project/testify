@@ -31,13 +31,13 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  *
  * @author saden
  */
-public class ContainerInstanceTest {
+public class VirtualResourceInstanceTest {
 
-    ContainerInstance cut;
+    VirtualResourceInstance cut;
 
     @Before
     public void init() {
-        cut = mock(ContainerInstance.class, Answers.CALLS_REAL_METHODS);
+        cut = mock(VirtualResourceInstance.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test

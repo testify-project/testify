@@ -22,20 +22,20 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.guava.common.collect.ImmutableMap;
+import org.testifyproject.LocalResourceInstance;
 
 /**
  *
  * @author saden
  */
-public class ResourceInstanceBuilderTest {
+public class LocalResourceInstanceBuilderTest {
 
-    ResourceInstanceBuilder cut;
+    LocalResourceInstanceBuilder cut;
 
     @Before
     public void init() {
-        cut = new ResourceInstanceBuilder();
+        cut = new LocalResourceInstanceBuilder();
     }
 
     @Test
@@ -43,7 +43,7 @@ public class ResourceInstanceBuilderTest {
         Object server = mock(Object.class);
         String name = "server";
 
-        ResourceInstance result = cut.resource(server, name).build();
+        LocalResourceInstance result = cut.resource(server, name).build();
 
         assertThat(result).isNotNull();
 
@@ -60,7 +60,7 @@ public class ResourceInstanceBuilderTest {
         String name = "server";
         Class contract = Object.class;
 
-        ResourceInstance result = cut.resource(server, name, contract).build();
+        LocalResourceInstance result = cut.resource(server, name, contract).build();
 
         assertThat(result).isNotNull();
 
@@ -76,7 +76,7 @@ public class ResourceInstanceBuilderTest {
         Object client = mock(Object.class);
         String name = "client";
 
-        ResourceInstance result = cut.client(client, name).build();
+        LocalResourceInstance result = cut.client(client, name).build();
 
         assertThat(result).isNotNull();
 
@@ -97,7 +97,7 @@ public class ResourceInstanceBuilderTest {
         String name = "client";
         Class contract = Object.class;
 
-        ResourceInstance result = cut.client(client, name, contract).build();
+        LocalResourceInstance result = cut.client(client, name, contract).build();
 
         assertThat(result).isNotNull();
 
@@ -117,7 +117,7 @@ public class ResourceInstanceBuilderTest {
         String name = "name";
         String value = "value";
 
-        ResourceInstance result = cut.property(name, value).build();
+        LocalResourceInstance result = cut.property(name, value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(name)).contains(value);
@@ -129,7 +129,7 @@ public class ResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(name, value);
 
-        ResourceInstance result = cut.properties(properties).build();
+        LocalResourceInstance result = cut.properties(properties).build();
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(name)).contains(value);

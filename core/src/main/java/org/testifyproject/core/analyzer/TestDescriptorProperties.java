@@ -50,7 +50,7 @@ public class TestDescriptorProperties {
     /**
      * Test Descriptor Requires Containers property key.
      */
-    public static final String REQUIRES_CONTAINERS = "containerResources";
+    public static final String REQUIRES_CONTAINERS = "virtualResources";
 
     /**
      * Test Descriptor Requires Resources property key.

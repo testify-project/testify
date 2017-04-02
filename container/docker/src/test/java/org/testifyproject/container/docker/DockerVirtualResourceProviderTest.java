@@ -23,31 +23,31 @@ import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import org.testifyproject.ContainerInstance;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
-import org.testifyproject.annotation.ContainerResource;
-import static org.testifyproject.container.docker.DockerContainerResourceProvider.DEFAULT_DAEMON_URI;
+import static org.testifyproject.container.docker.DockerVirtualResourceProvider.DEFAULT_DAEMON_URI;
 import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
+import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
  *
  * @author saden
  */
-public class DockerContainerResourceProviderTest {
+public class DockerVirtualResourceProviderTest {
 
-    DockerContainerResourceProvider cut;
+    DockerVirtualResourceProvider cut;
 
     @Before
     public void init() {
-        cut = new DockerContainerResourceProvider();
+        cut = new DockerVirtualResourceProvider();
     }
 
     @After
@@ -84,16 +84,16 @@ public class DockerContainerResourceProviderTest {
                 .dependencies(dependencies)
                 .build();
 
-        ContainerResource delegate = ReflectionUtil.INSTANCE.newInstance(ContainerResource.class);
-        ContainerResource containerResource = mock(ContainerResource.class, delegatesTo(delegate));
-        given(containerResource.value()).willReturn("postgres");
-        given(containerResource.version()).willReturn("9.4");
+        VirtualResource delegate = ReflectionUtil.INSTANCE.newInstance(VirtualResource.class);
+        VirtualResource virtualResource = mock(VirtualResource.class, delegatesTo(delegate));
+        given(virtualResource.value()).willReturn("postgres");
+        given(virtualResource.version()).willReturn("9.4");
         given(testContext.getTestName()).willReturn("TestClass");
         given(testContext.getMethodName()).willReturn("testMethod");
 
         DockerClientConfig.DockerClientConfigBuilder builder = createDefaultConfigBuilder()
                 .withDockerHost(DEFAULT_DAEMON_URI);
-        ContainerInstance result = cut.start(testContext, containerResource, builder);
+        VirtualResourceInstance result = cut.start(testContext, virtualResource, builder);
         assertThat(result).isNotNull();
     }
 

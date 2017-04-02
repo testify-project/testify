@@ -21,7 +21,6 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
@@ -30,6 +29,7 @@ import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.LocalResourceInstance;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -73,15 +73,15 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
             Object configuration = resourceProvider.configure(testContext);
             configuration = testReifier.configure(testContext, configuration);
 
-            ResourceInstance<?, ?> resourceInstance = resourceProvider.start(testContext, configuration);
+            LocalResourceInstance<?, ?> localResourceInstance = resourceProvider.start(testContext, configuration);
 
-            Instance<?> resource = resourceInstance.getResource();
+            Instance<?> resource = localResourceInstance.getResource();
 
             serviceInstance.replace(resource,
                     localResource.resourceName(),
                     localResource.resourceContract());
 
-            Optional<? extends Instance<?>> clientInstanceResult = resourceInstance.getClient();
+            Optional<? extends Instance<?>> clientInstanceResult = localResourceInstance.getClient();
 
             if (clientInstanceResult.isPresent()) {
                 Instance<?> clientInstance = clientInstanceResult.get();
@@ -92,12 +92,12 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
             }
 
             String resourceName = localResource.name();
-            Class<ResourceInstance> resourceContract = ResourceInstance.class;
+            Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
 
             if (resourceName.isEmpty()) {
-                serviceInstance.addConstant(resourceInstance, null, resourceContract);
+                serviceInstance.addConstant(localResourceInstance, null, resourceContract);
             } else {
-                serviceInstance.addConstant(resourceInstance, resourceName, resourceContract);
+                serviceInstance.addConstant(localResourceInstance, resourceName, resourceContract);
             }
 
             localResourceProviders.add(resourceProvider);

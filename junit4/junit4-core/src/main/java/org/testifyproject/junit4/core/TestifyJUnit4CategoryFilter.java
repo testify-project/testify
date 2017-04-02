@@ -74,7 +74,7 @@ public class TestifyJUnit4CategoryFilter extends Filter {
                 applicableCategoriesBuilder.add(TestCategory.Dynamic.Resource);
             }
 
-            if (!testDescriptor.getContainerResources().isEmpty()) {
+            if (!testDescriptor.getVirtualResources().isEmpty()) {
                 applicableCategoriesBuilder.add(TestCategory.Dynamic.Container);
             }
 

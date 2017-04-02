@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.trait.PropertiesTrait;
 
 /**
@@ -109,11 +109,11 @@ public interface TestDescriptor extends PropertiesTrait {
     List<Scan> getScans();
 
     /**
-     * Get a list of container resources associated with the test class.
+     * Get a list of virtual resources associated with the test class.
      *
-     * @return a list with container resources, empty list otherwise
+     * @return a list with virtual resources, empty list otherwise
      */
-    List<ContainerResource> getContainerResources();
+    List<VirtualResource> getVirtualResources();
 
     /**
      * Get a list of local resources associated with the test class.

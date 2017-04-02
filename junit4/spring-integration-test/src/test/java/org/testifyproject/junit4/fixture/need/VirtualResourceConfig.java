@@ -30,8 +30,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
-import org.testifyproject.ContainerInstance;
 import org.testifyproject.junit4.fixture.need.common.DatabaseConfig;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
  *
@@ -40,7 +40,7 @@ import org.testifyproject.junit4.fixture.need.common.DatabaseConfig;
 @Import(DatabaseConfig.class)
 @EnableJpaRepositories
 @Configuration
-public class ContainerResourceConfig {
+public class VirtualResourceConfig {
 
     @Bean
     static CommonAnnotationBeanPostProcessor annotationBeanPostProcessor() {
@@ -49,10 +49,10 @@ public class ContainerResourceConfig {
 
     @Bean
     @Primary
-    DataSource dataSourceProvider(ContainerInstance containerInstance) {
+    DataSource dataSourceProvider(VirtualResourceInstance virtualResourceInstance) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(containerInstance.getAddress().getHostName());
-        dataSource.setPortNumber(containerInstance.findFirstExposedPort().get());
+        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
+        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

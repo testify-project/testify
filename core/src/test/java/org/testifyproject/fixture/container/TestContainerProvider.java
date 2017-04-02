@@ -16,18 +16,18 @@
 package org.testifyproject.fixture.container;
 
 import static org.mockito.Mockito.mock;
-import org.testifyproject.ContainerInstance;
-import org.testifyproject.ContainerResourceProvider;
+import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
  *
  * @author saden
  */
 @Discoverable
-public class TestContainerProvider implements ContainerResourceProvider<ContainerResource, Void> {
+public class TestContainerProvider implements VirtualResourceProvider<VirtualResource, Void> {
 
     @Override
     public Void configure(TestContext testContext) {
@@ -35,8 +35,8 @@ public class TestContainerProvider implements ContainerResourceProvider<Containe
     }
 
     @Override
-    public ContainerInstance start(TestContext testContext, ContainerResource requiredContainer, Void configuration) {
-        return mock(ContainerInstance.class);
+    public VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, Void configuration) {
+        return mock(VirtualResourceInstance.class);
     }
 
     @Override

@@ -18,15 +18,15 @@ package org.testifyproject.core;
 import java.net.InetAddress;
 import java.util.Map;
 import java.util.Objects;
-import org.testifyproject.ContainerInstance;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
- * An implementation of {@link ContainerInstance SPI Contract} that provides
+ * An implementation of {@link VirtualResourceInstance SPI Contract} that provides
  * information about running container.
  *
  * @author saden
  */
-public class DefaultContainerInstance implements ContainerInstance {
+public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
 
     private final String name;
     private final InetAddress address;
@@ -40,11 +40,11 @@ public class DefaultContainerInstance implements ContainerInstance {
      * @param mappedPorts the mappedPorts exposed by the container
      * @return a new container instance.
      */
-    public static ContainerInstance of(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
-        return new DefaultContainerInstance(name, address, mappedPorts);
+    public static VirtualResourceInstance of(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
+        return new DefaultVirtualResourceInstance(name, address, mappedPorts);
     }
 
-    DefaultContainerInstance(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
+    DefaultVirtualResourceInstance(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
         this.name = name;
         this.address = address;
         this.mappedPorts = mappedPorts;
@@ -85,7 +85,7 @@ public class DefaultContainerInstance implements ContainerInstance {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DefaultContainerInstance other = (DefaultContainerInstance) obj;
+        final DefaultVirtualResourceInstance other = (DefaultVirtualResourceInstance) obj;
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
@@ -97,7 +97,7 @@ public class DefaultContainerInstance implements ContainerInstance {
 
     @Override
     public String toString() {
-        return "DefaultContainerInstance{"
+        return "DefaultVirtualResourceInstance{"
                 + "name=" + name
                 + ", address=" + address
                 + ", mappedPorts=" + mappedPorts

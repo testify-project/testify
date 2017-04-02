@@ -21,16 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
-import org.testifyproject.ContainerInstance;
 import org.testifyproject.guava.common.collect.ImmutableMap;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
  *
  * @author saden
  */
-public class DefaultContainerInstanceTest {
+public class DefaultVirtualResourceInstanceTest {
 
-    ContainerInstance cut;
+    VirtualResourceInstance cut;
 
     String name;
     InetAddress address;
@@ -42,7 +42,7 @@ public class DefaultContainerInstanceTest {
         address = mock(InetAddress.class);
         mappedPorts = ImmutableMap.of(1000, 2000);
 
-        cut = DefaultContainerInstance.of(name, address, mappedPorts);
+        cut = DefaultVirtualResourceInstance.of(name, address, mappedPorts);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DefaultContainerInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ContainerInstance unequal = DefaultContainerInstance.of(null, address, mappedPorts);
+        VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null, address, mappedPorts);
 
         assertThat(cut).isNotEqualTo(unequal);
         assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -76,7 +76,7 @@ public class DefaultContainerInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ContainerInstance equal = DefaultContainerInstance.of(name, address, mappedPorts);
+        VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, address, mappedPorts);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
@@ -86,7 +86,7 @@ public class DefaultContainerInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = cut.toString();
 
-        assertThat(result).contains("DefaultContainerInstance", "name", "address", "mappedPorts");
+        assertThat(result).contains("DefaultVirtualResourceInstance", "name", "address", "mappedPorts");
     }
 
 }

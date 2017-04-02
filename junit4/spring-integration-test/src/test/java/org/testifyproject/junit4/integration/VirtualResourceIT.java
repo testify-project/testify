@@ -22,21 +22,21 @@ import javax.persistence.Query;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
-import org.testifyproject.junit4.fixture.need.ContainerResourceConfig;
+import org.testifyproject.junit4.fixture.need.VirtualResourceConfig;
 import org.testifyproject.junit4.fixture.need.common.GreetingService;
 import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
  * @author saden
  */
-@Module(ContainerResourceConfig.class)
-@ContainerResource(value = "postgres", version = "9.4")
+@Module(VirtualResourceConfig.class)
+@VirtualResource(value = "postgres", version = "9.4")
 @RunWith(SpringIntegrationTest.class)
-public class ContainerResourceIT {
+public class VirtualResourceIT {
 
     @Real
     EntityManagerFactory cut;

@@ -22,40 +22,42 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * A contract that defines methods for getting information about a container.
+ * A contract that defines methods for getting information about a virtual
+ * resource.
  *
  * @author saden
  */
-public interface ContainerInstance {
+public interface VirtualResourceInstance {
 
     /**
-     * Get a unique name associated with the container instance.
+     * Get a unique name associated with the virtual resource.
      *
-     * @return the container name
+     * @return the virtual resource name
      */
     String getName();
 
     /**
-     * Get the IP address of the container instance.
+     * Get the IP address of the virtual resource.
      *
-     * @return the container instance address
+     * @return the virtual resource address
      */
     InetAddress getAddress();
 
     /**
-     * Get a mapping of container host ports and the local ports they map to.
-     * Note that the key presents the container host port and the value the
-     * local host port.
+     * Get a mapping of virtual resource host ports and the local ports they map
+     * to. Note that the key presents the virtual resource host port and the
+     * value the local host port.
      *
      * @return an immutable map of port mappings, empty map otherwise
      */
     Map<Integer, Integer> getMappedPorts();
 
     /**
-     * Find the first container exposed host port. This is a convenience method
-     * for getting a port from containers that expose at most one port.
+     * Find the first host port exposed by the virtual resource. This is a
+     * convenience method for getting a port from virtual resources that expose
+     * at most one port.
      *
-     * @return optional of container host exposed port, empty optional otherwise
+     * @return optional with first host port exposed by virtual resource
      */
     default Optional<Integer> findFirstExposedPort() {
         return getMappedPorts().entrySet()
@@ -65,7 +67,7 @@ public interface ContainerInstance {
     }
 
     /**
-     * Get a URI based on the given scheme and container port.
+     * Get a URI based on the given scheme and virtual resource port.
      *
      * @param scheme the scheme name
      * @param port the port

@@ -30,7 +30,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -38,6 +37,7 @@ import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.LocalResourceInstance;
 
 /**
  *
@@ -78,10 +78,10 @@ public class DefaultLocalResourceProviderTest {
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        List<LocalResource> containerResources = ImmutableList.of();
+        List<LocalResource> virtualResources = ImmutableList.of();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testDescriptor.getLocalResources()).willReturn(containerResources);
+        given(testDescriptor.getLocalResources()).willReturn(virtualResources);
 
         cut.start(testContext, serviceInstance);
 
@@ -98,12 +98,12 @@ public class DefaultLocalResourceProviderTest {
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         LocalResource localResource = mock(LocalResource.class);
-        List<LocalResource> containerResources = ImmutableList.of(localResource);
+        List<LocalResource> virtualResources = ImmutableList.of(localResource);
         Class resourceProviderType = LocalResourceProvider.class;
         LocalResourceProvider resourceProvider = mock(LocalResourceProvider.class);
         Object configuration = mock(Object.class);
         TestReifier testReifier = mock(TestReifier.class);
-        ResourceInstance resourceInstance = mock(ResourceInstance.class);
+        LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         Instance<Object> serverInstance = mock(Instance.class);
         String serverName = "";
         Class serverContract = Class.class;
@@ -112,25 +112,25 @@ public class DefaultLocalResourceProviderTest {
         String clientName = "";
         Class clientContract = Class.class;
         String resourceName = "";
-        Class<ResourceInstance> resourceContract = ResourceInstance.class;
+        Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestReifier()).willReturn(testReifier);
-        given(testDescriptor.getLocalResources()).willReturn(containerResources);
+        given(testDescriptor.getLocalResources()).willReturn(virtualResources);
         given(localResource.value()).willReturn(resourceProviderType);
         given(reflectionUtil.newInstance(resourceProviderType)).willReturn(resourceProvider);
         given(resourceProvider.configure(testContext)).willReturn(configuration);
         given(testReifier.configure(testContext, configuration)).willReturn(configuration);
-        given(resourceProvider.start(testContext, configuration)).willReturn(resourceInstance);
-        given(resourceInstance.getResource()).willReturn(serverInstance);
+        given(resourceProvider.start(testContext, configuration)).willReturn(localResourceInstance);
+        given(localResourceInstance.getResource()).willReturn(serverInstance);
         given(localResource.resourceName()).willReturn(serverName);
         given(localResource.resourceContract()).willReturn(serverContract);
         willDoNothing().given(serviceInstance).replace(serverInstance, serverName, serverContract);
-        given(resourceInstance.getClient()).willReturn(clientInstanceResult);
+        given(localResourceInstance.getClient()).willReturn(clientInstanceResult);
         given(localResource.clientName()).willReturn(clientName);
         given(localResource.clientContract()).willReturn(clientContract);
         willDoNothing().given(serviceInstance).replace(clientInstance, clientName, clientContract);
-        willDoNothing().given(serviceInstance).addConstant(resourceInstance, null, resourceContract);
+        willDoNothing().given(serviceInstance).addConstant(localResourceInstance, null, resourceContract);
         given(localResource.name()).willReturn(resourceName);
 
         cut.start(testContext, serviceInstance);
@@ -144,16 +144,16 @@ public class DefaultLocalResourceProviderTest {
         verify(resourceProvider).configure(testContext);
         verify(testReifier).configure(testContext, configuration);
         verify(resourceProvider).start(testContext, configuration);
-        verify(resourceInstance).getResource();
+        verify(localResourceInstance).getResource();
         verify(localResource).resourceName();
         verify(localResource).resourceName();
         verify(serviceInstance).replace(serverInstance, serverName, serverContract);
-        verify(resourceInstance).getClient();
+        verify(localResourceInstance).getClient();
         verify(localResource).clientName();
         verify(localResource).clientContract();
         verify(serviceInstance).replace(clientInstance, clientName, clientContract);
         verify(localResource).name();
-        verify(serviceInstance).addConstant(resourceInstance, null, resourceContract);
+        verify(serviceInstance).addConstant(localResourceInstance, null, resourceContract);
         verify(resourceProviders).add(resourceProvider);
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
@@ -166,12 +166,12 @@ public class DefaultLocalResourceProviderTest {
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         LocalResource localResource = mock(LocalResource.class);
-        List<LocalResource> containerResources = ImmutableList.of(localResource);
+        List<LocalResource> virtualResources = ImmutableList.of(localResource);
         Class resourceProviderType = LocalResourceProvider.class;
         LocalResourceProvider resourceProvider = mock(LocalResourceProvider.class);
         Object configuration = mock(Object.class);
         TestReifier testReifier = mock(TestReifier.class);
-        ResourceInstance resourceInstance = mock(ResourceInstance.class);
+        LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         Instance<Object> serverInstance = mock(Instance.class);
         String serverName = "serverName";
         Class serverContract = Object.class;
@@ -180,25 +180,25 @@ public class DefaultLocalResourceProviderTest {
         String clientName = "clientName";
         Class clientContract = Object.class;
         String resourceName = "resourceName";
-        Class<ResourceInstance> resourceContract = ResourceInstance.class;
+        Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestReifier()).willReturn(testReifier);
-        given(testDescriptor.getLocalResources()).willReturn(containerResources);
+        given(testDescriptor.getLocalResources()).willReturn(virtualResources);
         given(localResource.value()).willReturn(resourceProviderType);
         given(reflectionUtil.newInstance(resourceProviderType)).willReturn(resourceProvider);
         given(resourceProvider.configure(testContext)).willReturn(configuration);
         given(testReifier.configure(testContext, configuration)).willReturn(configuration);
-        given(resourceProvider.start(testContext, configuration)).willReturn(resourceInstance);
-        given(resourceInstance.getResource()).willReturn(serverInstance);
+        given(resourceProvider.start(testContext, configuration)).willReturn(localResourceInstance);
+        given(localResourceInstance.getResource()).willReturn(serverInstance);
         given(localResource.resourceName()).willReturn(serverName);
         given(localResource.resourceContract()).willReturn(serverContract);
         willDoNothing().given(serviceInstance).replace(serverInstance, serverName, serverContract);
-        given(resourceInstance.getClient()).willReturn(clientInstanceResult);
+        given(localResourceInstance.getClient()).willReturn(clientInstanceResult);
         given(localResource.clientName()).willReturn(clientName);
         given(localResource.clientContract()).willReturn(clientContract);
         willDoNothing().given(serviceInstance).replace(clientInstance, clientName, clientContract);
-        willDoNothing().given(serviceInstance).addConstant(resourceInstance, resourceName, resourceContract);
+        willDoNothing().given(serviceInstance).addConstant(localResourceInstance, resourceName, resourceContract);
         given(localResource.name()).willReturn(resourceName);
 
         cut.start(testContext, serviceInstance);
@@ -212,16 +212,16 @@ public class DefaultLocalResourceProviderTest {
         verify(resourceProvider).configure(testContext);
         verify(testReifier).configure(testContext, configuration);
         verify(resourceProvider).start(testContext, configuration);
-        verify(resourceInstance).getResource();
+        verify(localResourceInstance).getResource();
         verify(localResource).resourceName();
         verify(localResource).resourceContract();
         verify(serviceInstance).replace(serverInstance, serverName, serverContract);
-        verify(resourceInstance).getClient();
+        verify(localResourceInstance).getClient();
         verify(localResource).clientName();
         verify(localResource).clientContract();
         verify(serviceInstance).replace(clientInstance, clientName, clientContract);
         verify(localResource).name();
-        verify(serviceInstance).addConstant(resourceInstance, resourceName, resourceContract);
+        verify(serviceInstance).addConstant(localResourceInstance, resourceName, resourceContract);
         verify(resourceProviders).add(resourceProvider);
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);

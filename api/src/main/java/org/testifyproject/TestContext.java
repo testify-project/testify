@@ -123,11 +123,10 @@ public interface TestContext extends LoggingTrait, PropertiesTrait {
     Map<String, String> getDependencies();
 
     /**
-     * Indicates whether test resources such as required or container resources
-     * should be eagerly started. Note that during integration tests required
-     * resources and containers can be started right before the test case is
-     * executed but in system tests the start of resources and containers must
-     * be delayed until the application server is running.
+     * Indicates whether test resources should be eagerly started. Note that
+     * during integration tests resources can be started right before the test
+     * case is executed but in system tests the start of resources must be
+     * delayed until the application server is running.
      *
      * @return resource start strategy
      */

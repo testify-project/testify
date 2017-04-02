@@ -53,7 +53,7 @@ public interface LocalResourceProvider<T, S, C> {
      * @param config the local resource configuration
      * @return a local resource instance
      */
-    ResourceInstance<S, C> start(TestContext testContext, T config);
+    LocalResourceInstance<S, C> start(TestContext testContext, T config);
 
     /**
      * Stop the local resource.

@@ -24,11 +24,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.junit4.fixture.GreeterApplication;
 import org.testifyproject.junit4.fixture.need.PostgresModule;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  * Test Greeter Resource inside the container from the client perspective real
@@ -40,7 +40,7 @@ import org.testifyproject.junit4.fixture.need.PostgresModule;
  */
 @Application(GreeterApplication.class)
 @Module(PostgresModule.class)
-@ContainerResource(value = "postgres", version = "9.4")
+@VirtualResource(value = "postgres", version = "9.4")
 @RunWith(Jersey2SystemTest.class)
 public class GreeterResourceRequiresContainerST {
 

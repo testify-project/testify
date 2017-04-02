@@ -56,7 +56,7 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the name of the {@link org.testifyproject.ResourceInstance}
+     * Specifies the name of the {@link org.testifyproject.LocalResourceInstance}
      * provided by {@link #value() }.
      * </p>
      * <p>

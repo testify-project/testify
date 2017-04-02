@@ -23,19 +23,19 @@ import javax.persistence.Query;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.junit4.fixture.need.container.PostgresModule;
 import org.testifyproject.junit4.fixture.need.database.GreetingEntity;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
  * @author saden
  */
-@ContainerResource(value = "postgres", version = "9.4")
+@VirtualResource(value = "postgres", version = "9.4")
 @Module(PostgresModule.class)
 @RunWith(GuiceIntegrationTest.class)
-public class ContainerResourceIT {
+public class VirtualResourceIT {
 
     @Inject
     EntityManagerFactory cut;

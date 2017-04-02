@@ -28,7 +28,7 @@ import java.util.Optional;
  * @param <C> the client type
  * @see ResourceProvider
  */
-public interface ResourceInstance<R, C> {
+public interface LocalResourceInstance<R, C> {
 
     /**
      * Find property associated with the resource with the given name.

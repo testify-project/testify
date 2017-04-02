@@ -24,11 +24,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.ConfigHandler;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import org.testifyproject.junit4.fixture.common.UserEntity;
 import org.testifyproject.junit4.fixture.need.container.DockerContainerApplication;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
@@ -36,7 +36,7 @@ import org.testifyproject.junit4.fixture.need.container.DockerContainerApplicati
  */
 @RunWith(SpringSystemTest.class)
 @Application(DockerContainerApplication.class)
-@ContainerResource(value = "postgres", version = "9.4")
+@VirtualResource(value = "postgres", version = "9.4")
 public class GreetingResourceRequiresContainerST {
 
     @Real

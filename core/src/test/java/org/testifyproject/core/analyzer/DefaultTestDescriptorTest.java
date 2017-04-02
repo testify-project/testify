@@ -31,13 +31,13 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableMap;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
@@ -137,11 +137,11 @@ public class DefaultTestDescriptorTest {
     }
 
     @Test
-    public void callToGetContainerResourcesShouldReturn() {
-        ContainerResource value = mock(ContainerResource.class);
+    public void callToGetVirtualResourcesShouldReturn() {
+        VirtualResource value = mock(VirtualResource.class);
         properties.put(TestDescriptorProperties.REQUIRES_CONTAINERS, ImmutableList.of(value));
 
-        List<ContainerResource> result = cut.getContainerResources();
+        List<VirtualResource> result = cut.getVirtualResources();
 
         assertThat(result).containsExactly(value);
     }

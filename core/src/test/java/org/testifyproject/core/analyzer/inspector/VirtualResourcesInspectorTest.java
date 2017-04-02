@@ -18,23 +18,25 @@ package org.testifyproject.core.analyzer.inspector;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.ContainerResource;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.annotation.VirtualResources;
 
 /**
  *
  * @author saden
  */
-public class ContainerResourceInspectorTest {
+public class VirtualResourcesInspectorTest {
 
-    ContainerResourceInspector cut;
+    VirtualResourcesInspector cut;
 
     @Before
     public void init() {
-        cut = new ContainerResourceInspector();
+        cut = new VirtualResourcesInspector();
     }
 
     @Test(expected = NullPointerException.class)
@@ -43,8 +45,8 @@ public class ContainerResourceInspectorTest {
     }
 
     @Test
-    public void callToHandlesContainerResourceShouldReturnTrue() {
-        boolean result = cut.handles(ContainerResource.class);
+    public void callToHandlesVirtualResourcesShouldReturnTrue() {
+        boolean result = cut.handles(VirtualResources.class);
 
         assertThat(result).isTrue();
     }
@@ -53,11 +55,14 @@ public class ContainerResourceInspectorTest {
     public void givenParamtersInspectShouldAddProperty() throws Exception {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
-        ContainerResource annotation = mock(ContainerResource.class);
+        VirtualResources annotation = mock(VirtualResources.class);
+        VirtualResource element = mock(VirtualResource.class);
+
+        given(annotation.value()).willReturn(new VirtualResource[]{element});
 
         cut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.REQUIRES_CONTAINERS, annotation);
+        verify(testDescriptor).addListElement(TestDescriptorProperties.REQUIRES_CONTAINERS, element);
     }
 
 }

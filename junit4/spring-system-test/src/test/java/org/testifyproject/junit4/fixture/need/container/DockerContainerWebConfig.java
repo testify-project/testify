@@ -24,10 +24,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.testifyproject.ContainerInstance;
 import org.testifyproject.junit4.fixture.common.DatabaseConfig;
 import org.testifyproject.junit4.fixture.common.SessionFactoryFactoryBean;
 import org.testifyproject.junit4.fixture.web.GreeterWebConfig;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
  *
@@ -39,10 +39,10 @@ import org.testifyproject.junit4.fixture.web.GreeterWebConfig;
 public class DockerContainerWebConfig {
 
     @Bean
-    DataSource dataSourceProvider(ContainerInstance containerInstance) {
+    DataSource dataSourceProvider(VirtualResourceInstance virtualResourceInstance) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(containerInstance.getAddress().getHostName());
-        dataSource.setPortNumber(containerInstance.findFirstExposedPort().get());
+        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
+        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

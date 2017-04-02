@@ -18,9 +18,14 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Adopted Semantic Testing
   - Changed serverName and serverContract attributes in RequiresResource to resourceName and resourceContract
   - Renamed @RequiresResource annotation to @LocalResource
-  - Renamed @RequiresContainer annotation to @ContainerResource
+  - Renamed @RequiresContainer annotation to @VirtualResource
   - Renamed ResourceProvder contract to LocalResourceProvider
-  - Renamed ContainerProvider contract to ContainerResourceProvider
+  - Renamed ContainerProvider contract to VirtualResourceProvider
+  - Renamed ResourceInstance contract to LocalResourceInstance
+  - Renamed ContainerInstance contract to VirtualResourceInstance
+  - Renamed DefaultContainerInstance to DefaultVirtualResourceInstance
+  - Renamed DefaultResourceInstance to DefaultLocalResourceInstance
+  - Renamed ResourceInstanceBuilder to LocalResourceInstanceBuilder
 
 ## [0.9.2] - 2017-03-20
 ### Fixed

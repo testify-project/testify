@@ -23,20 +23,20 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * A repeatable meta-annotation for {@link ContainerResource}.
+ * A repeatable meta-annotation for {@link VirtualResource}.
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
 @Target({ANNOTATION_TYPE, TYPE})
-public @interface ContainerResources {
+public @interface VirtualResources {
 
     /**
-     * Specifies a list of {@link ContainerResource} annotations.
+     * Specifies a list of {@link VirtualResource} annotations.
      *
-     * @return an array of ContainerResource annotations.
+     * @return an array of VirtualResource annotations.
      */
-    ContainerResource[] value();
+    VirtualResource[] value();
 
 }

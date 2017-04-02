@@ -21,7 +21,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.testifyproject.ContainerInstance;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
  * A provider of a JDBC Postgres test DataSource. Note that we don't annotate
@@ -32,19 +32,19 @@ import org.testifyproject.ContainerInstance;
  */
 public class PostgresDataSourceProvider implements Provider<DataSource> {
 
-    private final ContainerInstance containerInstance;
+    private final VirtualResourceInstance virtualResourceInstance;
 
     @Inject
-    PostgresDataSourceProvider(@Named("postgres") ContainerInstance containerInstance) {
-        this.containerInstance = containerInstance;
+    PostgresDataSourceProvider(@Named("postgres") VirtualResourceInstance virtualResourceInstance) {
+        this.virtualResourceInstance = virtualResourceInstance;
     }
 
     @Singleton
     @Override
     public DataSource get() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(containerInstance.getAddress().getHostName());
-        dataSource.setPortNumber(containerInstance.findFirstExposedPort().get());
+        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
+        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

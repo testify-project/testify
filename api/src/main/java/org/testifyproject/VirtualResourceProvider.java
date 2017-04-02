@@ -16,49 +16,48 @@
 package org.testifyproject;
 
 /**
- * A contract that defines methods to configure, start an stop a container
+ * A contract that defines methods to configure, start an stop a virtual
  * resource.
  *
  * @author saden
- * @param <S> the type of the container resource instance
- * @param <T> the type container resource configuration object
+ * @param <S> the type of the virtual resource
+ * @param <T> the type virtual resource configuration object
  */
-public interface ContainerResourceProvider<S, T> {
+public interface VirtualResourceProvider<S, T> {
 
     /**
      * <p>
-     * A method to configure a container resource. Configuring a container
-     * resource typically involves creating a configuration object so it can be
-     * further configured by a test class method annotated with
+     * A method to configure a virtual resource. Configuring a virtual resource
+     * typically involves creating a configuration object so it can be further
+     * configured by a test class method annotated with
      * {@link org.testifyproject.annotation.ConfigHandler}.
      * </p>
      * <p>
      * Note that implementation of this method should not do any work beyond
      * returning configuration object. That is to is to say it should be
-     * stateless and should not perform instantiation of the container resource
-     * as that should be handled in {@link #start
+     * stateless and should not perform instantiation of the virtual resource as
+     * that should be handled in {@link #start
      * (org.testifyproject.TestContext, java.lang.Object, java.lang.Object)}
      * method.
      * </p>
      *
      * @param testContext the test context
-     * @return the container resource configuration object
+     * @return the virtual resource configuration object
      */
     T configure(TestContext testContext);
 
     /**
-     * Start the container resource with the given testContext and
-     * configuration.
+     * Start the virtual resource with the given testContext and configuration.
      *
      * @param testContext the test context
-     * @param requiredContainer test class container resource annotation
-     * @param configuration the container resource configuration object
-     * @return a container resource instance
+     * @param virtualResource test class virtual resource annotation
+     * @param configuration the virtual resource configuration object
+     * @return a virtual resource instance
      */
-    ContainerInstance start(TestContext testContext, S requiredContainer, T configuration);
+    VirtualResourceInstance start(TestContext testContext, S virtualResource, T configuration);
 
     /**
-     * Stop the container resource.
+     * Stop the virtual resource.
      */
     void stop();
 
