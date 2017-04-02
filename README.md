@@ -67,7 +67,3 @@ Enjoy and keep on Testifying!
 [java-for-small-team]: https://www.gitbook.com/book/ncrcoe/java-for-small-teams/details
 [tdd-presentation]: http://saden1.slides.com/saden1/tdd/embed?token=C82lw8_l
 
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/testify-project/testify/badge.svg?style=beer-square)](https://beerpay.io/testify-project/testify)  [![Beerpay](https://beerpay.io/testify-project/testify/make-wish.svg?style=flat-square)](https://beerpay.io/testify-project/testify?focus=wish)
