@@ -4,8 +4,7 @@
 [![Stories in Ready](https://badge.waffle.io/testify-project/testify.svg?label=ready&title=Ready)](http://waffle.io/testify-project/testify)
 [![Join the chat on Gitter](https://badges.gitter.im/testify-project/Lobby.svg)](https://gitter.im/testify-project/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![CodecovIO](https://codecov.io/github/testify-project/testify/coverage.svg?branch=develop)](https://codecov.io/github/testify-project/testify?branch=develop)
-[![Latest Release](https://img.shields.io/github/release/testify-project/testify.svg)](https://github.com/testify-project/testify/releases/latest)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.testifyproject/testify/badge.svg?style=flat)](http://repo1.maven.org/maven2/org/testifyproject/testify/)
+[![Maven Central](https://img.shields.io/maven-central/v/org.testifyproject/parent.svg)]()
 [![License](https://img.shields.io/badge/license-Apache%20License%202-lightgrey.svg)](https://github.com/testify-project/testify/blob/develop/LICENSE)
 
 [![Throughput Graph](https://graphs.waffle.io/testify-project/testify/throughput.svg)](https://waffle.io/testify-project/testify/metrics)
@@ -49,7 +48,8 @@ Hit us up on [Gitter][gitter].
 ## Show Some Love
 Testify Project does not have a revenue source and depends on support from the open source community. If you believe in our mission please consider donating:
 
-[![Gratipay](https://img.shields.io/badge/Gratipay-Donate-red.svg)](https://gratipay.com/Testify-Project/)
+[![Gratipay](https://img.shields.io/gratipay/user/saden1.svg)](https://gratipay.com/Testify-Project)
+[![Beerpay](https://img.shields.io/beerpay/hashdog/scrapfy-chrome-extension.svg)](https://beerpay.io/testify-project/testify)
 [![Flattr](https://img.shields.io/badge/Flattr-Donate-blue.svg)](https://flattr.com/submit/auto?fid=ropvn7&url=http%3A%2F%2Ftestifyproject.org)
 [![Bonfire](https://img.shields.io/badge/Bonfire-Get%20Swagg-green.svg)](https://www.bonfire.com/testify-project/)
 
