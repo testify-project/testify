@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core;
 
-import java.util.Arrays;
 import java.util.List;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
@@ -38,17 +37,11 @@ public interface TestCategory {
         /**
          * Integration test category.
          */
-        Integration("int", "integ"),
+        Integration,
         /**
          * System test category.
          */
-        System("sys");
-
-        private final List<String> categories;
-
-        Level(String... categories) {
-            this.categories = Arrays.asList(categories);
-        }
+        System;
 
         /**
          * Determine if the enum contains the given category value. Not that
@@ -62,8 +55,7 @@ public interface TestCategory {
             String lowerCaseName = name().toLowerCase();
             String cleanCategory = category.toLowerCase().trim();
 
-            if (lowerCaseName.equals(cleanCategory)
-                    || categories.contains(cleanCategory)) {
+            if (lowerCaseName.equals(cleanCategory)) {
                 searchResult = true;
             }
 
@@ -101,21 +93,15 @@ public interface TestCategory {
     enum Dynamic {
 
         /**
-         * Resource test category. Note that classes that require resources
-         * belong in this category.
+         * Local test category. Note that classes that require resources belong
+         * in this category.
          */
-        Resource("res"),
+        Local,
         /**
-         * Container test category. Note that classes that require container
+         * Virtual test category. Note that classes that require container
          * belong in this category.
          */
-        Container("con");
-
-        private final List<String> categories;
-
-        Dynamic(String... categories) {
-            this.categories = Arrays.asList(categories);
-        }
+        Virtual;
 
         /**
          * Determine if the enum contains the given category value. Not that
@@ -129,8 +115,7 @@ public interface TestCategory {
             String lowerCaseName = name().toLowerCase();
             String cleanCategory = category.toLowerCase().trim();
 
-            if (lowerCaseName.equals(cleanCategory)
-                    || categories.contains(cleanCategory)) {
+            if (lowerCaseName.equals(cleanCategory)) {
                 searchResult = true;
             }
 

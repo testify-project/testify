@@ -73,33 +73,31 @@ public class TestCategoryTest {
     @Test
     public void givenInvalidCategoriesDynamicFindShouldThrowException() {
         String[] categories = {
-            "resource",
-            "container"
+            "local",
+            "virtual"
         };
 
         List<TestCategory.Dynamic> result = TestCategory.Dynamic.find(categories);
 
-        assertThat(result).contains(
-                TestCategory.Dynamic.Resource,
-                TestCategory.Dynamic.Container
+        assertThat(result).contains(TestCategory.Dynamic.Local,
+                TestCategory.Dynamic.Virtual
         );
     }
 
     @Test
     public void verifyTestCategoryLevelEnums() {
-        assertThat(TestCategory.Level.values()).containsExactly(
-                TestCategory.Level.Unit,
-                TestCategory.Level.Integration,
-                TestCategory.Level.System
-        );
+        assertThat(TestCategory.Level.values())
+                .containsExactly(
+                        TestCategory.Level.Unit,
+                        TestCategory.Level.Integration,
+                        TestCategory.Level.System
+                );
     }
 
     @Test
     public void verifyTestCategoryLevelIntegration() {
         TestCategory.Level cut = TestCategory.Level.Integration;
 
-        assertThat(cut.contains("int")).isTrue();
-        assertThat(cut.contains("integ")).isTrue();
         assertThat(cut.contains("integration")).isTrue();
     }
 
@@ -107,31 +105,29 @@ public class TestCategoryTest {
     public void verifyTestCategoryLevelSystem() {
         TestCategory.Level cut = TestCategory.Level.System;
 
-        assertThat(cut.contains("sys")).isTrue();
         assertThat(cut.contains("system")).isTrue();
     }
 
     @Test
     public void verifyTestCategoryDynamicEnums() {
-        assertThat(TestCategory.Dynamic.values()).containsExactly(
-                TestCategory.Dynamic.Resource,
-                TestCategory.Dynamic.Container
-        );
+        assertThat(TestCategory.Dynamic.values())
+                .containsExactly(
+                        TestCategory.Dynamic.Local,
+                        TestCategory.Dynamic.Virtual
+                );
     }
 
     @Test
     public void verifyTestCategoryDynamicResource() {
-        TestCategory.Dynamic cut = TestCategory.Dynamic.Resource;
+        TestCategory.Dynamic cut = TestCategory.Dynamic.Local;
 
-        assertThat(cut.contains("res")).isTrue();
-        assertThat(cut.contains("resource")).isTrue();
+        assertThat(cut.contains("local")).isTrue();
     }
 
     @Test
     public void verifyTestCategoryDynamicContainer() {
-        TestCategory.Dynamic cut = TestCategory.Dynamic.Container;
+        TestCategory.Dynamic cut = TestCategory.Dynamic.Virtual;
 
-        assertThat(cut.contains("con")).isTrue();
-        assertThat(cut.contains("container")).isTrue();
+        assertThat(cut.contains("virtual")).isTrue();
     }
 }

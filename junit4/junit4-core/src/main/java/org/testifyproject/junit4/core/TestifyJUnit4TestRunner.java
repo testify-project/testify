@@ -72,7 +72,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
     public TestifyJUnit4TestRunner(Class<?> testClass, TestCategory.Level level) throws InitializationError {
         super(testClass);
         try {
-            filter(TestifyJUnit4CategoryFilter.of(level));
+            filter(TestifyJUnit4CategoryFilter.of(level, System.getProperty("testify.categories")));
         } catch (NoTestsRemainException e) {
             //we can ignore this exception
             debug("No test remain");

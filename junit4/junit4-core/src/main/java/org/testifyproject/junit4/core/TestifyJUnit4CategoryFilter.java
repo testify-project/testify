@@ -35,31 +35,31 @@ public class TestifyJUnit4CategoryFilter extends Filter {
     public static final String FILTER_DESCRIPTION = "test level and dynamic categories filter";
 
     private final TestCategory.Level level;
+    private final String testifyCategories;
 
     /**
      * Create a test category filter instance.
      *
-     * @param level test category level associated with the filter.
-     *
+     * @param level test category level associated with the filter
+     * @param testifyCategories testify categories associated with the filter
      * @return a filter instance.
      */
-    public static final TestifyJUnit4CategoryFilter of(TestCategory.Level level) {
-        return new TestifyJUnit4CategoryFilter(level);
+    public static final TestifyJUnit4CategoryFilter of(TestCategory.Level level, String testifyCategories) {
+        return new TestifyJUnit4CategoryFilter(level, testifyCategories);
     }
 
-    TestifyJUnit4CategoryFilter(TestCategory.Level level) {
+    TestifyJUnit4CategoryFilter(TestCategory.Level level, String testifyCategories) {
         this.level = level;
+        this.testifyCategories = testifyCategories;
     }
 
     @Override
     public boolean shouldRun(Description description) {
         Class<?> testClass = description.getTestClass();
         TestDescriptor testDescriptor = AnalyzerUtil.INSTANCE.analyzeTestClass(testClass);
-        String testifyCategories = System.getProperty("testify.categories");
         Boolean shouldRun = true;
 
         if (testifyCategories != null) {
-
             String[] categories = testifyCategories.split(",");
 
             ImmutableList<Enum> desiredCategories = ImmutableList.<Enum>builder()
@@ -71,11 +71,11 @@ public class TestifyJUnit4CategoryFilter extends Filter {
                     .add(level);
 
             if (!testDescriptor.getLocalResources().isEmpty()) {
-                applicableCategoriesBuilder.add(TestCategory.Dynamic.Resource);
+                applicableCategoriesBuilder.add(TestCategory.Dynamic.Local);
             }
 
             if (!testDescriptor.getVirtualResources().isEmpty()) {
-                applicableCategoriesBuilder.add(TestCategory.Dynamic.Container);
+                applicableCategoriesBuilder.add(TestCategory.Dynamic.Virtual);
             }
 
             ImmutableList<Enum> applicableCategories = applicableCategoriesBuilder.build();

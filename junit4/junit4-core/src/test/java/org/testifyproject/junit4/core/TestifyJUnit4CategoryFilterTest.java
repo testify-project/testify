@@ -24,8 +24,8 @@ import static org.mockito.Mockito.mock;
 import org.testifyproject.core.TestCategory;
 import static org.testifyproject.junit4.core.TestifyJUnit4CategoryFilter.FILTER_DESCRIPTION;
 import org.testifyproject.junit4.fixture.common.TestClass;
-import org.testifyproject.junit4.fixture.filter.VirtualResourceTestClass;
 import org.testifyproject.junit4.fixture.filter.LocalResourceTestClass;
+import org.testifyproject.junit4.fixture.filter.VirtualResourceTestClass;
 
 /**
  *
@@ -37,12 +37,13 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Before
     public void init() {
-        System.clearProperty("testify.categories");
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration);
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullDescriptionShouldRunShouldThrowException() {
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, null);
+
         Description description = null;
 
         cut.shouldRun(description);
@@ -50,6 +51,8 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenNoSystemPropertyShouldRunShouldReturnTrue() {
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, null);
+
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
 
@@ -62,11 +65,12 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenUnsupportedTestShouldRunShouldReturnFalse() {
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, "unit");
+
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "unit");
 
         boolean result = cut.shouldRun(description);
 
@@ -74,12 +78,14 @@ public class TestifyJUnit4CategoryFilterTest {
     }
 
     @Test
-    public void givenTestClassWithRequiredResourceShouldRunShouldReturnTrue() {
+    public void givenTestClassWithLocalResourceShouldRunShouldReturnTrue() {
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, "local");
+
         Description description = mock(Description.class);
         Class testClass = LocalResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "integ");
+        System.setProperty("testify.categories", "local");
 
         boolean result = cut.shouldRun(description);
 
@@ -87,12 +93,14 @@ public class TestifyJUnit4CategoryFilterTest {
     }
 
     @Test
-    public void givenTestClassWithRequiredContainerShouldRunShouldReturnTrue() {
+    public void givenTestClassWithVirtualResourceShouldRunShouldReturnTrue() {
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, "integration");
+
         Description description = mock(Description.class);
         Class testClass = VirtualResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "integ");
+        System.setProperty("testify.categories", "integration");
 
         boolean result = cut.shouldRun(description);
 

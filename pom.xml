@@ -194,12 +194,6 @@
     </repositories>
 
     <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-            </plugin>
-        </plugins>
-
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -574,7 +568,6 @@
                     <reportSet>
                         <reports>
                             <report>report-only</report>
-                            <report>failsafe-report-only</report>
                         </reports>
                     </reportSet>
                 </reportSets>
