@@ -18,11 +18,11 @@ package org.testifyproject.container.docker.callback;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import org.testifyproject.TestContext;
+import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.github.dockerjava.api.async.ResultCallback;
 import org.testifyproject.github.dockerjava.api.model.PullResponseItem;
 import org.testifyproject.github.dockerjava.api.model.ResponseItem;
-import org.testifyproject.annotation.VirtualResource;
 
 /**
  * A callback class that listens for image pull request and prints progress
@@ -32,19 +32,17 @@ import org.testifyproject.annotation.VirtualResource;
  */
 public class PullCallback implements ResultCallback<PullResponseItem> {
 
-    private final TestContext testContext;
     private final VirtualResource virtualResource;
     private final CountDownLatch latch;
 
-    public PullCallback(TestContext testContext, VirtualResource virtualResource, CountDownLatch latch) {
-        this.testContext = testContext;
+    public PullCallback(VirtualResource virtualResource, CountDownLatch latch) {
         this.virtualResource = virtualResource;
         this.latch = latch;
     }
 
     @Override
     public void onStart(Closeable closeable) {
-        testContext.info("Pulling '{}:{}' image", virtualResource.value(), virtualResource.version());
+        LoggingUtil.INSTANCE.info("Pulling '{}:{}' image", virtualResource.value(), virtualResource.version());
     }
 
     @Override
@@ -73,18 +71,18 @@ public class PullCallback implements ResultCallback<PullResponseItem> {
 
     @Override
     public void onError(Throwable throwable) {
-        testContext.error("Pull failed: ", throwable);
+        LoggingUtil.INSTANCE.error("Pull failed: ", throwable);
     }
 
     @Override
     public void onComplete() {
-        testContext.info("Image '{}:{}' pulled", virtualResource.value(), virtualResource.version());
+        LoggingUtil.INSTANCE.info("Image '{}:{}' pulled", virtualResource.value(), virtualResource.version());
         latch.countDown();
     }
 
     @Override
     public void close() throws IOException {
-        testContext.debug("Closing pull of '{}:{}' image", virtualResource.value(), virtualResource.version());
+        LoggingUtil.INSTANCE.debug("Closing pull of '{}:{}' image", virtualResource.value(), virtualResource.version());
     }
 
 }

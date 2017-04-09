@@ -16,12 +16,12 @@
 package org.testifyproject.trait;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -47,6 +47,17 @@ public interface PropertiesTrait {
      * @return a map containing key/value pairs
      */
     <V> Map<String, V> getProperties();
+
+    /**
+     * Get the value the value associated with the given key.
+     *
+     * @param <T> the value type
+     * @param key the key
+     * @return the value to which the specified key is mapped, null otherwise
+     */
+    default <T> T getProperty(String key) {
+        return (T) getProperties().get(key);
+    }
 
     /**
      * Find the value associated with the given key.
@@ -85,7 +96,7 @@ public interface PropertiesTrait {
         List<T> result = properties.get(key);
 
         if (result == null) {
-            result = Collections.EMPTY_LIST;
+            result = Collections.emptyList();
         }
 
         return result;
@@ -120,7 +131,7 @@ public interface PropertiesTrait {
         Map<K, V> result = properties.get(key);
 
         if (result == null) {
-            result = Collections.EMPTY_MAP;
+            result = Collections.emptyMap();
         }
 
         return result;
@@ -139,7 +150,7 @@ public interface PropertiesTrait {
     default <K, V> void addMapEntry(String key, K entryKey, V entryValue) {
         Map<String, Map<K, V>> properties = getProperties();
 
-        Map<K, V> result = properties.computeIfAbsent(key, p -> new HashMap<>());
+        Map<K, V> result = properties.computeIfAbsent(key, p -> new ConcurrentHashMap<>());
         result.computeIfAbsent(entryKey, k -> entryValue);
     }
 

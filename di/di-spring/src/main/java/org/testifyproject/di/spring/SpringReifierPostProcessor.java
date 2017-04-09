@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import javax.inject.Provider;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.testifyproject.CutDescriptor;
@@ -32,8 +31,8 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A custom Spring bean post processor used to get and createFake service
- * instances and reify the test class fields.
+ * A custom Spring bean post processor used to get and createFake service instances and reify the
+ * test class fields.
  *
  * @author saden
  */
@@ -46,7 +45,7 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
     }
 
     @Override
-    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
+    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         MockProvider mockProvider = testContext.getMockProvider();
         Object testInstance = testContext.getTestInstance();
@@ -88,22 +87,22 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
     }
 
     @Override
-    public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
+    public boolean postProcessAfterInstantiation(Object bean, String beanName) {
         return true;
     }
 
     @Override
-    public PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
+    public PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) {
         return pvs;
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
         Class<? extends Object> beanClass = bean.getClass();
 
         //XXX: DO NOT remove this  method and code as it is required to extract
@@ -120,8 +119,8 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
     }
 
     /**
-     * GIven a type token and default type determine the raw type of the type
-     * token by spring supported generic classes.
+     * GIven a type token and default type determine the raw type of the type token by spring
+     * supported generic classes.
      *
      * @param typeToken the type token that will be inspected
      * @return the raw type

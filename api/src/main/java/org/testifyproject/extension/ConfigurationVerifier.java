@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.extension;
+
+import org.testifyproject.TestContext;
 
 /**
- * An interface that defines methods for verifying test class dependencies,
- * configuration and wiring.
+ * An extention interface that defines a method for verifying test class wiring
+ * configuration.
  *
  * @author saden
  */
-public interface TestVerifier {
-
-    /**
-     * Verify test dependencies are present in the classpath.
-     */
-    void dependency();
+@FunctionalInterface
+public interface ConfigurationVerifier {
 
     /**
      * Verify the test is configured correctly.
+     *
+     * @param testContext the test context
      */
-    void configuration();
+    void verify(TestContext testContext);
 
-    /**
-     * Verify the test is wired and initialized correctly.
-     */
-    void wiring();
 }

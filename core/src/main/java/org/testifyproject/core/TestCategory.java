@@ -16,6 +16,7 @@
 package org.testifyproject.core;
 
 import java.util.List;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
@@ -26,63 +27,44 @@ import org.testifyproject.guava.common.collect.ImmutableList;
 public interface TestCategory {
 
     /**
+     * Find enum constants with the given categories for the given enum type.
+     *
+     * @param enumType the enum type we searching in
+     * @param categories the list of categories we are searching for
+     * @return list with categories, empty list otherwise.
+     */
+    static List<Enum> find(Class<? extends Enum> enumType, String[] categories) {
+        ImmutableList.Builder<Enum> builder = ImmutableList.builder();
+
+        for (String category : categories) {
+            try {
+                Enum result = Enum.valueOf(enumType, category.toUpperCase());
+                builder.add(result);
+            } catch (Exception e) {
+                LoggingUtil.INSTANCE.debug("Could not find enum '{}'", e, category);
+            }
+        }
+
+        return builder.build();
+    }
+
+    /**
      * An enumeration class that defines testing level test categories.
      */
     enum Level {
 
         /**
-         * Unit test category.
+         * UNIT test category.
          */
-        Unit,
+        UNIT,
         /**
-         * Integration test category.
+         * INTEGRATION test category.
          */
-        Integration,
+        INTEGRATION,
         /**
-         * System test category.
+         * SYSTEM test category.
          */
-        System;
-
-        /**
-         * Determine if the enum contains the given category value. Not that
-         * this method is case insensitive.
-         *
-         * @param category we are searching for
-         * @return true if category is present, false otherwise
-         */
-        public Boolean contains(String category) {
-            Boolean searchResult = false;
-            String lowerCaseName = name().toLowerCase();
-            String cleanCategory = category.toLowerCase().trim();
-
-            if (lowerCaseName.equals(cleanCategory)) {
-                searchResult = true;
-            }
-
-            return searchResult;
-        }
-
-        /**
-         * Find enum categories with the given category names.
-         *
-         * @param categories the list of categories we are searching for
-         * @return list with categories, empty list otherwise.
-         */
-        public static List<Level> find(String[] categories) {
-            ImmutableList.Builder<Level> builder = ImmutableList.builder();
-
-            for (String category : categories) {
-                Level[] values = values();
-
-                for (Level value : values) {
-                    if (value.contains(category)) {
-                        builder.add(value);
-                    }
-                }
-            }
-
-            return builder.build();
-        }
+        SYSTEM;
 
     }
 
@@ -93,56 +75,15 @@ public interface TestCategory {
     enum Dynamic {
 
         /**
-         * Local test category. Note that classes that require resources belong
+         * LOCAL test category. Note that classes that require resources belong
          * in this category.
          */
-        Local,
+        LOCAL,
         /**
-         * Virtual test category. Note that classes that require container
+         * VIRTUAL test category. Note that classes that require container
          * belong in this category.
          */
-        Virtual;
-
-        /**
-         * Determine if the enum contains the given category value. Not that
-         * this method is case insensitive.
-         *
-         * @param category we are searching for
-         * @return true if category is present, false otherwise
-         */
-        public Boolean contains(String category) {
-            Boolean searchResult = false;
-            String lowerCaseName = name().toLowerCase();
-            String cleanCategory = category.toLowerCase().trim();
-
-            if (lowerCaseName.equals(cleanCategory)) {
-                searchResult = true;
-            }
-
-            return searchResult;
-        }
-
-        /**
-         * Find enum categories with the given category names.
-         *
-         * @param categories the list of categories we are searching for
-         * @return list with categories, empty list otherwise.
-         */
-        public static List<Dynamic> find(String[] categories) {
-            ImmutableList.Builder<Dynamic> builder = ImmutableList.builder();
-
-            for (String category : categories) {
-                Dynamic[] values = values();
-
-                for (Dynamic value : values) {
-                    if (value.contains(category)) {
-                        builder.add(value);
-                    }
-                }
-            }
-
-            return builder.build();
-        }
+        VIRTUAL;
 
     }
 }

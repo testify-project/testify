@@ -29,13 +29,13 @@ import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.annotation.VirtualResource;
 import static org.testifyproject.container.docker.DockerVirtualResourceProvider.DEFAULT_DAEMON_URI;
 import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
-import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.VirtualResourceInstance;
 
 /**
  *
@@ -64,7 +64,7 @@ public class DockerVirtualResourceProviderTest {
 
     @Test
     public void givenValidParametersCallToStartAndStopContainerShouldSucceed() {
-        StartStrategy resourceStartStrategy = StartStrategy.Eager;
+        StartStrategy resourceStartStrategy = StartStrategy.EAGER;
         Object testInstance = new Object();
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);

@@ -18,17 +18,17 @@ package org.testifyproject.core;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.VirtualResourceInstance;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -70,38 +70,36 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
         //container instance and addConfigHandler it to the service instance.
         virtualResources.parallelStream().forEach(virtualResource -> {
             String serviceName = virtualResource.name();
-            Class<? extends VirtualResourceProvider> containerProviderType = virtualResource.provider();
+            Class<? extends VirtualResourceProvider> virtualResourceProviderType = virtualResource.provider();
 
             if (serviceName.isEmpty()) {
                 serviceName = virtualResource.value();
             }
 
-            VirtualResourceProvider containerProvider;
+            VirtualResourceProvider virtualResourceProvider;
 
-            if (VirtualResourceProvider.class.equals(containerProviderType)) {
-                containerProvider = serviceLocatorUtil.getOne(VirtualResourceProvider.class);
+            if (VirtualResourceProvider.class.equals(virtualResourceProviderType)) {
+                virtualResourceProvider = serviceLocatorUtil.getOne(VirtualResourceProvider.class);
             } else {
-                containerProvider = reflectionUtil.newInstance(containerProviderType);
+                virtualResourceProvider = reflectionUtil.newInstance(virtualResourceProviderType);
             }
 
-            serviceInstance.inject(containerProvider);
-            Object configuration = containerProvider.configure(testContext);
+            serviceInstance.inject(virtualResourceProvider);
+            Object configuration = virtualResourceProvider.configure(testContext);
             configuration = testReifier.configure(testContext, configuration);
 
             VirtualResourceInstance virtualResourceInstance
-                    = containerProvider.start(testContext, virtualResource, configuration);
+                    = virtualResourceProvider.start(testContext, virtualResource, configuration);
 
             serviceInstance.addConstant(virtualResourceInstance, serviceName, VirtualResourceInstance.class);
 
-            virtualResourceProviders.add(containerProvider);
+            virtualResourceProviders.add(virtualResourceProvider);
         });
     }
 
     @Override
     public void stop() {
-        virtualResourceProviders.parallelStream().forEach(containerProvider -> {
-            containerProvider.stop();
-        });
+        virtualResourceProviders.parallelStream().forEach(VirtualResourceProvider::stop);
     }
 
 }

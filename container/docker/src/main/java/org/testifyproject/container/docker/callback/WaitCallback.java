@@ -15,7 +15,6 @@
  */
 package org.testifyproject.container.docker.callback;
 
-import org.testifyproject.TestContext;
 import org.testifyproject.github.dockerjava.api.model.WaitResponse;
 import org.testifyproject.github.dockerjava.core.command.WaitContainerResultCallback;
 
@@ -27,11 +26,9 @@ import org.testifyproject.github.dockerjava.core.command.WaitContainerResultCall
  */
 public class WaitCallback extends WaitContainerResultCallback {
 
-    private final TestContext testContext;
     private final String containerId;
 
-    public WaitCallback(TestContext testContext, String containerId) {
-        this.testContext = testContext;
+    public WaitCallback(String containerId) {
         this.containerId = containerId;
     }
 

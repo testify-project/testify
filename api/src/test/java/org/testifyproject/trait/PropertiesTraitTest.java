@@ -54,13 +54,34 @@ public class PropertiesTraitTest {
     public void givenNonExistentKeyGetPropertyShouldReturnEmptyResult() {
         String key = "non";
 
+        Object result = cut.getProperty(key);
+
+        assertThat(result).isNull();
+    }
+
+    @Test
+    public void givenExistentKeyGetPropertyShouldReturnOptionalWithValue() {
+        String key = "key";
+        String value = "value";
+
+        properties.put(key, value);
+
+        String result = cut.getProperty(key);
+
+        assertThat(result).isEqualTo(value);
+    }
+
+    @Test
+    public void givenNonExistentKeyFindPropertyShouldReturnEmptyResult() {
+        String key = "non";
+
         Optional<Object> result = cut.findProperty(key);
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void givenExistentKeyGetPropertyShouldReturnOptionalWithValue() {
+    public void givenExistentKeyFindPropertyShouldReturnOptionalWithValue() {
         String key = "key";
         String value = "value";
 

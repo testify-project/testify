@@ -17,6 +17,7 @@ package org.testifyproject.core;
 
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.ApplicationInstance;
@@ -29,13 +30,14 @@ import org.testifyproject.annotation.Application;
  */
 public class DefaultApplicationInstanceTest {
 
-    ApplicationInstance<Object> cut;
+    ApplicationInstance cut;
 
     TestContext testContext;
     Application application;
     Map properties;
 
-    public DefaultApplicationInstanceTest() {
+    @Before
+    public void init() {
         testContext = mock(TestContext.class);
         application = mock(Application.class);
         properties = mock(Map.class);
@@ -49,6 +51,13 @@ public class DefaultApplicationInstanceTest {
         assertThat(cut.getTestContext()).isEqualTo(testContext);
         assertThat(cut.getApplication()).isEqualTo(application);
         assertThat(cut.getProperties()).isEqualTo(properties);
+    }
+
+    @Test
+    public void givenTestContextAndApplicationOfShouldReturn() {
+        cut = DefaultApplicationInstance.of(testContext, application);
+
+        assertThat(cut).isNotNull();
     }
 
     @Test
@@ -66,8 +75,7 @@ public class DefaultApplicationInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ApplicationInstance<Object> unequal
-                = DefaultApplicationInstance.of(null, null, null);
+        ApplicationInstance unequal = DefaultApplicationInstance.of(null, null, null);
 
         assertThat(cut).isNotEqualTo(unequal);
         assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -80,8 +88,7 @@ public class DefaultApplicationInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ApplicationInstance<Object> equal
-                = DefaultApplicationInstance.of(testContext, application, properties);
+        ApplicationInstance equal = DefaultApplicationInstance.of(testContext, application, properties);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());

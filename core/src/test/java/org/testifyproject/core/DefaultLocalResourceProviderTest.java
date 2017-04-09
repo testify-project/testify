@@ -29,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
@@ -37,7 +38,6 @@ import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.LocalResourceInstance;
 
 /**
  *
@@ -228,7 +228,7 @@ public class DefaultLocalResourceProviderTest {
     }
 
     @Test
-    public void callToStopWithNoElementsStopShouldStopContainerProvider() {
+    public void callToStopWithNoElementsStopShouldStopVirtualResourceProvider() {
         cut.stop();
 
         verify(resourceProviders).parallelStream();
@@ -236,7 +236,7 @@ public class DefaultLocalResourceProviderTest {
     }
 
     @Test
-    public void callToStopWithElementsStopShouldStopContainerProvider() {
+    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() {
         LocalResourceProvider resourceProvider = mock(LocalResourceProvider.class);
         resourceProviders.add(resourceProvider);
 

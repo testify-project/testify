@@ -29,17 +29,17 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.fixture.container.TestContainerProvider;
+import org.testifyproject.fixture.container.TestVirtualResourceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.VirtualResourceInstance;
 
 /**
  *
@@ -50,15 +50,15 @@ public class DefaultVirtualResourceProviderTest {
     DefaultVirtualResourceProvider cut;
     ServiceLocatorUtil serviceLocatorUtil;
     ReflectionUtil reflectionUtil;
-    Queue<VirtualResourceProvider> containerProviders;
+    Queue<VirtualResourceProvider> virtualResourceProviders;
 
     @Before
     public void init() {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
         reflectionUtil = mock(ReflectionUtil.class);
-        containerProviders = mock(Queue.class, delegatesTo(new ConcurrentLinkedQueue<>()));
+        virtualResourceProviders = mock(Queue.class, delegatesTo(new ConcurrentLinkedQueue<>()));
 
-        cut = new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, containerProviders);
+        cut = new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, virtualResourceProviders);
     }
 
     @Test
@@ -103,8 +103,8 @@ public class DefaultVirtualResourceProviderTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         VirtualResource virtualResource = mock(VirtualResource.class);
         List<VirtualResource> virtualResources = ImmutableList.of(virtualResource);
-        Class containerProviderType = VirtualResourceProvider.class;
-        VirtualResourceProvider containerProvider = mock(VirtualResourceProvider.class);
+        Class virtualResourceProviderType = VirtualResourceProvider.class;
+        VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = mock(Object.class);
         TestReifier testReifier = mock(TestReifier.class);
         Class<VirtualResourceInstance> virtualResourceInstanceType = VirtualResourceInstance.class;
@@ -115,13 +115,13 @@ public class DefaultVirtualResourceProviderTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestReifier()).willReturn(testReifier);
         given(virtualResource.name()).willReturn(serviceName);
-        given(virtualResource.provider()).willReturn(containerProviderType);
+        given(virtualResource.provider()).willReturn(virtualResourceProviderType);
         given(virtualResource.value()).willReturn(imageName);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
-        given(serviceLocatorUtil.getOne(containerProviderType)).willReturn(containerProvider);
-        given(containerProvider.configure(testContext)).willReturn(configuration);
+        given(serviceLocatorUtil.getOne(virtualResourceProviderType)).willReturn(virtualResourceProvider);
+        given(virtualResourceProvider.configure(testContext)).willReturn(configuration);
         given(testReifier.configure(testContext, configuration)).willReturn(configuration);
-        given(containerProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
+        given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, serviceName, virtualResourceInstanceType);
 
         cut.start(testContext, serviceInstance);
@@ -132,11 +132,11 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResource).provider();
         verify(virtualResource).value();
         verify(testDescriptor).getVirtualResources();
-        verify(serviceLocatorUtil).getOne(containerProviderType);
-        verify(serviceInstance).inject(containerProvider);
-        verify(containerProvider).configure(testContext);
+        verify(serviceLocatorUtil).getOne(virtualResourceProviderType);
+        verify(serviceInstance).inject(virtualResourceProvider);
+        verify(virtualResourceProvider).configure(testContext);
         verify(testReifier).configure(testContext, configuration);
-        verify(containerProvider).start(testContext, virtualResource, configuration);
+        verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
         verify(serviceInstance).addConstant(virtualResourceInstance, imageName, virtualResourceInstanceType);
         verifyNoMoreInteractions(testContext, testReifier, testDescriptor, serviceInstance);
     }
@@ -149,8 +149,8 @@ public class DefaultVirtualResourceProviderTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         VirtualResource virtualResource = mock(VirtualResource.class);
         List<VirtualResource> virtualResources = ImmutableList.of(virtualResource);
-        Class containerProviderType = TestContainerProvider.class;
-        VirtualResourceProvider containerProvider = mock(VirtualResourceProvider.class);
+        Class virtualResourceProviderType = TestVirtualResourceProvider.class;
+        VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = null;
         TestReifier testReifier = mock(TestReifier.class);
         Class<VirtualResourceInstance> virtualResourceInstanceType = VirtualResourceInstance.class;
@@ -160,12 +160,12 @@ public class DefaultVirtualResourceProviderTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestReifier()).willReturn(testReifier);
         given(virtualResource.name()).willReturn(serviceName);
-        given(virtualResource.provider()).willReturn(containerProviderType);
+        given(virtualResource.provider()).willReturn(virtualResourceProviderType);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
-        given(reflectionUtil.newInstance(containerProviderType)).willReturn(containerProvider);
-        given(containerProvider.configure(testContext)).willReturn(configuration);
+        given(reflectionUtil.newInstance(virtualResourceProviderType)).willReturn(virtualResourceProvider);
+        given(virtualResourceProvider.configure(testContext)).willReturn(configuration);
         given(testReifier.configure(testContext, configuration)).willReturn(configuration);
-        given(containerProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
+        given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, serviceName, virtualResourceInstanceType);
 
         cut.start(testContext, serviceInstance);
@@ -175,33 +175,33 @@ public class DefaultVirtualResourceProviderTest {
         verify(testDescriptor).getVirtualResources();
         verify(virtualResource).name();
         verify(virtualResource).provider();
-        verify(reflectionUtil).newInstance(containerProviderType);
-        verify(serviceInstance).inject(containerProvider);
-        verify(containerProvider).configure(testContext);
+        verify(reflectionUtil).newInstance(virtualResourceProviderType);
+        verify(serviceInstance).inject(virtualResourceProvider);
+        verify(virtualResourceProvider).configure(testContext);
         verify(testReifier).configure(testContext, configuration);
-        verify(containerProvider).start(testContext, virtualResource, configuration);
+        verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
         verify(serviceInstance).addConstant(any(virtualResourceInstanceType), eq(serviceName), eq(virtualResourceInstanceType));
         verifyNoMoreInteractions(testContext, testReifier, testDescriptor, serviceInstance);
     }
 
     @Test
-    public void callToStopWithNoElementsStopShouldStopContainerProvider() {
+    public void callToStopWithNoElementsStopShouldStopVirtualResourceProvider() {
         cut.stop();
 
-        verify(containerProviders).parallelStream();
-        verifyNoMoreInteractions(containerProviders);
+        verify(virtualResourceProviders).parallelStream();
+        verifyNoMoreInteractions(virtualResourceProviders);
     }
 
     @Test
-    public void callToStopWithElementsStopShouldStopContainerProvider() {
-        VirtualResourceProvider containerProvider = mock(VirtualResourceProvider.class);
-        containerProviders.add(containerProvider);
+    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() {
+        VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
+        virtualResourceProviders.add(virtualResourceProvider);
 
         cut.stop();
 
-        verify(containerProviders).parallelStream();
-        verify(containerProvider).stop();
-        verifyNoMoreInteractions(containerProvider);
+        verify(virtualResourceProviders).parallelStream();
+        verify(virtualResourceProvider).stop();
+        verifyNoMoreInteractions(virtualResourceProvider);
     }
 
 }

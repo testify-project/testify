@@ -94,7 +94,7 @@ public class DefaultTestReifier implements TestReifier {
             testFieldDescriptors
                     .stream()
                     .filter(testFieldDescriptor -> testFieldDescriptor.isInjectable())
-                    .forEach((testFieldDescriptor) -> {
+                    .forEach(testFieldDescriptor -> {
                         String testFieldName = testFieldDescriptor.getDefinedName();
                         Class<?> testFieldType = testFieldDescriptor.getType();
                         Type testFieldGenericType = testFieldDescriptor.getGenericType();
@@ -171,7 +171,7 @@ public class DefaultTestReifier implements TestReifier {
                 Class<?> collaboratorType = collaborator.getClass();
                 TypeToken<?> typeToken = TypeToken.of(collaboratorType);
 
-                cutDescriptor.getFieldDescriptors().forEach((cutFieldDescriptor) -> {
+                cutDescriptor.getFieldDescriptors().forEach(cutFieldDescriptor -> {
                     Class<?> cutFieldType = cutFieldDescriptor.getType();
                     String cutFieldName = cutFieldDescriptor.getDefinedName();
 

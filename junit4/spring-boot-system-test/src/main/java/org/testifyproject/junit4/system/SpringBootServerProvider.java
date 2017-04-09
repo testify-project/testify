@@ -15,11 +15,10 @@
  */
 package org.testifyproject.junit4.system;
 
+import static java.lang.String.format;
 import java.net.URI;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
@@ -32,27 +31,18 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.bytebuddy.ByteBuddy;
-import org.testifyproject.bytebuddy.description.type.TypeDescription;
-import org.testifyproject.bytebuddy.dynamic.ClassFileLocator;
-import org.testifyproject.bytebuddy.dynamic.DynamicType;
-import org.testifyproject.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import org.testifyproject.bytebuddy.implementation.MethodDelegation;
-import static org.testifyproject.bytebuddy.implementation.MethodDelegation.to;
-import org.testifyproject.bytebuddy.implementation.bind.MethodNameEqualityResolver;
-import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
-import static org.testifyproject.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
-import static org.testifyproject.bytebuddy.matcher.ElementMatchers.not;
-import org.testifyproject.bytebuddy.pool.TypePool;
+import org.testifyproject.annotation.Module;
 import org.testifyproject.core.DefaultServerInstance;
 import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTEXT;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.LoggingUtil;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.trait.LoggingTrait;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.
@@ -60,10 +50,9 @@ import org.testifyproject.trait.LoggingTrait;
  * @author saden
  */
 @Discoverable
-public class SpringBootServerProvider implements ServerProvider<SpringApplicationBuilder, EmbeddedServletContainer>, LoggingTrait {
+public class SpringBootServerProvider implements ServerProvider<SpringApplicationBuilder, EmbeddedServletContainer> {
 
-    private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
-    private static final Map<String, DynamicType.Loaded<?>> DYNAMIC_CLASSES = new ConcurrentHashMap<>();
+    private static final String DEFAULT_URI_FORMAT = "http://0.0.0.0:%d%s";
     private static final TestContextHolder TEST_CONTEXT_HOLDER = TestContextHolder.INSTANCE;
 
     @Override
@@ -71,131 +60,95 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         TestReifier testReifier = testContext.getTestReifier();
 
-        debug("setting test context");
+        LoggingUtil.INSTANCE.debug("setting test context");
         TEST_CONTEXT_HOLDER.set(testContext);
 
-        SpringApplicationInterceptor springApplicationInterceptor
-                = new SpringApplicationInterceptor(TEST_CONTEXT_HOLDER);
+        SpringApplicationInterceptor springApplicationInterceptor = new SpringApplicationInterceptor(TEST_CONTEXT_HOLDER);
 
-        ClassFileLocator fileLocator = ClassFileLocator.ForClassLoader.ofClassPath();
-        TypePool typePool = TypePool.Default.ofClassPath();
         ClassLoader classLoader = testDescriptor.getTestClassLoader();
 
         String applicationClassName = "org.springframework.boot.SpringApplication";
 
-        DYNAMIC_CLASSES.computeIfAbsent(applicationClassName, className -> {
-            debug("rebasing spring application class: {}", className);
+        ReflectionUtil.INSTANCE.rebase(applicationClassName, classLoader, springApplicationInterceptor);
 
-            TypeDescription typeDescription = typePool.describe(className).resolve();
-
-            return BYTE_BUDDY
-                    .rebase(typeDescription, fileLocator)
-                    .method(not(isDeclaredBy(Object.class)))
-                    .intercept(MethodDelegation.to(springApplicationInterceptor)
-                            .filter(not(isDeclaredBy(Object.class)))
-                            .defineAmbiguityResolver(
-                                    MethodNameEqualityResolver.INSTANCE,
-                                    BindingPriority.Resolver.INSTANCE)
-                    )
-                    .make()
-                    .load(classLoader, ClassLoadingStrategy.Default.INJECTION);
-        });
-
-        ApplicationContextInterceptor applicationContextInterceptor
-                = new ApplicationContextInterceptor(TEST_CONTEXT_HOLDER);
+        ApplicationContextInterceptor applicationContextInterceptor = new ApplicationContextInterceptor(TEST_CONTEXT_HOLDER);
 
         String applicationContextClassName = "org.springframework.boot.context.embedded.EmbeddedWebApplicationContext";
 
-        DYNAMIC_CLASSES.computeIfAbsent(applicationContextClassName, className -> {
-            debug("rebasing spring embedded web application context class: {}", className);
-            TypeDescription typeDescription = typePool.describe(className).resolve();
+        ReflectionUtil.INSTANCE.rebase(applicationContextClassName, classLoader, applicationContextInterceptor);
 
-            return BYTE_BUDDY
-                    .rebase(typeDescription, fileLocator)
-                    .method(not(isDeclaredBy(Object.class)))
-                    .intercept(
-                            to(applicationContextInterceptor)
-                                    .filter(not(isDeclaredBy(Object.class)))
-                                    .defineAmbiguityResolver(
-                                            MethodNameEqualityResolver.INSTANCE,
-                                            BindingPriority.Resolver.INSTANCE)
-                    )
-                    .make()
-                    .load(classLoader, ClassLoadingStrategy.Default.INJECTION);
+        Optional<Application> foundApplication = testDescriptor.getApplication();
+        SpringApplicationBuilder builder = new SpringApplicationBuilder();
+
+        foundApplication.ifPresent(application -> {
+            ImmutableSet.Builder<Object> sourcesBuilder = ImmutableSet.builder().add(application.value());
+
+            testDescriptor.getModules()
+                    .stream()
+                    .sequential()
+                    .map(Module::value)
+                    .forEach(sourcesBuilder::add);
+
+            Set<Object> sources = sourcesBuilder.build();
+
+            DefaultResourceLoader resourceLoader = new DefaultResourceLoader(classLoader);
+
+            builder.sources(sources.toArray())
+                    .resourceLoader(resourceLoader)
+                    .bannerMode(Banner.Mode.OFF);
         });
 
-        Application application = testDescriptor.getApplication().get();
-
-        ImmutableSet.Builder<Object> sourcesBuilder = ImmutableSet.builder().add(application.value());
-
-        testDescriptor.getModules()
-                .stream()
-                .sequential()
-                .map(p -> p.value())
-                .forEach(sourcesBuilder::add);
-
-        Set<Object> sources = sourcesBuilder.build();
-
-        DefaultResourceLoader resourceLoader = new DefaultResourceLoader(classLoader);
-
-        SpringApplicationBuilder builder = new SpringApplicationBuilder(sources.toArray())
-                .resourceLoader(resourceLoader)
-                .bannerMode(Banner.Mode.OFF);
-
-        debug("configuring spring boot application builder");
-        builder = testReifier.configure(testContext, builder);
-
-        return builder;
+        return testReifier.configure(testContext, builder);
     }
 
     @Override
     public ServerInstance<EmbeddedServletContainer> start(SpringApplicationBuilder configuration) {
-        try {
-            debug("starting spring boot application");
-            SpringApplication application = configuration.build();
-            Optional<TestContext> result = TEST_CONTEXT_HOLDER.get();
-            TestContext testContext = result.get();
+        LoggingUtil.INSTANCE.debug("starting spring boot application");
+        SpringApplication application = configuration.build();
+        Optional<TestContext> foundTextContext = TEST_CONTEXT_HOLDER.get();
+
+        if (foundTextContext.isPresent()) {
+            TestContext testContext = foundTextContext.get();
 
             testContext.addProperty(APP, application);
             testContext.addProperty(APP_NAME, testContext.getName());
 
-            debug("running spring boot application");
+            LoggingUtil.INSTANCE.debug("running spring boot application");
             application.run();
 
             Optional<ServletContext> servletContext = testContext.findProperty(APP_SERVLET_CONTEXT);
             Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
-            EmbeddedServletContainer container = servletContainer.get();
-            ServletContext context = servletContext.get();
 
-            URI baseURI = new URI("http",
-                    null,
-                    "0.0.0.0",
-                    container.getPort(),
-                    context.getContextPath(),
-                    null,
-                    null);
+            if (servletContext.isPresent() && servletContainer.isPresent()) {
+                EmbeddedServletContainer container = servletContainer.get();
+                ServletContext context = servletContext.get();
 
-            debug("creating spring boot application server instance");
-            return DefaultServerInstance.of(baseURI, container);
-        } catch (Throwable e) {
-            throw new IllegalStateException("Could not start Spring Boot Application", e);
+                String uri = format(DEFAULT_URI_FORMAT, container.getPort(), context.getContextPath());
+                URI baseURI = URI.create(uri);
+
+                LoggingUtil.INSTANCE.debug("creating spring boot application server instance");
+
+                return DefaultServerInstance.of(baseURI, container);
+            }
         }
+
+        throw ExceptionUtil.INSTANCE.propagate("TestContext not set");
     }
 
     @Override
     public void stop() {
-        debug("stopping spring application");
-        Optional<TestContext> result = TEST_CONTEXT_HOLDER.get();
-        TestContext testContext = result.get();
-        Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
+        LoggingUtil.INSTANCE.debug("stopping spring application");
+        TEST_CONTEXT_HOLDER.execute(testContext -> {
+            testContext.findProperty(APP_SERVLET_CONTAINER)
+                    .map(EmbeddedServletContainer.class::cast)
+                    .ifPresent(servletContainer -> {
+                        LoggingUtil.INSTANCE.debug("stopping spring boot application servlet container");
+                        servletContainer.stop();
 
-        if (servletContainer.isPresent()) {
-            debug("stopping spring boot application servlet container");
-            EmbeddedServletContainer container = servletContainer.get();
-            container.stop();
-        }
+                    });
 
-        TEST_CONTEXT_HOLDER.remove();
+            TEST_CONTEXT_HOLDER.remove();
+        });
     }
 
 }

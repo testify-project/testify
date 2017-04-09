@@ -20,8 +20,8 @@ import javax.inject.Provider;
 import org.testifyproject.ServiceInstance;
 
 /**
- * DefaultServiceProvider is a class that enables the creation of a provider
- * instance that retrieves a service from the service instance.
+ * DefaultServiceProvider is a class that enables the creation of a provider instance that retrieves
+ * a service from the service instance.
  *
  * @author saden
  */
@@ -31,9 +31,14 @@ public class DefaultServiceProvider implements Provider {
     private final Class type;
     private final Annotation[] qualifiers;
 
+    DefaultServiceProvider(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
+        this.serviceInstance = serviceInstance;
+        this.type = type;
+        this.qualifiers = qualifiers;
+    }
+
     /**
-     * Create a new provider instance with the given service instance and
-     * service type.
+     * Create a new provider instance with the given service instance and service type.
      *
      * @param serviceInstance the underlying service instance
      * @param type the service type
@@ -44,8 +49,8 @@ public class DefaultServiceProvider implements Provider {
     }
 
     /**
-     * Create a new provider instance with the given service instance, service
-     * type, and service qualifiers.
+     * Create a new provider instance with the given service instance, service type, and service
+     * qualifiers.
      *
      * @param serviceInstance the underlying service instance
      * @param type the service type
@@ -56,15 +61,8 @@ public class DefaultServiceProvider implements Provider {
         return new DefaultServiceProvider(serviceInstance, type, qualifiers);
     }
 
-    DefaultServiceProvider(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
-        this.serviceInstance = serviceInstance;
-        this.type = type;
-        this.qualifiers = qualifiers;
-    }
-
     /**
-     * Provides a fully-constructed and injected instance of the service from
-     * the service instance.
+     * Provides a fully-constructed and injected instance of the service from the service instance.
      *
      * @return an instance of the service.
      */

@@ -16,7 +16,6 @@
 package org.testifyproject.junit4.integration;
 
 import java.util.List;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -25,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
 import org.testifyproject.junit4.fixture.need.database.DatabaseModule;
 import org.testifyproject.junit4.fixture.need.database.GreetingEntity;
@@ -38,7 +38,7 @@ import org.testifyproject.junit4.fixture.need.database.GreetingEntity;
 @RunWith(GuiceIntegrationTest.class)
 public class LocalResourceIT {
 
-    @Inject
+    @Real
     EntityManagerFactory cut;
 
     @Test

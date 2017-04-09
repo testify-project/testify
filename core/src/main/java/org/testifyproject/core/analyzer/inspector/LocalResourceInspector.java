@@ -17,8 +17,9 @@ package org.testifyproject.core.analyzer.inspector;
 
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
-import org.testifyproject.core.analyzer.TestAnnotationInspector;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -27,16 +28,12 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class LocalResourceInspector implements TestAnnotationInspector<LocalResource> {
+@Handles(LocalResource.class)
+public class LocalResourceInspector implements AnnotationInspector<LocalResource> {
 
     @Override
-    public boolean handles(Class<?> annotationType) {
-        return LocalResource.class.isAssignableFrom(annotationType);
-    }
-
-    @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, LocalResource localResource) throws Exception {
-        testDescriptor.addListElement(TestDescriptorProperties.REQUIRES_RESOURCES, localResource);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, LocalResource localResource) {
+        testDescriptor.addListElement(TestDescriptorProperties.LOCAL_RESOURCES, localResource);
     }
 
 }

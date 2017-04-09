@@ -17,23 +17,30 @@ package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.ParameterDescriptor;
 
 /**
- * A descriptor class used to access or perform operations on a class under test
- * (CUT) constructor parameters.
+ * A descriptor class used to access or perform operations on a class under test (CUT) constructor
+ * parameters.
  *
  * @author saden
  */
+@ToString(doNotUseGetters = true)
+@EqualsAndHashCode(doNotUseGetters = true)
 public class DefaultParameterDescriptor implements ParameterDescriptor {
 
     private final Parameter parameter;
     private final Integer index;
 
+    DefaultParameterDescriptor(Parameter parameter, Integer index) {
+        this.parameter = parameter;
+        this.index = index;
+    }
+
     /**
-     * Create a new parameter descriptor instance from the given parameter and
-     * index.
+     * Create a new parameter descriptor instance from the given parameter and index.
      *
      * @param parameter the parameter instance
      * @param index the parameter index
@@ -41,11 +48,6 @@ public class DefaultParameterDescriptor implements ParameterDescriptor {
      */
     public static ParameterDescriptor of(Parameter parameter, Integer index) {
         return new DefaultParameterDescriptor(parameter, index);
-    }
-
-    DefaultParameterDescriptor(Parameter parameter, Integer index) {
-        this.parameter = parameter;
-        this.index = index;
     }
 
     @Override
@@ -71,35 +73,6 @@ public class DefaultParameterDescriptor implements ParameterDescriptor {
     @Override
     public Type getGenericType() {
         return parameter.getParameterizedType();
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.parameter);
-        hash = 59 * hash + Objects.hashCode(this.index);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultParameterDescriptor other = (DefaultParameterDescriptor) obj;
-        if (!Objects.equals(this.parameter, other.parameter)) {
-            return false;
-        }
-
-        return Objects.equals(this.index, other.index);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultParameterDescriptor{" + "parameter=" + parameter + ", index=" + index + '}';
     }
 
 }

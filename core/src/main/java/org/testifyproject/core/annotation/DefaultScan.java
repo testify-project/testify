@@ -28,6 +28,10 @@ public class DefaultScan implements Scan {
 
     private final String value;
 
+    public DefaultScan(String value) {
+        this.value = value;
+    }
+
     /**
      * Create a new instance of Scan with the given value.
      *
@@ -36,10 +40,6 @@ public class DefaultScan implements Scan {
      */
     public static Scan of(String value) {
         return new DefaultScan(value);
-    }
-
-    public DefaultScan(String value) {
-        this.value = value;
     }
 
     @Override

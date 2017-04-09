@@ -24,7 +24,9 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Virtual;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.ProviderGreeter;
 import org.testifyproject.junit4.fixture.common.impl.Hello;
 
@@ -32,6 +34,7 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
  *
  * @author saden
  */
+@Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class ProviderGreeterDelegatedRealIT {
 

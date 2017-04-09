@@ -16,8 +16,9 @@
 package org.testifyproject.core;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
@@ -34,6 +35,8 @@ import org.testifyproject.TestRunner;
  *
  * @author saden
  */
+@ToString
+@EqualsAndHashCode
 public class DefaultTestContext implements TestContext {
 
     private StartStrategy resourceStartStrategy;
@@ -53,7 +56,7 @@ public class DefaultTestContext implements TestContext {
 
     @Override
     public String getTestName() {
-        return methodDescriptor.getDeclaringClassName();
+        return testDescriptor.getTestClassName();
     }
 
     @Override
@@ -68,7 +71,7 @@ public class DefaultTestContext implements TestContext {
 
     @Override
     public Class<?> getTestClass() {
-        return methodDescriptor.getDeclaringClass();
+        return testDescriptor.getTestClass();
     }
 
     @Override
@@ -155,42 +158,6 @@ public class DefaultTestContext implements TestContext {
 
     void setDependencies(Map<String, String> dependencies) {
         this.dependencies = dependencies;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.methodDescriptor);
-        hash = 59 * hash + Objects.hashCode(this.testInstance);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultTestContext other = (DefaultTestContext) obj;
-        if (!Objects.equals(this.methodDescriptor, other.methodDescriptor)) {
-            return false;
-        }
-
-        return Objects.equals(this.testInstance, other.testInstance);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultTestContext{"
-                + "resourceStartStrategy=" + resourceStartStrategy
-                + ", testDescriptor=" + testDescriptor
-                + ", methodDescriptor=" + methodDescriptor
-                + '}';
     }
 
 }

@@ -17,20 +17,29 @@ package org.testifyproject.core;
 
 import java.net.InetAddress;
 import java.util.Map;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.VirtualResourceInstance;
 
 /**
- * An implementation of {@link VirtualResourceInstance SPI Contract} that provides
- * information about running container.
+ * An implementation of {@link VirtualResourceInstance SPI Contract} that provides information about
+ * running container.
  *
  * @author saden
  */
+@ToString
+@EqualsAndHashCode
 public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
 
     private final String name;
     private final InetAddress address;
     private final Map<Integer, Integer> mappedPorts;
+
+    DefaultVirtualResourceInstance(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
+        this.name = name;
+        this.address = address;
+        this.mappedPorts = mappedPorts;
+    }
 
     /**
      * Create a new container instance with the given parameters.
@@ -42,12 +51,6 @@ public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
      */
     public static VirtualResourceInstance of(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
         return new DefaultVirtualResourceInstance(name, address, mappedPorts);
-    }
-
-    DefaultVirtualResourceInstance(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
-        this.name = name;
-        this.address = address;
-        this.mappedPorts = mappedPorts;
     }
 
     @Override
@@ -63,45 +66,6 @@ public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
     @Override
     public Map<Integer, Integer> getMappedPorts() {
         return mappedPorts;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.name);
-        hash = 41 * hash + Objects.hashCode(this.address);
-        hash = 41 * hash + Objects.hashCode(this.mappedPorts);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultVirtualResourceInstance other = (DefaultVirtualResourceInstance) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.address, other.address)) {
-            return false;
-        }
-        return Objects.equals(this.mappedPorts, other.mappedPorts);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultVirtualResourceInstance{"
-                + "name=" + name
-                + ", address=" + address
-                + ", mappedPorts=" + mappedPorts
-                + '}';
     }
 
 }

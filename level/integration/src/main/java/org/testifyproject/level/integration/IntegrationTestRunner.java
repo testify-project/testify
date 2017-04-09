@@ -23,6 +23,9 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.ConfigurationVerifier;
+import org.testifyproject.extension.WiringVerifier;
+import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -40,9 +43,9 @@ public class IntegrationTestRunner implements TestRunner {
     @Override
     public void start(TestContext testContext) {
         this.testContext = testContext;
-        IntegrationTestVerifier verifier = new IntegrationTestVerifier(testContext);
-        verifier.dependency();
-        verifier.configuration();
+
+        ServiceLocatorUtil.INSTANCE.findAll(ConfigurationVerifier.class, IntegrationTest.class)
+                .forEach(p -> p.verify(testContext));
 
         ServiceProvider serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
 
@@ -59,7 +62,8 @@ public class IntegrationTestRunner implements TestRunner {
         reificationProvider = ServiceLocatorUtil.INSTANCE.getOne(ReificationProvider.class);
         reificationProvider.start(testContext, serviceInstance);
 
-        verifier.wiring();
+        ServiceLocatorUtil.INSTANCE.findAll(WiringVerifier.class, IntegrationTest.class)
+                .forEach(p -> p.verify(testContext));
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();

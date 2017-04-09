@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.FieldService;
 import org.testifyproject.fixture.TestContract;
 
@@ -61,7 +62,7 @@ public class FieldTraitTest {
         cut.setValue(null, null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenInvalidInstanceTypeSetValueShouldThrowException() {
         cut.setValue("", null);
     }
@@ -79,7 +80,7 @@ public class FieldTraitTest {
         cut.getValue(null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenInvalidInstanceTypeGetValueShouldThrowException() {
         cut.getValue("");
     }

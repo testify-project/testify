@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
+import org.testifyproject.TestifyException;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
@@ -111,7 +112,7 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
                     | IllegalAccessException
                     | IllegalArgumentException
                     | InvocationTargetException e) {
-                throw new IllegalStateException(e);
+                throw TestifyException.of(e);
             }
         });
     }

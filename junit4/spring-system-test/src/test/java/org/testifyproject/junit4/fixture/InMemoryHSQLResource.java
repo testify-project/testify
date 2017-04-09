@@ -20,10 +20,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.hsqldb.jdbc.JDBCDataSource;
+import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.LocalResourceInstanceBuilder;
-import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.core.util.ExceptionUtil;
 
 /**
  * An implementation of LocalResourceProvider that provides an in-memory HSQL
@@ -57,7 +58,7 @@ public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSourc
                     .client(client, "inmemoryHSQLConnection", Connection.class)
                     .build();
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw ExceptionUtil.INSTANCE.propagate(e);
         }
     }
 
@@ -69,7 +70,7 @@ public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSourc
                     .executeQuery("SHUTDOWN");
             client.close();
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw ExceptionUtil.INSTANCE.propagate(e);
         }
     }
 

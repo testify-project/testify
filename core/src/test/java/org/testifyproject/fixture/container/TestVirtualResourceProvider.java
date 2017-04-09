@@ -16,18 +16,18 @@
 package org.testifyproject.fixture.container;
 
 import static org.mockito.Mockito.mock;
-import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.tools.Discoverable;
-import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.tools.Discoverable;
 
 /**
  *
  * @author saden
  */
 @Discoverable
-public class TestContainerProvider implements VirtualResourceProvider<VirtualResource, Void> {
+public class TestVirtualResourceProvider implements VirtualResourceProvider<VirtualResource, Void> {
 
     @Override
     public Void configure(TestContext testContext) {

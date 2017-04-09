@@ -15,7 +15,6 @@
  */
 package org.testifyproject.junit4.integration;
 
-import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +43,7 @@ public class ConfigHandlerClassIT {
     @Real
     Hello greeting;
 
-    @Inject
+    @Real
     ApplicationContext applicationContext;
 
     @Test

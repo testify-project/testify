@@ -25,19 +25,19 @@ import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import org.testifyproject.junit4.fixture.common.UserEntity;
 import org.testifyproject.junit4.fixture.need.container.DockerContainerApplication;
-import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
  * @author saden
  */
-@RunWith(SpringBootSystemTest.class)
+@RunWith(SpringSystemTest.class)
 @Application(DockerContainerApplication.class)
 @VirtualResource(value = "postgres", version = "9.4")
-public class GreetingResourceRequiresContainerST {
+public class GreetingResourceVirtualResourceST {
 
     @Real
     SessionFactory factory;
@@ -51,7 +51,7 @@ public class GreetingResourceRequiresContainerST {
     public void givenUserEntitySaveShouldPerisistEntityToPostgres() {
         try (Session session = factory.openSession()) {
             Transaction tx = session.beginTransaction();
-            UserEntity entity = new UserEntity(null, "saden", "test1", "test1");
+            UserEntity entity = new UserEntity(null, "saden", "test", "test");
             Serializable id = session.save(entity);
             tx.commit();
             assertThat(id).isNotNull();
@@ -62,17 +62,4 @@ public class GreetingResourceRequiresContainerST {
         }
     }
 
-    @Test
-    public void givenAnotherUserEntitySaveShouldPerisistEntityToPostgres() {
-        try (Session session = factory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            UserEntity entity = new UserEntity(null, "saden", "test2", "test2");
-            Serializable id = session.save(entity);
-            tx.commit();
-            assertThat(id).isNotNull();
-
-            entity = session.get(UserEntity.class, id);
-            assertThat(entity).isNotNull();
-        }
-    }
 }

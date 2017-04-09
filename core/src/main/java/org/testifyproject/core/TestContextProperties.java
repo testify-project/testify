@@ -31,6 +31,7 @@ public class TestContextProperties {
     public static final String APP_SERVLET_CONTAINER = "app.servlet.container";
     public static final String APP_SERVLET_CONTEXT = "app.servlet.context";
     public static final String SERVICE_INSTANCE = "service.instance";
+    public static final String BASE_URI = "base.uri";
     public static final String CUT_INSTANCE = "cut.instance";
     public static final String CUT_DESCRIPTOR = "cut.descriptor";
 

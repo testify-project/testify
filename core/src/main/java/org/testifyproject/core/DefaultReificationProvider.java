@@ -34,7 +34,6 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Cut;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
 
@@ -61,7 +60,7 @@ public class DefaultReificationProvider implements ReificationProvider {
 
     @Override
     public void start(TestContext testContext, ServiceInstance serviceInstance) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.Eager) {
+        if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
             List<ResourceProvider> foundResourceProviders = serviceLocatorUtil.findAll(ResourceProvider.class);
 
             foundResourceProviders.parallelStream().forEach(resourceProvider -> {
@@ -91,7 +90,6 @@ public class DefaultReificationProvider implements ReificationProvider {
         //from the service instance.
         if (cutDescriptorResult.isPresent()) {
             CutDescriptor cutDescriptor = cutDescriptorResult.get();
-            Cut cut = cutDescriptor.getCut();
             Class type = cutDescriptor.getType();
             Object cutInstance;
 
@@ -176,7 +174,7 @@ public class DefaultReificationProvider implements ReificationProvider {
 
     @Override
     public void destroy(TestContext testContext, ServiceInstance serviceInstance) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.Eager) {
+        if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
             resourceProviders.forEach(ResourceProvider::stop);
         }
     }

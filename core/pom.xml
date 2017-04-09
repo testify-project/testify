@@ -28,6 +28,10 @@
     <name>Core</name>
     <description>A module that provides core Testify SPI and implementation classes</description>
 
+    <properties>
+        <slf4jtesting.version>1.0.1</slf4jtesting.version>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>
@@ -49,11 +53,23 @@
             <artifactId>external-objenesis</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-bytebuddy</artifactId>
+            <version>${buildtools.version}</version>
+        </dependency>
 
         <!-- Annotation Processors Dependencies -->
         <dependency>
             <groupId>org.testifyproject.tools</groupId>
             <artifactId>service-generator</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.portingle</groupId>
+            <artifactId>slf4jtesting</artifactId>
+            <version>${slf4jtesting.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

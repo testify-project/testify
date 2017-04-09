@@ -29,7 +29,7 @@
     <packaging>pom</packaging>
 
     <name>Container</name>
-    <description>Parent module of ContainerProvider SPI Contract implementations</description>
+    <description>Parent module of VirtualResourceProvider SPI Contract implementations</description>
 
     <modules>
         <module>docker</module>

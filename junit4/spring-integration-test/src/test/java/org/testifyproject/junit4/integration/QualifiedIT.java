@@ -18,8 +18,8 @@ package org.testifyproject.junit4.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
@@ -32,7 +32,7 @@ import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
 @RunWith(SpringIntegrationTest.class)
 public class QualifiedIT {
 
-    @Autowired
+    @Real
     @CustomQualifier
     Greeting greeting;
 

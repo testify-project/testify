@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.DynamicConfigurationService;
 import org.glassfish.hk2.api.IndexedFilter;
@@ -40,24 +41,28 @@ import org.glassfish.hk2.utilities.NamedImpl;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addOneConstant;
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class
- * provides the ability to work with HK2 {@link ServiceLocator} to create,
- * locate, and manage services.
+ * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class provides the ability
+ * to work with HK2 {@link ServiceLocator} to create, locate, and manage services.
  *
  * @author saden
  */
+@ToString(of = "locator")
+@EqualsAndHashCode(of = "locator")
 public class HK2ServiceInstance implements ServiceInstance {
 
-    public static final Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
-    public static final Set<Class<? extends Annotation>> NAME_ANNOTATIONS;
-    public static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
+    private static final Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
+    private static final Set<Class<? extends Annotation>> NAME_ANNOTATIONS;
+    private static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
 
     static {
         INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, Real.class);
@@ -65,9 +70,11 @@ public class HK2ServiceInstance implements ServiceInstance {
         CUSTOM_QUALIFIER = ImmutableSet.of(Qualifier.class);
     }
 
+    private final TestContext testContext;
     private final ServiceLocator locator;
 
-    public HK2ServiceInstance(ServiceLocator locator) {
+    public HK2ServiceInstance(TestContext testContext, ServiceLocator locator) {
+        this.testContext = testContext;
         this.locator = locator;
     }
 
@@ -166,19 +173,15 @@ public class HK2ServiceInstance implements ServiceInstance {
 
     @Override
     public void addModules(Module... modules) {
-        try {
-            DynamicConfigurationService dcs = locator.getService(DynamicConfigurationService.class);
-            DynamicConfiguration config = dcs.createDynamicConfiguration();
+        DynamicConfigurationService dcs = locator.getService(DynamicConfigurationService.class);
+        DynamicConfiguration config = dcs.createDynamicConfiguration();
 
-            for (Module module : modules) {
-                Binder binder = (Binder) module.value().newInstance();
-                binder.bind(config);
-            }
-
-            config.commit();
-        } catch (MultiException | InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException("Could not add the module to the service instance", e);
+        for (Module module : modules) {
+            Binder binder = (Binder) ReflectionUtil.INSTANCE.newInstance(module.value());
+            binder.bind(config);
         }
+
+        config.commit();
     }
 
     @Override
@@ -187,15 +190,16 @@ public class HK2ServiceInstance implements ServiceInstance {
             DynamicConfigurationService dcs = locator.getService(DynamicConfigurationService.class);
             DynamicConfiguration dc = dcs.createDynamicConfiguration();
             Populator populator = dcs.getPopulator();
+            ClassLoader classLoader = testContext.getTestDescriptor().getTestClassLoader();
 
             for (Scan scan : scans) {
-                HK2DescriptorPopulator descriptorPopulator = new HK2DescriptorPopulator(scan.value());
+                HK2DescriptorPopulator descriptorPopulator = new HK2DescriptorPopulator(classLoader, scan.value());
                 populator.populate(descriptorPopulator);
             }
 
             dc.commit();
         } catch (IOException | MultiException e) {
-            throw new IllegalStateException("Could not populate service instance", e);
+            throw ExceptionUtil.INSTANCE.propagate("Could not populate service instance", e);
         }
     }
 
@@ -212,34 +216,6 @@ public class HK2ServiceInstance implements ServiceInstance {
     @Override
     public Set<Class<? extends Annotation>> getCustomQualifiers() {
         return CUSTOM_QUALIFIER;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + Objects.hashCode(this.locator);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final HK2ServiceInstance other = (HK2ServiceInstance) obj;
-
-        return Objects.equals(this.locator, other.locator);
-    }
-
-    @Override
-    public String toString() {
-        return "HK2ServiceInstance{" + "locator=" + locator + '}';
     }
 
 }

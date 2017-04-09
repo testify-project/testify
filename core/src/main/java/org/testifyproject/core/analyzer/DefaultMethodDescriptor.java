@@ -16,33 +16,48 @@
 package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.MethodDescriptor;
 
 /**
- * A descriptor class used to access or perform operations on test class
- * methods.
+ * A descriptor class used to access or perform operations on test class methods.
  *
  * @author saden
  */
+@ToString(doNotUseGetters = true)
+@EqualsAndHashCode(doNotUseGetters = true)
 public class DefaultMethodDescriptor implements MethodDescriptor {
 
     private final Method method;
     private final Object instance;
 
+    DefaultMethodDescriptor(Method method, Object instance) {
+        this.method = method;
+        this.instance = instance;
+    }
+
+    /**
+     * Create a new method descriptor instance from the given method.
+     *
+     * @param method the underlying method
+     * @return a method descriptor instance
+     */
     public static MethodDescriptor of(Method method) {
         return new DefaultMethodDescriptor(method, null);
     }
 
+    /**
+     * Create a new method descriptor instance from the given method and instance.
+     *
+     * @param method the underlying method
+     * @param instance the instance associated with the method
+     * @return a method descriptor instance
+     */
     public static MethodDescriptor of(Method method, Object instance) {
         return new DefaultMethodDescriptor(method, instance);
-    }
-
-    DefaultMethodDescriptor(Method method, Object instance) {
-        this.method = method;
-        this.instance = instance;
     }
 
     @Override
@@ -53,37 +68,6 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
     @Override
     public Method getMember() {
         return method;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.method);
-        hash = 89 * hash + Objects.hashCode(this.instance);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultMethodDescriptor other = (DefaultMethodDescriptor) obj;
-        if (!Objects.equals(this.method, other.method)) {
-            return false;
-        }
-        return Objects.equals(this.instance, other.instance);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultMethodDescriptor{" + "method=" + method + ", instance=" + instance + '}';
     }
 
 }

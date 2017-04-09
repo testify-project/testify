@@ -46,7 +46,7 @@ public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
      *
      * @return class under test constructor.
      */
-    Constructor<?> getConstructor();
+    Constructor getConstructor();
 
     /**
      * Get a list of field descriptors for all the fields associated with the

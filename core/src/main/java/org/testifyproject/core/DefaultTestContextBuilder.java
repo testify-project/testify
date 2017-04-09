@@ -37,7 +37,7 @@ public class DefaultTestContextBuilder {
     private MockProvider mockProvider;
 
     private Map<String, Object> properties = new ConcurrentHashMap<>();
-    private Map<String, String> dependencies = Collections.EMPTY_MAP;
+    private Map<String, String> dependencies = Collections.emptyMap();
 
     /**
      * Create a new instance of DefaultTestContextBuilder.

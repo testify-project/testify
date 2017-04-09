@@ -36,7 +36,6 @@ import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.trait.LoggingTrait;
 
 /**
  * A class that is called after the application context is refreshed to
@@ -47,8 +46,7 @@ import org.testifyproject.trait.LoggingTrait;
 public class SpringBeanFactoryPostProcessor implements
         BeanFactoryPostProcessor,
         ApplicationListener<ContextClosedEvent>,
-        Ordered,
-        LoggingTrait {
+        Ordered {
 
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
@@ -143,7 +141,7 @@ public class SpringBeanFactoryPostProcessor implements
         beanFactory.addBeanPostProcessor(new SpringReifierPostProcessor(testContext));
 
         //start all test requires
-        if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
+        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
             resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
             resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
         }
@@ -151,7 +149,7 @@ public class SpringBeanFactoryPostProcessor implements
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
+        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
             resourceProviders.forEach(ResourceProvider::stop);
         }
     }

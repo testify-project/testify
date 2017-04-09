@@ -19,10 +19,8 @@ import static java.lang.Class.forName;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
-import java.util.Arrays;
 import java.util.List;
 import static java.util.stream.Stream.of;
 import org.testifyproject.FieldDescriptor;
@@ -40,8 +38,11 @@ import static org.testifyproject.asm.Opcodes.ASM5;
 import org.testifyproject.asm.Type;
 import static org.testifyproject.asm.Type.getMethodType;
 import static org.testifyproject.asm.Type.getType;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import static org.testifyproject.guava.common.base.Preconditions.checkState;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
 
 /**
  * A class visitor implementation that performs analysis on the test class.
@@ -65,40 +66,34 @@ public class TestClassAnalyzer extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        Type type = getType(desc);
+        Class annotationClass = getClass(type.getClassName());
+        List<AnnotationInspector> inspectors = ServiceLocatorUtil.INSTANCE.getAll(AnnotationInspector.class);
+
         return doPrivileged((PrivilegedAction<AnnotationVisitor>) () -> {
             try {
-                Type type = getType(desc);
-                Class annotationClass = getClass(type.getClassName());
-                List<TestAnnotationInspector> inspectors = ServiceLocatorUtil.INSTANCE.getAll(TestAnnotationInspector.class);
-
                 //if the annotation class is annotated with Bundle meta annotation
                 //then inspect anotations on the annotation class
-                if (annotationClass.isAnnotationPresent(Bundle.class)) {
-                    Annotation[] annotations = annotationClass.getDeclaredAnnotations();
+                for (AnnotationInspector inspector : inspectors) {
+                    Handles handles = inspector.getClass().getDeclaredAnnotation(Handles.class);
 
-                    for (Annotation annotation : annotations) {
-                        for (TestAnnotationInspector inspector : inspectors) {
-                            if (inspector.handles(annotation.annotationType())) {
-                                inspector.inspect(testDescriptor, annotationClass, annotation);
-                            }
+                    if (handles != null) {
+                        Class<? extends Annotation> typeHandled = handles.value();
 
-                        }
-                    }
-                } else {
-                    for (TestAnnotationInspector inspector : inspectors) {
-                        if (inspector.handles(annotationClass)) {
-                            Annotation annotation = testClass.getDeclaredAnnotation(annotationClass);
-                            inspector.inspect(testDescriptor, testClass, annotation);
+                        if (typeHandled.isAssignableFrom(annotationClass)) {
+                            inspector.inspect(testDescriptor, testClass, testClass.getDeclaredAnnotation(annotationClass));
+                        } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
+                            inspector.inspect(testDescriptor, annotationClass, annotationClass.getDeclaredAnnotation(Bundle.class));
                         }
                     }
                 }
-            } catch (Exception e) {
-                checkState(false,
-                        "Could not analyze annotations in test class '%s'.\n%s",
-                        testClass.getName(), e.getMessage());
-            }
 
-            return null;
+                return null;
+            } catch (Exception e) {
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Could not analyze annotations in test class '{}'.",
+                        e, testClass.getName());
+            }
         });
     }
 
@@ -111,35 +106,19 @@ public class TestClassAnalyzer extends ClassVisitor {
 
                 //make the field accessible
                 field.setAccessible(true);
-
-                //remove final modifier from the field
-                Field modifiersField = Field.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+                ReflectionUtil.INSTANCE.removeFinalModifier(field);
 
                 Cut cut = field.getDeclaredAnnotation(Cut.class);
                 if (cut != null) {
                     testDescriptor.addProperty(TestDescriptorProperties.CUT_FIELD, field);
                     cutCount++;
                 } else {
-                    FieldDescriptor fieldDescriptor = DefaultFieldDescriptor.of(field);
-                    java.lang.reflect.Type fieldType = fieldDescriptor.getGenericType();
-                    String fieldName = fieldDescriptor.getName();
-                    DescriptorKey typeKey = DescriptorKey.of(fieldType);
-                    DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
-
-                    testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
-                    testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
-                    testDescriptor.addListElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+                    saveField(field);
                 }
-
-            } catch (SecurityException
-                    | NoSuchFieldException
-                    | IllegalAccessException
-                    | IllegalArgumentException e) {
-                checkState(false,
-                        "Could not alter modifiers of field '%s' in test class '%s'.\n%s",
-                        name, testClass.getName(), e.getMessage());
+            } catch (NoSuchFieldException | SecurityException e) {
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Could not get  field '{}' in test class '{}'.",
+                        e, name, testClass.getName());
             }
 
             return null;
@@ -158,24 +137,8 @@ public class TestClassAnalyzer extends ClassVisitor {
                     .map(Type::getClassName)
                     .map(this::getClass)
                     .toArray(Class[]::new);
-            try {
 
-                Method method = testClass.getDeclaredMethod(name, parameterTypes);
-                method.setAccessible(true);
-
-                if (method.getDeclaredAnnotation(ConfigHandler.class) != null) {
-                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                    testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
-                } else if (method.getDeclaredAnnotation(CollaboratorProvider.class) != null) {
-                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                    testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
-                }
-
-            } catch (NoSuchMethodException | SecurityException e) {
-                checkState(false,
-                        "Method with '%s' parameters not accessible in '%s' class.",
-                        Arrays.toString(parameterTypes), testClass.getName());
-            }
+            saveMethod(name, parameterTypes);
 
             return null;
         });
@@ -183,19 +146,48 @@ public class TestClassAnalyzer extends ClassVisitor {
 
     @Override
     public void visitEnd() {
-        checkState(cutCount <= 1,
-                "Found more than one class under test in test class %s. Please insure "
+        ExceptionUtil.INSTANCE.raise(cutCount > 1,
+                "Found {} fields annotated with @Cut in test class {}. Please insure "
                 + "that the test class has only one field annotated with @Cut.",
-                testClass.getName());
+                cutCount, testClass.getName());
     }
 
-    private Class<?> getClass(String className) {
+    void saveField(Field field) {
+        FieldDescriptor fieldDescriptor = DefaultFieldDescriptor.of(field);
+        java.lang.reflect.Type fieldType = fieldDescriptor.getGenericType();
+        String fieldName = fieldDescriptor.getName();
+        DescriptorKey typeKey = DescriptorKey.of(fieldType);
+        DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
+
+        testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
+        testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
+        testDescriptor.addListElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+    }
+
+    void saveMethod(String name, Class[] parameterTypes) {
+        try {
+            Method method = testClass.getDeclaredMethod(name, parameterTypes);
+            method.setAccessible(true);
+
+            if (method.getDeclaredAnnotation(ConfigHandler.class) != null) {
+                MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
+                testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+            } else if (method.getDeclaredAnnotation(CollaboratorProvider.class) != null) {
+                MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
+                testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
+            }
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw ExceptionUtil.INSTANCE.propagate(
+                    "Could not analyze '{}' method in test class '{}'.",
+                    e, name, testClass.getSimpleName());
+        }
+    }
+
+    Class<?> getClass(String className) {
         try {
             return forName(className);
         } catch (ClassNotFoundException e) {
-            checkState(false, "Class '%s' not found in the classpath.", className);
-            //not reachable;
-            throw new IllegalStateException(e);
+            throw ExceptionUtil.INSTANCE.propagate("Class '{}' not found in the classpath.", e, className);
         }
     }
 

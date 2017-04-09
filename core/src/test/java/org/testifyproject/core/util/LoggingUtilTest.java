@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.trait;
+package org.testifyproject.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import org.slf4j.Logger;
+import static org.mockito.Mockito.verify;
+import org.testifyproject.TestContext;
 import slf4jtest.LogLevel;
 import slf4jtest.TestLogger;
 import slf4jtest.TestLoggerFactory;
@@ -30,24 +30,17 @@ import slf4jtest.TestLoggerFactory;
  *
  * @author saden
  */
-public class LoggingTraitTest {
+public class LoggingUtilTest {
 
-    LoggingTrait cut;
+    LoggingUtil cut;
     TestLogger logger;
 
     @Before
     public void init() {
-        cut = mock(LoggingTrait.class, Answers.CALLS_REAL_METHODS);
         TestLoggerFactory loggerFactory = new TestLoggerFactory();
         logger = loggerFactory.getLogger("testify");
-        given(cut.getLogger()).willReturn(logger);
-    }
 
-    @Test
-    public void callToGetLoggerShouldReturn() {
-        Logger result = cut.getLogger();
-
-        assertThat(result).isNotNull();
+        cut = new LoggingUtil(logger);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -97,26 +90,6 @@ public class LoggingTraitTest {
     @Test
     public void callToClearMDCShouldClearMDC() {
         cut.clearMDC();
-    }
-
-    @Test
-    public void callToTraceWithoutArgsShouldLogMessage() {
-        String messageFormat = "traceing";
-
-        cut.trace(messageFormat);
-
-        assertThat(logger.contains(LogLevel.TraceLevel, messageFormat)).isTrue();
-    }
-
-    @Test
-    public void callToTraceWithArgsShouldLogMessage() {
-        String message = "traceing";
-        String messageFormat = message + "{}";
-        String arg = "message";
-
-        cut.trace(messageFormat, new Object[]{arg});
-
-        assertThat(logger.contains(LogLevel.TraceLevel, message + arg)).isTrue();
     }
 
     @Test
@@ -252,4 +225,20 @@ public class LoggingTraitTest {
 
         assertThat(result).contains(message + arg0, causeMessage);
     }
+
+    @Test
+    public void givenTestContextSetTestContextShouldSetMDC() {
+        TestContext testContext = mock(TestContext.class);
+        String testName = "testName";
+        String methodName = "methodName";
+
+        given(testContext.getTestName()).willReturn(testName);
+        given(testContext.getMethodName()).willReturn(methodName);
+
+        cut.setTextContext(testContext);
+        
+        verify(testContext).getTestName();
+        verify(testContext).getMethodName();
+    }
+
 }

@@ -21,18 +21,22 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.StoppedByUserException;
 import org.junit.runners.model.MultipleFailureException;
-import org.testifyproject.trait.LoggingTrait;
+import org.testifyproject.core.util.LoggingUtil;
 
 /**
- * A JUnit test run notifier to handle logging and notification test lifecycle
- * events.
+ * A JUnit test run notifier to handle logging and notification test lifecycle events.
  *
  * @author saden
  */
-public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrait {
+public class TestifyJUnit4RunNotifier extends RunNotifier {
 
     private final RunNotifier runNotifier;
     private final Description testDescription;
+
+    TestifyJUnit4RunNotifier(RunNotifier runNotifier, Description testDescription) {
+        this.runNotifier = runNotifier;
+        this.testDescription = testDescription;
+    }
 
     /**
      * Create new instance of TestifyJUnit4RunNotifier.
@@ -45,11 +49,6 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
         return new TestifyJUnit4RunNotifier(runNotifier, testDescription);
     }
 
-    TestifyJUnit4RunNotifier(RunNotifier runNotifier, Description testDescription) {
-        this.runNotifier = runNotifier;
-        this.testDescription = testDescription;
-    }
-
     @Override
     public void fireTestAssumptionFailed(Failure failure) {
         Description description = failure.getDescription();
@@ -57,9 +56,9 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
         Throwable throwable = failure.getException();
 
         if (methodName == null) {
-            error("Test class assumption failed", throwable);
+            LoggingUtil.INSTANCE.error("Test class assumption failed", throwable);
         } else {
-            error("Test method assumption failed", throwable);
+            LoggingUtil.INSTANCE.error("Test method assumption failed", throwable);
         }
 
         runNotifier.fireTestAssumptionFailed(failure);
@@ -72,9 +71,9 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
         Throwable throwable = failure.getException();
 
         if (methodName == null) {
-            error("Test method '{}' failed", methodName, throwable);
+            LoggingUtil.INSTANCE.error("Test method '{}' failed", methodName, throwable);
         } else {
-            error("Test method failed", throwable);
+            LoggingUtil.INSTANCE.error("Test method failed", throwable);
         }
 
         runNotifier.fireTestFailure(failure);
@@ -82,19 +81,19 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
 
     @Override
     public void fireTestIgnored(Description description) {
-        warn("Test ignored");
+        LoggingUtil.INSTANCE.warn("Test ignored");
         runNotifier.fireTestIgnored(description);
     }
 
     @Override
     public void fireTestStarted(Description description) throws StoppedByUserException {
-        debug("Test started");
+        LoggingUtil.INSTANCE.debug("Test started");
         runNotifier.fireTestStarted(description);
     }
 
     @Override
     public void fireTestFinished(Description description) {
-        debug("Test finished");
+        LoggingUtil.INSTANCE.debug("Test finished");
         runNotifier.fireTestFinished(description);
     }
 
@@ -109,9 +108,7 @@ public class TestifyJUnit4RunNotifier extends RunNotifier implements LoggingTrai
     }
 
     private void addMultipleFailureException(MultipleFailureException mfe) {
-        mfe.getFailures().stream().forEach((each) -> {
-            addFailure(each);
-        });
+        mfe.getFailures().stream().forEach(this::addFailure);
     }
 
     public void addFailedAssumption(AssumptionViolatedException e) {

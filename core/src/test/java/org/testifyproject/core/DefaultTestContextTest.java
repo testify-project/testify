@@ -54,7 +54,7 @@ public class DefaultTestContextTest {
 
     @Before
     public void init() {
-        resourceStartStrategy = StartStrategy.Eager;
+        resourceStartStrategy = StartStrategy.EAGER;
         testInstance = new Object();
         testDescriptor = mock(TestDescriptor.class);
         methodDescriptor = mock(MethodDescriptor.class);
@@ -88,7 +88,7 @@ public class DefaultTestContextTest {
     public void callToGetTestNameShouldReturnClassName() {
         cut.getTestName();
 
-        verify(methodDescriptor).getDeclaringClassName();
+        verify(testDescriptor).getTestClassName();
     }
 
     @Test
@@ -103,14 +103,14 @@ public class DefaultTestContextTest {
         cut.getName();
 
         verify(methodDescriptor).getName();
-        verify(methodDescriptor).getDeclaringClassName();
+        verify(testDescriptor).getTestClassName();
     }
 
     @Test
     public void callToGetTestClassShouldReturnReturnTestClass() {
         cut.getTestClass();
 
-        verify(methodDescriptor).getDeclaringClass();
+        verify(testDescriptor).getTestClass();
     }
 
     @Test
@@ -226,6 +226,7 @@ public class DefaultTestContextTest {
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
+                .testRunner(testRunner)
                 .testReifier(testReifier)
                 .mockProvider(mockProvider)
                 .properties(properties)

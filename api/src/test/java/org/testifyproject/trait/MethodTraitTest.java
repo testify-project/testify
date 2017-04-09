@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.PrimaryTestService;
 
 /**
@@ -109,14 +110,14 @@ public class MethodTraitTest {
         cut.invoke(instance, methodArgs);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNoArgumentsInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
 
         cut.invoke(instance);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenWrongArgumentTypeInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
         Object[] methodArgs = new Object[]{24};

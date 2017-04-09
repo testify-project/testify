@@ -37,12 +37,12 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Before
     public void init() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, null);
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullDescriptionShouldRunShouldThrowException() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, null);
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
 
         Description description = null;
 
@@ -51,7 +51,7 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenNoSystemPropertyShouldRunShouldReturnTrue() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, null);
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
 
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
@@ -65,7 +65,7 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenUnsupportedTestShouldRunShouldReturnFalse() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, "unit");
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, "unit");
 
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
@@ -79,7 +79,7 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenTestClassWithLocalResourceShouldRunShouldReturnTrue() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, "local");
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, "local");
 
         Description description = mock(Description.class);
         Class testClass = LocalResourceTestClass.class;
@@ -94,7 +94,7 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenTestClassWithVirtualResourceShouldRunShouldReturnTrue() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration, "integration");
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, "integration");
 
         Description description = mock(Description.class);
         Class testClass = VirtualResourceTestClass.class;

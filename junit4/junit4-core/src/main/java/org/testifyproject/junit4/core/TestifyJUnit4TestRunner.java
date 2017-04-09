@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.internal.AssumptionViolatedException;
+import org.junit.rules.MethodRule;
 import org.junit.rules.RunRules;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -37,7 +38,6 @@ import org.slf4j.MDC;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
@@ -49,17 +49,19 @@ import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.util.AnalyzerUtil;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.TestRunnerSettings;
+import org.testifyproject.guava.common.base.Throwables;
 import org.testifyproject.mock.MockitoMockProvider;
-import org.testifyproject.trait.LoggingTrait;
 
 /**
- * Base class for all Testify Unit Runners. This class analyzes the test class,
- * looks for specified test runner, starts and stops the tests.
+ * Base class for all Testify Unit Runners. This class analyzes the test class, looks for specified
+ * test runner, starts and stops the tests.
  *
  * @author saden
  */
-public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner implements LoggingTrait {
+public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner implements TestRunnerSettings {
 
     /**
      * Create a new test runner instance for the class under test.
@@ -74,32 +76,9 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         try {
             filter(TestifyJUnit4CategoryFilter.of(level, System.getProperty("testify.categories")));
         } catch (NoTestsRemainException e) {
-            //we can ignore this exception
-            debug("No test remain");
+            LoggingUtil.INSTANCE.debug("No test remain", e);
         }
     }
-
-    /**
-     * Get the dependencies required to run the tests.
-     *
-     * @return the test dependencies, empty map otherwise
-     */
-    protected abstract Map<String, String> getDependencies();
-
-    /**
-     * Get the test resource start strategy which indicates when test resources
-     * are started.
-     *
-     * @return the test resource strategy
-     */
-    protected abstract StartStrategy getResourceStartStrategy();
-
-    /**
-     * Get the test runner used to run the tests.
-     *
-     * @return the test runner
-     */
-    protected abstract Class<? extends TestRunner> getTestRunnerClass();
 
     @Override
     public void run(RunNotifier runNotifier) {
@@ -107,15 +86,14 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         TestifyJUnit4RunNotifier notifier = TestifyJUnit4RunNotifier.of(runNotifier, testDescription);
 
         try {
-            debug("Creating Statement");
+            LoggingUtil.INSTANCE.debug("Creating Statement");
             Statement statement = classBlock(notifier);
-            debug("Evaluating Statement");
+            LoggingUtil.INSTANCE.debug("Evaluating Statement");
             statement.evaluate();
         } catch (AssumptionViolatedException e) {
             notifier.addFailedAssumption(e);
-        } catch (StoppedByUserException e) {
-            throw e;
         } catch (Throwable t) {
+            Throwables.propagateIfInstanceOf(t, StoppedByUserException.class);
             notifier.addFailure(t);
             notifier.pleaseStop();
         }
@@ -137,8 +115,8 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         } else {
             try {
                 runLeaf(methodBlock(method), methodDescription, notifier);
-            } catch (Throwable t) {
-                notifier.addFailure(t);
+            } catch (Exception e) {
+                notifier.addFailure(e);
                 notifier.pleaseStop();
             } finally {
                 if (!isIgnored(method)) {
@@ -147,15 +125,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
                     if (result.isPresent()) {
                         TestContext testContext = result.get();
 
-                        debug("performing cleanup of '{}'", testContext.getName());
-
-                        if (testContext.hasErrors()) {
-                            debug("reporting test context errors");
-
-                            testContext.getErrors().stream().forEach(failure -> {
-                                notifier.addFailure(new IllegalStateException(failure));
-                            });
-                        }
+                        LoggingUtil.INSTANCE.debug("performing cleanup of '{}'", testContext.getName());
 
                         TestRunner testRunner = testContext.getTestRunner();
                         testRunner.stop();
@@ -170,39 +140,36 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
     protected Statement methodBlock(FrameworkMethod frameworkMethod) {
         TestClass testClass = getTestClass();
         Class<?> javaClass = testClass.getJavaClass();
-        debug("test class classloader: {}", javaClass.getClassLoader());
+        LoggingUtil.INSTANCE.debug("test class classloader: {}", javaClass.getClassLoader());
 
         Object testInstance;
 
         try {
-            debug("creating instance of test class {}", javaClass.getName());
+            LoggingUtil.INSTANCE.debug("creating instance of test class {}", javaClass.getName());
             testInstance = createTest();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
 
-        debug("creating test decriptor for test class {}", javaClass.getName());
+        LoggingUtil.INSTANCE.debug("creating test decriptor for test class {}", javaClass.getName());
         TestDescriptor testDescriptor = AnalyzerUtil.INSTANCE.analyzeTestClass(javaClass);
 
         Method method = frameworkMethod.getMethod();
         MDC.put("test", javaClass.getSimpleName());
         MDC.put("method", method.getName());
 
-        debug("creating method decriptor for test method {}#{}", javaClass.getName(), method.getName());
+        LoggingUtil.INSTANCE.debug("creating method decriptor for test method {}#{}", javaClass.getName(), method.getName());
         MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
 
         Class<TestReifier> testReifierType = TestReifier.class;
-        debug("getting '{}' implementation from the classpath", testReifierType.getName());
         TestReifier testReifier = ServiceLocatorUtil.INSTANCE
                 .getOneOrDefault(testReifierType, DefaultTestReifier.class);
 
         Class<MockProvider> mockProviderType = MockProvider.class;
-        debug("getting '{}' implementation from the classpath", mockProviderType.getName());
         MockProvider mockProvider = ServiceLocatorUtil.INSTANCE
                 .getOneOrDefault(mockProviderType, MockitoMockProvider.class);
 
         Class<? extends TestRunner> testRunnerClass = getTestRunnerClass();
-        debug("getting '{}' implementation from the classpath", testRunnerClass.getName());
         TestRunner testRunner = ServiceLocatorUtil.INSTANCE.getOne(TestRunner.class, testRunnerClass);
 
         Map<String, Object> properties = new HashMap<>();
@@ -226,47 +193,72 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
             testContext.addProperty(TestContextProperties.CUT_DESCRIPTOR, cutDescriptor);
         }
 
-        debug("starting test runner '{}'", testRunnerClass.getName());
+        LoggingUtil.INSTANCE.debug(
+                "starting test runner '{}'",
+                testRunnerClass.getName()
+        );
         testRunner.start(testContext);
 
-        debug("executing test method {}#{}'", javaClass.getName(), method.getName());
+        LoggingUtil.INSTANCE.debug(
+                "executing test method {}#{}'",
+                javaClass.getName(), method.getName()
+        );
         Statement statement = methodInvoker(frameworkMethod, testInstance);
         statement = possiblyExpectingExceptions(frameworkMethod, testInstance, statement);
-        debug("executing statement before lifecycle methods for {}#{}'", javaClass.getName(), method.getName());
+
+        LoggingUtil.INSTANCE.debug(
+                "executing statement before lifecycle methods for {}#{}'",
+                javaClass.getName(),
+                method.getName()
+        );
         statement = withBefores(frameworkMethod, testInstance, statement);
-        debug("executing statement after lifecycle methods for {}#{}'", javaClass.getName(), method.getName());
+
+        LoggingUtil.INSTANCE.debug(
+                "executing statement after lifecycle methods for {}#{}'",
+                javaClass.getName(),
+                method.getName()
+        );
         statement = withAfters(frameworkMethod, testInstance, statement);
-        debug("executing statement rules lifecycle methods for {}#{}'", javaClass.getName(), method.getName());
-        statement = withRules(frameworkMethod, testInstance, statement);
+
+        LoggingUtil.INSTANCE.debug(
+                "executing statement rules lifecycle methods for {}#{}'",
+                javaClass.getName(),
+                method.getName()
+        );
+
+        statement = applyRules(frameworkMethod, testInstance, statement);
 
         return statement;
     }
 
-    private Statement withRules(FrameworkMethod method, Object target,
+    private Statement applyRules(FrameworkMethod method, Object target,
             Statement statement) {
         List<TestRule> testRules = getTestRules(target);
         Statement result = statement;
-        result = withMethodRules(method, testRules, target, result);
-        result = withTestRules(method, testRules, result);
+        result = applyMethodRules(method, testRules, target, result);
+        result = applyTestRules(method, testRules, result);
 
         return result;
     }
 
-    private Statement withMethodRules(FrameworkMethod method, List<TestRule> testRules,
+    private Statement applyMethodRules(FrameworkMethod method, List<TestRule> testRules,
             Object target, Statement result) {
-        for (org.junit.rules.MethodRule each : getMethodRules(target)) {
-            if (!testRules.contains(each)) {
-                result = each.apply(result, method, target);
+        Statement withMethodRules = result;
+
+        for (MethodRule each : findMethodRules(target)) {
+            if (!(each instanceof TestRule && testRules.contains((TestRule) each))) {
+                withMethodRules = each.apply(withMethodRules, method, target);
             }
         }
-        return result;
+
+        return withMethodRules;
     }
 
-    private List<org.junit.rules.MethodRule> getMethodRules(Object target) {
+    private List<MethodRule> findMethodRules(Object target) {
         return rules(target);
     }
 
-    private Statement withTestRules(FrameworkMethod method, List<TestRule> testRules,
+    private Statement applyTestRules(FrameworkMethod method, List<TestRule> testRules,
             Statement statement) {
         return testRules.isEmpty() ? statement
                 : new RunRules(statement, testRules, describeChild(method));

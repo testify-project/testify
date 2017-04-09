@@ -25,6 +25,10 @@ import org.glassfish.hk2.utilities.NamedImpl;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.annotation.DefaultModule;
 import org.testifyproject.core.annotation.DefaultScan;
 import org.testifyproject.di.fixture.autowired.Greeting;
@@ -43,12 +47,14 @@ import org.testifyproject.guava.common.reflect.TypeToken;
 public class HK2ServiceInstanceTest {
 
     HK2ServiceInstance cut;
-    ServiceLocator context;
+    TestContext testContext;
+    ServiceLocator serviceLocator;
 
     @Before
     public void init() {
-        context = ServiceLocatorUtilities.createAndPopulateServiceLocator();
-        cut = new HK2ServiceInstance(context);
+        testContext = mock(TestContext.class);
+        serviceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+        cut = new HK2ServiceInstance(testContext, serviceLocator);
     }
 
     @Test
@@ -60,7 +66,7 @@ public class HK2ServiceInstanceTest {
     public void callToGetContextShouldReturnServiceLocator() {
         assertThat(cut.getContext())
                 .isNotNull()
-                .isSameAs(context);
+                .isSameAs(serviceLocator);
     }
 
     @Test
@@ -86,7 +92,7 @@ public class HK2ServiceInstanceTest {
         ConstantService service = new ConstantService("greeting");
         cut.addConstant(service, null, null);
 
-        ConstantService result = context.getService(ConstantService.class);
+        ConstantService result = serviceLocator.getService(ConstantService.class);
         assertThat(result).isNotNull();
     }
 
@@ -95,7 +101,7 @@ public class HK2ServiceInstanceTest {
         String name = "newgreeting";
         Hello constant = new Hello();
         cut.replace(constant, name, Greeting.class);
-        Greeting result = context.getService(Greeting.class, name);
+        Greeting result = serviceLocator.getService(Greeting.class, name);
         assertThat(result).isSameAs(constant);
     }
 
@@ -104,8 +110,8 @@ public class HK2ServiceInstanceTest {
         DefaultModule module = new DefaultModule(TestModule.class);
         cut.addModules(module);
 
-        WiredContract contract = context.getService(WiredContract.class);
-        WiredService service = context.getService(WiredService.class);
+        WiredContract contract = serviceLocator.getService(WiredContract.class);
+        WiredService service = serviceLocator.getService(WiredService.class);
 
         assertThat(contract).isNotNull();
         assertThat(service).isNotNull();
@@ -113,8 +119,13 @@ public class HK2ServiceInstanceTest {
 
     @Test
     public void givenDescriptorResourceScanShouldAddServices() {
-        context = ServiceLocatorFactory.getInstance().create(null);
-        cut = new HK2ServiceInstance(context);
+        serviceLocator = ServiceLocatorFactory.getInstance().create(null);
+        cut = new HK2ServiceInstance(testContext, serviceLocator);
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        ClassLoader classLoader = this.getClass().getClassLoader();
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getTestClassLoader()).willReturn(classLoader);
 
         cut.addScans(new DefaultScan("META-INF/hk2-locator/default"));
 

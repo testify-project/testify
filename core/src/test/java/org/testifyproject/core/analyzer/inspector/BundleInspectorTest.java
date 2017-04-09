@@ -13,21 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.core.analyzer;
+package org.testifyproject.core.analyzer.inspector;
 
-import java.lang.annotation.Annotation;
+import org.junit.Before;
+import org.junit.Test;
+import static org.mockito.Mockito.mock;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Bundle;
 
 /**
- * Interface for inspecting annotations on a class.
  *
  * @author saden
- * @param <T> the annotation type
  */
-public interface TestAnnotationInspector<T extends Annotation> {
+public class BundleInspectorTest {
+    
+    BundleInspector cut;
 
-    boolean handles(Class<?> annotationType);
+    @Before
+    public void init() {
+        cut = new BundleInspector();
+    }
 
-    void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, T annotation) throws Exception;
+    @Test
+    public void givenParamtersInspectShouldAddProperty() {
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        Class<?> annotatedType = Object.class;
+        Bundle annotation = mock(Bundle.class);
 
+        cut.inspect(testDescriptor, annotatedType, annotation);
+    }
+    
 }

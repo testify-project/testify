@@ -50,11 +50,11 @@ public class TransactionalInterceptor implements MethodInterceptor {
             entityManager.close();
 
             return result;
-        } catch (Throwable t) {
+        } catch (Exception e) {
             entityManager.getTransaction().rollback();
             entityManager.close();
 
-            throw t;
+            throw e;
         } finally {
             TransactionContext.remove();
         }

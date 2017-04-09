@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.trait;
+package org.testifyproject.core.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -22,80 +22,26 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
+import org.testifyproject.TestContext;
 
 /**
- * A contracts that specifies logging trait.
+ * A utility class for logging information.
  *
  * @author saden
  */
-public interface LoggingTrait extends ReportingTrait {
+public class LoggingUtil {
 
-    /**
-     * Get the underlying logger log messages are delegated to.
-     *
-     * @return logger instance.
-     */
-    default Logger getLogger() {
-        return LoggerFactory.getLogger("testify");
+    public static final LoggingUtil INSTANCE;
+
+    static {
+        Logger logger = LoggerFactory.getLogger("testify");
+        INSTANCE = new LoggingUtil(logger);
     }
 
-    /**
-     * Put a diagnostic context value (the <code>value</code> parameter) as
-     * identified with the <code>key</code> parameter into the current thread's
-     * diagnostic context map. The <code>key</code> parameter cannot be null.
-     * The <code>value</code> parameter can be null only if the underlying
-     * implementation supports it.
-     *
-     * @param key non-null key
-     * @param value value to put in the map
-     */
-    default void putMDC(String key, String value) {
-        MDC.put(key, value);
-    }
+    private final Logger logger;
 
-    /**
-     * Remove the diagnostic context identified by the <code>key</code>
-     * parameter using the underlying system's MDC implementation. The
-     * <code>key</code> parameter cannot be null. This method does nothing if
-     * there is no previous value associated with <code>key</code>.
-     *
-     * @param key non-null key
-     */
-    default void removeMDC(String key) {
-        MDC.remove(key);
-    }
-
-    /**
-     * Get the diagnostic context identified by the <code>key</code> parameter.
-     * The <code>key</code> parameter cannot be null.
-     *
-     * <p>
-     * This method delegates all work to the MDC of the underlying logging
-     * system.
-     *
-     * @param key non-null key
-     * @return the string value identified by the <code>key</code> parameter.
-     */
-    default String getMDC(String key) {
-        return MDC.get(key);
-    }
-
-    /**
-     * Clear all entries in the MDC of the underlying implementation.
-     */
-    default void clearMDC() {
-        MDC.clear();
-    }
-
-    /**
-     * Log a trace message.
-     *
-     * @param messageFormat log message format
-     * @param args message format arguments.
-     */
-    default void trace(String messageFormat, Object... args) {
-        String message = formatMessage(messageFormat, args);
-        getLogger().trace(message);
+    LoggingUtil(Logger logger) {
+        this.logger = logger;
     }
 
     /**
@@ -104,9 +50,9 @@ public interface LoggingTrait extends ReportingTrait {
      * @param messageFormat log message format
      * @param args message format arguments.
      */
-    default void debug(String messageFormat, Object... args) {
+    public void debug(String messageFormat, Object... args) {
         String message = formatMessage(messageFormat, args);
-        getLogger().debug(message);
+        logger.debug(message);
     }
 
     /**
@@ -115,11 +61,10 @@ public interface LoggingTrait extends ReportingTrait {
      * @param messageFormat log message format
      * @param args message format arguments.
      */
-    default void info(String messageFormat, Object... args) {
+    public void info(String messageFormat, Object... args) {
         String message = formatMessage(messageFormat, args);
 
-        getLogger().info(message);
-        reportInformation(message);
+        logger.info(message);
     }
 
     /**
@@ -128,11 +73,10 @@ public interface LoggingTrait extends ReportingTrait {
      * @param messageFormat log message format
      * @param args message format arguments.
      */
-    default void warn(String messageFormat, Object... args) {
+    public void warn(String messageFormat, Object... args) {
         String message = formatMessage(messageFormat, args);
 
-        getLogger().warn(message);
-        reportWarning(message);
+        logger.warn(message);
     }
 
     /**
@@ -141,11 +85,10 @@ public interface LoggingTrait extends ReportingTrait {
      * @param messageFormat log message format
      * @param args message format arguments.
      */
-    default void error(String messageFormat, Object... args) {
+    public void error(String messageFormat, Object... args) {
         String message = formatMessage(messageFormat, args);
 
-        getLogger().error(message);
-        reportError(message);
+        logger.error(message);
     }
 
     /**
@@ -157,7 +100,7 @@ public interface LoggingTrait extends ReportingTrait {
      * @param args message format arguments
      * @return a formatted message
      */
-    default String formatMessage(String messageFormat, Object... args) {
+    public String formatMessage(String messageFormat, Object... args) {
         if (args.length == 0) {
             return messageFormat;
         }
@@ -197,4 +140,61 @@ public interface LoggingTrait extends ReportingTrait {
         return sb.toString();
     }
 
+    /**
+     * Put a diagnostic context value (the <code>value</code> parameter) as
+     * identified with the <code>key</code> parameter into the current thread's
+     * diagnostic context map. The <code>key</code> parameter cannot be null.
+     * The <code>value</code> parameter can be null only if the underlying
+     * implementation supports it.
+     *
+     * @param key non-null key
+     * @param value value to put in the map
+     */
+    public void putMDC(String key, String value) {
+        MDC.put(key, value);
+    }
+
+    /**
+     * Remove the diagnostic context identified by the <code>key</code>
+     * parameter using the underlying system's MDC implementation. The
+     * <code>key</code> parameter cannot be null. This method does nothing if
+     * there is no previous value associated with <code>key</code>.
+     *
+     * @param key non-null key
+     */
+    public void removeMDC(String key) {
+        MDC.remove(key);
+    }
+
+    /**
+     * Get the diagnostic context identified by the <code>key</code> parameter.
+     * The <code>key</code> parameter cannot be null.
+     *
+     * <p>
+     * This method delegates all work to the MDC of the underlying logging
+     * system.
+     *
+     * @param key non-null key
+     * @return the string value identified by the <code>key</code> parameter.
+     */
+    public String getMDC(String key) {
+        return MDC.get(key);
+    }
+
+    /**
+     * Clear all entries in the MDC of the underlying implementation.
+     */
+    public void clearMDC() {
+        MDC.clear();
+    }
+
+    /**
+     * Updated the mapping diagnostic context.
+     *
+     * @param testContext the test context
+     */
+    public void setTextContext(TestContext testContext) {
+        MDC.put("test", testContext.getTestName());
+        MDC.put("method", testContext.getMethodName());
+    }
 }

@@ -34,7 +34,7 @@ import org.testifyproject.level.integration.IntegrationTestRunner;
  */
 public class HK2IntegrationTest extends TestifyJUnit4TestRunner {
 
-    public static final Map<String, String> DEPENDENCIES = new HashMap<>();
+    private static final Map<String, String> DEPENDENCIES = new HashMap<>();
 
     static {
         DEPENDENCIES.put("org.glassfish.hk2.api.ServiceLocator", "HK2");
@@ -48,21 +48,21 @@ public class HK2IntegrationTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public HK2IntegrationTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.Integration);
+        super(testClass, TestCategory.Level.INTEGRATION);
     }
 
     @Override
-    protected Map<String, String> getDependencies() {
+    public Map<String, String> getDependencies() {
         return DEPENDENCIES;
     }
 
     @Override
-    protected StartStrategy getResourceStartStrategy() {
-        return StartStrategy.Eager;
+    public StartStrategy getResourceStartStrategy() {
+        return StartStrategy.EAGER;
     }
 
     @Override
-    protected Class<? extends TestRunner> getTestRunnerClass() {
+    public Class<? extends TestRunner> getTestRunnerClass() {
         return IntegrationTestRunner.class;
     }
 

@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.util;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +62,24 @@ public class ServiceLocatorUtil {
 
         return stream(serviceLoader.spliterator(), true)
                 .distinct()
+                .collect(toList());
+    }
+
+    /**
+     * Find all implementations of the given type annotated with the given
+     * annotation.
+     *
+     * @param <T> the SPI type
+     * @param type the SPI contract
+     * @param filter the annotation to filter on implementations on
+     * @return a list that contains all implementations, empty list otherwise
+     */
+    public <T> List<T> findAll(Class<T> type, Class<? extends Annotation> filter) {
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
+
+        return stream(serviceLoader.spliterator(), true)
+                .distinct()
+                .filter(p -> p.getClass().isAnnotationPresent(filter))
                 .collect(toList());
     }
 

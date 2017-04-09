@@ -28,6 +28,10 @@ public class DefaultModule implements Module {
 
     private final Class<?> value;
 
+    public DefaultModule(Class<?> value) {
+        this.value = value;
+    }
+
     /**
      * Create a new instance of Module with the given value.
      *
@@ -36,10 +40,6 @@ public class DefaultModule implements Module {
      */
     public static Module of(Class<?> value) {
         return new DefaultModule(value);
-    }
-
-    public DefaultModule(Class<?> value) {
-        this.value = value;
     }
 
     @Override

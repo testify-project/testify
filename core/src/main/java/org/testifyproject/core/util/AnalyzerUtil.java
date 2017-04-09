@@ -51,7 +51,11 @@ public class AnalyzerUtil {
 
                 return testDescriptor;
             } catch (IOException e) {
-                throw new IllegalStateException(e);
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Analysis of test class '{}' failed.",
+                        e,
+                        testClass.getSimpleName()
+                );
             }
         });
 
@@ -68,8 +72,11 @@ public class AnalyzerUtil {
 
                 return cutDescriptor;
             } catch (IOException e) {
-                throw new IllegalStateException(String.format("Analysis of class under test '%s' failed.",
-                        field.getType().getSimpleName()), e);
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Analysis of class under test '{}' failed.",
+                        e,
+                        field.getType().getSimpleName()
+                );
             }
         });
     }

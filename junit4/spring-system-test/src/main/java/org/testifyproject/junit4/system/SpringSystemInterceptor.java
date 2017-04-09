@@ -23,6 +23,7 @@ import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
+import org.testifyproject.annotation.Module;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.Argument;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
@@ -87,7 +88,7 @@ public class SpringSystemInterceptor {
             Stream<Class<?>> acutalModules = Stream.of(result);
             Stream<Class<?>> testModules = testDescriptor.getModules()
                     .stream()
-                    .map(p -> p.value());
+                    .map(Module::value);
 
             return Stream.concat(testModules, acutalModules).toArray(Class[]::new);
         });

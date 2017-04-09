@@ -24,8 +24,8 @@ import javax.ws.rs.core.FeatureContext;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.DynamicConfigurationService;
 import org.glassfish.hk2.api.Populator;
-import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ClasspathDescriptorFileFinder;
+import org.testifyproject.core.util.ExceptionUtil;
 
 /**
  * Discovers service descriptor files and populates the service locator.
@@ -35,12 +35,10 @@ import org.glassfish.hk2.utilities.ClasspathDescriptorFileFinder;
 @ConstrainedTo(RuntimeType.SERVER)
 public class ServiceLocatorConfigFeature implements Feature {
 
-    private final ServiceLocator serviceLocator;
     private final DynamicConfigurationService dcs;
 
     @Inject
-    ServiceLocatorConfigFeature(ServiceLocator serviceLocator, DynamicConfigurationService dcs) {
-        this.serviceLocator = serviceLocator;
+    ServiceLocatorConfigFeature( DynamicConfigurationService dcs) {
         this.dcs = dcs;
     }
 
@@ -52,7 +50,7 @@ public class ServiceLocatorConfigFeature implements Feature {
             populator.populate(new ClasspathDescriptorFileFinder());
             dc.commit();
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+            throw ExceptionUtil.INSTANCE.propagate(e);
         }
 
         return true;

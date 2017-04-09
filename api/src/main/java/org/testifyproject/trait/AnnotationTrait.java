@@ -79,7 +79,7 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
 
         return Stream.of(metaAnnotationTypes)
                 .parallel()
-                .flatMap(p -> p.parallelStream())
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .map(p -> {
                     Annotation declaredAnnotation = type.getDeclaredAnnotation(p);
@@ -127,7 +127,7 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
 
         return annotationTypes
                 .stream()
-                .map(p -> type.getDeclaredAnnotation(p))
+                .map(type::getDeclaredAnnotation)
                 .filter(Objects::nonNull)
                 .findAny()
                 .isPresent();

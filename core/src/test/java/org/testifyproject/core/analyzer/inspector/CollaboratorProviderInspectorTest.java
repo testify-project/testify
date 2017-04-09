@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,20 +43,8 @@ public class CollaboratorProviderInspectorTest {
         cut = new CollaboratorProviderInspector();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void callToHandlesNullShouldReturThrowExpcetion() {
-        cut.handles(null);
-    }
-
     @Test
-    public void callToHandlesModuleShouldReturnTrue() {
-        boolean result = cut.handles(CollaboratorProvider.class);
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenParamtersInspectShouldAddProperty() throws Exception {
+    public void givenParamtersInspectShouldAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
         CollaboratorProvider annotation = mock(CollaboratorProvider.class);
@@ -71,7 +58,7 @@ public class CollaboratorProviderInspectorTest {
     }
 
     @Test
-    public void givenParamtersInspectShouldNotAddProperty() throws Exception {
+    public void givenParamtersInspectShouldNotAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
         CollaboratorProvider annotation = mock(CollaboratorProvider.class);

@@ -100,7 +100,7 @@ public class DefaultClientInstanceTest {
 
         assertThat(result).contains(
                 "DefaultClientInstance",
-                "client",
+                "instance",
                 "contract"
         );
     }

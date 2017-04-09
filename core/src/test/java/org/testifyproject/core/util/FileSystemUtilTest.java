@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import org.testifyproject.TestifyException;
 
 /**
  *
@@ -64,7 +65,7 @@ public class FileSystemUtilTest {
         cut.deleteDirectory(null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNonExistentDirectoryDeleteDirectoryShouldThrowException() throws IOException {
         Path directoryPath = Files.createTempDirectory("FileSystemUtil");
         directoryPath.toFile().delete();

@@ -24,10 +24,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.junit4.fixture.common.DatabaseConfig;
 import org.testifyproject.junit4.fixture.common.SessionFactoryFactoryBean;
 import org.testifyproject.junit4.fixture.web.GreeterWebConfig;
-import org.testifyproject.VirtualResourceInstance;
 
 /**
  *

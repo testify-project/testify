@@ -50,7 +50,7 @@ public class DefaultCutDescriptorTest {
         field = AnalyzedTestClass.class.getDeclaredField("cut");
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = new DefaultCutDescriptor(field, properties);
+        cut = DefaultCutDescriptor.of(field, properties);
     }
 
     @Test
@@ -210,7 +210,7 @@ public class DefaultCutDescriptorTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        DefaultCutDescriptor equal = DefaultCutDescriptor.of(field);
+        DefaultCutDescriptor equal = DefaultCutDescriptor.of(field, properties);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());

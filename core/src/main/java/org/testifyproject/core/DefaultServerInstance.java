@@ -16,9 +16,10 @@
 package org.testifyproject.core;
 
 import java.net.URI;
-import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.ServerInstance;
 
 /**
@@ -27,11 +28,19 @@ import org.testifyproject.ServerInstance;
  * @author saden
  * @param <T> the underlying server type
  */
+@ToString
+@EqualsAndHashCode
 public class DefaultServerInstance<T> implements ServerInstance<T> {
 
     private final URI baseURI;
     private final T server;
     private final Class<? extends T> contract;
+
+    DefaultServerInstance(URI baseURI, T server, Class<? extends T> contract) {
+        this.baseURI = baseURI;
+        this.server = server;
+        this.contract = contract;
+    }
 
     /**
      * Create a server instance with the given base URI and test context.
@@ -46,9 +55,9 @@ public class DefaultServerInstance<T> implements ServerInstance<T> {
     }
 
     /**
-     * Create a server instance with the given base URI and test context. Note
-     * that the name associated with the server will be derived from the server
-     * implementation's {@link Class#getSimpleName() simple class name}.
+     * Create a server instance with the given base URI and test context. Note that the name
+     * associated with the server will be derived from the server implementation's
+     * {@link Class#getSimpleName() simple class name}.
      *
      * @param <T> the underlying server type
      * @param baseURI the server's base uri
@@ -58,12 +67,6 @@ public class DefaultServerInstance<T> implements ServerInstance<T> {
      */
     public static <T> ServerInstance<T> of(URI baseURI, T server, Class<? extends T> contract) {
         return new DefaultServerInstance<>(baseURI, server, contract);
-    }
-
-    DefaultServerInstance(URI baseURI, T server, Class<? extends T> contract) {
-        this.baseURI = baseURI;
-        this.server = server;
-        this.contract = contract;
     }
 
     @Override
@@ -79,45 +82,6 @@ public class DefaultServerInstance<T> implements ServerInstance<T> {
     @Override
     public Optional<Class<? extends T>> getContract() {
         return ofNullable(contract);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.baseURI);
-        hash = 71 * hash + Objects.hashCode(this.server);
-        hash = 71 * hash + Objects.hashCode(this.contract);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultServerInstance<?> other = (DefaultServerInstance<?>) obj;
-        if (!Objects.equals(this.baseURI, other.baseURI)) {
-            return false;
-        }
-        if (!Objects.equals(this.server, other.server)) {
-            return false;
-        }
-        return Objects.equals(this.contract, other.contract);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultServerInstance{"
-                + "baseURI=" + baseURI
-                + ", server=" + server
-                + ", contract=" + contract
-                + '}';
     }
 
 }

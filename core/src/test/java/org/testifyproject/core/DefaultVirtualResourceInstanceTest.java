@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
-import org.testifyproject.guava.common.collect.ImmutableMap;
 import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  *

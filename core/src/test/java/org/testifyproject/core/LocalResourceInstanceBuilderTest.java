@@ -22,8 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
-import org.testifyproject.guava.common.collect.ImmutableMap;
 import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  *

@@ -37,14 +37,14 @@ import org.testifyproject.junit4.fixture.need.resource.InMemoryHSQLApplication;
  */
 @Application(InMemoryHSQLApplication.class)
 @LocalResource(InMemoryHSQLResource.class)
-@RunWith(SpringBootSystemTest.class)
-public class GreetingResourceRequiresResourceST {
+@RunWith(SpringSystemTest.class)
+public class GreetingResourceLocalResourceST {
 
     @Real
     SessionFactory factory;
 
     @ConfigHandler
-    void configure(JDBCDataSource dataSource) {
+    public void configure(JDBCDataSource dataSource) {
         assertThat(dataSource).isNotNull();
     }
 
@@ -62,17 +62,4 @@ public class GreetingResourceRequiresResourceST {
         }
     }
 
-    @Test
-    public void givenAnotherUserEntitySaveShouldPerisistEntityToInMemoryHSQLResource() {
-        try (Session session = factory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            UserEntity entity = new UserEntity(null, "saden", "test", "test");
-            Serializable id = session.save(entity);
-            tx.commit();
-            assertThat(id).isNotNull();
-
-            entity = session.get(UserEntity.class, id);
-            assertThat(entity).isNotNull();
-        }
-    }
 }

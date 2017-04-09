@@ -17,7 +17,8 @@ package org.testifyproject.core;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.ApplicationInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
@@ -27,21 +28,28 @@ import org.testifyproject.annotation.Application;
  *
  * @author saden
  */
-public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
+@ToString
+@EqualsAndHashCode
+public class DefaultApplicationInstance implements ApplicationInstance {
 
     private final TestContext testContext;
     private final Application application;
     private final Map<String, Object> properties;
 
+    DefaultApplicationInstance(TestContext testContext, Application application, Map<String, Object> properties) {
+        this.application = application;
+        this.testContext = testContext;
+        this.properties = properties;
+    }
+
     /**
      * Create a new application instance.
      *
-     * @param <T> application initializer type
      * @param testContext the test context
      * @param application the application annotation
      * @return an application instance
      */
-    public static <T> ApplicationInstance of(TestContext testContext, Application application) {
+    public static ApplicationInstance of(TestContext testContext, Application application) {
         return new DefaultApplicationInstance(testContext, application, new LinkedHashMap<>());
     }
 
@@ -61,15 +69,6 @@ public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
         return new DefaultApplicationInstance(testContext, application, properties);
     }
 
-    DefaultApplicationInstance(
-            TestContext testContext,
-            Application application,
-            Map<String, Object> properties) {
-        this.application = application;
-        this.testContext = testContext;
-        this.properties = properties;
-    }
-
     @Override
     public Map<String, Object> getProperties() {
         return properties;
@@ -83,45 +82,6 @@ public class DefaultApplicationInstance<T> implements ApplicationInstance<T> {
     @Override
     public TestContext getTestContext() {
         return testContext;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.application);
-        hash = 23 * hash + Objects.hashCode(this.testContext);
-        hash = 23 * hash + Objects.hashCode(this.properties);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultApplicationInstance other = (DefaultApplicationInstance) obj;
-        if (!Objects.equals(this.application, other.application)) {
-            return false;
-        }
-        if (!Objects.equals(this.testContext, other.testContext)) {
-            return false;
-        }
-        return Objects.equals(this.properties, other.properties);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultApplicationInstance{"
-                + "testContext=" + testContext
-                + ", application=" + application
-                + ", properties=" + properties
-                + '}';
     }
 
 }

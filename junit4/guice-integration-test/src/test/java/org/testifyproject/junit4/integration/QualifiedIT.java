@@ -15,11 +15,11 @@
  */
 package org.testifyproject.junit4.integration;
 
-import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.GreetingModule;
 import org.testifyproject.junit4.fixture.common.CustomQualifier;
 import org.testifyproject.junit4.fixture.common.Greeting;
@@ -32,7 +32,7 @@ import org.testifyproject.junit4.fixture.common.Greeting;
 @RunWith(GuiceIntegrationTest.class)
 public class QualifiedIT {
 
-    @Inject
+    @Real
     @CustomQualifier
     Greeting greeting;
 

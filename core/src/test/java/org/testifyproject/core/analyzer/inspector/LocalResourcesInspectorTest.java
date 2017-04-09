@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.BDDMockito.given;
@@ -39,20 +38,8 @@ public class LocalResourcesInspectorTest {
         cut = new LocalResourcesInspector();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void callToHandlesNullShouldReturThrowExpcetion() {
-        cut.handles(null);
-    }
-
     @Test
-    public void callToHandlesLocalResourcesShouldReturnTrue() {
-        boolean result = cut.handles(LocalResources.class);
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenParamtersInspectShouldAddProperty() throws Exception {
+    public void givenParamtersInspectShouldAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
         LocalResources annotation = mock(LocalResources.class);
@@ -62,7 +49,7 @@ public class LocalResourcesInspectorTest {
 
         cut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.REQUIRES_RESOURCES, element);
+        verify(testDescriptor).addListElement(TestDescriptorProperties.LOCAL_RESOURCES, element);
     }
 
 }

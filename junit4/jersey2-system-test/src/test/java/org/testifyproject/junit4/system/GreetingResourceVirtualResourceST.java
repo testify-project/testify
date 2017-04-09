@@ -25,29 +25,24 @@ import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.junit4.fixture.GreeterApplication;
-import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
+import org.testifyproject.junit4.fixture.need.PostgresModule;
 
 /**
- * <p>
- * Test Greeter Resource inside the container from the client perspective using
- * real instance of the Greeting Service and an in-memory HSQL database. This
- * ability comes in handy when you want to test against simple or custom
- * resources quickly.
- * </p>
- * <p>
- * NOTE: This example is demo fodder. If you are writing system tests you should
- * use container based resources and test against production environment. See
- * {@link GreeterResourceRequiresContainerTest}
- * </p>
+ * Test Greeter Resource inside the container from the client perspective real
+ * instance of the Greeting Service and Postgres database running inside of
+ * Docker container. This ability comes in handy when you want to test against
+ * real production environment.
  *
  * @author saden
  */
 @Application(GreeterApplication.class)
-@LocalResource(InMemoryHSQLResource.class)
+@Module(PostgresModule.class)
+@VirtualResource(value = "postgres", version = "9.4")
 @RunWith(Jersey2SystemTest.class)
-public class GreeterResourceRequiresResourceST {
+public class GreetingResourceVirtualResourceST {
 
     @Cut
     ClientInstance<WebTarget> cut;

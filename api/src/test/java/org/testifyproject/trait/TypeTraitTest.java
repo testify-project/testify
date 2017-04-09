@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.PrimaryTestService;
 import org.testifyproject.fixture.TestContract;
 import org.testifyproject.fixture.TestServiceSubtype;
@@ -141,7 +142,7 @@ public class TypeTraitTest {
         cut.invoke(instance, methodName, methodArgs);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNonExistentMethodInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
         String methodName = "saySalam";
@@ -150,7 +151,7 @@ public class TypeTraitTest {
         cut.invoke(instance, methodName, methodArgs);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNoArgumentsInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
         String methodName = "sayHello";
@@ -158,7 +159,7 @@ public class TypeTraitTest {
         cut.invoke(instance, methodName);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenWrongArgumentTypesInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
         String methodName = "saySalam";
@@ -197,7 +198,7 @@ public class TypeTraitTest {
         cut.findMethod(type, methodName, methodArgTypes);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNonExistentMethodNameFindMethodShouldThrowException() {
         Class<?> type = PrimaryTestService.class;
         String methodName = "notAMethod";

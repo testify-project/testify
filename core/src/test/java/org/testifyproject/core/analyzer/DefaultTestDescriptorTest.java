@@ -34,10 +34,10 @@ import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableMap;
-import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
@@ -54,7 +54,7 @@ public class DefaultTestDescriptorTest {
         testClass = AnalyzedTestClass.class;
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = new DefaultTestDescriptor(testClass, properties);
+        cut = DefaultTestDescriptor.of(testClass, properties);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class DefaultTestDescriptorTest {
     @Test
     public void callToGetLocalResourcesShouldReturn() {
         LocalResource value = mock(LocalResource.class);
-        properties.put(TestDescriptorProperties.REQUIRES_RESOURCES, ImmutableList.of(value));
+        properties.put(TestDescriptorProperties.LOCAL_RESOURCES, ImmutableList.of(value));
 
         List<LocalResource> result = cut.getLocalResources();
 
@@ -139,7 +139,7 @@ public class DefaultTestDescriptorTest {
     @Test
     public void callToGetVirtualResourcesShouldReturn() {
         VirtualResource value = mock(VirtualResource.class);
-        properties.put(TestDescriptorProperties.REQUIRES_CONTAINERS, ImmutableList.of(value));
+        properties.put(TestDescriptorProperties.VIRTUAL_RESOURCES, ImmutableList.of(value));
 
         List<VirtualResource> result = cut.getVirtualResources();
 
@@ -243,7 +243,7 @@ public class DefaultTestDescriptorTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        TestDescriptor equal = DefaultTestDescriptor.of(testClass);
+        TestDescriptor equal = DefaultTestDescriptor.of(testClass, properties);
 
         assertThat(cut).isEqualTo(equal);
         assertThat(cut.hashCode()).isEqualTo(equal.hashCode());

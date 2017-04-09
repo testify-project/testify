@@ -44,21 +44,21 @@ public class UnitTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public UnitTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.Unit);
+        super(testClass, TestCategory.Level.UNIT);
     }
 
     @Override
-    protected Map<String, String> getDependencies() {
+    public Map<String, String> getDependencies() {
         return DEPENDENCIES;
     }
 
     @Override
-    protected StartStrategy getResourceStartStrategy() {
-        return StartStrategy.Undefined;
+    public StartStrategy getResourceStartStrategy() {
+        return StartStrategy.UNDEFINED;
     }
 
     @Override
-    protected Class<? extends TestRunner> getTestRunnerClass() {
+    public Class<? extends TestRunner> getTestRunnerClass() {
         return UnitTestRunner.class;
     }
 

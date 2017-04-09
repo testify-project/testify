@@ -34,7 +34,7 @@ import org.testifyproject.level.system.SystemTestRunner;
  */
 public class Jersey2SystemTest extends TestifyJUnit4TestRunner {
 
-    public static final Map<String, String> DEPENDENCIES = new HashMap<>();
+    private static final Map<String, String> DEPENDENCIES = new HashMap<>();
 
     static {
         DEPENDENCIES.put("org.glassfish.jersey.server.ResourceConfig", "Jersey2 Server");
@@ -48,21 +48,21 @@ public class Jersey2SystemTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public Jersey2SystemTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.System);
+        super(testClass, TestCategory.Level.SYSTEM);
     }
 
     @Override
-    protected Map<String, String> getDependencies() {
+    public Map<String, String> getDependencies() {
         return DEPENDENCIES;
     }
 
     @Override
-    protected StartStrategy getResourceStartStrategy() {
-        return StartStrategy.Lazy;
+    public StartStrategy getResourceStartStrategy() {
+        return StartStrategy.LAZY;
     }
 
     @Override
-    protected Class<? extends TestRunner> getTestRunnerClass() {
+    public Class<? extends TestRunner> getTestRunnerClass() {
         return SystemTestRunner.class;
     }
 

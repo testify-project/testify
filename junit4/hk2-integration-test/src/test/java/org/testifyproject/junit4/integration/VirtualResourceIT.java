@@ -16,7 +16,6 @@
 package org.testifyproject.junit4.integration;
 
 import java.util.List;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -24,9 +23,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.Scan;
+import org.testifyproject.annotation.VirtualResource;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.need.common.GreetingEntity;
 import org.testifyproject.junit4.fixture.need.container.PostgresAbstractBinder;
-import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
@@ -34,10 +36,11 @@ import org.testifyproject.annotation.VirtualResource;
  */
 @VirtualResource(value = "postgres", version = "9.4")
 @Module(PostgresAbstractBinder.class)
+@Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class VirtualResourceIT {
 
-    @Inject
+    @Real
     EntityManagerFactory cut;
 
     @Test

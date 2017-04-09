@@ -35,7 +35,7 @@ import org.testifyproject.level.integration.IntegrationTestRunner;
  */
 public class SpringIntegrationTest extends TestifyJUnit4TestRunner {
 
-    public static final Map<String, String> DEPENDENCIES = new HashMap<>();
+    private static final Map<String, String> DEPENDENCIES = new HashMap<>();
 
     static {
         DEPENDENCIES.put("org.springframework.context.ApplicationContext", "Spring Context");
@@ -49,21 +49,21 @@ public class SpringIntegrationTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public SpringIntegrationTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.Integration);
+        super(testClass, TestCategory.Level.INTEGRATION);
     }
 
     @Override
-    protected Map<String, String> getDependencies() {
+    public Map<String, String> getDependencies() {
         return DEPENDENCIES;
     }
 
     @Override
-    protected StartStrategy getResourceStartStrategy() {
-        return StartStrategy.Lazy;
+    public StartStrategy getResourceStartStrategy() {
+        return StartStrategy.LAZY;
     }
 
     @Override
-    protected Class<? extends TestRunner> getTestRunnerClass() {
+    public Class<? extends TestRunner> getTestRunnerClass() {
         return IntegrationTestRunner.class;
     }
 

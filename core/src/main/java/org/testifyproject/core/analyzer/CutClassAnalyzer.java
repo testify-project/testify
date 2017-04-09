@@ -18,7 +18,6 @@ package org.testifyproject.core.analyzer;
 import static java.lang.Class.forName;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.security.AccessController;
@@ -34,11 +33,11 @@ import org.testifyproject.asm.FieldVisitor;
 import org.testifyproject.asm.MethodVisitor;
 import static org.testifyproject.asm.Opcodes.ASM5;
 import static org.testifyproject.asm.Type.getMethodType;
-import static org.testifyproject.guava.common.base.Preconditions.checkState;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.ReflectionUtil;
 
 /**
- * A class visitor implementation that performs analysis on the class under
- * test.
+ * A class visitor implementation that performs analysis on the class under test.
  *
  * @author saden
  */
@@ -57,37 +56,20 @@ public class CutClassAnalyzer extends ClassVisitor {
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         return doPrivileged((PrivilegedAction<FieldVisitor>) () -> {
-
             try {
                 Class<?> cutType = cutField.getType();
                 Field field = cutType.getDeclaredField(name);
                 field.setAccessible(true);
-                int modifiers = field.getModifiers();
 
-                //remove final modifier from the field
-                Field modifiersField = Field.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(field, modifiers & ~Modifier.FINAL);
+                ReflectionUtil.INSTANCE.removeFinalModifier(field);
+                saveField(field);
 
-                FieldDescriptor fieldDescriptor = DefaultFieldDescriptor.of(field);
-                Type fieldType = fieldDescriptor.getGenericType();
-                String fieldName = fieldDescriptor.getName();
-                DescriptorKey typeKey = DescriptorKey.of(fieldType);
-                DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
-
-                cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
-                cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
-                cutDescriptor.addListElement(CutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
-            } catch (SecurityException
-                    | NoSuchFieldException
-                    | IllegalAccessException
-                    | IllegalArgumentException e) {
-                checkState(false,
-                        "Could not alter modifiers of field '%s' in class under test '%s'.\n%s",
-                        name, cutField.getDeclaringClass().getSimpleName(), e.getMessage());
+                return null;
+            } catch (NoSuchFieldException | SecurityException e) {
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Could not get  field '{}' in class under test '{}'.",
+                        e, name, cutField.getDeclaringClass().getSimpleName());
             }
-
-            return null;
         });
     }
 
@@ -95,56 +77,60 @@ public class CutClassAnalyzer extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         return AccessController.doPrivileged((PrivilegedAction<MethodVisitor>) () -> {
             if (CONSTRUCTOR_NAME.equals(name)) {
-
                 org.testifyproject.asm.Type type = getMethodType(desc);
-                Class[] parameterTypes = of(type.getArgumentTypes())
-                        .sequential()
-                        .map(this::getClass)
-                        .toArray(Class[]::new);
+                Class[] parameterTypes = of(type.getArgumentTypes()).map(this::getClass).toArray(Class[]::new);
 
                 try {
-                    Constructor<?> constructor = cutField
-                            .getType()
-                            .getDeclaredConstructor(parameterTypes);
-
+                    Constructor<?> constructor = cutField.getType().getDeclaredConstructor(parameterTypes);
                     cutDescriptor.addProperty(CutDescriptorProperties.CONSTRUCTOR, constructor);
 
                     Parameter[] parameters = constructor.getParameters();
-
                     for (int index = 0; index < parameters.length; index++) {
-                        Parameter parameter = parameters[index];
-                        ParameterDescriptor paramterDescriptor = DefaultParameterDescriptor.of(parameter, index);
-
-                        Type paramterType = paramterDescriptor.getGenericType();
-                        String paramterName = paramterDescriptor.getName();
-
-                        DescriptorKey typeKey = DescriptorKey.of(paramterType);
-                        DescriptorKey typeAndNameKey = DescriptorKey.of(paramterType, paramterName);
-
-                        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeKey, paramterDescriptor);
-                        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeAndNameKey, paramterDescriptor);
-                        cutDescriptor.addListElement(CutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
+                        saveParamter(parameters[index], index);
                     }
-
                 } catch (NoSuchMethodException | SecurityException e) {
-                    checkState(false,
-                            "Constructor with '%s' parameters not accessible in '%s' class.",
-                            Arrays.toString(parameterTypes), cutField.getDeclaringClass().getTypeName());
+                    throw ExceptionUtil.INSTANCE.propagate(
+                            "Constructor with '{}' parameters not accessible in '{}' class.",
+                            e, Arrays.toString(parameterTypes), cutField.getDeclaringClass().getTypeName());
                 }
-
             }
 
             return null;
         });
     }
 
-    private Class<?> getClass(org.testifyproject.asm.Type type) {
+    void saveField(Field field) {
+        FieldDescriptor fieldDescriptor = DefaultFieldDescriptor.of(field);
+        Type fieldType = fieldDescriptor.getGenericType();
+        String fieldName = fieldDescriptor.getName();
+
+        DescriptorKey typeKey = DescriptorKey.of(fieldType);
+        DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
+
+        cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
+        cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
+        cutDescriptor.addListElement(CutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+    }
+
+    void saveParamter(Parameter parameter, int index) {
+        ParameterDescriptor paramterDescriptor = DefaultParameterDescriptor.of(parameter, index);
+
+        Type paramterType = paramterDescriptor.getGenericType();
+        String paramterName = paramterDescriptor.getName();
+
+        DescriptorKey typeKey = DescriptorKey.of(paramterType);
+        DescriptorKey typeAndNameKey = DescriptorKey.of(paramterType, paramterName);
+
+        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeKey, paramterDescriptor);
+        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeAndNameKey, paramterDescriptor);
+        cutDescriptor.addListElement(CutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
+    }
+
+    Class<?> getClass(org.testifyproject.asm.Type type) {
         try {
             return forName(type.getInternalName().replace('/', '.'));
         } catch (ClassNotFoundException e) {
-            checkState(false, "Class '%s' not found in the classpath.", type.getClassName());
-            //not reachable;
-            throw new IllegalStateException(e);
+            throw ExceptionUtil.INSTANCE.propagate("Class '{}' not found in the classpath.", e, type.getClassName());
         }
     }
 

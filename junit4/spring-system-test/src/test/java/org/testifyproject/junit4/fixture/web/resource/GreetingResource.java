@@ -40,8 +40,4 @@ public class GreetingResource {
         return greetingService.getGreeting();
     }
 
-    public GreetingService getGreetingService() {
-        return greetingService;
-    }
-
 }

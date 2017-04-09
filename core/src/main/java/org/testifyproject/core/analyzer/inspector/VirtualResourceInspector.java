@@ -16,10 +16,11 @@
 package org.testifyproject.core.analyzer.inspector;
 
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.core.analyzer.TestAnnotationInspector;
-import org.testifyproject.core.analyzer.TestDescriptorProperties;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * An annotation inspector that processes {@link VirtualResource} annotations.
@@ -27,16 +28,12 @@ import org.testifyproject.annotation.VirtualResource;
  * @author saden
  */
 @Discoverable
-public class VirtualResourceInspector implements TestAnnotationInspector<VirtualResource> {
+@Handles(VirtualResource.class)
+public class VirtualResourceInspector implements AnnotationInspector<VirtualResource> {
 
     @Override
-    public boolean handles(Class<?> annotationType) {
-        return VirtualResource.class.isAssignableFrom(annotationType);
-    }
-
-    @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, VirtualResource virtualResource) throws Exception {
-        testDescriptor.addListElement(TestDescriptorProperties.REQUIRES_CONTAINERS, virtualResource);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, VirtualResource virtualResource) {
+        testDescriptor.addListElement(TestDescriptorProperties.VIRTUAL_RESOURCES, virtualResource);
     }
 
 }

@@ -16,29 +16,18 @@
 package org.testifyproject.junit4.system;
 
 import java.util.Collections;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.web.SpringServletContainerInitializer;
 import org.testifyproject.ApplicationInstance;
 import org.testifyproject.ApplicationProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.bytebuddy.ByteBuddy;
-import org.testifyproject.bytebuddy.description.type.TypeDescription;
-import org.testifyproject.bytebuddy.dynamic.ClassFileLocator;
-import org.testifyproject.bytebuddy.dynamic.DynamicType;
-import org.testifyproject.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import static org.testifyproject.bytebuddy.implementation.MethodDelegation.to;
-import org.testifyproject.bytebuddy.implementation.bind.MethodNameEqualityResolver;
-import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
-import static org.testifyproject.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
-import static org.testifyproject.bytebuddy.matcher.ElementMatchers.not;
-import org.testifyproject.bytebuddy.pool.TypePool;
 import org.testifyproject.core.ApplicationInstanceProperties;
 import org.testifyproject.core.DefaultApplicationInstance;
 import org.testifyproject.core.TestContextHolder;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -49,64 +38,35 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class SpringSystemApplicationProvider implements ApplicationProvider {
 
-    private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
-    private static final Map<String, DynamicType.Loaded<?>> REBASED_CLASSES = new ConcurrentHashMap<>();
     private static final TestContextHolder TEST_CONTEXT_HOLDER = TestContextHolder.INSTANCE;
 
     @Override
     public ApplicationInstance start(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Application application = testDescriptor.getApplication().get();
+        Optional<Application> foundApplication = testDescriptor.getApplication();
+        ApplicationInstance applicationInstance = null;
 
-        SpringSystemInterceptor interceptor = new SpringSystemInterceptor(TEST_CONTEXT_HOLDER);
+        if (foundApplication.isPresent()) {
+            Application application = foundApplication.get();
 
-        ClassFileLocator locator = ClassFileLocator.ForClassLoader.ofClassPath();
-        TypePool typePool = TypePool.Default.ofClassPath();
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            String servletClassName = "org.springframework.web.servlet.FrameworkServlet";
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            SpringSystemInterceptor interceptor = new SpringSystemInterceptor(TEST_CONTEXT_HOLDER);
 
-        String servletClassName = "org.springframework.web.servlet.FrameworkServlet";
+            ReflectionUtil.INSTANCE.rebase(servletClassName, classLoader, interceptor);
 
-        REBASED_CLASSES.computeIfAbsent(servletClassName, p -> {
-            TypeDescription typeDescription = typePool.describe(p).resolve();
+            Class<?> dynamicApp = ReflectionUtil.INSTANCE.subclass(application.value(), classLoader, interceptor);
 
-            return BYTE_BUDDY
-                    .rebase(typeDescription, locator)
-                    .method(not(isDeclaredBy(Object.class)))
-                    .intercept(
-                            to(interceptor)
-                                    .filter(not(isDeclaredBy(Object.class)))
-                                    .defineAmbiguityResolver(
-                                            MethodNameEqualityResolver.INSTANCE,
-                                            BindingPriority.Resolver.INSTANCE)
-                    )
-                    .make()
-                    .load(classLoader, ClassLoadingStrategy.Default.INJECTION);
-        });
+            Set<Class<?>> handlers = Collections.singleton(dynamicApp);
+            SpringServletContainerInitializer initializer = new SpringServletContainerInitializer();
 
-        Class<?> proxyAppType = BYTE_BUDDY.subclass(application.value())
-                .method(not(isDeclaredBy(Object.class)))
-                .intercept(
-                        to(interceptor)
-                                .filter(not(isDeclaredBy(Object.class)))
-                                .defineAmbiguityResolver(
-                                        MethodNameEqualityResolver.INSTANCE,
-                                        BindingPriority.Resolver.INSTANCE)
-                )
-                .make()
-                .load(classLoader, ClassLoadingStrategy.Default.WRAPPER)
-                .getLoaded();
+            applicationInstance = DefaultApplicationInstance.of(testContext, application);
 
-        Set<Class<?>> handlers = Collections.singleton(proxyAppType);
+            applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER, initializer);
+            applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_HANDLERS, handlers);
 
-        SpringServletContainerInitializer initializer = new SpringServletContainerInitializer();
-
-        ApplicationInstance<SpringServletContainerInitializer> applicationInstance
-                = DefaultApplicationInstance.of(testContext, application);
-
-        applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER, initializer);
-        applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_HANDLERS, handlers);
-
-        TEST_CONTEXT_HOLDER.set(testContext);
+            TEST_CONTEXT_HOLDER.set(testContext);
+        }
 
         return applicationInstance;
     }

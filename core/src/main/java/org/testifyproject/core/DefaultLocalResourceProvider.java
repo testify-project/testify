@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
@@ -29,7 +30,6 @@ import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.LocalResourceInstance;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and

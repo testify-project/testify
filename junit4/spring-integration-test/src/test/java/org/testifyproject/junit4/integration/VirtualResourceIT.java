@@ -24,10 +24,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.junit4.fixture.need.VirtualResourceConfig;
 import org.testifyproject.junit4.fixture.need.common.GreetingService;
 import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
-import org.testifyproject.annotation.VirtualResource;
 
 /**
  *

@@ -20,6 +20,7 @@ import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import org.testifyproject.TestifyException;
 import org.testifyproject.annotation.Fixture;
 
 /**
@@ -56,7 +57,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
             } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException e) {
-                throw new IllegalStateException(e);
+                throw TestifyException.of(e);
             }
         });
     }
@@ -78,7 +79,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
             } catch (SecurityException
                     | IllegalAccessException
                     | IllegalArgumentException e) {
-                throw new IllegalStateException(e);
+                throw TestifyException.of(e);
             }
         });
     }

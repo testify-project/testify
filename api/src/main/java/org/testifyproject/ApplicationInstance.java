@@ -23,9 +23,8 @@ import org.testifyproject.trait.PropertiesTrait;
  * application.
  *
  * @author saden
- * @param <T> the application initializer type
  */
-public interface ApplicationInstance<T> extends PropertiesTrait {
+public interface ApplicationInstance extends PropertiesTrait {
 
     /**
      * Get the application annotation.

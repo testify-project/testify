@@ -20,8 +20,10 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
-import org.testifyproject.core.analyzer.TestAnnotationInspector;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.core.util.ReflectionUtil;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
 import static org.testifyproject.guava.common.base.Preconditions.checkState;
 import org.testifyproject.tools.Discoverable;
 
@@ -32,15 +34,11 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class CollaboratorProviderInspector implements TestAnnotationInspector<CollaboratorProvider> {
+@Handles(CollaboratorProvider.class)
+public class CollaboratorProviderInspector implements AnnotationInspector<CollaboratorProvider> {
 
     @Override
-    public boolean handles(Class<?> type) {
-        return CollaboratorProvider.class.isAssignableFrom(type);
-    }
-
-    @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, CollaboratorProvider collaboratorProvider) throws Exception {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, CollaboratorProvider collaboratorProvider) {
         Class<?> providerClass = collaboratorProvider.value();
         checkState(providerClass != void.class,
                 "The value of @CollaboratorProvider annotation on '%s' must be specified.",
@@ -49,11 +47,10 @@ public class CollaboratorProviderInspector implements TestAnnotationInspector<Co
         Method[] methods = providerClass.getDeclaredMethods();
 
         for (Method method : methods) {
-            if (method.getReturnType().equals(Object[].class)
-                    && method.getParameterCount() == 0) {
+            if (!method.isSynthetic()) {
                 method.setAccessible(true);
 
-                Object instance = providerClass.newInstance();
+                Object instance = ReflectionUtil.INSTANCE.newInstance(providerClass);
                 MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
                 testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
 

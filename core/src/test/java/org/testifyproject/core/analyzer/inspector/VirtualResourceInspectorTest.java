@@ -15,14 +15,13 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.core.analyzer.TestDescriptorProperties;
 
 /**
  *
@@ -37,27 +36,15 @@ public class VirtualResourceInspectorTest {
         cut = new VirtualResourceInspector();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void callToHandlesNullShouldReturThrowExpcetion() {
-        cut.handles(null);
-    }
-
     @Test
-    public void callToHandlesVirtualResourceShouldReturnTrue() {
-        boolean result = cut.handles(VirtualResource.class);
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenParamtersInspectShouldAddProperty() throws Exception {
+    public void givenParamtersInspectShouldAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
         VirtualResource annotation = mock(VirtualResource.class);
 
         cut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.REQUIRES_CONTAINERS, annotation);
+        verify(testDescriptor).addListElement(TestDescriptorProperties.VIRTUAL_RESOURCES, annotation);
     }
 
 }

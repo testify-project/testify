@@ -39,9 +39,4 @@ public class GreetingResource {
     public String greet() {
         return greetingService.getGreeting();
     }
-
-    public GreetingService getGreetingService() {
-        return greetingService;
-    }
-
 }

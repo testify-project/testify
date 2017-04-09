@@ -30,6 +30,7 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
+import static org.testifyproject.core.TestContextProperties.BASE_URI;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 
@@ -76,6 +77,7 @@ public class Jerset2Interceptor {
             ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceLocator);
             serviceProvider.postConfigure(testContext, serviceInstance);
             testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
+            testContext.addProperty(BASE_URI, uri);
         });
 
         return zuper.call();

@@ -19,7 +19,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import static java.util.stream.Collectors.toList;
@@ -27,6 +26,8 @@ import static java.util.stream.Collectors.toSet;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.beans.BeansException;
 import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,22 +43,24 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.core.DefaultServiceProvider;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A Spring DI implementation of {@link ServiceInstance} SPI contract. This
- * class provides the ability to work with Spring
- * {@link ConfigurableApplicationContext} to create, locate, and manage
+ * A Spring DI implementation of {@link ServiceInstance} SPI contract. This class provides the
+ * ability to work with Spring {@link ConfigurableApplicationContext} to create, locate, and manage
  * services.
  *
  * @author saden
  */
+@ToString(of = "context")
+@EqualsAndHashCode(of = "context")
 public class SpringServiceInstance implements ServiceInstance {
 
-    private final static Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
-    private final static Set<Class<? extends Annotation>> NAME_QUALIFIER;
-    private final static Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
+    private static final Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
+    private static final Set<Class<? extends Annotation>> NAME_QUALIFIER;
+    private static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
 
     static {
         INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, Autowired.class, Real.class);
@@ -154,6 +157,7 @@ public class SpringServiceInstance implements ServiceInstance {
                 try {
                     instance = context.getBean(rawType);
                 } catch (BeansException e) {
+                    LoggingUtil.INSTANCE.debug("Could not find bean", e);
                     //we could find the bean by its raw type. maybe this bean is
                     //a dynamically created bean so lets try another method to
                     //find the bean by looking at all possible beans of that type
@@ -166,15 +170,11 @@ public class SpringServiceInstance implements ServiceInstance {
                     if (result.isPresent()) {
                         instance = result.get();
                     }
-
-                    //TODO: maybe we should throw an error here instead of the
-                    //returning null?
                 }
 
             } else {
                 instance = context.getBean(rawType);
             }
-
         } else {
             Annotation annotation = qualifiers[0];
             Class<? extends Annotation> annotationType = annotation.annotationType();
@@ -187,11 +187,6 @@ public class SpringServiceInstance implements ServiceInstance {
                     break;
                 }
             }
-
-            if (instance == null) {
-
-            }
-
         }
 
         return (T) instance;
@@ -238,13 +233,11 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public void addModules(Module... modules) {
         BeanDefinitionRegistry registry = (BeanDefinitionRegistry) context;
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
         AnnotatedBeanDefinitionReader annotatedBeanDefinitionReader = new AnnotatedBeanDefinitionReader(registry);
 
         for (Module module : modules) {
             annotatedBeanDefinitionReader.registerBean(module.value());
         }
-
     }
 
     @Override
@@ -272,34 +265,6 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public Set<Class<? extends Annotation>> getCustomQualifiers() {
         return CUSTOM_QUALIFIER;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.context);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SpringServiceInstance other = (SpringServiceInstance) obj;
-
-        return Objects.equals(this.context, other.context);
-    }
-
-    @Override
-    public String toString() {
-        return "SpringServiceInstance{" + "context=" + context + '}';
     }
 
 }

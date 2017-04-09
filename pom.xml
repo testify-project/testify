@@ -78,6 +78,7 @@
         <plugin.site>3.5.1</plugin.site>
         <plugin.projectinfo>2.9</plugin.projectinfo>
         <plugin.jxr>2.5</plugin.jxr>
+        <plugin.sonarqube>3.2</plugin.sonarqube>
 
         <!-- Test Dependencies -->
         <junit.version>4.12</junit.version>
@@ -102,7 +103,10 @@
         <jsoup.version>1.9.2</jsoup.version>
         <javax.transaction.version>1.2</javax.transaction.version>
         <javax.interceptor.version>1.2</javax.interceptor.version>
-        <postgressql.version>9.4.1207</postgressql.version> 
+        <postgressql.version>9.4.1207</postgressql.version>
+
+        <!-- Processor Dependencies -->
+        <lombok.version>1.16.16</lombok.version>
     </properties>
 
     <prerequisites>
@@ -304,8 +308,6 @@
                                 <goal>test</goal>
                             </goals>
                             <configuration>
-                                <reuseForks>false</reuseForks>
-                                <parallel>classes</parallel>
                                 <includes>
                                     <include>**/*IT.java</include>
                                 </includes>
@@ -318,8 +320,6 @@
                                 <goal>test</goal>
                             </goals>
                             <configuration>
-                                <reuseForks>false</reuseForks>
-                                <parallel>classes</parallel>
                                 <includes>
                                     <include>**/*ST.java</include>
                                 </includes>
@@ -330,8 +330,8 @@
                         <argLine>${jacocoSurefireArgs} -client -Xms512m -Xmx2048m</argLine>
                         <failIfNoTests>false</failIfNoTests>
                         <forkCount>0.75C</forkCount>
-                        <reuseForks>true</reuseForks>
-                        <parallel>methods</parallel>
+                        <reuseForks>false</reuseForks>
+                        <parallel>classes</parallel>
                         <useUnlimitedThreads>true</useUnlimitedThreads> 
                         <includes>
                             <include>**/*Test.java</include>
@@ -400,12 +400,18 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${plugin.sonarqube}</version>
+                </plugin>
+                <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
                     <version>${plugin.license}</version>
                     <executions>
                         <execution>
                             <id>license-check</id>
+                            <phase>process-resources</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -451,6 +457,7 @@
                     <executions>
                         <execution>
                             <id>checkstyle-check</id>
+                            <phase>process-resources</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -612,6 +619,11 @@
             <version>${buildtools.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -649,6 +661,12 @@
                 <version>${buildtools.version}</version>
                 <optional>true</optional>
             </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -673,23 +691,16 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <configuration>
-                            <skip>${skipTests}</skip>               
-                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>com.mycila</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                        <configuration>
-                            <skip>${skipTests}</skip>               
-                        </configuration>
                     </plugin>
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <skip>${skipTests}</skip>               
+                            <skip>${skipTests}</skip>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -728,7 +739,6 @@
                         <artifactId>jacoco-maven-plugin</artifactId>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
                     </plugin>
                     <plugin>

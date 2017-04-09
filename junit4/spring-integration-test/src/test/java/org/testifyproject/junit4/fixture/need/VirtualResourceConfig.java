@@ -30,8 +30,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
-import org.testifyproject.junit4.fixture.need.common.DatabaseConfig;
 import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.junit4.fixture.need.common.DatabaseConfig;
 
 /**
  *

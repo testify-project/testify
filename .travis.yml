@@ -28,13 +28,12 @@ addons:
 
 before_install:
     - ./before_install.sh
-    - pip install --user codecov
     - sudo apt-get update -y
     - sudo apt-get install docker-engine=1.11.2-0~trusty -o Dpkg::Options::="--force-confold" --force-yes -y
 
 script: ./script.sh
 
 after_success:
-    - codecov
+    - bash <(curl -s https://codecov.io/bash)
     - ./after_success.sh
 

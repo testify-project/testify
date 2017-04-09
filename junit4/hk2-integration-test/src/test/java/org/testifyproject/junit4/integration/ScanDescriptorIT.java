@@ -30,7 +30,7 @@ import org.testifyproject.junit4.fixture.scan.ScanGreetingService;
  *
  * @author saden
  */
-@Scan("META-INF/hk2-locator/descriptor")
+@Scan("META-INF/hk2-locator/custom")
 @RunWith(HK2IntegrationTest.class)
 public class ScanDescriptorIT {
 

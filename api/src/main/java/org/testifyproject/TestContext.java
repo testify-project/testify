@@ -17,7 +17,6 @@ package org.testifyproject;
 
 import java.util.Map;
 import java.util.Optional;
-import org.testifyproject.trait.LoggingTrait;
 import org.testifyproject.trait.PropertiesTrait;
 
 /**
@@ -26,7 +25,7 @@ import org.testifyproject.trait.PropertiesTrait;
  *
  * @author saden
  */
-public interface TestContext extends LoggingTrait, PropertiesTrait {
+public interface TestContext extends PropertiesTrait {
 
     /**
      * Get a unique name to identify the test context.

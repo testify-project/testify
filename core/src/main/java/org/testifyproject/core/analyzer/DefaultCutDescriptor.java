@@ -21,32 +21,52 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A descriptor class used to access properties of or perform operations on an
- * analyzed class under test (CUT) class.
+ * A descriptor class used to access properties of or perform operations on an analyzed class under
+ * test (CUT) class.
  *
  * @author saden
  */
+@ToString(doNotUseGetters = true)
+@EqualsAndHashCode(doNotUseGetters = true)
 public class DefaultCutDescriptor implements CutDescriptor {
 
     private final Field field;
     private final Map<String, Object> properties;
 
+    DefaultCutDescriptor(Field field, Map<String, Object> properties) {
+        this.field = field;
+        this.properties = properties;
+    }
+
+    /**
+     * Create a new cut descriptor instance from the given field.
+     *
+     * @param field the underlying field
+     * @return a cut descriptor instance
+     */
     public static DefaultCutDescriptor of(Field field) {
         return new DefaultCutDescriptor(field, new HashMap<>());
     }
 
-    DefaultCutDescriptor(Field field, Map<String, Object> properties) {
-        this.field = field;
-        this.properties = properties;
+    /**
+     * Create a new cut descriptor instance from the given field and properties.
+     *
+     * @param field the underlying field
+     * @param properties the underlying properties
+     * @return a cut descriptor instance
+     */
+    public static DefaultCutDescriptor of(Field field, Map<String, Object> properties) {
+        return new DefaultCutDescriptor(field, properties);
     }
 
     @Override
@@ -75,10 +95,8 @@ public class DefaultCutDescriptor implements CutDescriptor {
     }
 
     @Override
-    public Constructor<?> getConstructor() {
-        Optional<Constructor<?>> result = findProperty(CutDescriptorProperties.CONSTRUCTOR);
-
-        return result.get();
+    public Constructor getConstructor() {
+        return getProperty(CutDescriptorProperties.CONSTRUCTOR);
     }
 
     @Override
@@ -154,34 +172,6 @@ public class DefaultCutDescriptor implements CutDescriptor {
     @Override
     public Collection<ParameterDescriptor> getParameterDescriptors() {
         return findList(CutDescriptorProperties.PARAMETER_DESCRIPTORS);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 23 * hash + Objects.hashCode(this.field);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultCutDescriptor other = (DefaultCutDescriptor) obj;
-
-        return Objects.equals(this.field, other.field);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultCutDescriptor{" + "field=" + field + '}';
     }
 
 }

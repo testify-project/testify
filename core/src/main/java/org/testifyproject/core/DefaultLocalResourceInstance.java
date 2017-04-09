@@ -16,9 +16,10 @@
 package org.testifyproject.core;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 
@@ -29,15 +30,24 @@ import org.testifyproject.LocalResourceInstance;
  * @param <S> server resource instance type
  * @param <C> client resource instance type
  */
+@ToString
+@EqualsAndHashCode
 public class DefaultLocalResourceInstance<S, C> implements LocalResourceInstance<S, C> {
 
     private final Instance<S> instance;
     private final Instance<C> client;
     private final Map<String, Object> properties;
 
+    DefaultLocalResourceInstance(Instance<S> instance,
+            Instance<C> client,
+            Map<String, Object> properties) {
+        this.instance = instance;
+        this.client = client;
+        this.properties = properties;
+    }
+
     /**
-     * Create a resource instance based on the given server, client and
-     * properties.
+     * Create a resource instance based on the given server, client and properties.
      *
      * @param <S> server resource instance type
      * @param <C> client resource instance type
@@ -50,14 +60,6 @@ public class DefaultLocalResourceInstance<S, C> implements LocalResourceInstance
             Instance<C> client,
             Map<String, Object> properties) {
         return new DefaultLocalResourceInstance<>(instance, client, properties);
-    }
-
-    DefaultLocalResourceInstance(Instance<S> instance,
-            Instance<C> client,
-            Map<String, Object> properties) {
-        this.instance = instance;
-        this.client = client;
-        this.properties = properties;
     }
 
     @Override
@@ -73,45 +75,6 @@ public class DefaultLocalResourceInstance<S, C> implements LocalResourceInstance
     @Override
     public <T> Optional<T> findProperty(String name) {
         return ofNullable((T) properties.get(name));
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.instance);
-        hash = 97 * hash + Objects.hashCode(this.client);
-        hash = 97 * hash + Objects.hashCode(this.properties);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultLocalResourceInstance<?, ?> other = (DefaultLocalResourceInstance<?, ?>) obj;
-        if (!Objects.equals(this.instance, other.instance)) {
-            return false;
-        }
-        if (!Objects.equals(this.client, other.client)) {
-            return false;
-        }
-        return Objects.equals(this.properties, other.properties);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultLocalResourceInstance{"
-                + "instance=" + instance
-                + ", client=" + client
-                + ", properties=" + properties
-                + '}';
     }
 
 }

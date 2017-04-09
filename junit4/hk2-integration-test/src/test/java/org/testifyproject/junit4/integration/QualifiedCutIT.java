@@ -19,6 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Scan;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
 
@@ -26,6 +28,7 @@ import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
  *
  * @author saden
  */
+@Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class QualifiedCutIT {
 

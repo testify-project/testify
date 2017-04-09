@@ -21,7 +21,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.glassfish.hk2.api.ActiveDescriptor;
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import static org.glassfish.hk2.api.InjectionResolver.SYSTEM_RESOLVER_NAME;
@@ -58,7 +57,6 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
     @Override
     public Object resolve(Injectee injectee, ServiceHandle root) {
         Type requiredType = injectee.getRequiredType();
-        ActiveDescriptor<?> injecteeDescriptor = injectee.getInjecteeDescriptor();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         MockProvider mockProvider = testContext.getMockProvider();
         Object testInstance = testContext.getTestInstance();

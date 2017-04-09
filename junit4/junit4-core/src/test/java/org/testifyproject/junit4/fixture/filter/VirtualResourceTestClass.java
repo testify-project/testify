@@ -16,8 +16,8 @@
 package org.testifyproject.junit4.fixture.filter;
 
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.junit4.fixture.common.CutClass;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.junit4.fixture.common.CutClass;
 
 /**
  *

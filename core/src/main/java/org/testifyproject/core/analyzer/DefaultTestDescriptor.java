@@ -21,9 +21,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
@@ -38,10 +39,17 @@ import org.testifyproject.annotation.VirtualResource;
  *
  * @author saden
  */
+@ToString(doNotUseGetters = true)
+@EqualsAndHashCode(doNotUseGetters = true)
 public class DefaultTestDescriptor implements TestDescriptor {
 
     private final Map<String, Object> properties;
     private final Class<?> testClass;
+
+    DefaultTestDescriptor(Class<?> testClass, Map<String, Object> properties) {
+        this.testClass = testClass;
+        this.properties = properties;
+    }
 
     /**
      * Create a new test descriptors for the given test class.
@@ -53,9 +61,15 @@ public class DefaultTestDescriptor implements TestDescriptor {
         return new DefaultTestDescriptor(testClass, new HashMap<>());
     }
 
-    DefaultTestDescriptor(Class<?> testClass, Map<String, Object> properties) {
-        this.testClass = testClass;
-        this.properties = properties;
+    /**
+     * Create a new test descriptors for the given test class.
+     *
+     * @param testClass the test class the test descriptor describes
+     * @param properties the underlying properties
+     * @return a test descriptor instance
+     */
+    public static TestDescriptor of(Class<?> testClass, Map<String, Object> properties) {
+        return new DefaultTestDescriptor(testClass, properties);
     }
 
     @Override
@@ -100,12 +114,12 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     @Override
     public List<LocalResource> getLocalResources() {
-        return findList(TestDescriptorProperties.REQUIRES_RESOURCES);
+        return findList(TestDescriptorProperties.LOCAL_RESOURCES);
     }
 
     @Override
     public List<VirtualResource> getVirtualResources() {
-        return findList(TestDescriptorProperties.REQUIRES_CONTAINERS);
+        return findList(TestDescriptorProperties.VIRTUAL_RESOURCES);
     }
 
     @Override
@@ -161,33 +175,6 @@ public class DefaultTestDescriptor implements TestDescriptor {
                 .parallelStream()
                 .filter(p -> p.hasParameterTypes(parameterType))
                 .findFirst();
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.testClass);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultTestDescriptor other = (DefaultTestDescriptor) obj;
-        return Objects.equals(this.testClass, other.testClass);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultTestDescriptor{" + "testClass=" + testClass + '}';
     }
 
 }

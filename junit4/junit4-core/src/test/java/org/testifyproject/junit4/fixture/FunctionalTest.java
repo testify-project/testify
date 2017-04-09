@@ -39,21 +39,21 @@ public class FunctionalTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public FunctionalTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.Integration);
+        super(testClass, TestCategory.Level.INTEGRATION);
     }
 
     @Override
-    protected Map<String, String> getDependencies() {
+    public Map<String, String> getDependencies() {
         return DEPENDENCIES;
     }
 
     @Override
-    protected StartStrategy getResourceStartStrategy() {
-        return StartStrategy.Lazy;
+    public StartStrategy getResourceStartStrategy() {
+        return StartStrategy.LAZY;
     }
 
     @Override
-    protected Class<? extends TestRunner> getTestRunnerClass() {
+    public Class<? extends TestRunner> getTestRunnerClass() {
         return FunctionalTestRunner.class;
     }
 
