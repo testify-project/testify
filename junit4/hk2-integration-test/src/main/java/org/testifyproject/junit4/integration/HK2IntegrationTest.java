@@ -15,14 +15,11 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.junit4.core.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
-import org.testifyproject.level.integration.IntegrationTestRunner;
 
 /**
  * A JUnit HK2 integration test class runner. This class is the main entry point
@@ -34,12 +31,6 @@ import org.testifyproject.level.integration.IntegrationTestRunner;
  */
 public class HK2IntegrationTest extends TestifyJUnit4TestRunner {
 
-    private static final Map<String, String> DEPENDENCIES = new HashMap<>();
-
-    static {
-        DEPENDENCIES.put("org.glassfish.hk2.api.ServiceLocator", "HK2");
-    }
-
     /**
      * Create a new test runner instance for the class under test.
      *
@@ -48,22 +39,12 @@ public class HK2IntegrationTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public HK2IntegrationTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.INTEGRATION);
-    }
-
-    @Override
-    public Map<String, String> getDependencies() {
-        return DEPENDENCIES;
-    }
-
-    @Override
-    public StartStrategy getResourceStartStrategy() {
-        return StartStrategy.EAGER;
-    }
-
-    @Override
-    public Class<? extends TestRunner> getTestRunnerClass() {
-        return IntegrationTestRunner.class;
+        super(testClass, TestSettingsBuilder.builder()
+                .level(TestCategory.Level.INTEGRATION)
+                .resourceStartStrategy(StartStrategy.EAGER)
+                .dependency("org.glassfish.hk2.api.ServiceLocator", "HK2")
+                .build()
+        );
     }
 
 }

@@ -30,21 +30,20 @@ import java.lang.reflect.Type;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.inject.Inject;
 import javax.inject.Qualifier;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.testifyproject.Instance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.annotation.Fixture;
-import org.testifyproject.annotation.Real;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 
 /**
- * A Google Guice DI implementation of the {@link ServiceInstance} spi contract. This class provides
- * the ability to work with Google Guice {@link Injector} to create, locate, and manage services.
+ * A Google Guice DI implementation of the {@link ServiceInstance} spi contract.
+ * This class provides the ability to work with Google Guice {@link Injector} to
+ * create, locate, and manage services.
  *
  * @author saden
  */
@@ -52,12 +51,10 @@ import org.testifyproject.guava.common.collect.ImmutableSet;
 @EqualsAndHashCode(of = "injector")
 public class GuiceServiceInstance implements ServiceInstance {
 
-    private static final Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
     private static final Set<Class<? extends Annotation>> NAME_ANNOTATIONS;
     private static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
 
     static {
-        INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, com.google.inject.Inject.class, Real.class);
         NAME_ANNOTATIONS = ImmutableSet.of(javax.inject.Named.class, Named.class);
         CUSTOM_QUALIFIER = ImmutableSet.of(Qualifier.class, BindingAnnotation.class);
     }
@@ -149,11 +146,6 @@ public class GuiceServiceInstance implements ServiceInstance {
                 this.modules.add(instance);
             }
         }
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> getInjectionAnnotations() {
-        return INJECT_ANNOTATIONS;
     }
 
     @Override

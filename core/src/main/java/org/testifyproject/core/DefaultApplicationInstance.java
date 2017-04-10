@@ -56,13 +56,12 @@ public class DefaultApplicationInstance implements ApplicationInstance {
     /**
      * Create a new application instance.
      *
-     * @param <T> application initializer type
      * @param testContext the test context
      * @param application the application annotation
      * @param properties the properties
      * @return an application instance
      */
-    public static <T> ApplicationInstance of(
+    public static ApplicationInstance of(
             TestContext testContext,
             Application application,
             Map<String, Object> properties) {

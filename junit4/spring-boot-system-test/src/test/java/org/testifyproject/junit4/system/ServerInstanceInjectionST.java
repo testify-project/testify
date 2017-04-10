@@ -15,7 +15,6 @@
  */
 package org.testifyproject.junit4.system;
 
-import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,16 +31,12 @@ import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
 @Application(GreeterServletApplication.class)
 public class ServerInstanceInjectionST {
 
-    @Inject
-    ServerInstance instance1;
-
     @Real
-    ServerInstance instance2;
+    ServerInstance instance;
 
     @Test
     public void verifyInjections() {
-        assertThat(instance1).isNotNull();
-        assertThat(instance2).isNotNull();
+        assertThat(instance).isNotNull();
     }
 
 }

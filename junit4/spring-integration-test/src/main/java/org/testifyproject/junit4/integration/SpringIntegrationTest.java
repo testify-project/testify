@@ -15,14 +15,11 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.junit4.core.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
-import org.testifyproject.level.integration.IntegrationTestRunner;
 
 /**
  * A JUnit Spring integration test class runner. This class is the main entry
@@ -35,12 +32,6 @@ import org.testifyproject.level.integration.IntegrationTestRunner;
  */
 public class SpringIntegrationTest extends TestifyJUnit4TestRunner {
 
-    private static final Map<String, String> DEPENDENCIES = new HashMap<>();
-
-    static {
-        DEPENDENCIES.put("org.springframework.context.ApplicationContext", "Spring Context");
-    }
-
     /**
      * Create a new test runner instance for the class under test.
      *
@@ -49,22 +40,12 @@ public class SpringIntegrationTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public SpringIntegrationTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.INTEGRATION);
-    }
-
-    @Override
-    public Map<String, String> getDependencies() {
-        return DEPENDENCIES;
-    }
-
-    @Override
-    public StartStrategy getResourceStartStrategy() {
-        return StartStrategy.LAZY;
-    }
-
-    @Override
-    public Class<? extends TestRunner> getTestRunnerClass() {
-        return IntegrationTestRunner.class;
+        super(testClass, TestSettingsBuilder.builder()
+                .level(TestCategory.Level.INTEGRATION)
+                .resourceStartStrategy(StartStrategy.LAZY)
+                .dependency("org.springframework.context.ApplicationContext", "Spring Context")
+                .build()
+        );
     }
 
 }

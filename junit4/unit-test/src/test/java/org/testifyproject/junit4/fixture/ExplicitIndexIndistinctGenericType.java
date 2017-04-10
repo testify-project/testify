@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4.fixture;
 
-import javax.inject.Provider;
+import java.util.function.Supplier;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
 
 /**
@@ -24,10 +24,10 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
  */
 public class ExplicitIndexIndistinctGenericType {
 
-    private final Provider<Hello> hello1;
-    private final Provider<Hello> hello2;
+    private final Supplier<Hello> hello1;
+    private final Supplier<Hello> hello2;
 
-    public ExplicitIndexIndistinctGenericType(Provider<Hello> hello1, Provider<Hello> hello2) {
+    public ExplicitIndexIndistinctGenericType(Supplier<Hello> hello1, Supplier<Hello> hello2) {
         this.hello1 = hello1;
         this.hello2 = hello2;
     }
@@ -37,11 +37,11 @@ public class ExplicitIndexIndistinctGenericType {
 
     }
 
-    public Provider<Hello> getHello1() {
+    public Supplier<Hello> getHello1() {
         return hello1;
     }
 
-    public Provider<Hello> getHello2() {
+    public Supplier<Hello> getHello2() {
         return hello2;
     }
 

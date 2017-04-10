@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4.fixture;
 
-import javax.inject.Provider;
+import java.util.function.Supplier;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
 
 /**
@@ -24,9 +24,9 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
  */
 public class ImplicitGenericType {
 
-    private final Provider<Hello> hello;
+    private final Supplier<Hello> hello;
 
-    ImplicitGenericType(Provider<Hello> collaborator) {
+    ImplicitGenericType(Supplier<Hello> collaborator) {
         this.hello = collaborator;
     }
 
@@ -35,7 +35,7 @@ public class ImplicitGenericType {
 
     }
 
-    public Provider<Hello> getHello() {
+    public Supplier<Hello> getHello() {
         return hello;
     }
 

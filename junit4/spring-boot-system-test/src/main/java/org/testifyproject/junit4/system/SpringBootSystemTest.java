@@ -15,14 +15,11 @@
  */
 package org.testifyproject.junit4.system;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.junit4.core.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
-import org.testifyproject.level.system.SystemTestRunner;
 
 /**
  * A JUnit Spring system test runner. This class is the main entry point for
@@ -34,12 +31,6 @@ import org.testifyproject.level.system.SystemTestRunner;
  */
 public class SpringBootSystemTest extends TestifyJUnit4TestRunner {
 
-    private static final Map<String, String> DEPENDENCIES = new HashMap<>();
-
-    static {
-        DEPENDENCIES.put("org.springframework.boot.env.EnvironmentPostProcessor", "Spring Boot");
-    }
-
     /**
      * Create a new test runner instance for the class under test.
      *
@@ -48,22 +39,12 @@ public class SpringBootSystemTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public SpringBootSystemTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.SYSTEM);
-    }
-
-    @Override
-    public Map<String, String> getDependencies() {
-        return DEPENDENCIES;
-    }
-
-    @Override
-    public StartStrategy getResourceStartStrategy() {
-        return StartStrategy.LAZY;
-    }
-
-    @Override
-    public Class<? extends TestRunner> getTestRunnerClass() {
-        return SystemTestRunner.class;
+        super(testClass, TestSettingsBuilder.builder()
+                .level(TestCategory.Level.SYSTEM)
+                .resourceStartStrategy(StartStrategy.LAZY)
+                .dependency("org.springframework.boot.env.EnvironmentPostProcessor", "Spring Boot")
+                .build()
+        );
     }
 
 }

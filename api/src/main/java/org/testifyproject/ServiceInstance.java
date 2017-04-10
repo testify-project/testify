@@ -17,14 +17,11 @@ package org.testifyproject;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Qualifier;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
-import org.testifyproject.guava.common.collect.ImmutableSet;
 
 /**
  * A contract that defines methods for working with various dependency injection
@@ -174,23 +171,13 @@ public interface ServiceInstance {
     }
 
     /**
-     * Get all the injection annotations classes supported by the service
-     * locator.
-     *
-     * @return a set containing injection annotation classes.
-     */
-    default Set<Class<? extends Annotation>> getInjectionAnnotations() {
-        return ImmutableSet.of(Inject.class);
-    }
-
-    /**
      * Get all the name qualifier annotation classes supported by the service
      * locator.
      *
      * @return a set containing name qualifier annotation classes.
      */
     default Set<Class<? extends Annotation>> getNameQualifers() {
-        return ImmutableSet.of(Named.class);
+        return Collections.emptySet();
     }
 
     /**
@@ -200,7 +187,7 @@ public interface ServiceInstance {
      * @return a set containing custom qualifier annotation classes.
      */
     default Set<Class<? extends Annotation>> getCustomQualifiers() {
-        return ImmutableSet.of(Qualifier.class);
+        return Collections.emptySet();
     }
 
 }

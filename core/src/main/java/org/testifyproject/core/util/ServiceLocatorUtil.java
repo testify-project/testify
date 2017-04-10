@@ -74,13 +74,41 @@ public class ServiceLocatorUtil {
      * @param filter the annotation to filter on implementations on
      * @return a list that contains all implementations, empty list otherwise
      */
-    public <T> List<T> findAll(Class<T> type, Class<? extends Annotation> filter) {
+    public <T> List<T> findAllWithFilter(Class<T> type, Class<? extends Annotation> filter) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
 
         return stream(serviceLoader.spliterator(), true)
                 .distinct()
                 .filter(p -> p.getClass().isAnnotationPresent(filter))
                 .collect(toList());
+    }
+
+    /**
+     * Gets one implementation of the given type using the given annotation
+     * filter. If more than one implementation is found in the classpath an
+     * IllegalStateException will be thrown.
+     *
+     * @param <T> the SPI type
+     * @param contract the SPI contract
+     * @param filter the annotation to filter on implementations on
+     * @return a list that contains all implementations, empty list otherwise
+     */
+    public <T> T getOneWithFilter(Class<T> contract, Class<? extends Annotation> filter) {
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
+
+        List<T> result = stream(serviceLoader.spliterator(), true)
+                .distinct()
+                .filter(p -> p.getClass().isAnnotationPresent(filter))
+                .collect(toList());
+
+        String name = contract.getName();
+
+        checkState(result.size() == 1,
+                "Found '%d' implementaitons of '%s' contract in the classpath (%s). "
+                + "Please insure only one implementation of '%s' contract is in the classpath",
+                result.size(), Arrays.toString(result.toArray()), name, name);
+
+        return result.get(0);
     }
 
     /**

@@ -15,21 +15,17 @@
  */
 package org.testifyproject.junit4.fixture;
 
-import static java.util.Collections.EMPTY_MAP;
-import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.junit4.core.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 
 /**
  *
  * @author saden
  */
-public class FunctionalTest extends TestifyJUnit4TestRunner {
-
-    private static final Map<String, String> DEPENDENCIES = EMPTY_MAP;
+public class FunctionalJUnit4TestRunner extends TestifyJUnit4TestRunner {
 
     /**
      * Create a new test runner instance for the class under test.
@@ -38,23 +34,13 @@ public class FunctionalTest extends TestifyJUnit4TestRunner {
      *
      * @throws InitializationError thrown if the test class is malformed.
      */
-    public FunctionalTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.INTEGRATION);
-    }
-
-    @Override
-    public Map<String, String> getDependencies() {
-        return DEPENDENCIES;
-    }
-
-    @Override
-    public StartStrategy getResourceStartStrategy() {
-        return StartStrategy.LAZY;
-    }
-
-    @Override
-    public Class<? extends TestRunner> getTestRunnerClass() {
-        return FunctionalTestRunner.class;
+    public FunctionalJUnit4TestRunner(Class<?> testClass) throws InitializationError {
+        super(testClass, TestSettingsBuilder.builder()
+                .level(TestCategory.Level.INTEGRATION)
+                .resourceStartStrategy(StartStrategy.LAZY)
+                .testRunnerClass(FunctionalTestRunner.class)
+                .build()
+        );
     }
 
 }

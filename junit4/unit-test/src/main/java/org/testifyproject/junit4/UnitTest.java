@@ -15,14 +15,11 @@
  */
 package org.testifyproject.junit4;
 
-import static java.util.Collections.EMPTY_MAP;
-import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.junit4.core.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
-import org.testifyproject.level.unit.UnitTestRunner;
 
 /**
  * A JUnit unit test runner. This class is the main entry point for running a
@@ -34,8 +31,6 @@ import org.testifyproject.level.unit.UnitTestRunner;
  */
 public class UnitTest extends TestifyJUnit4TestRunner {
 
-    private static final Map<String, String> DEPENDENCIES = EMPTY_MAP;
-
     /**
      * Create a new test runner instance for the class under test.
      *
@@ -44,22 +39,11 @@ public class UnitTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public UnitTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.UNIT);
-    }
-
-    @Override
-    public Map<String, String> getDependencies() {
-        return DEPENDENCIES;
-    }
-
-    @Override
-    public StartStrategy getResourceStartStrategy() {
-        return StartStrategy.UNDEFINED;
-    }
-
-    @Override
-    public Class<? extends TestRunner> getTestRunnerClass() {
-        return UnitTestRunner.class;
+        super(testClass, TestSettingsBuilder.builder()
+                .level(TestCategory.Level.UNIT)
+                .resourceStartStrategy(StartStrategy.UNDEFINED)
+                .build()
+        );
     }
 
 }

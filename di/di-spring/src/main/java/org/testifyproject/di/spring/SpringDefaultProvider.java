@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.core;
+package org.testifyproject.di.spring;
 
 import java.lang.annotation.Annotation;
 import javax.inject.Provider;
 import org.testifyproject.ServiceInstance;
 
 /**
- * DefaultServiceProvider is a class that enables the creation of a provider instance that retrieves
- * a service from the service instance.
+ * SpringDefaultProvider is a class that enables the creation of a provider instance that retrieves
+ a service from the service instance.
  *
  * @author saden
  */
-public class DefaultServiceProvider implements Provider {
+public class SpringDefaultProvider implements Provider {
 
     private final ServiceInstance serviceInstance;
     private final Class type;
     private final Annotation[] qualifiers;
 
-    DefaultServiceProvider(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
+    SpringDefaultProvider(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
         this.serviceInstance = serviceInstance;
         this.type = type;
         this.qualifiers = qualifiers;
@@ -45,7 +45,7 @@ public class DefaultServiceProvider implements Provider {
      * @return a provider instance
      */
     public static Provider of(ServiceInstance serviceInstance, Class type) {
-        return new DefaultServiceProvider(serviceInstance, type, null);
+        return new SpringDefaultProvider(serviceInstance, type, null);
     }
 
     /**
@@ -58,7 +58,7 @@ public class DefaultServiceProvider implements Provider {
      * @return a provider instance
      */
     public static Provider of(ServiceInstance serviceInstance, Class<?> type, Annotation[] qualifiers) {
-        return new DefaultServiceProvider(serviceInstance, type, qualifiers);
+        return new SpringDefaultProvider(serviceInstance, type, qualifiers);
     }
 
     /**

@@ -40,6 +40,11 @@
             <version>${guice.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>${javax.inject.version}</version>
+        </dependency>
 
         <!-- Annotation Processors Dependencies -->
         <dependency>

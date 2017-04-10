@@ -19,7 +19,6 @@ import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-import org.junit.runner.notification.StoppedByUserException;
 import org.junit.runners.model.MultipleFailureException;
 import org.testifyproject.core.util.LoggingUtil;
 
@@ -86,7 +85,7 @@ public class TestifyJUnit4RunNotifier extends RunNotifier {
     }
 
     @Override
-    public void fireTestStarted(Description description) throws StoppedByUserException {
+    public void fireTestStarted(Description description) {
         LoggingUtil.INSTANCE.debug("Test started");
         runNotifier.fireTestStarted(description);
     }

@@ -15,11 +15,11 @@
  */
 package org.testifyproject.junit4.core;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.MethodRule;
@@ -51,30 +51,39 @@ import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.TestRunnerSettings;
+import org.testifyproject.extension.annotation.IntegrationTest;
+import org.testifyproject.extension.annotation.SystemTest;
+import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.guava.common.base.Throwables;
 import org.testifyproject.mock.MockitoMockProvider;
 
 /**
- * Base class for all Testify Unit Runners. This class analyzes the test class, looks for specified
- * test runner, starts and stops the tests.
+ * Base class for all Testify Unit Runners. This class analyzes the test class,
+ * looks for specified test runner, starts and stops the tests.
  *
  * @author saden
  */
-public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner implements TestRunnerSettings {
+public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
+
+    private TestSettings testSettings;
 
     /**
      * Create a new test runner instance for the class under test.
      *
      * @param testClass the test class type
-     * @param level test category level
+     * @param testSettings settings for the test
      *
      * @throws InitializationError thrown if the test class is malformed
      */
-    public TestifyJUnit4TestRunner(Class<?> testClass, TestCategory.Level level) throws InitializationError {
+    public TestifyJUnit4TestRunner(Class<?> testClass, TestSettings testSettings)
+            throws InitializationError {
         super(testClass);
+        this.testSettings = testSettings;
+
         try {
-            filter(TestifyJUnit4CategoryFilter.of(level, System.getProperty("testify.categories")));
+            TestifyJUnit4CategoryFilter categoryFilter
+                    = TestifyJUnit4CategoryFilter.of(testSettings.getLevel(), testSettings.getCategories());
+            filter(categoryFilter);
         } catch (NoTestsRemainException e) {
             LoggingUtil.INSTANCE.debug("No test remain", e);
         }
@@ -120,17 +129,13 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
                 notifier.pleaseStop();
             } finally {
                 if (!isIgnored(method)) {
-                    Optional<TestContext> result = TestContextHolder.INSTANCE.get();
-
-                    if (result.isPresent()) {
-                        TestContext testContext = result.get();
-
+                    TestContextHolder.INSTANCE.execute(testContext -> {
                         LoggingUtil.INSTANCE.debug("performing cleanup of '{}'", testContext.getName());
 
                         TestRunner testRunner = testContext.getTestRunner();
                         testRunner.stop();
                         TestContextHolder.INSTANCE.remove();
-                    }
+                    });
                 }
             }
         }
@@ -169,21 +174,24 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         MockProvider mockProvider = ServiceLocatorUtil.INSTANCE
                 .getOneOrDefault(mockProviderType, MockitoMockProvider.class);
 
-        Class<? extends TestRunner> testRunnerClass = getTestRunnerClass();
-        TestRunner testRunner = ServiceLocatorUtil.INSTANCE.getOne(TestRunner.class, testRunnerClass);
+        TestRunner testRunner;
 
-        Map<String, Object> properties = new HashMap<>();
+        if (testSettings.getTestRunnerClass() == null) {
+            testRunner = getTestRunner();
+        } else {
+            testRunner = ServiceLocatorUtil.INSTANCE.getOne(TestRunner.class, testSettings.getTestRunnerClass());
+        }
 
         TestContext testContext = DefaultTestContextBuilder.builder()
-                .resourceStartStrategy(getResourceStartStrategy())
+                .resourceStartStrategy(testSettings.getResourceStartStrategy())
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
                 .testRunner(testRunner)
                 .testReifier(testReifier)
                 .mockProvider(mockProvider)
-                .properties(properties)
-                .dependencies(getDependencies())
+                .properties(new HashMap<>())
+                .dependencies(testSettings.getDependencies())
                 .build();
 
         Optional<Field> cutField = testDescriptor.getCutField();
@@ -195,8 +203,9 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
 
         LoggingUtil.INSTANCE.debug(
                 "starting test runner '{}'",
-                testRunnerClass.getName()
+                testRunner.getClass().getName()
         );
+
         testRunner.start(testContext);
 
         LoggingUtil.INSTANCE.debug(
@@ -229,6 +238,27 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner imp
         statement = applyRules(frameworkMethod, testInstance, statement);
 
         return statement;
+    }
+
+    TestRunner getTestRunner() throws AssertionError {
+        Class<? extends Annotation> testLevelClass;
+        TestCategory.Level level = testSettings.getLevel();
+
+        switch (level) {
+            case UNIT:
+                testLevelClass = UnitTest.class;
+                break;
+            case INTEGRATION:
+                testLevelClass = IntegrationTest.class;
+                break;
+            case SYSTEM:
+                testLevelClass = SystemTest.class;
+                break;
+            default:
+                throw new AssertionError(level.name());
+        }
+
+        return ServiceLocatorUtil.INSTANCE.getOneWithFilter(TestRunner.class, testLevelClass);
     }
 
     private Statement applyRules(FrameworkMethod method, Object target,

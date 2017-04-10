@@ -39,6 +39,7 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
+@UnitTest
 @Discoverable
 public class UnitTestRunner implements TestRunner {
 
@@ -48,7 +49,7 @@ public class UnitTestRunner implements TestRunner {
     public void start(TestContext testContext) {
         this.testContext = testContext;
 
-        ServiceLocatorUtil.INSTANCE.findAll(ConfigurationVerifier.class, UnitTest.class)
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(ConfigurationVerifier.class, UnitTest.class)
                 .forEach(p -> p.verify(testContext));
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
@@ -158,7 +159,7 @@ public class UnitTestRunner implements TestRunner {
             foundCutDescriptor
                     .ifPresent(p -> p.init(testInstance));
 
-            ServiceLocatorUtil.INSTANCE.findAll(WiringVerifier.class, UnitTest.class)
+            ServiceLocatorUtil.INSTANCE.findAllWithFilter(WiringVerifier.class, UnitTest.class)
                     .forEach(p -> p.verify(testContext));
         }
     }

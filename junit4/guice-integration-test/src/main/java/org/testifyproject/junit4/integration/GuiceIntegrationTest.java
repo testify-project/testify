@@ -15,30 +15,21 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.junit4.core.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
-import org.testifyproject.level.integration.IntegrationTestRunner;
 
 /**
- * A JUnit HK2 integration test class runner. This class is the main entry point
- * for running Spring integration test using {@link org.junit.runner.RunWith}.
- * It provides means of creating your class under test, faking certain
- * collaborators or using real collaborators in the Spring application context.
+ * A JUnit HK2 integration test class runner. This class is the main entry point for running Spring
+ * integration test using {@link org.junit.runner.RunWith}. It provides means of creating your class
+ * under test, faking certain collaborators or using real collaborators in the Spring application
+ * context.
  *
  * @author saden
  */
 public class GuiceIntegrationTest extends TestifyJUnit4TestRunner {
-
-    private static final Map<String, String> DEPENDENCIES = new HashMap<>();
-
-    static {
-        DEPENDENCIES.put("com.google.inject.Guice", "Google Guice");
-    }
 
     /**
      * Create a new test runner instance for the class under test.
@@ -48,22 +39,12 @@ public class GuiceIntegrationTest extends TestifyJUnit4TestRunner {
      * @throws InitializationError thrown if the test class is malformed.
      */
     public GuiceIntegrationTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.INTEGRATION);
-    }
-
-    @Override
-    public Map<String, String> getDependencies() {
-        return DEPENDENCIES;
-    }
-
-    @Override
-    public StartStrategy getResourceStartStrategy() {
-        return StartStrategy.EAGER;
-    }
-
-    @Override
-    public Class<? extends TestRunner> getTestRunnerClass() {
-        return IntegrationTestRunner.class;
+        super(testClass, TestSettingsBuilder.builder()
+                .level(TestCategory.Level.INTEGRATION)
+                .resourceStartStrategy(StartStrategy.EAGER)
+                .dependency("com.google.inject.Guice", "Google Guice")
+                .build()
+        );
     }
 
 }

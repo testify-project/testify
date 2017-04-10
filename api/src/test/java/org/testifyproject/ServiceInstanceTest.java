@@ -18,9 +18,6 @@ package org.testifyproject;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Qualifier;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -152,18 +149,10 @@ public class ServiceInstanceTest {
     }
 
     @Test
-    public void callToGetInjectionAnnotationsShouldReturnAnnotations() {
-        Set<Class<? extends Annotation>> result = cut.getInjectionAnnotations();
-
-        assertThat(result).containsExactly(Inject.class);
-        verify(cut).getInjectionAnnotations();
-    }
-
-    @Test
     public void callToGetNameQualifiersShouldReturnAnnotations() {
         Set<Class<? extends Annotation>> result = cut.getNameQualifers();
 
-        assertThat(result).containsExactly(Named.class);
+        assertThat(result).isEmpty();
         verify(cut).getNameQualifers();
     }
 
@@ -171,7 +160,7 @@ public class ServiceInstanceTest {
     public void callToGetCustomQualifiersShouldReturnAnnotations() {
         Set<Class<? extends Annotation>> result = cut.getCustomQualifiers();
 
-        assertThat(result).containsExactly(Qualifier.class);
+        assertThat(result).isEmpty();
         verify(cut).getCustomQualifiers();
     }
 }

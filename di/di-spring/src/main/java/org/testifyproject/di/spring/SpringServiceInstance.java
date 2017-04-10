@@ -23,14 +23,12 @@ import java.util.Optional;
 import java.util.Set;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.beans.BeansException;
 import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.support.BeanDefinitionDefaults;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -40,9 +38,7 @@ import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
-import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
@@ -58,12 +54,10 @@ import org.testifyproject.guava.common.reflect.TypeToken;
 @EqualsAndHashCode(of = "context")
 public class SpringServiceInstance implements ServiceInstance {
 
-    private static final Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
     private static final Set<Class<? extends Annotation>> NAME_QUALIFIER;
     private static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
 
     static {
-        INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, Autowired.class, Real.class);
         NAME_QUALIFIER = ImmutableSet.of(Named.class, Qualifier.class);
         CUSTOM_QUALIFIER = ImmutableSet.of(javax.inject.Qualifier.class, Qualifier.class);
     }
@@ -134,7 +128,7 @@ public class SpringServiceInstance implements ServiceInstance {
         if (qualifiers == null || qualifiers.length == 0) {
             if (token.isSubtypeOf(Provider.class)) {
                 rawType = token.resolveType(Provider.class.getTypeParameters()[0]).getRawType();
-                instance = DefaultServiceProvider.of(this, rawType);
+                instance = SpringDefaultProvider.of(this, rawType);
             } else if (token.isSubtypeOf(Optional.class)) {
                 rawType = token.resolveType(Optional.class.getTypeParameters()[0]).getRawType();
                 instance = Optional.ofNullable(context.getBean(rawType));
@@ -250,11 +244,6 @@ public class SpringServiceInstance implements ServiceInstance {
         for (Scan scan : scans) {
             scanner.scan(scan.value());
         }
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> getInjectionAnnotations() {
-        return INJECT_ANNOTATIONS;
     }
 
     @Override

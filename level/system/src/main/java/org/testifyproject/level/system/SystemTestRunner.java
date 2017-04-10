@@ -43,6 +43,7 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
+@SystemTest
 @Discoverable
 public class SystemTestRunner implements TestRunner {
 
@@ -91,7 +92,7 @@ public class SystemTestRunner implements TestRunner {
                         fieldDescriptor.setValue(testInstance, value);
                     });
 
-            ServiceLocatorUtil.INSTANCE.findAll(ConfigurationVerifier.class, SystemTest.class)
+            ServiceLocatorUtil.INSTANCE.findAllWithFilter(ConfigurationVerifier.class, SystemTest.class)
                     .forEach(p -> p.verify(testContext));
 
             //create server provider instance
@@ -152,7 +153,7 @@ public class SystemTestRunner implements TestRunner {
                 reificationProvider = ServiceLocatorUtil.INSTANCE.getOne(ReificationProvider.class);
                 reificationProvider.start(testContext, serviceInstance);
 
-                ServiceLocatorUtil.INSTANCE.findAll(WiringVerifier.class, SystemTest.class)
+                ServiceLocatorUtil.INSTANCE.findAllWithFilter(WiringVerifier.class, SystemTest.class)
                         .forEach(p -> p.verify(testContext));
 
                 //invoke init method on test fields annotated with Fixture

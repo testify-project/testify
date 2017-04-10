@@ -165,11 +165,6 @@ public class GuiceServiceInstanceTest {
     }
 
     @Test
-    public void callToGetInjectionAnnotationsShouldReturnAnnotaitons() {
-        assertThat(cut.getInjectionAnnotations()).hasSize(3);
-    }
-
-    @Test
     public void callToGetNameQualifersShouldReturnAnnotaitons() {
         assertThat(cut.getNameQualifers()).hasSize(2);
     }

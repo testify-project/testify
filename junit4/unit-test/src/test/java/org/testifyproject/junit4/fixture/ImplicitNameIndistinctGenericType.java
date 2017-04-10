@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4.fixture;
 
-import javax.inject.Provider;
+import java.util.function.Supplier;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
 
 /**
@@ -24,10 +24,10 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
  */
 public class ImplicitNameIndistinctGenericType {
 
-    private final Provider<Hello> english;
-    private final Provider<Hello> spanish;
+    private final Supplier<Hello> english;
+    private final Supplier<Hello> spanish;
 
-    ImplicitNameIndistinctGenericType(Provider<Hello> english, Provider<Hello> spanish) {
+    ImplicitNameIndistinctGenericType(Supplier<Hello> english, Supplier<Hello> spanish) {
         this.english = english;
         this.spanish = spanish;
     }
@@ -37,11 +37,11 @@ public class ImplicitNameIndistinctGenericType {
 
     }
 
-    public Provider<Hello> getEnglish() {
+    public Supplier<Hello> getEnglish() {
         return english;
     }
 
-    public Provider<Hello> getSpanish() {
+    public Supplier<Hello> getSpanish() {
         return spanish;
     }
 

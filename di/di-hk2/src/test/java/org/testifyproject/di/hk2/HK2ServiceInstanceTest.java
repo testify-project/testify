@@ -152,11 +152,6 @@ public class HK2ServiceInstanceTest {
     }
 
     @Test
-    public void callToGetInjectionAnnotationsShouldReturnAnnotaitons() {
-        assertThat(cut.getInjectionAnnotations()).hasSize(2);
-    }
-
-    @Test
     public void callToGetNameQualifersShouldReturnAnnotaitons() {
         assertThat(cut.getNameQualifers()).hasSize(1);
     }

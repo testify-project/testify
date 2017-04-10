@@ -18,7 +18,6 @@ package org.testifyproject.di.spring;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -63,7 +62,7 @@ public class SpringBeanFactoryPostProcessor implements
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) {
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableListableBeanFactory;
         Set<String> replacedBeanNames = new HashSet<>();
 

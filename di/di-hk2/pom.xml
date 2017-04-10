@@ -41,6 +41,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>${javax.inject.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-metadata-generator</artifactId>
             <version>${hk2.version}</version>

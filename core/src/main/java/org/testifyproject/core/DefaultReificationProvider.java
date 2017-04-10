@@ -34,6 +34,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
 
@@ -82,7 +83,6 @@ public class DefaultReificationProvider implements ReificationProvider {
 
         Set<Class<? extends Annotation>> nameQualifers = serviceInstance.getNameQualifers();
         Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
-        Set<Class<? extends Annotation>> injectionAnnotations = serviceInstance.getInjectionAnnotations();
 
         MockProvider mockProvider = testContext.getMockProvider();
 
@@ -153,10 +153,11 @@ public class DefaultReificationProvider implements ReificationProvider {
         //annotations then get the services and initialize the test fields.
         testDescriptor.getFieldDescriptors()
                 .parallelStream()
-                .filter(p -> !p.getValue(testInstance).isPresent() && p.hasAnyAnnotations(injectionAnnotations))
+                .filter(p -> !p.getValue(testInstance).isPresent() && p.hasAnyAnnotations(Real.class))
                 .forEach(fieldDescriptor -> {
                     Class type = fieldDescriptor.getType();
-                    Annotation[] qualifierAnnotations = fieldDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
+                    Annotation[] qualifierAnnotations
+                            = fieldDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
 
                     Object instance = serviceInstance.getService(type, qualifierAnnotations);
 
@@ -168,7 +169,6 @@ public class DefaultReificationProvider implements ReificationProvider {
 
                         fieldDescriptor.setValue(testInstance, instance);
                     }
-
                 });
     }
 

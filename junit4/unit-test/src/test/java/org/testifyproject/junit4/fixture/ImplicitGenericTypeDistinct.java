@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4.fixture;
 
-import javax.inject.Provider;
+import java.util.function.Supplier;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
 import org.testifyproject.junit4.fixture.collaborator.World;
 
@@ -25,10 +25,10 @@ import org.testifyproject.junit4.fixture.collaborator.World;
  */
 public class ImplicitGenericTypeDistinct {
 
-    private final Provider<Hello> hello;
-    private final Provider<World> world;
+    private final Supplier<Hello> hello;
+    private final Supplier<World> world;
 
-    ImplicitGenericTypeDistinct(Provider<Hello> hello, Provider<World> world) {
+    ImplicitGenericTypeDistinct(Supplier<Hello> hello, Supplier<World> world) {
         this.hello = hello;
         this.world = world;
     }
@@ -38,11 +38,11 @@ public class ImplicitGenericTypeDistinct {
 
     }
 
-    public Provider<Hello> getHello() {
+    public Supplier<Hello> getHello() {
         return hello;
     }
 
-    public Provider<World> getWorld() {
+    public Supplier<World> getWorld() {
         return world;
     }
 

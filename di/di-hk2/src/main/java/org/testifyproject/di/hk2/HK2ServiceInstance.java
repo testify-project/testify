@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Set;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 import lombok.EqualsAndHashCode;
@@ -43,7 +42,6 @@ import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
@@ -51,8 +49,9 @@ import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class provides the ability
- * to work with HK2 {@link ServiceLocator} to create, locate, and manage services.
+ * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class
+ * provides the ability to work with HK2 {@link ServiceLocator} to create,
+ * locate, and manage services.
  *
  * @author saden
  */
@@ -60,12 +59,10 @@ import org.testifyproject.guava.common.reflect.TypeToken;
 @EqualsAndHashCode(of = "locator")
 public class HK2ServiceInstance implements ServiceInstance {
 
-    private static final Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
     private static final Set<Class<? extends Annotation>> NAME_ANNOTATIONS;
     private static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
 
     static {
-        INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, Real.class);
         NAME_ANNOTATIONS = ImmutableSet.of(Named.class);
         CUSTOM_QUALIFIER = ImmutableSet.of(Qualifier.class);
     }
@@ -201,11 +198,6 @@ public class HK2ServiceInstance implements ServiceInstance {
         } catch (IOException | MultiException e) {
             throw ExceptionUtil.INSTANCE.propagate("Could not populate service instance", e);
         }
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> getInjectionAnnotations() {
-        return INJECT_ANNOTATIONS;
     }
 
     @Override

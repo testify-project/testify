@@ -19,15 +19,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.junit4.fixture.FunctionalTest;
+import org.testifyproject.junit4.fixture.FunctionalJUnit4TestRunner;
 import org.testifyproject.junit4.fixture.common.CutClass;
 
 /**
  *
  * @author saden
  */
-@RunWith(FunctionalTest.class)
-public class TestifyJunit4TestRunnerTest {
+@RunWith(FunctionalJUnit4TestRunner.class)
+public class TestifyJUnit4TestRunnerTest {
 
     @Cut
     CutClass cut;

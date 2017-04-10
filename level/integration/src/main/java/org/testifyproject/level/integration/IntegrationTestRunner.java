@@ -33,6 +33,7 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
+@IntegrationTest
 @Discoverable
 public class IntegrationTestRunner implements TestRunner {
 
@@ -44,7 +45,7 @@ public class IntegrationTestRunner implements TestRunner {
     public void start(TestContext testContext) {
         this.testContext = testContext;
 
-        ServiceLocatorUtil.INSTANCE.findAll(ConfigurationVerifier.class, IntegrationTest.class)
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(ConfigurationVerifier.class, IntegrationTest.class)
                 .forEach(p -> p.verify(testContext));
 
         ServiceProvider serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
@@ -62,7 +63,7 @@ public class IntegrationTestRunner implements TestRunner {
         reificationProvider = ServiceLocatorUtil.INSTANCE.getOne(ReificationProvider.class);
         reificationProvider.start(testContext, serviceInstance);
 
-        ServiceLocatorUtil.INSTANCE.findAll(WiringVerifier.class, IntegrationTest.class)
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(WiringVerifier.class, IntegrationTest.class)
                 .forEach(p -> p.verify(testContext));
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();

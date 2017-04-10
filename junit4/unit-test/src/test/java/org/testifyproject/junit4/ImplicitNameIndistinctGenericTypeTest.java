@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4;
 
-import javax.inject.Provider;
+import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,10 +40,10 @@ public class ImplicitNameIndistinctGenericTypeTest {
     ImplicitNameIndistinctGenericType cut;
 
     @Fake
-    Provider<Hello> english;
+    Supplier<Hello> english;
 
     @Fake
-    Provider<Hello> spanish;
+    Supplier<Hello> spanish;
 
     @Before
     public void verifyInjections() {

@@ -42,7 +42,7 @@ public class DependencyConfigurationVerifier implements ConfigurationVerifier {
             } catch (ClassNotFoundException e) {
                 throw ExceptionUtil.INSTANCE.propagate(
                         "Required {} dependency class '{}' not found in the classpath.",
-                        e, key, value
+                        e, value, key
                 );
             }
         });

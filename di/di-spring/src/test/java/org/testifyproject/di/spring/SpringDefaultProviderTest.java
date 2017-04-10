@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.core;
+package org.testifyproject.di.spring;
 
 import java.lang.annotation.Annotation;
 import javax.inject.Named;
@@ -29,7 +29,7 @@ import org.testifyproject.ServiceInstance;
  *
  * @author saden
  */
-public class DefaultServiceProviderTest {
+public class SpringDefaultProviderTest {
 
     @Test
     public void givenServiceInstanceAndTypeGetShouldReturn() {
@@ -39,7 +39,7 @@ public class DefaultServiceProviderTest {
 
         given(serviceInstance.getService(type)).willReturn(service);
 
-        Provider cut = DefaultServiceProvider.of(serviceInstance, type);
+        Provider cut = SpringDefaultProvider.of(serviceInstance, type);
 
         Object result = cut.get();
         assertThat(result).isEqualTo(service);
@@ -55,7 +55,7 @@ public class DefaultServiceProviderTest {
 
         given(serviceInstance.getService(type, qualifiers)).willReturn(service);
 
-        Provider cut = DefaultServiceProvider.of(serviceInstance, type, qualifiers);
+        Provider cut = SpringDefaultProvider.of(serviceInstance, type, qualifiers);
 
         Object result = cut.get();
         assertThat(result).isEqualTo(service);
