@@ -22,7 +22,6 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.Argument;
@@ -33,6 +32,7 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.TestConfigurer;
 
 /**
  * A class that intercepts methods of classes that extend
@@ -65,10 +65,10 @@ public class SpringSystemInterceptor {
             @Argument(0) ConfigurableWebApplicationContext applicationContext) throws Exception {
 
         testContextHolder.execute(testContext -> {
-            TestReifier testReifier = testContext.getTestReifier();
+            TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
             ConfigurableWebApplicationContext configuredApplicationContext
-                    = testReifier.configure(testContext, applicationContext);
+                    = testConfigurer.configure(testContext, applicationContext);
 
             ServiceProvider<ConfigurableApplicationContext> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
             ServiceInstance serviceInstance = serviceProvider.configure(testContext, configuredApplicationContext);

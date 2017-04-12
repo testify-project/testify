@@ -25,7 +25,7 @@ import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Virtual;
 import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
-import org.testifyproject.junit4.fixture.NamedGreeter;
+import org.testifyproject.junit4.fixture.QualfiedGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
 
 /**
@@ -34,10 +34,10 @@ import org.testifyproject.junit4.fixture.common.Greeting;
  */
 @Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
-public class NamedGreeterDelegatedRealIT {
+public class QualifiedGreeterVirtualIT {
 
     @Cut
-    NamedGreeter cut;
+    QualfiedGreeter cut;
 
     @Virtual
     Greeting greeting;

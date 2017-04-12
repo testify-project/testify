@@ -71,36 +71,28 @@ public class TestClassAnalyzer extends ClassVisitor {
         List<AnnotationInspector> inspectors = ServiceLocatorUtil.INSTANCE.getAll(AnnotationInspector.class);
 
         return doPrivileged((PrivilegedAction<AnnotationVisitor>) () -> {
-            try {
-                //if the annotation class is annotated with Bundle meta annotation
-                //then inspect anotations on the annotation class
-                for (AnnotationInspector inspector : inspectors) {
-                    Handles handles = inspector.getClass().getDeclaredAnnotation(Handles.class);
+            //if the annotation class is annotated with Bundle meta annotation
+            //then inspect anotations on the annotation class
+            inspectors.forEach(inspector -> {
+                Handles handles = inspector.getClass().getDeclaredAnnotation(Handles.class);
+                if (handles != null) {
+                    Class<? extends Annotation> typeHandled = handles.value();
 
-                    if (handles != null) {
-                        Class<? extends Annotation> typeHandled = handles.value();
-
-                        if (typeHandled.isAssignableFrom(annotationClass)) {
-                            inspector.inspect(testDescriptor, testClass, testClass.getDeclaredAnnotation(annotationClass));
-                        } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
-                            inspector.inspect(testDescriptor, annotationClass, annotationClass.getDeclaredAnnotation(Bundle.class));
-                        }
+                    if (typeHandled.isAssignableFrom(annotationClass)) {
+                        inspector.inspect(testDescriptor, testClass, testClass.getDeclaredAnnotation(annotationClass));
+                    } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
+                        inspector.inspect(testDescriptor, annotationClass, annotationClass.getDeclaredAnnotation(Bundle.class));
                     }
                 }
+            });
 
-                return null;
-            } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate(
-                        "Could not analyze annotations in test class '{}'.",
-                        e, testClass.getName());
-            }
+            return null;
         });
     }
 
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         return doPrivileged((PrivilegedAction<FieldVisitor>) () -> {
-
             try {
                 Field field = testClass.getDeclaredField(name);
 
@@ -109,11 +101,11 @@ public class TestClassAnalyzer extends ClassVisitor {
                 ReflectionUtil.INSTANCE.removeFinalModifier(field);
 
                 Cut cut = field.getDeclaredAnnotation(Cut.class);
-                if (cut != null) {
+                if (cut == null) {
+                    saveField(field);
+                } else {
                     testDescriptor.addProperty(TestDescriptorProperties.CUT_FIELD, field);
                     cutCount++;
-                } else {
-                    saveField(field);
                 }
             } catch (NoSuchFieldException | SecurityException e) {
                 throw ExceptionUtil.INSTANCE.propagate(

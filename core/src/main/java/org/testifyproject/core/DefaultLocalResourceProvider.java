@@ -24,9 +24,9 @@ import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
@@ -58,7 +58,7 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
     @Override
     public void start(TestContext testContext, ServiceInstance serviceInstance) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        TestReifier testReifier = testContext.getTestReifier();
+        TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
         Collection<LocalResource> localResources = testDescriptor.getLocalResources();
 
@@ -71,25 +71,12 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
             LocalResourceProvider resourceProvider = reflectionUtil.newInstance(resourceProviderType);
             serviceInstance.inject(resourceProvider);
             Object configuration = resourceProvider.configure(testContext);
-            configuration = testReifier.configure(testContext, configuration);
+            configuration = testConfigurer.configure(testContext, configuration);
 
             LocalResourceInstance<?, ?> localResourceInstance = resourceProvider.start(testContext, configuration);
 
-            Instance<?> resource = localResourceInstance.getResource();
-
-            serviceInstance.replace(resource,
-                    localResource.resourceName(),
-                    localResource.resourceContract());
-
-            Optional<? extends Instance<?>> clientInstanceResult = localResourceInstance.getClient();
-
-            if (clientInstanceResult.isPresent()) {
-                Instance<?> clientInstance = clientInstanceResult.get();
-
-                serviceInstance.replace(clientInstance,
-                        localResource.clientName(),
-                        localResource.clientContract());
-            }
+            processResource(localResourceInstance, localResource, serviceInstance);
+            processClient(localResourceInstance, localResource, serviceInstance);
 
             String resourceName = localResource.name();
             Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
@@ -102,6 +89,30 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
             localResourceProviders.add(resourceProvider);
         });
+    }
+
+    void processClient(LocalResourceInstance localResourceInstance,
+            LocalResource localResource,
+            ServiceInstance serviceInstance) {
+        Optional<? extends Instance<?>> clientInstanceResult = localResourceInstance.getClient();
+
+        if (clientInstanceResult.isPresent()) {
+            Instance<?> clientInstance = clientInstanceResult.get();
+
+            serviceInstance.replace(clientInstance,
+                    localResource.clientName(),
+                    localResource.clientContract());
+        }
+    }
+
+    void processResource(LocalResourceInstance localResourceInstance,
+            LocalResource localResource,
+            ServiceInstance serviceInstance) {
+        Instance<?> resource = localResourceInstance.getResource();
+
+        serviceInstance.replace(resource,
+                localResource.resourceName(),
+                localResource.resourceContract());
     }
 
     @Override

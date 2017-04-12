@@ -79,50 +79,12 @@ public class SpringBeanFactoryPostProcessor implements
                 Configuration configuration = beanType.getAnnotation(Configuration.class);
 
                 if (configuration == null) {
-                    //if configuration annotation is not defined lets look for
-                    //the factory bean of the bean
-                    String factoryBeanName = beanDefinition.getFactoryBeanName();
-                    Fixture fixture = beanType.getAnnotation(Fixture.class);
-
-                    //if fixture is null but the factory bean is not defined
-                    //then try to get the fixture annotation from the factory
-                    //bean type
-                    if (fixture == null && factoryBeanName != null) {
-                        Class<?> factoryBeanType = beanFactory.getType(factoryBeanName);
-                        fixture = factoryBeanType.isAnnotationPresent(Configuration.class)
-                                ? factoryBeanType.getAnnotation(Fixture.class)
-                                : null;
-                    }
-
-                    //if fixture is defined then lets find all the beans with
-                    //the same type and replace them with the bean definition
-                    //in the bean annotated with fixture and thus replacying
-                    //all production beans with test fixture beans
-                    if (fixture != null) {
-                        String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
-
-                        for (String beanNameForType : beanNamesForType) {
-                            if (beanNameForType.equals(beanName)) {
-                                beanFactory.removeBeanDefinition(beanNameForType);
-                            } else {
-                                beanFactory.removeBeanDefinition(beanNameForType);
-                                GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
-
-                                if (!fixture.init().isEmpty()) {
-                                    replacementBeanDefinition.setInitMethodName(fixture.init());
-                                }
-
-                                if (!fixture.destroy().isEmpty()) {
-                                    replacementBeanDefinition.setDestroyMethodName(fixture.destroy());
-                                }
-
-                                replacementBeanDefinition.setPrimary(false);
-                                replacementBeanDefinition.setLazyInit(true);
-                                beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
-                                replacedBeanNames.add(beanNameForType);
-                            }
-                        }
-                    }
+                    processConfiguration(
+                            beanDefinition,
+                            beanType,
+                            beanFactory,
+                            beanName,
+                            replacedBeanNames);
                 }
 
                 //by default spring eagerly initilizes singleton scoped beans
@@ -143,6 +105,65 @@ public class SpringBeanFactoryPostProcessor implements
         if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
             resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
             resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
+        }
+    }
+
+    void processConfiguration(BeanDefinition beanDefinition,
+            Class<?> beanType,
+            DefaultListableBeanFactory beanFactory,
+            String beanName,
+            Set<String> replacedBeanNames) {
+        //if configuration annotation is not defined lets look for
+        //the factory bean of the bean
+        String factoryBeanName = beanDefinition.getFactoryBeanName();
+        Fixture fixture = beanType.getAnnotation(Fixture.class);
+
+        //if fixture is null but the factory bean is not defined
+        //then try to get the fixture annotation from the factory
+        //bean type
+        if (fixture == null && factoryBeanName != null) {
+            Class<?> factoryBeanType = beanFactory.getType(factoryBeanName);
+            fixture = factoryBeanType.isAnnotationPresent(Configuration.class)
+                    ? factoryBeanType.getAnnotation(Fixture.class)
+                    : null;
+        }
+
+        //if fixture is defined then lets find all the beans with
+        //the same type and replace them with the bean definition
+        //in the bean annotated with fixture and thus replacying
+        //all production beans with test fixture beans
+        if (fixture != null) {
+            processFixture(beanFactory, beanType, beanName, beanDefinition, fixture, replacedBeanNames);
+        }
+    }
+
+    void processFixture(DefaultListableBeanFactory beanFactory,
+            Class<?> beanType, String beanName,
+            BeanDefinition beanDefinition,
+            Fixture fixture,
+            Set<String> replacedBeanNames) {
+        String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
+
+        for (String beanNameForType : beanNamesForType) {
+            if (beanNameForType.equals(beanName)) {
+                beanFactory.removeBeanDefinition(beanNameForType);
+            } else {
+                beanFactory.removeBeanDefinition(beanNameForType);
+                GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
+
+                if (!fixture.init().isEmpty()) {
+                    replacementBeanDefinition.setInitMethodName(fixture.init());
+                }
+
+                if (!fixture.destroy().isEmpty()) {
+                    replacementBeanDefinition.setDestroyMethodName(fixture.destroy());
+                }
+
+                replacementBeanDefinition.setPrimary(false);
+                replacementBeanDefinition.setLazyInit(true);
+                beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
+                replacedBeanNames.add(beanNameForType);
+            }
         }
     }
 

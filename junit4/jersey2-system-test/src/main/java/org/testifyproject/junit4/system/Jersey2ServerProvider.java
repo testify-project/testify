@@ -26,7 +26,6 @@ import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.core.DefaultServerInstance;
 import org.testifyproject.core.TestContextHolder;
@@ -35,6 +34,7 @@ import static org.testifyproject.core.TestContextProperties.APP_NAME;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.TestConfigurer;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.
@@ -61,7 +61,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
         ReflectionUtil.INSTANCE.rebase(className, classLoader, interceptor);
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        TestReifier testReifier = testContext.getTestReifier();
+        TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
         Optional<Application> foundApplication = testDescriptor.getApplication();
         ResourceConfig resourceConfig = null;
@@ -74,7 +74,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
             resourceConfig.register(listener);
         }
 
-        return testReifier.configure(testContext, resourceConfig);
+        return testConfigurer.configure(testContext, resourceConfig);
     }
 
     @Override

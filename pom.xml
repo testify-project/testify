@@ -149,8 +149,7 @@
     <scm>
         <connection>scm:git:https://github.com/testify-project/testify.git</connection>
         <developerConnection>scm:git:https://github.com/testify-project/testify.git</developerConnection>
-        <url>https://github.com/testify-project/testify.git/tree/${project.scm.tag}</url>
-        <tag>master</tag>
+        <url>https://github.com/testify-project/testify.git</url>
     </scm>
 
     <distributionManagement>

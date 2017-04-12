@@ -15,56 +15,36 @@
  */
 package org.testifyproject.junit4.integration;
 
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.glassfish.hk2.api.IterableProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.Scan;
+import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Virtual;
-import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
-import org.testifyproject.junit4.fixture.IterableProviderGreeter;
+import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.common.Greeting;
-import org.testifyproject.junit4.fixture.common.impl.Hello;
+import org.testifyproject.junit4.fixture.common.GreetingMap;
 
 /**
  *
  * @author saden
  */
-@Scan(DEFAULT_DESCRIPTOR)
-@RunWith(HK2IntegrationTest.class)
-public class IterableProviderGreeterDelegatedRealIT {
+@Module(GreeterConfig.class)
+@RunWith(SpringIntegrationTest.class)
+public class GreetingMapVirtualIT {
 
     @Cut
-    IterableProviderGreeter cut;
+    GreetingMap cut;
 
     @Virtual
-    IterableProvider<Greeting> greetings;
+    Map<String, Greeting> greetings;
 
     @Test
     public void verifyInjection() {
         assertThat(cut).isNotNull();
-        assertThat(greetings).hasSize(4).isSameAs(cut.getGreetings());
+        assertThat(greetings).isNotEmpty().isSameAs(cut.getGreetings());
         assertThat(Mockito.mockingDetails(greetings).isMock()).isTrue();
     }
-
-    @Test
-    public void callToGreetShouldReturnPhrase() {
-        String phrase = "Konnichiwa";
-        Hello hello = mock(Hello.class);
-
-        given(greetings.get()).willReturn(hello);
-        given(hello.phrase()).willReturn(phrase);
-
-        String result = cut.greet();
-
-        assertThat(result).isEqualTo(phrase);
-        verify(greetings).get();
-        verify(hello).phrase();
-    }
-
 }

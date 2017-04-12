@@ -62,41 +62,43 @@ public class ReflectionUtil {
      * @return a new instance of the given type
      */
     public <T> T newInstance(Class<T> type, Object... constArgs) {
-        return AccessController.doPrivileged((PrivilegedAction<T>) () -> {
-            try {
-                T instance;
+        return AccessController.doPrivileged((PrivilegedAction<T>) ()
+                -> createInstance(type, constArgs));
+    }
 
-                if (Annotation.class.isAssignableFrom(type)) {
-                    ClassLoader classLoader = type.getClassLoader();
-                    Class[] interfaces = new Class[]{type};
+    <T> T createInstance(Class<T> type, Object... constArgs) {
+        try {
+            T instance;
+            if (Annotation.class.isAssignableFrom(type)) {
+                ClassLoader classLoader = type.getClassLoader();
+                Class[] interfaces = new Class[]{type};
 
-                    InvocationHandler handler = (proxy, method, args) -> method.getDefaultValue();
+                InvocationHandler handler = (proxy, method, args) -> method.getDefaultValue();
 
-                    instance = (T) Proxy.newProxyInstance(classLoader, interfaces, handler);
+                instance = (T) Proxy.newProxyInstance(classLoader, interfaces, handler);
+            } else {
+                if (constArgs.length == 0) {
+                    instance = type.newInstance();
                 } else {
-                    if (constArgs.length == 0) {
-                        instance = type.newInstance();
-                    } else {
-                        Class[] constArgTypes = Stream.of(constArgs)
-                                .map(Object::getClass)
-                                .toArray(Class[]::new);
+                    Class[] constArgTypes = Stream.of(constArgs)
+                            .map(Object::getClass)
+                            .toArray(Class[]::new);
 
-                        Constructor<T> constructor = type.getConstructor(constArgTypes);
-                        instance = constructor.newInstance(constArgs);
-                    }
+                    Constructor<T> constructor = type.getConstructor(constArgTypes);
+                    instance = constructor.newInstance(constArgs);
                 }
-                return instance;
-            } catch (IllegalAccessException
-                    | IllegalArgumentException
-                    | InstantiationException
-                    | NoSuchMethodException
-                    | SecurityException
-                    | InvocationTargetException e) {
-                LoggingUtil.INSTANCE.debug("Could not create instance of type '{}'", type.getSimpleName(), e);
-
-                return ObjenesisHelper.getInstantiatorOf(type).newInstance();
             }
-        });
+            return instance;
+        } catch (IllegalAccessException
+                | IllegalArgumentException
+                | InstantiationException
+                | NoSuchMethodException
+                | SecurityException
+                | InvocationTargetException e) {
+            LoggingUtil.INSTANCE.debug("Could not create instance of type '{}'", type.getSimpleName(), e);
+
+            return ObjenesisHelper.getInstantiatorOf(type).newInstance();
+        }
     }
 
     /**

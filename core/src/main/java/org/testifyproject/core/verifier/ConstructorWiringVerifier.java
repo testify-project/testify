@@ -30,8 +30,8 @@ import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure that the class under test constructor parameters are defined as collaborators on the test
- * class.
+ * Insure that the class under test constructor parameters are defined as
+ * collaborators on the test class.
  *
  * @author saden
  */
@@ -48,7 +48,8 @@ public class ConstructorWiringVerifier implements WiringVerifier {
 
         Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
 
-        if (foundCutDescriptor.isPresent()) {
+        if (foundCutDescriptor.isPresent()
+                && !testDescriptor.getCollaboratorProvider().isPresent()) {
             CutDescriptor cutDescriptor = foundCutDescriptor.get();
             Collection<ParameterDescriptor> paramDescriptors = cutDescriptor.getParameterDescriptors();
             String cutClassName = cutDescriptor.getTypeName();

@@ -15,18 +15,25 @@
  */
 package org.testifyproject.level.integration;
 
-import org.testifyproject.ReificationProvider;
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+import java.util.Set;
+import org.testifyproject.CutDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.CollaboratorsReifier;
 import org.testifyproject.extension.ConfigurationVerifier;
+import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.WiringVerifier;
 import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.TestResourcesProvider;
+import org.testifyproject.TestConfigurer;
 
 /**
  * A class used to run a integration test.
@@ -39,11 +46,15 @@ public class IntegrationTestRunner implements TestRunner {
 
     private TestContext testContext;
     private ServiceInstance serviceInstance;
-    private ReificationProvider reificationProvider;
+    private TestResourcesProvider testResourcesProvider;
 
     @Override
     public void start(TestContext testContext) {
         this.testContext = testContext;
+        Object testInstance = testContext.getTestInstance();
+
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(FieldReifier.class, IntegrationTest.class)
+                .forEach(p -> p.reify(testContext));
 
         ServiceLocatorUtil.INSTANCE.findAllWithFilter(ConfigurationVerifier.class, IntegrationTest.class)
                 .forEach(p -> p.verify(testContext));
@@ -53,29 +64,41 @@ public class IntegrationTestRunner implements TestRunner {
         Object serviceContext = serviceProvider.create(testContext);
 
         serviceInstance = serviceProvider.configure(testContext, serviceContext);
+        testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
         serviceInstance.addConstant(testContext, null, TestContext.class);
 
         serviceProvider.postConfigure(testContext, serviceInstance);
 
-        TestReifier testReifier = testContext.getTestReifier();
-        testReifier.configure(testContext, serviceContext);
+        TestConfigurer testConfigurer = testContext.getTestConfigurer();
+        testConfigurer.configure(testContext, serviceContext);
 
-        reificationProvider = ServiceLocatorUtil.INSTANCE.getOne(ReificationProvider.class);
-        reificationProvider.start(testContext, serviceInstance);
+        testResourcesProvider = ServiceLocatorUtil.INSTANCE.getOne(TestResourcesProvider.class);
+        testResourcesProvider.start(testContext, serviceInstance);
+        Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
+
+        foundCutDescriptor.ifPresent(cutDescriptor -> {
+            Set<Class<? extends Annotation>> nameQualifers = serviceInstance.getNameQualifers();
+            Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
+            Class cutType = cutDescriptor.getType();
+
+            Annotation[] qualifierAnnotations
+                    = cutDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
+
+            Object cutInstance = serviceInstance.getService(cutType, qualifierAnnotations);
+            cutDescriptor.setValue(testInstance, cutInstance);
+        });
+
+        if (testContext.getTestDescriptor().getCollaboratorProvider().isPresent()) {
+            ServiceLocatorUtil.INSTANCE.findAllWithFilter(CollaboratorsReifier.class, IntegrationTest.class)
+                    .forEach(p -> p.reify(testContext));
+        }
+
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(org.testifyproject.extension.TestReifier.class, IntegrationTest.class)
+                .forEach(p -> p.reify(testContext));
 
         ServiceLocatorUtil.INSTANCE.findAllWithFilter(WiringVerifier.class, IntegrationTest.class)
                 .forEach(p -> p.verify(testContext));
 
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Object testInstance = testContext.getTestInstance();
-
-        //invoke init method on test fields annotated with Fixture
-        testDescriptor.getFieldDescriptors()
-                .forEach(p -> p.init(testInstance));
-
-        //invoke init method on cut field annotated with Fixture
-        testContext.getCutDescriptor()
-                .ifPresent(p -> p.init(testInstance));
     }
 
     @Override
@@ -91,8 +114,8 @@ public class IntegrationTestRunner implements TestRunner {
         testContext.getCutDescriptor()
                 .ifPresent(p -> p.destroy(testInstance));
 
-        if (reificationProvider != null) {
-            reificationProvider.destroy(testContext, serviceInstance);
+        if (testResourcesProvider != null) {
+            testResourcesProvider.destroy(testContext, serviceInstance);
         }
 
         if (serviceInstance != null) {

@@ -14,6 +14,14 @@ was added, changed, deprecated, removed, fix and security fixes.
 ## [Unreleased]
 
 ## [0.9.3-SNAPSHOT]
+### Added
+ - Added extention contracts and annotations to the API
+  - Added @UnitTest, @IntegrationTest, and @SystemTest which can be used to apply specific services to certain test levels
+  - Added TestReifer contract for reifying the test class
+  - Added CutReifier contract for reifying the class under test
+  - Added FieldReifier contract for reifying the test class fields
+  - Added CollaboratorsReifier contract to reify cut class based on provided collaborators
+
 ### Changed
 - Adopted Semantic Testing
   - Changed serverName and serverContract attributes in RequiresResource to resourceName and resourceContract
@@ -26,6 +34,8 @@ was added, changed, deprecated, removed, fix and security fixes.
   - Renamed DefaultContainerInstance to DefaultVirtualResourceInstance
   - Renamed DefaultResourceInstance to DefaultLocalResourceInstance
   - Renamed ResourceInstanceBuilder to LocalResourceInstanceBuilder
+  - Renamed ReificationProvider to TestResourcesProvider
+  - Renamed TestReifier to TestConfigurer
 
 ## [0.9.2] - 2017-03-20
 ### Fixed

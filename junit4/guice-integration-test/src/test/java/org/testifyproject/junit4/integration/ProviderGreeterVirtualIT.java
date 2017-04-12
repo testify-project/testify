@@ -15,6 +15,7 @@
  */
 package org.testifyproject.junit4.integration;
 
+import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,25 +23,23 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Virtual;
-import org.testifyproject.junit4.fixture.common.GreeterConfig;
+import org.testifyproject.junit4.fixture.GreetingModule;
 import org.testifyproject.junit4.fixture.common.Greeting;
-import org.testifyproject.junit4.fixture.common.QualfiedGreeter;
-import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
+import org.testifyproject.junit4.fixture.service.ProviderGreeting;
 
 /**
  *
  * @author saden
  */
-@Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
-public class QualifiedGreeterDelegatedRealIT {
+@Module(GreetingModule.class)
+@RunWith(GuiceIntegrationTest.class)
+public class ProviderGreeterVirtualIT {
 
     @Cut
-    QualfiedGreeter cut;
+    ProviderGreeting cut;
 
     @Virtual
-    @CustomQualifier
-    Greeting greeting;
+    Provider<Greeting> greeting;
 
     @Test
     public void verifyInjection() {

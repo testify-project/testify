@@ -15,7 +15,6 @@
  */
 package org.testifyproject.junit4.integration;
 
-import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,29 +22,29 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Virtual;
-import org.testifyproject.junit4.fixture.common.GreeterConfig;
-import org.testifyproject.junit4.fixture.common.ProviderGreeter;
-import org.testifyproject.junit4.fixture.common.impl.Hello;
+import org.testifyproject.junit4.fixture.GreetingModule;
+import org.testifyproject.junit4.fixture.common.Greeting;
+import org.testifyproject.junit4.fixture.service.QualifiedGreeter;
 
 /**
  *
  * @author saden
  */
-@Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
-public class ProviderGreeterDelegatedRealIT {
+@Module(GreetingModule.class)
+@RunWith(GuiceIntegrationTest.class)
+public class QualifierGreeterVirtualIT {
 
     @Cut
-    ProviderGreeter cut;
+    QualifiedGreeter cut;
 
     @Virtual
-    Provider<Hello> provider;
+    Greeting greeting;
 
     @Test
     public void verifyInjection() {
         assertThat(cut).isNotNull();
-        assertThat(provider).isNotNull().isSameAs(cut.getProvider());
-        assertThat(Mockito.mockingDetails(provider).isMock()).isTrue();
+        assertThat(greeting).isNotNull().isSameAs(cut.getGreeting());
+        assertThat(Mockito.mockingDetails(greeting).isMock()).isTrue();
     }
 
 }

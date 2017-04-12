@@ -92,11 +92,11 @@ public interface TestContext extends PropertiesTrait {
     TestRunner getTestRunner();
 
     /**
-     * Get the test reifier associated with the test context.
+     * Get the test configurer associated with the test context.
      *
-     * @return test reifier instance
+     * @return test configurer instance
      */
-    TestReifier getTestReifier();
+    TestConfigurer getTestConfigurer();
 
     /**
      * Get the mock provider associated with the test context.

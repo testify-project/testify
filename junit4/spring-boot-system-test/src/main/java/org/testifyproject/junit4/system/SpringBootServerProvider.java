@@ -29,7 +29,6 @@ import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.core.DefaultServerInstance;
@@ -43,6 +42,7 @@ import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.TestConfigurer;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.
@@ -58,7 +58,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     @Override
     public SpringApplicationBuilder configure(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        TestReifier testReifier = testContext.getTestReifier();
+        TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
         LoggingUtil.INSTANCE.debug("setting test context");
         TEST_CONTEXT_HOLDER.set(testContext);
@@ -98,7 +98,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
                     .bannerMode(Banner.Mode.OFF);
         });
 
-        return testReifier.configure(testContext, builder);
+        return testConfigurer.configure(testContext, builder);
     }
 
     @Override

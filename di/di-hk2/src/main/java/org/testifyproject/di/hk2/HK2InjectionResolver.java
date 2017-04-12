@@ -28,7 +28,6 @@ import org.glassfish.hk2.api.IterableProvider;
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.api.ServiceHandle;
 import org.glassfish.hk2.api.ServiceLocator;
-import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
@@ -60,48 +59,39 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         MockProvider mockProvider = testContext.getMockProvider();
         Object testInstance = testContext.getTestInstance();
-        Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
 
-        if (cutDescriptor.isPresent()) {
+        return testContext.getCutDescriptor().map(cutDescriptor -> {
             for (FieldDescriptor fieldDescriptor : testDescriptor.getFieldDescriptors()) {
                 if (!fieldDescriptor.getFake().isPresent()) {
                     continue;
                 }
 
-                Class<?> fieldDescriptorType = fieldDescriptor.getType();
-                TypeToken<?> fieldDescriptorToken = TypeToken.of(fieldDescriptor.getGenericType());
+                Type fieldType = fieldDescriptor.getGenericType();
+                TypeToken fieldTypeToken = TypeToken.of(fieldType);
+                TypeToken rawTypeToken = getRawTypeToken(fieldType);
 
-                Class<?> rawType = getRawType(fieldDescriptorToken, fieldDescriptorType);
-                TypeToken<?> rawTypeToken = TypeToken.of(rawType);
+                if (fieldTypeToken.isSupertypeOf(requiredType)) {
+                    Optional<Object> foundValue = fieldDescriptor.getValue(testInstance);
 
-                if (rawTypeToken.isSupertypeOf(requiredType)) {
-                    Optional<Object> value = fieldDescriptor.getValue(testInstance);
-                    Object instance;
-
-                    if (value.isPresent()) {
-                        instance = value.get();
-
-                        if (!mockProvider.isMock(instance)) {
-                            instance = mockProvider.createVirtual(fieldDescriptorType, instance);
-                        }
-                    } else {
-                        instance = mockProvider.createFake(fieldDescriptorType);
+                    if (foundValue.isPresent()) {
+                        return foundValue.get();
                     }
-
-                    return instance;
+                } else if (rawTypeToken.isSupertypeOf(requiredType)) {
+                    return mockProvider.createFake(TypeToken.of(requiredType).getRawType());
                 }
             }
 
-        }
+            return null;
+        }).orElseGet(() -> findThreeThirtyService(injectee, root));
 
-        return findThreeThirtyService(injectee, root);
     }
 
     Object findThreeThirtyService(Injectee injectee, ServiceHandle root) {
         //TODO: we need to be able to get the acutal injectee resolver for types
         //other than @Inject. HK2 no longer provides ability to do that via API
         //will file a bug.
-        InjectionResolver threeThirtyResolver = serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME);
+        InjectionResolver threeThirtyResolver
+                = serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME);
 
         return threeThirtyResolver.resolve(injectee, root);
     }
@@ -117,14 +107,14 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
     }
 
     /**
-     * GIven a type token and default type determine the raw type of the type
-     * token by spring supported generic classes.
+     * Given a type determine the raw type.
      *
-     * @param typeToken the type token that will be inspected
-     * @return the raw type
+     * @param type the type whose raw type is being determined
+     * @return the raw type, or the original type
      */
-    Class<?> getRawType(TypeToken<?> typeToken, Class<?> fieldDescriptorType) {
-        Class<?> rawType = fieldDescriptorType;
+    TypeToken getRawTypeToken(Type type) {
+        TypeToken typeToken = TypeToken.of(type);
+        Class rawType = typeToken.getRawType();
 
         if (typeToken.isSubtypeOf(IterableProvider.class)) {
             TypeVariable<Class<IterableProvider>> paramType = IterableProvider.class.getTypeParameters()[0];
@@ -134,7 +124,7 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
             rawType = typeToken.resolveType(paramType).getRawType();
         }
 
-        return rawType;
+        return TypeToken.of(rawType);
     }
 
 }

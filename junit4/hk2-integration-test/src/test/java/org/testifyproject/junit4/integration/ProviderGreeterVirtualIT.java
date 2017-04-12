@@ -15,18 +15,20 @@
  */
 package org.testifyproject.junit4.integration;
 
+import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Virtual;
 import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
-import org.testifyproject.junit4.fixture.QualfiedGreeter;
-import org.testifyproject.junit4.fixture.common.Greeting;
+import org.testifyproject.junit4.fixture.ProviderGreeter;
+import org.testifyproject.junit4.fixture.common.impl.Hello;
 
 /**
  *
@@ -34,13 +36,13 @@ import org.testifyproject.junit4.fixture.common.Greeting;
  */
 @Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
-public class QualifiedGreeterDelegatedRealIT {
+public class ProviderGreeterVirtualIT {
 
     @Cut
-    QualfiedGreeter cut;
+    ProviderGreeter cut;
 
     @Virtual
-    Greeting greeting;
+    Provider<Hello> greeting;
 
     @Test
     public void verifyInjection() {
@@ -52,13 +54,16 @@ public class QualifiedGreeterDelegatedRealIT {
     @Test
     public void callToGreetShouldReturnPhrase() {
         String phrase = "Konnichiwa";
+        Hello hello = mock(Hello.class);
 
-        given(greeting.phrase()).willReturn(phrase);
+        given(greeting.get()).willReturn(hello);
+        given(hello.phrase()).willReturn(phrase);
 
         String result = cut.greet();
 
         assertThat(result).isEqualTo(phrase);
-        verify(greeting).phrase();
+        verify(greeting).get();
+        verify(hello).phrase();
     }
 
 }

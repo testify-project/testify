@@ -28,7 +28,6 @@ import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.VirtualResource;
 import static org.testifyproject.container.docker.DockerVirtualResourceProvider.DEFAULT_DAEMON_URI;
@@ -36,6 +35,7 @@ import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
+import org.testifyproject.TestConfigurer;
 
 /**
  *
@@ -68,7 +68,7 @@ public class DockerVirtualResourceProviderTest {
         Object testInstance = new Object();
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        TestReifier testReifier = mock(TestReifier.class);
+        TestConfigurer testConfigurer = mock(TestConfigurer.class);
         MockProvider mockProvider = mock(MockProvider.class);
         Map<String, Object> properties = mock(Map.class);
         Map<String, String> dependencies = mock(Map.class);
@@ -78,7 +78,7 @@ public class DockerVirtualResourceProviderTest {
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
-                .testReifier(testReifier)
+                .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
                 .dependencies(dependencies)

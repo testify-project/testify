@@ -22,13 +22,13 @@ import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.TestConfigurer;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -61,7 +61,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
     @Override
     public void start(TestContext testContext, ServiceInstance serviceInstance) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        TestReifier testReifier = testContext.getTestReifier();
+        TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
         Collection<VirtualResource> virtualResources = testDescriptor.getVirtualResources();
 
@@ -86,7 +86,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
             serviceInstance.inject(virtualResourceProvider);
             Object configuration = virtualResourceProvider.configure(testContext);
-            configuration = testReifier.configure(testContext, configuration);
+            configuration = testConfigurer.configure(testContext, configuration);
 
             VirtualResourceInstance virtualResourceInstance
                     = virtualResourceProvider.start(testContext, virtualResource, configuration);

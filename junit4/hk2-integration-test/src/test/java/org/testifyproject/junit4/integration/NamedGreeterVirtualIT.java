@@ -15,37 +15,50 @@
  */
 package org.testifyproject.junit4.integration;
 
-import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Virtual;
-import org.testifyproject.junit4.fixture.GreetingModule;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
+import org.testifyproject.junit4.fixture.NamedGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
-import org.testifyproject.junit4.fixture.service.ProviderGreeting;
 
 /**
  *
  * @author saden
  */
-@Module(GreetingModule.class)
-@RunWith(GuiceIntegrationTest.class)
-public class ProviderGreeterDelegatedRealIT {
+@Scan(DEFAULT_DESCRIPTOR)
+@RunWith(HK2IntegrationTest.class)
+public class NamedGreeterVirtualIT {
 
     @Cut
-    ProviderGreeting cut;
+    NamedGreeter cut;
 
     @Virtual
-    Provider<Greeting> greeting;
+    Greeting greeting;
 
     @Test
     public void verifyInjection() {
         assertThat(cut).isNotNull();
         assertThat(greeting).isNotNull().isSameAs(cut.getGreeting());
         assertThat(Mockito.mockingDetails(greeting).isMock()).isTrue();
+    }
+
+    @Test
+    public void callToGreetShouldReturnPhrase() {
+        String phrase = "Konnichiwa";
+
+        given(greeting.phrase()).willReturn(phrase);
+
+        String result = cut.greet();
+
+        assertThat(result).isEqualTo(phrase);
+        verify(greeting).phrase();
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +22,9 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Cut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Virtual;
+import org.testifyproject.junit4.fixture.common.DirectGreeter;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
-import org.testifyproject.junit4.fixture.common.Greeting;
-import org.testifyproject.junit4.fixture.common.GreetingMap;
+import org.testifyproject.junit4.fixture.common.impl.Hello;
 
 /**
  *
@@ -33,18 +32,22 @@ import org.testifyproject.junit4.fixture.common.GreetingMap;
  */
 @Module(GreeterConfig.class)
 @RunWith(SpringIntegrationTest.class)
-public class GreetingMapDelegatedRealIT {
+public class DirectGreeterVirtualIT {
 
     @Cut
-    GreetingMap cut;
+    DirectGreeter cut;
 
     @Virtual
-    Map<String, Greeting> greetings;
+    Hello greeting;
 
     @Test
     public void verifyInjection() {
         assertThat(cut).isNotNull();
-        assertThat(greetings).isNotEmpty().isSameAs(cut.getGreetings());
-        assertThat(Mockito.mockingDetails(greetings).isMock()).isTrue();
+        assertThat(greeting).isNotNull();
+        assertThat(cut.getGreeting()).isNotNull()
+                .isSameAs(greeting);
+
+        assertThat(Mockito.mockingDetails(greeting).isMock()).isTrue();
     }
+
 }

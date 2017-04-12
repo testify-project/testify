@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
 
 public class DefaultTestContextBuilder {
@@ -32,7 +32,7 @@ public class DefaultTestContextBuilder {
     private Object testInstance;
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
-    private TestReifier testReifier;
+    private TestConfigurer testConfigurer;
     private TestRunner testRunner;
     private MockProvider mockProvider;
 
@@ -73,8 +73,8 @@ public class DefaultTestContextBuilder {
         return this;
     }
 
-    public DefaultTestContextBuilder testReifier(TestReifier testReifier) {
-        this.testReifier = testReifier;
+    public DefaultTestContextBuilder testConfigurer(TestConfigurer testConfigurer) {
+        this.testConfigurer = testConfigurer;
         return this;
     }
 
@@ -103,7 +103,7 @@ public class DefaultTestContextBuilder {
         testContext.setResourceStartStrategy(resourceStartStrategy);
         testContext.setTestDescriptor(testDescriptor);
         testContext.setTestInstance(testInstance);
-        testContext.setTestReifier(testReifier);
+        testContext.setTestConfigurer(testConfigurer);
         testContext.setTestRunner(testRunner);
 
         return testContext;

@@ -22,7 +22,6 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.testifyproject.TestContext;
-import org.testifyproject.TestReifier;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
@@ -32,6 +31,7 @@ import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTEXT;
 import org.testifyproject.core.util.LoggingUtil;
+import org.testifyproject.TestConfigurer;
 
 /**
  * A class that intercepts methods of classes that extend or implement
@@ -68,8 +68,8 @@ public class ApplicationContextInterceptor {
             ConfigurableEmbeddedServletContainer servletContainer = (ConfigurableEmbeddedServletContainer) containerFactory;
             servletContainer.setPort(0);
 
-            TestReifier testReifier = testContext.getTestReifier();
-            testReifier.configure(testContext, servletContainer);
+            TestConfigurer testConfigurer = testContext.getTestConfigurer();
+            testConfigurer.configure(testContext, servletContainer);
         });
 
         return containerFactory;
@@ -77,8 +77,8 @@ public class ApplicationContextInterceptor {
 
     protected void prepareEmbeddedWebApplicationContext(@SuperCall Callable<Void> zuper, ServletContext servletContext) throws Exception {
         testContextHolder.execute(testContext -> {
-            TestReifier testReifier = testContext.getTestReifier();
-            testReifier.configure(testContext, servletContext);
+            TestConfigurer testConfigurer = testContext.getTestConfigurer();
+            testConfigurer.configure(testContext, servletContext);
         });
 
         zuper.call();

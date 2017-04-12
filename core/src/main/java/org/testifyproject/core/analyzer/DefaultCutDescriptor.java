@@ -31,20 +31,19 @@ import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A descriptor class used to access properties of or perform operations on an analyzed class under
- * test (CUT) class.
+ * A descriptor class used to access properties of or perform operations on an
+ * analyzed class under test (CUT) class.
  *
  * @author saden
  */
-@ToString(doNotUseGetters = true)
-@EqualsAndHashCode(doNotUseGetters = true)
-public class DefaultCutDescriptor implements CutDescriptor {
+@ToString(doNotUseGetters = true, callSuper = true)
+@EqualsAndHashCode(doNotUseGetters = true, callSuper = true)
+public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutDescriptor {
 
-    private final Field field;
     private final Map<String, Object> properties;
 
     DefaultCutDescriptor(Field field, Map<String, Object> properties) {
-        this.field = field;
+        super(field);
         this.properties = properties;
     }
 
@@ -72,21 +71,6 @@ public class DefaultCutDescriptor implements CutDescriptor {
     @Override
     public Map<String, Object> getProperties() {
         return this.properties;
-    }
-
-    @Override
-    public Field getMember() {
-        return field;
-    }
-
-    @Override
-    public Class<?> getType() {
-        return field.getType();
-    }
-
-    @Override
-    public Type getGenericType() {
-        return field.getGenericType();
     }
 
     @Override

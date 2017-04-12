@@ -24,9 +24,9 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
 
 /**
@@ -44,7 +44,7 @@ public class DefaultTestContext implements TestContext {
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
     private TestRunner testRunner;
-    private TestReifier testReifier;
+    private TestConfigurer testConfigurer;
     private MockProvider mockProvider;
     private Map<String, Object> properties;
     private Map<String, String> dependencies;
@@ -95,8 +95,8 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public TestReifier getTestReifier() {
-        return testReifier;
+    public TestConfigurer getTestConfigurer() {
+        return testConfigurer;
     }
 
     @Override
@@ -144,8 +144,8 @@ public class DefaultTestContext implements TestContext {
         this.testRunner = testRunner;
     }
 
-    void setTestReifier(TestReifier testReifier) {
-        this.testReifier = testReifier;
+    void setTestConfigurer(TestConfigurer testConfigurer) {
+        this.testConfigurer = testConfigurer;
     }
 
     void setMockProvider(MockProvider mockProvider) {

@@ -13,44 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.integration;
+package org.testifyproject.junit4;
 
-import javax.inject.Named;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Virtual;
-import org.testifyproject.junit4.fixture.common.GreeterConfig;
-import org.testifyproject.junit4.fixture.common.Greeting;
-import org.testifyproject.junit4.fixture.common.NamedGreeter;
+import org.testifyproject.junit4.fixture.ImplicitType;
+import org.testifyproject.junit4.fixture.collaborator.Hello;
 
 /**
  *
  * @author saden
  */
-@Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
-public class NamedGreeterDelegatedRealIT {
+@RunWith(UnitTest.class)
+public class ImplicitTypeVirtualTest {
 
     @Cut
-    NamedGreeter cut;
+    ImplicitType cut;
 
     @Virtual
-    @Named("Ciao")
-    Greeting greeting;
+    Hello collaborator;
+
+    @Before
+    public void verifyInjections() {
+        assertThat(cut).isNotNull();
+        assertThat(collaborator).isNotNull();
+        assertThat(cut.getHello()).isSameAs(collaborator);
+    }
 
     @Test
-    public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greeting).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull()
-                .isSameAs(greeting)
-                .isInstanceOf(Greeting.class);
+    public void givenNothingClassToExecuteShouldReturnHello() {
+        String result = cut.execute();
 
-        assertThat(Mockito.mockingDetails(greeting).isMock()).isTrue();
+        assertThat(result).isEqualTo("Hiya!");
+        verify(collaborator).greet();
     }
 
 }

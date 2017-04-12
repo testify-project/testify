@@ -16,11 +16,11 @@
 package org.testifyproject;
 
 /**
- * An SPI contract for reifying a test class.
+ * An SPI contract for starting and stopping test resources.
  *
  * @author saden
  */
-public interface ReificationProvider {
+public interface TestResourcesProvider {
 
     /**
      * Start reifying the test class using the given test context and service

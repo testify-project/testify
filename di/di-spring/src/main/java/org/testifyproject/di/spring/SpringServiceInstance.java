@@ -44,8 +44,9 @@ import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A Spring DI implementation of {@link ServiceInstance} SPI contract. This class provides the
- * ability to work with Spring {@link ConfigurableApplicationContext} to create, locate, and manage
+ * A Spring DI implementation of {@link ServiceInstance} SPI contract. This
+ * class provides the ability to work with Spring
+ * {@link ConfigurableApplicationContext} to create, locate, and manage
  * services.
  *
  * @author saden
@@ -115,8 +116,7 @@ public class SpringServiceInstance implements ServiceInstance {
 
     @Override
     public <T> T getService(Type type, Annotation... qualifiers) {
-        TypeToken<?> token = TypeToken.of(type);
-        Class rawType = token.getRawType();
+        TypeToken token = TypeToken.of(type);
 
         //if the desired type is the application context itself then return it
         if (token.isSupertypeOf(context.getClass())) {
@@ -126,64 +126,79 @@ public class SpringServiceInstance implements ServiceInstance {
         Object instance = null;
 
         if (qualifiers == null || qualifiers.length == 0) {
-            if (token.isSubtypeOf(Provider.class)) {
-                rawType = token.resolveType(Provider.class.getTypeParameters()[0]).getRawType();
-                instance = SpringDefaultProvider.of(this, rawType);
-            } else if (token.isSubtypeOf(Optional.class)) {
-                rawType = token.resolveType(Optional.class.getTypeParameters()[0]).getRawType();
-                instance = Optional.ofNullable(context.getBean(rawType));
-            } else if (token.isSubtypeOf(Map.class)) {
-                rawType = token.resolveType(Map.class.getTypeParameters()[1]).getRawType();
-                instance = context.getBeansOfType(rawType);
-            } else if (token.isSubtypeOf(Set.class)) {
-                rawType = token.resolveType(Set.class.getTypeParameters()[0]).getRawType();
-                instance = context.getBeansOfType(rawType)
-                        .values()
-                        .stream()
-                        .collect(toSet());
-            } else if (token.isSubtypeOf(List.class)) {
-                rawType = token.resolveType(List.class.getTypeParameters()[0]).getRawType();
-                instance = context.getBeansOfType(rawType)
-                        .values()
-                        .stream()
-                        .collect(toList());
-            } else if (rawType.isInterface()) {
-                try {
-                    instance = context.getBean(rawType);
-                } catch (BeansException e) {
-                    LoggingUtil.INSTANCE.debug("Could not find bean", e);
-                    //we could find the bean by its raw type. maybe this bean is
-                    //a dynamically created bean so lets try another method to
-                    //find the bean by looking at all possible beans of that type
-                    //and returning the first one.
-                    Optional result = context.getBeansOfType(rawType)
-                            .values()
-                            .stream()
-                            .findFirst();
-
-                    if (result.isPresent()) {
-                        instance = result.get();
-                    }
-                }
-
-            } else {
-                instance = context.getBean(rawType);
-            }
+            instance = getInstance(token);
         } else {
-            Annotation annotation = qualifiers[0];
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-            String[] beanNames = context.getBeanNamesForAnnotation(annotationType);
-
-            for (String beanName : beanNames) {
-                Class<?> beanType = context.getType(beanName);
-                if (token.isSupertypeOf(beanType)) {
-                    instance = context.getBean(beanName, beanType);
-                    break;
-                }
-            }
+            instance = getQualifiedInstance(qualifiers, token);
         }
 
         return (T) instance;
+    }
+
+    Object getQualifiedInstance(Annotation[] qualifiers, TypeToken token) {
+        Object instance = null;
+
+        Annotation annotation = qualifiers[0];
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        String[] beanNames = context.getBeanNamesForAnnotation(annotationType);
+        for (String beanName : beanNames) {
+            Class<?> beanType = context.getType(beanName);
+            if (token.isSupertypeOf(beanType)) {
+                instance = context.getBean(beanName, beanType);
+                break;
+            }
+        }
+        return instance;
+    }
+
+    Object getInstance(TypeToken token) {
+        Object instance = null;
+        Class rawType = token.getRawType();
+
+        if (token.isSubtypeOf(Provider.class)) {
+            rawType = token.resolveType(Provider.class.getTypeParameters()[0]).getRawType();
+            instance = SpringDefaultProvider.of(this, rawType);
+        } else if (token.isSubtypeOf(Optional.class)) {
+            rawType = token.resolveType(Optional.class.getTypeParameters()[0]).getRawType();
+            instance = Optional.ofNullable(context.getBean(rawType));
+        } else if (token.isSubtypeOf(Map.class)) {
+            rawType = token.resolveType(Map.class.getTypeParameters()[1]).getRawType();
+            instance = context.getBeansOfType(rawType);
+        } else if (token.isSubtypeOf(Set.class)) {
+            rawType = token.resolveType(Set.class.getTypeParameters()[0]).getRawType();
+            instance = context.getBeansOfType(rawType)
+                    .values()
+                    .stream()
+                    .collect(toSet());
+        } else if (token.isSubtypeOf(List.class)) {
+            rawType = token.resolveType(List.class.getTypeParameters()[0]).getRawType();
+            instance = context.getBeansOfType(rawType)
+                    .values()
+                    .stream()
+                    .collect(toList());
+        } else if (rawType.isInterface()) {
+            try {
+                instance = context.getBean(rawType);
+            } catch (BeansException e) {
+                LoggingUtil.INSTANCE.debug("Could not find bean", e);
+                //we could find the bean by its raw type. maybe this bean is
+                //a dynamically created bean so lets try another method to
+                //find the bean by looking at all possible beans of that type
+                //and returning the first one.
+                Optional result = context.getBeansOfType(rawType)
+                        .values()
+                        .stream()
+                        .findFirst();
+
+                if (result.isPresent()) {
+                    instance = result.get();
+                }
+            }
+
+        } else {
+            instance = context.getBean(rawType);
+        }
+
+        return instance;
     }
 
     @Override

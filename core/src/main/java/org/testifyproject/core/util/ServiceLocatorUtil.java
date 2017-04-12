@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static org.testifyproject.guava.common.base.Preconditions.checkState;
@@ -101,12 +102,7 @@ public class ServiceLocatorUtil {
                 .filter(p -> p.getClass().isAnnotationPresent(filter))
                 .collect(toList());
 
-        String name = contract.getName();
-
-        checkState(result.size() == 1,
-                "Found '%d' implementaitons of '%s' contract in the classpath (%s). "
-                + "Please insure only one implementation of '%s' contract is in the classpath",
-                result.size(), Arrays.toString(result.toArray()), name, name);
+        insureOneImplementation(result, contract.getName());
 
         return result.get(0);
     }
@@ -127,16 +123,7 @@ public class ServiceLocatorUtil {
                 distinct()
                 .collect(toList());
 
-        String name = contract.getName();
-
-        checkState(!result.isEmpty(),
-                "Could not find an implementaiton of '%s' contract in the classpath."
-                + "Please insure an implementation of '%s' contract is in the classpath", name, name);
-
-        checkState(result.size() == 1,
-                "Found '%d' implementaitons of '%s' contract in the classpath (%s). "
-                + "Please insure only one implementation of '%s' contract is in the classpath",
-                result.size(), Arrays.toString(result.toArray()), name, name);
+        insureOneImplementation(result, contract.getName());
 
         return result.get(0);
     }
@@ -221,7 +208,7 @@ public class ServiceLocatorUtil {
 
         checkState(instance != null,
                 "Could not find an implementation of '%s' contract in the classpath."
-                + "Please insure that at least 1 implementation is in the classpath",
+                + "Please insure that at least one implementation is in the classpath",
                 implementationName, contractName);
 
         return instance;
@@ -239,15 +226,23 @@ public class ServiceLocatorUtil {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
         List<T> result = stream(serviceLoader.spliterator(), true).distinct().collect(toList());
+        String name = contract.getName();
 
-        checkState(
-                !result.isEmpty(),
+        checkState(!result.isEmpty(),
                 "Could not find an implementaiton of '%s' contract in the classpath. "
-                + "Please insure at least one implementation of '%s' contract is in the classpath",
-                contract.getName(), contract.getName()
-        );
+                + "Please insure at least one implementation of '%s' contract is in the classpath", name, name);
 
         return result;
     }
 
+    void insureOneImplementation(List<?> result, String name) {
+        String implementations = result.stream()
+                .map(p -> p.getClass().getSimpleName())
+                .collect(joining(", "));
+
+        checkState(result.size() == 1,
+                "Found '%d' implementaitons (%s) of '%s' contract in the classpath. "
+                + "Please insure one implementation of '%s' contract is in the classpath",
+                result.size(), implementations, name, name);
+    }
 }

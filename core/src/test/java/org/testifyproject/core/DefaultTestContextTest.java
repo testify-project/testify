@@ -31,8 +31,8 @@ import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
+import org.testifyproject.TestConfigurer;
 
 /**
  *
@@ -47,7 +47,7 @@ public class DefaultTestContextTest {
     TestDescriptor testDescriptor;
     MethodDescriptor methodDescriptor;
     TestRunner testRunner;
-    TestReifier testReifier;
+    TestConfigurer testConfigurer;
     MockProvider mockProvider;
     Map<String, Object> properties;
     Map<String, String> dependencies;
@@ -58,7 +58,7 @@ public class DefaultTestContextTest {
         testInstance = new Object();
         testDescriptor = mock(TestDescriptor.class);
         methodDescriptor = mock(MethodDescriptor.class);
-        testReifier = mock(TestReifier.class);
+        testConfigurer = mock(TestConfigurer.class);
         testRunner = mock(TestRunner.class);
         mockProvider = mock(MockProvider.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
@@ -70,7 +70,7 @@ public class DefaultTestContextTest {
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
                 .testRunner(testRunner)
-                .testReifier(testReifier)
+                .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
                 .dependencies(dependencies)
@@ -143,9 +143,9 @@ public class DefaultTestContextTest {
 
     @Test
     public void callToGetTestReifierShouldReturn() {
-        TestReifier result = cut.getTestReifier();
+        TestConfigurer result = cut.getTestConfigurer();
 
-        assertThat(result).isEqualTo(testReifier);
+        assertThat(result).isEqualTo(testConfigurer);
     }
 
     @Test
@@ -205,7 +205,7 @@ public class DefaultTestContextTest {
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(null)
-                .testReifier(testReifier)
+                .testConfigurer(testConfigurer)
                 .properties(properties)
                 .dependencies(dependencies)
                 .build();
@@ -227,7 +227,7 @@ public class DefaultTestContextTest {
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
                 .testRunner(testRunner)
-                .testReifier(testReifier)
+                .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
                 .dependencies(dependencies)

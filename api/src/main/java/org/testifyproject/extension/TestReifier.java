@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.fixture.collaborator;
+package org.testifyproject.extension;
+
+import org.testifyproject.TestContext;
 
 /**
+ * A contract that defines a method for reifying the test class.
  *
  * @author saden
  */
-public class Hello {
+@FunctionalInterface
+public interface TestReifier {
 
-    private boolean called;
-
-    public String greet() {
-        called = true;
-        return "Hiya!";
-    }
-
-    public boolean isCalled() {
-        return called;
-    }
-
+    /**
+     * Reify the test class using the given test context.
+     *
+     * @param testContext the test context
+     */
+    void reify(TestContext testContext);
 }

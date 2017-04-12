@@ -38,12 +38,12 @@ import org.slf4j.MDC;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
+import org.testifyproject.core.DefaultTestConfigurer;
 import org.testifyproject.core.DefaultTestContextBuilder;
-import org.testifyproject.core.DefaultTestReifier;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.TestContextProperties;
@@ -166,9 +166,9 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
         LoggingUtil.INSTANCE.debug("creating method decriptor for test method {}#{}", javaClass.getName(), method.getName());
         MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
 
-        Class<TestReifier> testReifierType = TestReifier.class;
-        TestReifier testReifier = ServiceLocatorUtil.INSTANCE
-                .getOneOrDefault(testReifierType, DefaultTestReifier.class);
+        Class<TestConfigurer> testConfigurerType = TestConfigurer.class;
+        TestConfigurer testConfigurer = ServiceLocatorUtil.INSTANCE
+                .getOneOrDefault(testConfigurerType, DefaultTestConfigurer.class);
 
         Class<MockProvider> mockProviderType = MockProvider.class;
         MockProvider mockProvider = ServiceLocatorUtil.INSTANCE
@@ -188,7 +188,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 .testDescriptor(testDescriptor)
                 .methodDescriptor(methodDescriptor)
                 .testRunner(testRunner)
-                .testReifier(testReifier)
+                .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(new HashMap<>())
                 .dependencies(testSettings.getDependencies())

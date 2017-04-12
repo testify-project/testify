@@ -16,11 +16,11 @@
 package org.testifyproject;
 
 /**
- * An interface that defines methods for reifying test and cut class.
+ * An interface that defines methods for configuring test attributes.
  *
  * @author saden
  */
-public interface TestReifier {
+public interface TestConfigurer {
 
     /**
      * Given a configuration object call the appropriate method on the test
@@ -34,20 +34,4 @@ public interface TestReifier {
      */
     <T> T configure(TestContext testContext, T configuration);
 
-    /**
-     * Reify the test class from the cut instance.
-     *
-     * @param testContext the test context
-     * @param cutInstance the cut instance
-     */
-    void reify(TestContext testContext, Object cutInstance);
-
-    /**
-     * Reify the test and cut classes from the given collaborators arguments.
-     *
-     * @param testContext the test context
-     * @param cutInstance the cut instance
-     * @param collaborators the collaborators
-     */
-    void reify(TestContext testContext, Object cutInstance, Object... collaborators);
 }
