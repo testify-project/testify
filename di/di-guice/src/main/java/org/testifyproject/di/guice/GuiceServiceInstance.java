@@ -41,9 +41,8 @@ import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 
 /**
- * A Google Guice DI implementation of the {@link ServiceInstance} spi contract.
- * This class provides the ability to work with Google Guice {@link Injector} to
- * create, locate, and manage services.
+ * A Google Guice DI implementation of the {@link ServiceInstance} spi contract. This class provides the ability to work
+ * with Google Guice {@link Injector} to create, locate, and manage services.
  *
  * @author saden
  */
@@ -105,25 +104,6 @@ public class GuiceServiceInstance implements ServiceInstance {
         }
     }
 
-    private synchronized void updateInjector() {
-        if (!running) {
-
-            Module constantModule = GuiceAbstractModule.of(constants);
-            Module replacementModule = GuiceAbstractModule.of(replacements);
-
-            //Combine the modules defined in the test class with testify's constant
-            //modules, then replace binding definitions with testify replacements
-            //and the modules designated as test modules.
-            Module serviceModule = combine(combine(modules), constantModule);
-            Module testModule = combine(testModules);
-            Module module = override(serviceModule).with(replacementModule, testModule);
-
-            //create a guice injector
-            injector = Guice.createInjector(Stage.DEVELOPMENT, module);
-            running = true;
-        }
-    }
-
     @Override
     public void addConstant(Object instance, String name, Class contract) {
         constants.add(DefaultInstance.of(instance, name, contract));
@@ -158,4 +138,22 @@ public class GuiceServiceInstance implements ServiceInstance {
         return CUSTOM_QUALIFIER;
     }
 
+    synchronized void updateInjector() {
+        if (!running) {
+
+            Module constantModule = GuiceAbstractModule.of(constants);
+            Module replacementModule = GuiceAbstractModule.of(replacements);
+
+            //Combine the modules defined in the test class with testify's constant
+            //modules, then replace binding definitions with testify replacements
+            //and the modules designated as test modules.
+            Module serviceModule = combine(combine(modules), constantModule);
+            Module testModule = combine(testModules);
+            Module module = override(serviceModule).with(replacementModule, testModule);
+
+            //create a guice injector
+            injector = Guice.createInjector(Stage.DEVELOPMENT, module);
+            running = true;
+        }
+    }
 }

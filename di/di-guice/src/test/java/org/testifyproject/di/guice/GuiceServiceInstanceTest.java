@@ -26,12 +26,14 @@ import org.testifyproject.core.annotation.DefaultModule;
 import org.testifyproject.di.fixture.common.Greeting;
 import org.testifyproject.di.fixture.common.GreetingModule;
 import org.testifyproject.di.fixture.common.GreetingQualfier;
+import org.testifyproject.di.fixture.common.InjectedGreeter;
 import org.testifyproject.di.fixture.common.impl.Caio;
 import org.testifyproject.di.fixture.common.impl.Haye;
 import org.testifyproject.di.fixture.common.impl.Hello;
 import org.testifyproject.di.fixture.dynamic.DynamicConstant;
 import org.testifyproject.di.fixture.dynamic.DynamicContract;
 import org.testifyproject.di.fixture.dynamic.DynamicModule;
+import org.testifyproject.di.fixture.dynamic.FixtureModule;
 
 /**
  *
@@ -56,6 +58,28 @@ public class GuiceServiceInstanceTest {
     }
 
     @Test
+    public void callToIsRunningShouldReturnTrue() {
+        cut.updateInjector();
+        Boolean result = cut.isRunning();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void givenInjectableInstanceInjectShouldInjectInstanceFieldAndMethod() {
+        InjectedGreeter injectedGreeter = new InjectedGreeter();
+
+        assertThat(injectedGreeter.getField()).isNull();
+        assertThat(injectedGreeter.getMethod()).isNull();
+
+        cut.updateInjector();
+        cut.inject(injectedGreeter);
+
+        assertThat(injectedGreeter.getField()).isNotNull();
+        assertThat(injectedGreeter.getMethod()).isNotNull();
+    }
+
+    @Test
     public void givenContractTypeGetServiceShouldReturnService() {
         Greeting result = cut.getService(Greeting.class);
         assertThat(result).isNotNull().isInstanceOf(Hello.class);
@@ -69,6 +93,12 @@ public class GuiceServiceInstanceTest {
 
     @Test
     public void givenContractTypeAndNameGetServiceShouldReturnService() {
+        Greeting result = cut.getService(Greeting.class, "Haye");
+        assertThat(result).isNotNull().isInstanceOf(Haye.class);
+    }
+
+    @Test
+    public void givenContractTypeAndNamedAnnotationGetServiceShouldReturnService() {
         Greeting result = cut.getService(Greeting.class, Names.named("Haye"));
         assertThat(result).isNotNull().isInstanceOf(Haye.class);
     }
@@ -155,6 +185,18 @@ public class GuiceServiceInstanceTest {
     @Test
     public void givenModuleAddModuleShouldAddModule() {
         DefaultModule module = new DefaultModule(DynamicModule.class);
+        cut.addModules(module);
+
+        DynamicContract result = cut.getService(DynamicContract.class);
+        assertThat(result).isNotNull();
+
+        Greeting greeting = cut.getService(Greeting.class);
+        assertThat(greeting).isNotNull().isInstanceOf(Hello.class);
+    }
+    
+    @Test
+    public void givenFixtureModuleAddModuleShouldAddModule() {
+        DefaultModule module = new DefaultModule(FixtureModule.class);
         cut.addModules(module);
 
         DynamicContract result = cut.getService(DynamicContract.class);

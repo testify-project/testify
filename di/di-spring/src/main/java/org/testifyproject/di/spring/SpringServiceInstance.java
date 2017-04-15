@@ -123,7 +123,7 @@ public class SpringServiceInstance implements ServiceInstance {
             return (T) context;
         }
 
-        Object instance = null;
+        Object instance;
 
         if (qualifiers == null || qualifiers.length == 0) {
             instance = getInstance(token);
@@ -216,24 +216,35 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public void replace(Object instance, String name, Class contract) {
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
-        Class instanceType = instance.getClass();
 
-        if (contract != null) {
+        if (name != null && contract != null) {
+            if (beanFactory.containsBean(name)) {
+                beanFactory.removeBeanDefinition(name);
+            }
+
             //XXX: find and remove all the beans that implment the given contract
             String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, contract, true, false);
+
             for (String beanName : contractBeanNames) {
                 beanFactory.removeBeanDefinition(beanName);
             }
-        }
+        } else if (name != null) {
+            if (beanFactory.containsBean(name)) {
+                beanFactory.removeBeanDefinition(name);
+            }
+        } else if (contract != null) {
+            //XXX: find and remove all the beans that implment the given contract
+            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, contract, true, false);
 
-        //XXX: find and remove all the beans of the given instance type
-        String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, instanceType, true, false);
-        for (String beanName : typeBeanNames) {
-            beanFactory.removeBeanDefinition(beanName);
-        }
-
-        if (name != null && beanFactory.containsBean(name)) {
-            beanFactory.removeBeanDefinition(name);
+            for (String beanName : contractBeanNames) {
+                beanFactory.removeBeanDefinition(beanName);
+            }
+        } else {
+            //XXX: find and remove all the beans of the given instance type
+            String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, instance.getClass(), true, false);
+            for (String beanName : typeBeanNames) {
+                beanFactory.removeBeanDefinition(beanName);
+            }
         }
 
         addConstant(instance, name, contract);
