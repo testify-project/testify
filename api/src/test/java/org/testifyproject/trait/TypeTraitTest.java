@@ -160,10 +160,17 @@ public class TypeTraitTest {
     }
 
     @Test(expected = TestifyException.class)
-    public void givenWrongArgumentTypesInvokeShouldThrowException() {
+    public void givenWrongArgumentTypesInvokeShouldThrowException() throws Exception {
+        cut = mock(TypeTrait.class);
         Object instance = new PrimaryTestService();
-        String methodName = "saySalam";
+        String methodName = "sayHello";
         Object[] methodArgs = new Object[]{42};
+        Class[] methodArgsTypes = new Class[]{Integer.class};
+
+        Method method = PrimaryTestService.class.getDeclaredMethod(methodName, String.class);
+
+        given(cut.invoke(instance, methodName, methodArgs)).willCallRealMethod();
+        given(cut.findMethod(PrimaryTestService.class, methodName, methodArgsTypes)).willReturn(method);
 
         cut.invoke(instance, methodName, methodArgs);
     }

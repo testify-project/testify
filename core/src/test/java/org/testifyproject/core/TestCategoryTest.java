@@ -40,7 +40,16 @@ public class TestCategoryTest {
     }
 
     @Test
-    public void givenInvalidCategoriesLevelFindShouldThrowException() {
+    public void givenInvalidCategoriesLevelFindShouldLogAWarning() {
+        String[] categories = {
+            "invalid"
+        };
+
+        TestCategory.find(TestCategory.Level.class, categories);
+    }
+    
+    @Test
+    public void givenValidCategoriesLevelFindShouldReturn() {
         String[] categories = {
             "unit",
             "integration",

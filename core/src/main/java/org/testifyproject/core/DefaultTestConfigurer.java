@@ -15,12 +15,9 @@
  */
 package org.testifyproject.core;
 
-import java.util.Optional;
-import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import static org.testifyproject.guava.common.base.Preconditions.checkState;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -33,42 +30,24 @@ public class DefaultTestConfigurer implements TestConfigurer {
 
     @Override
     public <T> T configure(TestContext testContext, T configuration) {
-        Class<? extends Object> configurationType = configuration.getClass();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Object testInstance = testContext.getTestInstance();
-        Optional<MethodDescriptor> foundMatch = testDescriptor.findConfigHandler(configurationType);
+        Class<? extends Object> configurableType = configuration.getClass();
 
-        if (foundMatch.isPresent()) {
-            MethodDescriptor methodDescriptor = foundMatch.get();
-            Class<?> returnType = methodDescriptor.getReturnType();
-            Optional<Object> methodInstance = methodDescriptor.getInstance();
-            Optional<Object> result;
+        return testDescriptor.findConfigHandler(configurableType)
+                .map(configHandler -> {
+                    Object testInstance = testContext.getTestInstance();
 
-            if (methodInstance.isPresent()) {
-                result = methodDescriptor.invoke(methodInstance.get(), configuration);
-            } else {
-                result = methodDescriptor.invoke(testInstance, configuration);
-            }
+                    //if the configuration method returns null its because its return type
+                    //is void so we return the configuration parameter passed to the method
+                    //otherwise we insure the result is of the same type as the configuration
+                    //type and return it instead.
+                    return (T) configHandler.getInstance()
+                            .map(configInstance -> configHandler.invoke(configInstance, configuration))
+                            .orElseGet(() -> configHandler.invoke(testInstance, configuration))
+                            .map(value -> value)
+                            .orElse(configuration);
+                })
+                .orElse(configuration);
 
-            //if the configuration method returns null its because its return type
-            //is void so we return the configuration parameter passed to the method
-            //otherwise we insure the result is of the same type as the configuration
-            //type and return it instead.
-            if (!result.isPresent()) {
-                checkState(Void.TYPE.isAssignableFrom(returnType),
-                        "ConfigHandler method '%s' in class '%s' returns null. "
-                        + "Please insure that the method returns a non-null value "
-                        + "or its return type is void.",
-                        methodDescriptor.getName(), methodDescriptor.getDeclaringClassName()
-                );
-
-                return configuration;
-            } else if (result.getClass().isAssignableFrom(configurationType)) {
-                return (T) result;
-            }
-        }
-
-        return configuration;
     }
-
 }

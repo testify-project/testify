@@ -40,15 +40,15 @@ public class ArrayCollaboratorConfigurationVerifier implements ConfigurationVeri
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         String testClassName = testDescriptor.getTestClassName();
 
-        testDescriptor.getFieldDescriptors().parallelStream().forEach(p -> {
-            Class<?> type = p.getType();
-            String name = p.getName();
-            String typeName = p.getTypeName();
+        testDescriptor.getFieldDescriptors().stream().forEach(fieldDescriptor -> {
+            Class<?> fieldType = fieldDescriptor.getType();
+            String fieldName = fieldDescriptor.getName();
+            String fieldTypeName = fieldDescriptor.getTypeName();
 
-            ExceptionUtil.INSTANCE.raise(type.isArray(),
+            ExceptionUtil.INSTANCE.raise(fieldType.isArray(),
                     "Collaborator '{}' in test class '{}' can not be configured because "
-                    + "'{}' is an array. Please consider using a List instead of arrays.",
-                    name, testClassName, typeName);
+                    + "'{}' is an array. Please consider using a Collection instead of arrays.",
+                    fieldName, testClassName, fieldTypeName);
 
         });
     }

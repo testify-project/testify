@@ -26,7 +26,8 @@ import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure that integration test classes are annotated with {@link Module}.
+ * Insure that integration test classes are annotated with {@link Module} or
+ * {@link Scan}.
  *
  * @author saden
  */

@@ -22,9 +22,9 @@ import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
+import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.TestResourcesProvider;
 
 /**
  * An implementation of the TestResourcesProvider SPI contract.
@@ -41,8 +41,7 @@ public class DefaultTestResourcesProvider implements TestResourcesProvider {
         this(ServiceLocatorUtil.INSTANCE, new ConcurrentLinkedQueue<>());
     }
 
-    DefaultTestResourcesProvider(ServiceLocatorUtil serviceLocatorUtil,
-            Queue<ResourceProvider> resourceProviders) {
+    DefaultTestResourcesProvider(ServiceLocatorUtil serviceLocatorUtil, Queue<ResourceProvider> resourceProviders) {
         this.resourceProviders = resourceProviders;
         this.serviceLocatorUtil = serviceLocatorUtil;
     }
@@ -57,17 +56,10 @@ public class DefaultTestResourcesProvider implements TestResourcesProvider {
                 resourceProviders.add(resourceProvider);
             });
         }
-
-        //XXX: Some DI framework (i.e. Spring) require that the service instance
-        //context be initialized. We need to do the initialization after the
-        //required resources have started so that resources can dynamically
-        //added to the service instance and eligiable for injection into the
-        //test class and test fixtures.
-        serviceInstance.init();
     }
 
     @Override
-    public void destroy(TestContext testContext, ServiceInstance serviceInstance) {
+    public void stop(TestContext testContext) {
         if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
             resourceProviders.forEach(ResourceProvider::stop);
         }

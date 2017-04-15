@@ -21,13 +21,18 @@ import javax.inject.Inject;
  *
  * @author saden
  */
-public class ConstantService {
+public class ConstantService implements ConstantContract {
 
     private final String name;
 
     @Inject
     public ConstantService(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }

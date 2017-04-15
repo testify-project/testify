@@ -20,13 +20,15 @@ import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Bundle;
+import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
+import org.testifyproject.fixture.common.CutClass;
 
 /**
  *
  * @author saden
  */
 public class BundleInspectorTest {
-    
+
     BundleInspector cut;
 
     @Before
@@ -35,12 +37,21 @@ public class BundleInspectorTest {
     }
 
     @Test
-    public void givenParamtersInspectShouldAddProperty() {
+    public void givenClassWithoutBundleMetaAnnotationInspectShouldInspectClass() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        Class<?> annotatedType = Object.class;
-        Bundle annotation = mock(Bundle.class);
+        Class<?> annotatedType = CutClass.class;
+        Bundle bundle = mock(Bundle.class);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        cut.inspect(testDescriptor, annotatedType, bundle);
     }
-    
+
+    @Test
+    public void givenClassWithBundleMetaAnnotationInspectShouldInspectClass() {
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        Class<?> annotatedType = AnalyzedTestClass.class;
+        Bundle bundle = mock(Bundle.class);
+
+        cut.inspect(testDescriptor, annotatedType, bundle);
+    }
+
 }

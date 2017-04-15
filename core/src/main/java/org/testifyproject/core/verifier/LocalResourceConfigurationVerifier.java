@@ -44,12 +44,12 @@ public class LocalResourceConfigurationVerifier implements ConfigurationVerifier
                 .map(LocalResource::value)
                 .forEach(p -> {
                     try {
-                        p.getDeclaredConstructor();
+                        p.getConstructor();
                     } catch (NoSuchMethodException e) {
                         ExceptionUtil.INSTANCE.raise(
                                 "Local Resource '{}' defined in test class '{}' does not have a zero "
                                 + "argument default constructor. Please insure that the local resource "
-                                + "provider defines an accessible zero argument default constructor.",
+                                + "provider defines a public zero argument default constructor.",
                                 testClassName, p.getSimpleName()
                         );
                     }

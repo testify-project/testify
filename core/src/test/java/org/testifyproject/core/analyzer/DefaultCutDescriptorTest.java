@@ -27,10 +27,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
+import org.testifyproject.fixture.analyzer.AnalyzedCutClass;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableMap;
@@ -107,6 +109,20 @@ public class DefaultCutDescriptorTest {
     }
 
     @Test
+    public void givenNonCutTypeIsCutClassShouldReturnFalse() {
+        Boolean result = cut.isCutClass(String.class);
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void givenCutTypeIsCutClassShouldReturnFalse() {
+        Boolean result = cut.isCutClass(AnalyzedCutClass.class);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
     public void callToGetFieldDescriptorsShouldReturn() {
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         List<FieldDescriptor> value = ImmutableList.of(fieldDescriptor);
@@ -126,6 +142,22 @@ public class DefaultCutDescriptorTest {
         properties.put(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Optional<FieldDescriptor> result = cut.findFieldDescriptor(type);
+
+        assertThat(result).contains(fieldDescriptor);
+    }
+    
+    @Test
+    public void givenSubtypeFindFieldDescriptorShouldReturnFieldDescriptor() {
+        Class<Collection> type = Collection.class;
+        DescriptorKey descriptorKey = DescriptorKey.of(type);
+        FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        properties.put(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
+        Class<List> searchType = List.class;
+
+        given(fieldDescriptor.isSupertypeOf(searchType)).willReturn(true);
+        
+        Optional<FieldDescriptor> result = cut.findFieldDescriptor(searchType);
 
         assertThat(result).contains(fieldDescriptor);
     }
@@ -164,6 +196,22 @@ public class DefaultCutDescriptorTest {
         properties.put(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
 
         Optional<ParameterDescriptor> result = cut.findParameterDescriptor(type);
+
+        assertThat(result).contains(parameterDescriptor);
+    }
+    
+     @Test
+    public void givenSubtypeFindParameterDescriptorShouldReturnParameterDescriptor() {
+        Class<Collection> type = Collection.class;
+        DescriptorKey descriptorKey = DescriptorKey.of(type);
+        ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
+        Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey, parameterDescriptor);
+        properties.put(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
+        Class<List> searchType = List.class;
+        
+        given(parameterDescriptor.isSupertypeOf(searchType)).willReturn(true);
+        
+        Optional<ParameterDescriptor> result = cut.findParameterDescriptor(searchType);
 
         assertThat(result).contains(parameterDescriptor);
     }

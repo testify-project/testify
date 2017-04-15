@@ -21,8 +21,10 @@ import java.util.Set;
 import org.testifyproject.CutDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
@@ -32,8 +34,6 @@ import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.WiringVerifier;
 import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.TestResourcesProvider;
-import org.testifyproject.TestConfigurer;
 
 /**
  * A class used to run a integration test.
@@ -74,6 +74,14 @@ public class IntegrationTestRunner implements TestRunner {
 
         testResourcesProvider = ServiceLocatorUtil.INSTANCE.getOne(TestResourcesProvider.class);
         testResourcesProvider.start(testContext, serviceInstance);
+
+        //XXX: Some DI framework (i.e. Spring) require that the service instance
+        //context be initialized. We need to do the initialization after the
+        //required resources have started so that resources can dynamically
+        //added to the service instance and eligiable for injection into the
+        //test class and test fixtures.
+        serviceInstance.init();
+
         Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
 
         foundCutDescriptor.ifPresent(cutDescriptor -> {
@@ -115,7 +123,7 @@ public class IntegrationTestRunner implements TestRunner {
                 .ifPresent(p -> p.destroy(testInstance));
 
         if (testResourcesProvider != null) {
-            testResourcesProvider.destroy(testContext, serviceInstance);
+            testResourcesProvider.stop(testContext);
         }
 
         if (serviceInstance != null) {

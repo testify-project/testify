@@ -89,7 +89,7 @@ public class HK2ServiceInstance implements ServiceInstance {
 
     @Override
     public void destroy() {
-        if (locator.getState() == RUNNING) {
+        if (isRunning()) {
             locator.shutdown();
         }
     }

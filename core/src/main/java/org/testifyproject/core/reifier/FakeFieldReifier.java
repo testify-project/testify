@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core.reifier;
 
-import java.util.Optional;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -43,21 +42,22 @@ public class FakeFieldReifier implements FieldReifier {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         MockProvider mockProvider = testContext.getMockProvider();
 
-        testDescriptor.getFieldDescriptors()
-                .parallelStream()
+        testDescriptor.getFieldDescriptors().parallelStream()
                 .filter(p -> p.getFake().isPresent())
                 .forEach(fieldDescriptor -> {
                     Class<?> fieldType = fieldDescriptor.getType();
-                    Optional foundValue = fieldDescriptor.getValue(testInstance);
-                    Object value = null;
 
-                    if (!foundValue.isPresent()) {
-                        value = mockProvider.createFake(fieldType);
-                    } else if (!mockProvider.isMock(foundValue.get())) {
-                        value = mockProvider.createVirtual(fieldType, foundValue.get());
-                    }
+                    Object fieldValue = fieldDescriptor.getValue(testInstance)
+                            .map(value -> {
+                                if (mockProvider.isMock(value)) {
+                                    return value;
+                                }
 
-                    fieldDescriptor.setValue(testInstance, value);
+                                return mockProvider.createVirtual(fieldType, value);
+                            })
+                            .orElseGet(() -> mockProvider.createFake(fieldType));
+
+                    fieldDescriptor.setValue(testInstance, fieldValue);
                 });
     }
 

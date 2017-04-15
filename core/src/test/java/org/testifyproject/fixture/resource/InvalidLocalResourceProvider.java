@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture.container;
+package org.testifyproject.fixture.resource;
 
-import static org.mockito.Mockito.mock;
+import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.VirtualResourceInstance;
-import org.testifyproject.VirtualResourceProvider;
-import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -27,20 +25,25 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class TestVirtualResourceProvider implements VirtualResourceProvider<VirtualResource, Void> {
+public class InvalidLocalResourceProvider implements LocalResourceProvider {
+
+    /**
+     * Private constructor is invalid.
+     */
+    private InvalidLocalResourceProvider() {
+    }
 
     @Override
-    public Void configure(TestContext testContext) {
+    public Object configure(TestContext testContext) {
         return null;
     }
 
     @Override
-    public VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, Void configuration) {
-        return mock(VirtualResourceInstance.class);
+    public LocalResourceInstance start(TestContext testContext, Object config) {
+        return null;
     }
 
     @Override
     public void stop() {
     }
-
 }

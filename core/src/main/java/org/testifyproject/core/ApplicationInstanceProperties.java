@@ -24,7 +24,13 @@ package org.testifyproject.core;
  */
 public class ApplicationInstanceProperties {
 
+    /**
+     * Servlet Application initializer property key.
+     */
     public static final String SERVLET_CONTAINER_INITIALIZER = "servlet.container.initializer";
+    /**
+     * Servlet Application handler property key.
+     */
     public static final String SERVLET_HANDLERS = "servlet.handlers";
 
     private ApplicationInstanceProperties() {

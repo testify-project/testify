@@ -41,12 +41,24 @@ public class ConfigHandlerConfigurationVerifier implements ConfigurationVerifier
         List<MethodDescriptor> configHandlers = testDescriptor.getConfigHandlers();
 
         configHandlers.parallelStream().forEach(configHandler -> {
-            int size = configHandler.getParameterTypes().size();
+            List<Class> parameterTypes = configHandler.getParameterTypes();
+            int size = parameterTypes.size();
+            String name = configHandler.getName();
+            String declaringClassName = configHandler.getDeclaringClassName();
+            Class returnType = configHandler.getReturnType();
 
             ExceptionUtil.INSTANCE.raise(size != 1,
                     "Configuration Handler method '{}' in class '{}' has {} paramters. "
-                    + "Configuration handler must have one and only one paramter.",
-                    configHandler.getName(), configHandler.getDeclaringClassName(), size);
+                    + "Please insure the configuration handler has one and only one paramter.",
+                    name, declaringClassName, size);
+
+            Class paramterType = parameterTypes.get(0);
+
+            ExceptionUtil.INSTANCE.raise(!(Void.TYPE.isAssignableFrom(returnType)
+                    || returnType.isAssignableFrom(paramterType)),
+                    "Configuration Handler method '{}' in class '{}' has return type returns '{}'."
+                    + "Please insure the configuration handler returns a void or a super type of '{}'.",
+                    name, declaringClassName, returnType.getSimpleName(), paramterType.getSimpleName());
         });
     }
 

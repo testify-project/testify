@@ -23,8 +23,10 @@ import org.testifyproject.CutDescriptor;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Application;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
@@ -35,8 +37,6 @@ import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.WiringVerifier;
 import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.TestResourcesProvider;
-import org.testifyproject.TestConfigurer;
 
 /**
  * A class used to run a system test.
@@ -61,7 +61,6 @@ public class SystemTestRunner implements TestRunner {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
         Optional<Application> foundApplication = testDescriptor.getApplication();
-        Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
 
         if (foundApplication.isPresent()) {
             Application application = foundApplication.get();
@@ -105,7 +104,16 @@ public class SystemTestRunner implements TestRunner {
                 testResourcesProvider = ServiceLocatorUtil.INSTANCE.getOne(TestResourcesProvider.class);
                 testResourcesProvider.start(testContext, serviceInstance);
 
-                createClassUnderTest(foundCutDescriptor, application, testInstance);
+                //XXX: Some DI framework (i.e. Spring) require that the service instance
+                //context be initialized. We need to do the initialization after the
+                //required resources have started so that resources can dynamically
+                //added to the service instance and eligiable for injection into the
+                //test class and test fixtures.
+                serviceInstance.init();
+
+                testContext.getCutDescriptor().ifPresent(cutDescriptor
+                        -> createClassUnderTest(cutDescriptor, application, testInstance)
+                );
 
                 ServiceLocatorUtil.INSTANCE.findAllWithFilter(org.testifyproject.extension.TestReifier.class, SystemTest.class)
                         .forEach(p -> p.reify(testContext));
@@ -117,19 +125,17 @@ public class SystemTestRunner implements TestRunner {
         }
     }
 
-    void createClassUnderTest(Optional<CutDescriptor> foundCutDescriptor, Application application, Object testInstance) {
-        foundCutDescriptor.ifPresent(cutDescriptor -> {
-            Class cutType = cutDescriptor.getType();
-            Object cutInstance;
+    void createClassUnderTest(CutDescriptor cutDescriptor, Application application, Object testInstance) {
+        Class cutType = cutDescriptor.getType();
+        Object cutInstance;
 
-            if (ClientInstance.class.isAssignableFrom(cutType)) {
-                cutInstance = serviceInstance.getService(cutType);
-            } else {
-                cutInstance = serviceInstance.getService(cutType, application.clientName());
-            }
+        if (ClientInstance.class.isAssignableFrom(cutType)) {
+            cutInstance = serviceInstance.getService(cutType);
+        } else {
+            cutInstance = serviceInstance.getService(cutType, application.clientName());
+        }
 
-            cutDescriptor.setValue(testInstance, cutInstance);
-        });
+        cutDescriptor.setValue(testInstance, cutInstance);
     }
 
     void createApplicationServer(ServerInstance serverInstance, Application application) {
@@ -213,7 +219,7 @@ public class SystemTestRunner implements TestRunner {
         }
 
         if (testResourcesProvider != null) {
-            testResourcesProvider.destroy(testContext, serviceInstance);
+            testResourcesProvider.stop(testContext);
         }
     }
 

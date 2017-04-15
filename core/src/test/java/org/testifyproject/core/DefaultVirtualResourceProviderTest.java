@@ -37,7 +37,7 @@ import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.fixture.container.TestVirtualResourceProvider;
+import org.testifyproject.fixture.resource.ValidVirtualResourceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.TestConfigurer;
 
@@ -149,7 +149,7 @@ public class DefaultVirtualResourceProviderTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         VirtualResource virtualResource = mock(VirtualResource.class);
         List<VirtualResource> virtualResources = ImmutableList.of(virtualResource);
-        Class virtualResourceProviderType = TestVirtualResourceProvider.class;
+        Class virtualResourceProviderType = ValidVirtualResourceProvider.class;
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = null;
         TestConfigurer testConfigurer = mock(TestConfigurer.class);

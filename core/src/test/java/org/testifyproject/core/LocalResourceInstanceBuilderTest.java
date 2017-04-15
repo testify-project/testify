@@ -35,7 +35,7 @@ public class LocalResourceInstanceBuilderTest {
 
     @Before
     public void init() {
-        cut = new LocalResourceInstanceBuilder();
+        cut = LocalResourceInstanceBuilder.builder();
     }
 
     @Test

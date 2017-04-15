@@ -15,11 +15,11 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.testifyproject.CutDescriptor;
+import static java.util.stream.Collectors.toList;
+import org.testifyproject.MethodDescriptor;
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -42,36 +42,35 @@ public class ConstructorWiringVerifier implements WiringVerifier {
 
     @Override
     public void verify(TestContext testContext) {
-        Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Object testInstance = testContext.getTestInstance();
         String testClassName = testDescriptor.getTestClassName();
 
-        Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
+        Optional<MethodDescriptor> foundCollaboratorProvider = testDescriptor.getCollaboratorProvider();
 
-        if (foundCutDescriptor.isPresent()
-                && !testDescriptor.getCollaboratorProvider().isPresent()) {
-            CutDescriptor cutDescriptor = foundCutDescriptor.get();
-            Collection<ParameterDescriptor> paramDescriptors = cutDescriptor.getParameterDescriptors();
-            String cutClassName = cutDescriptor.getTypeName();
+        if (!foundCollaboratorProvider.isPresent()) {
+            testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
+                String cutClassName = cutDescriptor.getTypeName();
+                Collection<ParameterDescriptor> paramDescriptors = cutDescriptor.getParameterDescriptors();
 
-            List<ParameterDescriptor> undeclared = new ArrayList<>(paramDescriptors);
+                List<ParameterDescriptor> undeclared = paramDescriptors.stream().collect(toList());
 
-            paramDescriptors.stream().forEach(p
-                    -> testDescriptor.getFieldDescriptors()
-                            .stream()
-                            .filter(fd -> p.isSubtypeOf(fd.getGenericType()) && fd.getValue(testInstance).isPresent())
-                            .forEach(fd -> undeclared.remove(p))
-            );
+                paramDescriptors.stream().forEach(parameterDescriptor
+                        -> testDescriptor.getFieldDescriptors().stream()
+                                .filter(fieldDescriptor -> parameterDescriptor.isSubtypeOf(fieldDescriptor.getGenericType()))
+                                .filter(fieldDescriptor -> fieldDescriptor.getValue(testInstance).isPresent())
+                                .forEach(fieldDescriptor -> undeclared.remove(parameterDescriptor))
+                );
 
-            undeclared.stream()
-                    .map(ParameterDescriptor::getTypeName)
-                    .forEach(paramTypeName
-                            -> LoggingUtil.INSTANCE.warn(
-                            "Class under test '{}' defined in '{}' has a collaborator "
-                            + "of type '{}' but test class '{}' does not define a field of "
-                            + "type '{}' annotated with @Fake, @Real, or @Virtual. The real "
-                            + "instance of the collaborator will be used.",
-                            cutClassName, testClassName, paramTypeName, testClassName, paramTypeName));
+                undeclared.stream()
+                        .map(ParameterDescriptor::getTypeName)
+                        .forEach(paramTypeName
+                                -> LoggingUtil.INSTANCE.warn(
+                                "Class under test '{}' defined in '{}' has a collaborator "
+                                + "of type '{}' but test class '{}' does not define a field of "
+                                + "type '{}' annotated with @Fake, @Real, or @Virtual.",
+                                cutClassName, testClassName, paramTypeName, testClassName, paramTypeName));
+            });
         }
     }
 

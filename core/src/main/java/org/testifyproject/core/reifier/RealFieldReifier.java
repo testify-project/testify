@@ -13,37 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.level.unit;
+package org.testifyproject.core.reifier;
 
-import java.util.Optional;
 import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.extension.CutReifier;
+import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies the cut class.
+ * A class that reifies test fields annotated with
+ * {@link  org.testifyproject.annotation.Real}.
  *
  * @author saden
  */
 @UnitTest
 @Discoverable
-public class UnitTestCutReifier implements CutReifier {
+public class RealFieldReifier implements FieldReifier {
 
     @Override
     public void reify(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
-            Optional<Object> foundValue = cutDescriptor.getValue(testInstance);
+        testDescriptor.getFieldDescriptors().parallelStream()
+                .filter(p -> p.getReal().isPresent())
+                .forEach(fieldDescriptor -> {
+                    Class<?> fieldType = fieldDescriptor.getType();
 
-            if (!foundValue.isPresent()) {
-                Class<?> cutType = cutDescriptor.getType();
-                Object cutInstance = ReflectionUtil.INSTANCE.newInstance(cutType);
-                cutDescriptor.setValue(testInstance, cutInstance);
-            }
-        });
+                    Object fieldValue = fieldDescriptor.getValue(testInstance)
+                            .map(value -> value)
+                            .orElseGet(() -> ReflectionUtil.INSTANCE.newInstance(fieldType));
+
+                    fieldDescriptor.setValue(testInstance, fieldValue);
+                });
     }
 
 }

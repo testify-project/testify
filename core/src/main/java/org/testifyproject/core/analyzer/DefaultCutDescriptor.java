@@ -96,9 +96,10 @@ public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutD
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
 
+        //XXX: maybe the type is a subtype of a field? maybe we are trying to be
+        //too smart for our own good here?
         if (fieldDescriptor == null) {
-            fieldDescriptor = fieldDescriptors.values()
-                    .parallelStream()
+            fieldDescriptor = fieldDescriptors.values().parallelStream()
                     .filter(p -> p.isSupertypeOf(type))
                     .findFirst()
                     .orElse(null);
@@ -131,9 +132,10 @@ public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutD
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         ParameterDescriptor parameterDescriptor = paramterDescriptors.get(descriptorKey);
 
+        //XXX: maybe the type is a subtype of a field? maybe we are trying to be
+        //too smart for our own good here?
         if (parameterDescriptor == null) {
-            parameterDescriptor = paramterDescriptors.values()
-                    .parallelStream()
+            parameterDescriptor = paramterDescriptors.values().parallelStream()
                     .filter(p -> p.isSupertypeOf(type))
                     .findFirst()
                     .orElse(null);

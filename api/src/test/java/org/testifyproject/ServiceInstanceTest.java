@@ -107,6 +107,34 @@ public class ServiceInstanceTest {
     }
 
     @Test
+    public void givenVoidOverrideContractReplaceShouldReplaceInstance() {
+        Instance<Object> instance = mock(Instance.class);
+        String overrideName = "";
+        Class overrideContract = void.class;
+
+        Object constant = mock(Object.class);
+
+        String name = "name";
+        Optional<String> nameResult = Optional.of(name);
+
+        Class contract = Class.class;
+        Optional<Class<? extends Object>> contractResult = Optional.of(contract);
+
+        given(instance.getInstance()).willReturn(constant);
+        given(instance.getName()).willReturn(nameResult);
+        given(instance.getContract()).willReturn(contractResult);
+
+        cut.replace(instance, overrideName, overrideContract);
+
+        verify(instance).getInstance();
+        verify(instance).getName();
+        verify(instance).getContract();
+
+        verify(cut).replace(instance, overrideName, overrideContract);
+        verify(cut).replace(constant, name, contract);
+    }
+
+    @Test
     public void callToIsRunningShouldReturnFalse() {
         Boolean result = cut.isRunning();
 

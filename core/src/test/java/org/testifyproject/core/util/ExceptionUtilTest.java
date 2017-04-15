@@ -51,6 +51,20 @@ public class ExceptionUtilTest {
     }
 
     @Test
+    public void givenMessageFormatAndTArgsPropogateShouldReturn() {
+        String greeting = "Hello";
+        String name = "tester";
+        String messageFormat = greeting + "{}";
+        Object[] args = new Object[]{name};
+
+        TestifyException result = cut.propagate(messageFormat, args);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getMessage()).contains(greeting, name);
+        verify(loggingUtil).formatMessage(messageFormat, args);
+    }
+    
+    @Test
     public void givenMessageFormatAndThrowableAndArgsPropogateShouldReturn() {
         String greeting = "Hello";
         String name = "tester";

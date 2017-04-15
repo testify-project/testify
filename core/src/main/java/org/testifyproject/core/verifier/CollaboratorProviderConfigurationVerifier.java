@@ -16,8 +16,6 @@
 package org.testifyproject.core.verifier;
 
 import java.util.Collection;
-import java.util.Optional;
-import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -41,20 +39,20 @@ public class CollaboratorProviderConfigurationVerifier implements ConfigurationV
     @Override
     public void verify(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Optional<MethodDescriptor> foundCollaboratorProvider = testDescriptor.getCollaboratorProvider();
 
-        if (foundCollaboratorProvider.isPresent()) {
-            MethodDescriptor collaboratorProvider = foundCollaboratorProvider.get();
+        testDescriptor.getCollaboratorProvider().ifPresent(collaboratorProvider -> {
             Class<?> returnType = collaboratorProvider.getReturnType();
+            String methodName = collaboratorProvider.getName();
+            String declaringClassName = collaboratorProvider.getDeclaringClassName();
+            String returnTypeName = returnType.getSimpleName();
 
             ExceptionUtil.INSTANCE.raise(!(Object[].class.isAssignableFrom(returnType)
                     || Collection.class.isAssignableFrom(returnType)),
-                    "Configuration provider method '{}' in '{}' return type '{}' is invalid. "
-                    + "Configuration provider methods must return an instance of "
+                    "Collaborator provider method '{}' in '{}' has an invalid return type ('{}'). "
+                    + "Collaborator provider methods must return an instance of "
                     + "java.lang.Object[] or java.util.Collection.",
-                    collaboratorProvider.getName(), collaboratorProvider.getDeclaringClassName(), returnType.getName());
-        }
-
+                    methodName, declaringClassName, returnTypeName);
+        });
     }
 
 }

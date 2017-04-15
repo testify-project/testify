@@ -23,6 +23,7 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.NamedImpl;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.BDDMockito.given;
@@ -34,7 +35,11 @@ import org.testifyproject.core.annotation.DefaultScan;
 import org.testifyproject.di.fixture.autowired.Greeting;
 import org.testifyproject.di.fixture.autowired.impl.Haye;
 import org.testifyproject.di.fixture.autowired.impl.Hello;
+import org.testifyproject.di.fixture.common.ConstantContract;
 import org.testifyproject.di.fixture.common.ConstantService;
+import org.testifyproject.di.fixture.common.GenericContract;
+import org.testifyproject.di.fixture.common.GenericService;
+import org.testifyproject.di.fixture.common.InjectedService;
 import org.testifyproject.di.fixture.common.WiredContract;
 import org.testifyproject.di.fixture.common.WiredService;
 import org.testifyproject.di.fixture.module.TestModule;
@@ -57,9 +62,27 @@ public class HK2ServiceInstanceTest {
         cut = new HK2ServiceInstance(testContext, serviceLocator);
     }
 
-    @Test
-    public void callToDestroyShouldDestroyServiceLocator() {
+    @After
+    public void destroy() {
         cut.destroy();
+    }
+
+    @Test
+    public void callToIsRunningShouldReturnTrue() {
+        assertThat(cut.isRunning()).isTrue();
+    }
+
+    @Test
+    public void callToInjectShouldInjectService() {
+        InjectedService injectedService = new InjectedService();
+
+        assertThat(injectedService.getField()).isNull();
+        assertThat(injectedService.getMethod()).isNull();
+
+        cut.inject(injectedService);
+
+        assertThat(injectedService.getField()).isNotNull();
+        assertThat(injectedService.getMethod()).isNotNull();
     }
 
     @Test
@@ -71,25 +94,68 @@ public class HK2ServiceInstanceTest {
 
     @Test
     public void givenTypeGetServiceShouldReturnService() {
-        Hello greeting = cut.getService(Hello.class);
-        assertThat(greeting).isNotNull();
+        Hello result = cut.getService(Hello.class);
+
+        assertThat(result).isNotNull();
     }
 
     @Test
     public void givenContractTypeGetServiceShouldReturnService() {
-        Greeting greeting = cut.getService(Greeting.class);
-        assertThat(greeting).isNotNull();
+        Greeting result = cut.getService(Greeting.class);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void givenTypeAndNameGetServiceShouldReturnService() {
+        Haye result = cut.getService(Haye.class, "Haye");
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void givenGenericTypeGetServiceShouldReturnService() {
+        GenericContract<String> constant = new GenericService();
+        String name = "genericConstant";
+        Class contract = GenericContract.class;
+
+        cut.addConstant(constant, name, contract);
+
+        TypeToken<GenericContract<String>> type = new TypeToken<GenericContract<String>>() {
+        };
+
+        GenericContract<String> result = cut.getService(type.getType());
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void givenGenericTypeWithQualifierGetServiceShouldReturnService() {
+        GenericContract<String> constant = new GenericService();
+        String name = "genericConstant";
+        Class contract = GenericContract.class;
+
+        cut.addConstant(constant, name, contract);
+
+        TypeToken<GenericContract<String>> type = new TypeToken<GenericContract<String>>() {
+        };
+
+        Annotation[] qualifiers = new Annotation[]{new NamedImpl(name)};
+
+        GenericContract<String> result = cut.getService(type.getType(), qualifiers);
+
+        assertThat(result).isNotNull();
     }
 
     @Test
     public void givenTypeAndAnnotationGetServiceShouldReturnService() {
-        Haye greeting = cut.getService(Haye.class, new Annotation[]{new NamedImpl("Haye")});
-        assertThat(greeting).isNotNull();
+        Annotation[] qualifiers = new Annotation[]{new NamedImpl("Haye")};
+        Haye result = cut.getService(Haye.class, qualifiers);
+        assertThat(result).isNotNull();
     }
 
     @Test
-    public void givenServiceInstanceAddConstantShouldAddTheService() {
+    public void givenConstantAddConstantShouldAddTheInstanceToServiceLocator() {
         ConstantService service = new ConstantService("greeting");
+
         cut.addConstant(service, null, null);
 
         ConstantService result = serviceLocator.getService(ConstantService.class);
@@ -97,11 +163,73 @@ public class HK2ServiceInstanceTest {
     }
 
     @Test
-    public void givenValidParamsReplaceWithConstantShouldRepalceService() {
-        String name = "newgreeting";
+    public void givenConstantWithNameAddConstantShouldAddTheInstanceToServiceLocator() {
+        ConstantService service = new ConstantService("greeting");
+        String name = "testConstant";
+
+        cut.addConstant(service, name, null);
+
+        ConstantService result = serviceLocator.getService(ConstantService.class, name);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void givenConstantWithContractAddConstantShouldAddTheInstanceToServiceLocator() {
+        ConstantService service = new ConstantService("greeting");
+        String name = null;
+        Class<ConstantContract> contract = ConstantContract.class;
+
+        cut.addConstant(service, name, contract);
+
+        ConstantContract result = serviceLocator.getService(ConstantContract.class, name);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void givenConstantWithNameAndContractAddConstantShouldAddTheInstanceToServiceLocator() {
+        ConstantService service = new ConstantService("greeting");
+        String name = "testConstant";
+        Class<ConstantContract> contract = ConstantContract.class;
+
+        cut.addConstant(service, name, contract);
+
+        ConstantContract result = serviceLocator.getService(ConstantContract.class, name);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void givenConstantWithNameAndContractReplaceShouldReplaceInstanceInServiceLocator() {
+        String name = "hello";
         Hello constant = new Hello();
-        cut.replace(constant, name, Greeting.class);
-        Greeting result = serviceLocator.getService(Greeting.class, name);
+        Class<Greeting> contract = Greeting.class;
+
+        cut.replace(constant, name, contract);
+
+        Greeting result = serviceLocator.getService(contract, name);
+        assertThat(result).isSameAs(constant);
+    }
+
+    @Test
+    public void givenConstantWithNameReplaceShouldReplaceInstanceInServiceLocator() {
+        String name = "hello";
+        Hello constant = new Hello();
+        Class<Greeting> contract = null;
+
+        cut.replace(constant, name, contract);
+
+        Greeting result = serviceLocator.getService(Hello.class, name);
+        assertThat(result).isSameAs(constant);
+    }
+
+    @Test
+    public void givenConstantWithContractReplaceShouldReplaceInstanceInServiceLocator() {
+        String name = null;
+        Hello constant = new Hello();
+        Class<Greeting> contract = Greeting.class;
+
+        cut.replace(constant, name, contract);
+
+        Greeting result = serviceLocator.getService(contract);
         assertThat(result).isSameAs(constant);
     }
 

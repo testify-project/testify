@@ -17,7 +17,6 @@ package org.testifyproject.core.reifier;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
-import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.extension.TestReifier;
@@ -37,9 +36,8 @@ public class ServiceTestReifier implements TestReifier {
 
     @Override
     public void reify(TestContext testContext) {
-        Object testInstance = testContext.getTestInstance();
         testContext.getServiceInstance().ifPresent(serviceInstance -> {
-            MockProvider mockProvider = testContext.getMockProvider();
+            Object testInstance = testContext.getTestInstance();
             Set<Class<? extends Annotation>> nameQualifers = serviceInstance.getNameQualifers();
             Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
 
@@ -47,7 +45,8 @@ public class ServiceTestReifier implements TestReifier {
             //of the cut class and are annotated with DI supported injection
             //annotations then get the services and initialize the test fields.
             testContext.getTestDescriptor().getFieldDescriptors().parallelStream()
-                    .filter(p -> !p.getValue(testInstance).isPresent() && p.hasAnyAnnotations(Real.class))
+                    .filter(fieldDescriptor -> !fieldDescriptor.getValue(testInstance).isPresent())
+                    .filter(fieldDescriptor -> fieldDescriptor.hasAnyAnnotations(Real.class))
                     .forEach(fieldDescriptor -> {
                         Class fieldType = fieldDescriptor.getType();
                         Annotation[] fieldQualifiers
@@ -56,10 +55,6 @@ public class ServiceTestReifier implements TestReifier {
                         Object value = serviceInstance.getService(fieldType, fieldQualifiers);
 
                         if (value != null) {
-                            if (fieldDescriptor.getVirtual().isPresent()) {
-                                value = mockProvider.createVirtual(fieldDescriptor.getType(), value);
-                            }
-
                             fieldDescriptor.setValue(testInstance, value);
                             fieldDescriptor.init(value);
                         }

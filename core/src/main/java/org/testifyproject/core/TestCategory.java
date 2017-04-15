@@ -41,7 +41,7 @@ public interface TestCategory {
                 Enum result = Enum.valueOf(enumType, category.toUpperCase());
                 builder.add(result);
             } catch (Exception e) {
-                LoggingUtil.INSTANCE.debug("Could not find enum '{}'", e, category);
+                LoggingUtil.INSTANCE.warn("Could not find enum '{}'", e, category);
             }
         }
 

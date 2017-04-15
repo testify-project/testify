@@ -23,8 +23,7 @@ package org.testifyproject;
 public interface TestResourcesProvider {
 
     /**
-     * Start reifying the test class using the given test context and service
-     * instance.
+     * Start the test resources.
      *
      * @param testContext the test context
      * @param serviceInstance the service instance
@@ -32,11 +31,10 @@ public interface TestResourcesProvider {
     void start(TestContext testContext, ServiceInstance serviceInstance);
 
     /**
-     * Clean up and destroy the test class.
+     * Stop the test resources.
      *
      * @param testContext the test context
-     * @param serviceInstance the service instance
      */
-    void destroy(TestContext testContext, ServiceInstance serviceInstance);
+    void stop(TestContext testContext);
 
 }

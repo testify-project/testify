@@ -38,21 +38,20 @@ public class VirtualResourceConfigurationVerifier implements ConfigurationVerifi
     @Override
     public void verify(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        String testClassName = testDescriptor.getTestClassName();
 
         testDescriptor.getVirtualResources()
                 .parallelStream()
                 .map(VirtualResource::provider)
                 .filter(p -> !VirtualResourceProvider.class.equals(p))
-                .forEach(p -> {
+                .forEach(resourceProvider -> {
                     try {
-                        p.getDeclaredConstructor();
+                        resourceProvider.getConstructor();
                     } catch (NoSuchMethodException e) {
                         ExceptionUtil.INSTANCE.raise(
                                 "Virtual Resource '{}' defined in test class '{}' does not have a zero "
                                 + "argument default constructor. Please insure that the virtual resource "
-                                + "provider defines an accessible zero argument default constructor.",
-                                testClassName, p.getSimpleName()
+                                + "provider defines a public zero argument default constructor.",
+                                testDescriptor.getTestClassName(), resourceProvider.getSimpleName()
                         );
                     }
                 });

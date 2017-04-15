@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.level.unit;
+package org.testifyproject.core.reifier;
 
-import java.util.Optional;
+import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ReflectionUtil;
@@ -25,34 +25,34 @@ import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies test fields annotated with
- * {@link  org.testifyproject.annotation.Real}.
+ * {@link  org.testifyproject.annotation.Virtual}.
  *
  * @author saden
  */
 @UnitTest
 @Discoverable
-public class RealFieldReifier implements FieldReifier {
+public class VirtualFieldReifier implements FieldReifier {
 
     @Override
     public void reify(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        MockProvider mockProvider = testContext.getMockProvider();
 
         testDescriptor.getFieldDescriptors().parallelStream()
-                .filter(p -> p.getReal().isPresent())
+                .filter(p -> p.getVirtual().isPresent())
                 .forEach(fieldDescriptor -> {
                     Class<?> fieldType = fieldDescriptor.getType();
-                    Optional foundValue = fieldDescriptor.getValue(testInstance);
 
-                    Object value;
+                    Object fieldValue = fieldDescriptor.getValue(testInstance)
+                            .map(p -> p)
+                            .orElseGet(() -> ReflectionUtil.INSTANCE.newInstance(fieldType));
 
-                    if (foundValue.isPresent()) {
-                        value = foundValue.get();
-                    } else {
-                        value = ReflectionUtil.INSTANCE.newInstance(fieldType);
+                    if (!mockProvider.isMock(fieldValue)) {
+                        fieldValue = mockProvider.createVirtual(fieldType, fieldValue);
                     }
 
-                    fieldDescriptor.setValue(testInstance, value);
+                    fieldDescriptor.setValue(testInstance, fieldValue);
                 });
     }
 
