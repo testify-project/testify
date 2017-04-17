@@ -190,6 +190,22 @@ public class DefaultTestDescriptorTest {
     }
 
     @Test
+    public void givenSuperTypeFindFieldDescriptorShouldReturnFieldDescriptor() {
+        Class<CharSequence> type = CharSequence.class;
+        DescriptorKey descriptorKey = DescriptorKey.of(type);
+        FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
+
+        Class<String> searchType = String.class;
+        given(fieldDescriptor.isSupertypeOf(searchType)).willReturn(true);
+
+        Optional<FieldDescriptor> result = cut.findFieldDescriptor(searchType);
+
+        assertThat(result).contains(fieldDescriptor);
+    }
+
+    @Test
     public void givenTypeAndNameFindFieldDescriptorShouldReturnFieldDescriptor() {
         Class<Object> type = Object.class;
         String name = "name";

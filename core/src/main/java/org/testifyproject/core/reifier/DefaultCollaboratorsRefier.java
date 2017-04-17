@@ -21,6 +21,7 @@ import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
+import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.CollaboratorsReifier;
 import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.extension.annotation.UnitTest;
@@ -45,23 +46,23 @@ public class DefaultCollaboratorsRefier implements CollaboratorsReifier {
         testContext.getCutDescriptor()
                 .ifPresent(cutDescriptor
                         -> cutDescriptor.getValue(testInstance)
-                        .ifPresent(cutInstance
+                        .ifPresent(cutValue
                                 -> testContext.getTestDescriptor().getCollaboratorProvider()
                                 .ifPresent(methodDescriptor
                                         -> getCollaborators(methodDescriptor, testInstance)
                                         .ifPresent(collaborators
-                                                -> processCollaborator(
+                                                -> processCollaborators(
                                                 testContext,
                                                 cutDescriptor,
-                                                cutInstance,
+                                                cutValue,
                                                 convertToArray(collaborators))
                                         )
                                 )));
     }
 
-    void processCollaborator(TestContext testContext,
+    public void processCollaborators(TestContext testContext,
             CutDescriptor cutDescriptor,
-            Object cutInstance,
+            Object cutValue,
             Object[] collaborators) {
 
         for (Object collaborator : collaborators) {
@@ -69,16 +70,16 @@ public class DefaultCollaboratorsRefier implements CollaboratorsReifier {
                 continue;
             }
 
-            Class collaboratorType;
+            Class collaboratorType = collaborator.getClass();
 
             if (testContext.getMockProvider().isMock(collaborator)) {
                 Class collaboratorSuperclass = collaborator.getClass().getSuperclass();
                 Class[] collaboratorInterfaces = collaborator.getClass().getInterfaces();
-                collaboratorType = !collaboratorSuperclass.equals(Object.class)
+                collaboratorType = !Object.class.equals(collaboratorSuperclass)
                         ? collaboratorSuperclass
-                        : collaboratorInterfaces[0];
-            } else {
-                collaboratorType = collaborator.getClass();
+                        : collaboratorInterfaces.length != 0
+                                ? collaboratorInterfaces[0]
+                                : collaboratorType;
             }
 
             Optional<FieldDescriptor> foundFieldDescriptor
@@ -86,32 +87,31 @@ public class DefaultCollaboratorsRefier implements CollaboratorsReifier {
 
             if (foundFieldDescriptor.isPresent()) {
                 FieldDescriptor fieldDescriptor = foundFieldDescriptor.get();
-                fieldDescriptor.setValue(cutInstance, collaborator);
+                fieldDescriptor.setValue(cutValue, collaborator);
             }
         }
     }
 
-    Object[] convertToArray(Object resultValue) {
+    public Object[] convertToArray(Object value) {
         Object[] collaborators;
-        if (resultValue.getClass().isArray()) {
-            collaborators = (Object[]) resultValue;
-        } else if (resultValue instanceof Collection) {
-            collaborators = ((Collection) resultValue).stream().toArray();
+
+        if (value.getClass().isArray()) {
+            collaborators = (Object[]) value;
+        } else if (value instanceof Collection) {
+            collaborators = ((Collection) value).stream().toArray();
         } else {
-            collaborators = new Object[]{};
+            throw ExceptionUtil.INSTANCE.propagate(
+                    "Collaborator provided ({}) must be of type Object[] or Collection.",
+                    value.getClass().getSimpleName());
         }
+
         return collaborators;
     }
 
-    Optional<Object> getCollaborators(MethodDescriptor methodDescriptor, Object testInstance) {
-        Optional<Object> instance = methodDescriptor.getInstance();
-        Optional<Object> result;
-        if (instance.isPresent()) {
-            result = methodDescriptor.invoke(instance.get());
-        } else {
-            result = methodDescriptor.invoke(testInstance);
-        }
-        return result;
+    public Optional<Object> getCollaborators(MethodDescriptor methodDescriptor, Object testInstance) {
+        return methodDescriptor.getInstance()
+                .map(instance -> methodDescriptor.invoke(instance))
+                .orElseGet(() -> methodDescriptor.invoke(testInstance));
     }
 
 }

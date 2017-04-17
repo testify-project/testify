@@ -73,15 +73,15 @@ public class ServiceTestReifierTest {
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
         Optional<ServiceInstance> foundServiceInstace = Optional.of(serviceInstance);
         Object testInstance = mock(Object.class);
-        Set<Class<? extends Annotation>> namedQualiferis = ImmutableSet.of();
-        Set<Class<? extends Annotation>> customQualiferis = ImmutableSet.of();
+        Set<Class<? extends Annotation>> nameQualifiers = ImmutableSet.of();
+        Set<Class<? extends Annotation>> customQualifiers = ImmutableSet.of();
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of();
 
         given(testContext.getServiceInstance()).willReturn(foundServiceInstace);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(serviceInstance.getNameQualifers()).willReturn(namedQualiferis);
-        given(serviceInstance.getCustomQualifiers()).willReturn(customQualiferis);
+        given(serviceInstance.getNameQualifers()).willReturn(nameQualifiers);
+        given(serviceInstance.getCustomQualifiers()).willReturn(customQualifiers);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
@@ -103,8 +103,8 @@ public class ServiceTestReifierTest {
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
         Optional<ServiceInstance> foundServiceInstace = Optional.of(serviceInstance);
         Object testInstance = mock(Object.class);
-        Set<Class<? extends Annotation>> namedQualiferis = ImmutableSet.of();
-        Set<Class<? extends Annotation>> customQualiferis = ImmutableSet.of();
+        Set<Class<? extends Annotation>> nameQualifiers = ImmutableSet.of();
+        Set<Class<? extends Annotation>> customQualifiers = ImmutableSet.of();
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
@@ -117,14 +117,14 @@ public class ServiceTestReifierTest {
 
         given(testContext.getServiceInstance()).willReturn(foundServiceInstace);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(serviceInstance.getNameQualifers()).willReturn(namedQualiferis);
-        given(serviceInstance.getCustomQualifiers()).willReturn(customQualiferis);
+        given(serviceInstance.getNameQualifers()).willReturn(nameQualifiers);
+        given(serviceInstance.getCustomQualifiers()).willReturn(customQualifiers);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
         given(fieldDescriptor.hasAnyAnnotations(Real.class)).willReturn(true);
         given(fieldDescriptor.getType()).willReturn(fieldType);
-        given(fieldDescriptor.getMetaAnnotations(namedQualiferis, customQualiferis)).willReturn(fieldQualifiers);
+        given(fieldDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers)).willReturn(fieldQualifiers);
         given(serviceInstance.getService(fieldType, fieldQualifiers)).willReturn(value);
 
         cut.reify(testContext);
@@ -138,7 +138,7 @@ public class ServiceTestReifierTest {
         verify(fieldDescriptor).getValue(testInstance);
         verify(fieldDescriptor).hasAnyAnnotations(Real.class);
         verify(fieldDescriptor).getType();
-        verify(fieldDescriptor).getMetaAnnotations(namedQualiferis, customQualiferis);
+        verify(fieldDescriptor).getMetaAnnotations(nameQualifiers, customQualifiers);
         verify(serviceInstance).getService(fieldType, fieldQualifiers);
         verify(fieldDescriptor).setValue(testInstance, value);
         verify(fieldDescriptor).init(value);

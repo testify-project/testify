@@ -23,7 +23,8 @@ import org.junit.runners.model.MultipleFailureException;
 import org.testifyproject.core.util.LoggingUtil;
 
 /**
- * A JUnit test run notifier to handle logging and notification test lifecycle events.
+ * A JUnit test run notifier to handle logging and notification test lifecycle
+ * events.
  *
  * @author saden
  */
@@ -96,23 +97,19 @@ public class TestifyJUnit4RunNotifier extends RunNotifier {
         runNotifier.fireTestFinished(description);
     }
 
-    public void addFailure(Throwable t) {
-        if (t instanceof MultipleFailureException) {
-            addMultipleFailureException((MultipleFailureException) t);
-        } else {
-
-            Failure failure = new Failure(testDescription, t);
-            runNotifier.fireTestFailure(failure);
-        }
-    }
-
-    private void addMultipleFailureException(MultipleFailureException mfe) {
-        mfe.getFailures().stream().forEach(this::addFailure);
-    }
-
     public void addFailedAssumption(AssumptionViolatedException e) {
         Failure failure = new Failure(testDescription, e);
         runNotifier.fireTestAssumptionFailed(failure);
     }
 
+    public void addFailure(Throwable throwable) {
+        if (throwable instanceof MultipleFailureException) {
+            MultipleFailureException exception = (MultipleFailureException) throwable;
+            exception.getFailures().stream()
+                    .forEach(this::addFailure);
+        } else {
+            Failure failure = new Failure(testDescription, throwable);
+            runNotifier.fireTestFailure(failure);
+        }
+    }
 }

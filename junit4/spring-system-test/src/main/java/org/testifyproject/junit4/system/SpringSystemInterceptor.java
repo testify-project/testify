@@ -21,6 +21,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
@@ -32,7 +33,6 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.TestConfigurer;
 
 /**
  * A class that intercepts methods of classes that extend
@@ -79,18 +79,21 @@ public class SpringSystemInterceptor {
     }
 
     @RuntimeType
-    public Class<?>[] getServletConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
-
+    public Class<?>[] getRootConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
         Class<?>[] result = zuper.call();
 
         return testContextHolder.execute(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
-            Stream<Class<?>> acutalModules = Stream.of(result);
-            Stream<Class<?>> testModules = testDescriptor.getModules()
-                    .stream()
+            Stream<Class<?>> modules = Stream.empty();
+
+            if (result != null) {
+                modules = Stream.of(result);
+            }
+
+            Stream<Class<?>> testModules = testDescriptor.getModules().stream()
                     .map(Module::value);
 
-            return Stream.concat(testModules, acutalModules).toArray(Class[]::new);
+            return Stream.concat(testModules, modules).toArray(Class[]::new);
         });
     }
 

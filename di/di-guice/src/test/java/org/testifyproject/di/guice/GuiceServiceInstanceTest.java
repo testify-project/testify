@@ -66,6 +66,19 @@ public class GuiceServiceInstanceTest {
     }
 
     @Test
+    public void givenInjectableInstanceAndNonRunningInjectorInjectShouldDoNothing() {
+        InjectedGreeter injectedGreeter = new InjectedGreeter();
+
+        assertThat(injectedGreeter.getField()).isNull();
+        assertThat(injectedGreeter.getMethod()).isNull();
+
+        cut.inject(injectedGreeter);
+
+        assertThat(injectedGreeter.getField()).isNull();
+        assertThat(injectedGreeter.getMethod()).isNull();
+    }
+
+    @Test
     public void givenInjectableInstanceInjectShouldInjectInstanceFieldAndMethod() {
         InjectedGreeter injectedGreeter = new InjectedGreeter();
 
@@ -101,6 +114,13 @@ public class GuiceServiceInstanceTest {
     public void givenContractTypeAndNamedAnnotationGetServiceShouldReturnService() {
         Greeting result = cut.getService(Greeting.class, Names.named("Haye"));
         assertThat(result).isNotNull().isInstanceOf(Haye.class);
+    }
+
+    @Test
+    public void givenContractTypeAndNoAnnotationGetServiceShouldReturnService() {
+        Annotation[] qualifiers = {};
+        Hello result = cut.getService(Hello.class, qualifiers);
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -193,7 +213,7 @@ public class GuiceServiceInstanceTest {
         Greeting greeting = cut.getService(Greeting.class);
         assertThat(greeting).isNotNull().isInstanceOf(Hello.class);
     }
-    
+
     @Test
     public void givenFixtureModuleAddModuleShouldAddModule() {
         DefaultModule module = new DefaultModule(FixtureModule.class);

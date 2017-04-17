@@ -15,7 +15,10 @@
  */
 package org.testifyproject.level.unit;
 
+import java.util.Optional;
+import org.testifyproject.CutDescriptor;
 import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorsReifier;
@@ -36,53 +39,64 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class UnitTestRunner implements TestRunner {
 
-    private TestContext testContext;
+    TestContext testContext;
+    private final ServiceLocatorUtil serviceLocatorUtil;
+
+    public UnitTestRunner() {
+        this(ServiceLocatorUtil.INSTANCE);
+    }
+
+    UnitTestRunner(ServiceLocatorUtil serviceLocatorUtil) {
+        this.serviceLocatorUtil = serviceLocatorUtil;
+    }
 
     @Override
     public void start(TestContext testContext) {
         this.testContext = testContext;
+        Object testInstance = testContext.getTestInstance();
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(ConfigurationVerifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, UnitTest.class)
                 .forEach(p -> p.verify(testContext));
 
-        Object testInstance = testContext.getTestInstance();
-
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(CutReifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(CutReifier.class, UnitTest.class)
                 .forEach(p -> p.reify(testContext));
 
-        if (testContext.getTestDescriptor().getCollaboratorProvider().isPresent()) {
-            ServiceLocatorUtil.INSTANCE.findAllWithFilter(CollaboratorsReifier.class, UnitTest.class)
+        if (testDescriptor.getCollaboratorProvider().isPresent()) {
+            serviceLocatorUtil.findAllWithFilter(CollaboratorsReifier.class, UnitTest.class)
                     .forEach(p -> p.reify(testContext));
         }
 
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(FieldReifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(FieldReifier.class, UnitTest.class)
                 .forEach(p -> p.reify(testContext));
 
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(TestReifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(TestReifier.class, UnitTest.class)
                 .forEach(p -> p.reify(testContext));
 
         //invoke init method on test fields annotated with Fixture
-        testContext.getTestDescriptor().getFieldDescriptors()
+        testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.init(testInstance));
 
         //invoke init method on cut field annotated with Fixture
         testContext.getCutDescriptor()
                 .ifPresent(p -> p.init(testInstance));
 
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(WiringVerifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, UnitTest.class)
                 .forEach(p -> p.verify(testContext));
     }
 
     @Override
     public void stop() {
         Object testInstance = testContext.getTestInstance();
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
 
         //invoke destroy method on fields annotated with Fixture
-        testContext.getTestDescriptor().getFieldDescriptors()
+        testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.destroy(testInstance));
 
         //invoke destroy method on cut field annotated with Fixture
-        testContext.getCutDescriptor()
+        cutDescriptor
                 .ifPresent(p -> p.destroy(testInstance));
     }
 

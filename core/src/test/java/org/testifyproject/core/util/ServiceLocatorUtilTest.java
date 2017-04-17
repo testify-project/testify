@@ -20,6 +20,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import org.testifyproject.TestifyException;
+import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.fixture.locator.MultiImplmentationContract;
 import org.testifyproject.fixture.locator.NoImplementationConract;
 import org.testifyproject.fixture.locator.SingleImplementationContract;
@@ -86,18 +88,27 @@ public class ServiceLocatorUtilTest {
         assertThat(result).hasSize(2);
     }
 
+    @Test
+    public void givenContractWithImplementationsFindAllWithFilterShouldReturnListWithImplementation() {
+        Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
+
+        List<MultiImplmentationContract> result = cut.findAllWithFilter(contract, UnitTest.class);
+
+        assertThat(result).hasSize(1);
+    }
+
     @Test(expected = NullPointerException.class)
     public void givenNullGetOneShouldReturnThrowException() {
         cut.getOne(null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenContractWithoutImplementationGetOneShouldReturnThrowException() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
         cut.getOne(contract);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenContractWithMultipleImplementationsGetOneShouldReturnThrowException() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         cut.getOne(contract);
@@ -108,6 +119,15 @@ public class ServiceLocatorUtilTest {
         Class<SingleImplementationContract> contract = SingleImplementationContract.class;
 
         SingleImplementationContract result = cut.getOne(contract);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void givenContractWithSingleImplementationsGetOneWithFilterShouldReturnImplementation() {
+        Class<SingleImplementationContract> contract = SingleImplementationContract.class;
+
+        SingleImplementationContract result = cut.getOneWithFilter(contract, UnitTest.class);
 
         assertThat(result).isNotNull();
     }
@@ -128,7 +148,7 @@ public class ServiceLocatorUtilTest {
         cut.getOne(contract, implementation);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenContractAndNonExistentImplementationGetOneShouldThrowException() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<MultiImplmentationContract> implementation = MultiImplmentationContract.class;
@@ -162,7 +182,7 @@ public class ServiceLocatorUtilTest {
         cut.getOneOrDefault(contract, defaultImplementation);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenContractWithoutImplementationGetOneOrDefaultShouldThrowException() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
         Class<NoImplementationConract> defaultImplementation = NoImplementationConract.class;
@@ -195,7 +215,7 @@ public class ServiceLocatorUtilTest {
         cut.getAll(null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenContractWithoutImplementationGetAllShouldThrowException() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
 

@@ -55,29 +55,22 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
 
     @Override
     public Object resolve(Injectee injectee, ServiceHandle root) {
-        Type requiredType = injectee.getRequiredType();
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        MockProvider mockProvider = testContext.getMockProvider();
-        Object testInstance = testContext.getTestInstance();
-
         return testContext.getCutDescriptor().map(cutDescriptor -> {
+            TestDescriptor testDescriptor = testContext.getTestDescriptor();
+            MockProvider mockProvider = testContext.getMockProvider();
+            Object testInstance = testContext.getTestInstance();
+            Type requiredType = injectee.getRequiredType();
+
             for (FieldDescriptor fieldDescriptor : testDescriptor.getFieldDescriptors()) {
-                if (!fieldDescriptor.getFake().isPresent()) {
-                    continue;
-                }
-
-                Type fieldType = fieldDescriptor.getGenericType();
-                TypeToken fieldTypeToken = TypeToken.of(fieldType);
-                TypeToken rawTypeToken = getRawTypeToken(fieldType);
-
-                if (fieldTypeToken.isSupertypeOf(requiredType)) {
+                if (fieldDescriptor.getFake().isPresent()) {
+                    Type fieldType = fieldDescriptor.getGenericType();
                     Optional<Object> foundValue = fieldDescriptor.getValue(testInstance);
 
-                    if (foundValue.isPresent()) {
+                    if (TypeToken.of(fieldType).isSupertypeOf(requiredType) && foundValue.isPresent()) {
                         return foundValue.get();
+                    } else if (getRawTypeToken(fieldType).isSupertypeOf(requiredType)) {
+                        return mockProvider.createFake(TypeToken.of(requiredType).getRawType());
                     }
-                } else if (rawTypeToken.isSupertypeOf(requiredType)) {
-                    return mockProvider.createFake(TypeToken.of(requiredType).getRawType());
                 }
             }
 

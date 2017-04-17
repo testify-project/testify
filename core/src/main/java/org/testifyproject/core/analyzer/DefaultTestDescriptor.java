@@ -139,23 +139,23 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
+                = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
-        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+        FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);
 
-        if (fieldDescriptor == null) {
+        if (foundFieldDescriptor == null) {
             //TODO: Not sure if we should be this lose in the event we don't
             //find a matching field descriptor. Need to evaluate if this code
             //is useful or harmful.
-            fieldDescriptor = fieldDescriptors.values()
-                    .parallelStream()
-                    .filter(p -> p.isSupertypeOf(type))
+            foundFieldDescriptor = fieldDescriptors.values().parallelStream()
+                    .filter(fieldDescriptor -> fieldDescriptor.isSupertypeOf(type))
                     .findFirst()
                     .orElse(null);
         }
 
-        return ofNullable(fieldDescriptor);
+        return ofNullable(foundFieldDescriptor);
     }
 
     @Override
@@ -164,16 +164,16 @@ public class DefaultTestDescriptor implements TestDescriptor {
                 = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
-        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+        FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);
 
-        return ofNullable(fieldDescriptor);
+        return ofNullable(foundFieldDescriptor);
     }
 
     @Override
     public Optional<MethodDescriptor> findConfigHandler(Type parameterType) {
         return getConfigHandlers()
                 .parallelStream()
-                .filter(p -> p.hasParameterTypes(parameterType))
+                .filter(methodDescriptor -> methodDescriptor.hasParameterTypes(parameterType))
                 .findFirst();
     }
 

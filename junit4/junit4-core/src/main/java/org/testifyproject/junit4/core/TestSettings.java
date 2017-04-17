@@ -16,6 +16,8 @@
 package org.testifyproject.junit4.core;
 
 import java.util.Map;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
@@ -25,6 +27,8 @@ import org.testifyproject.core.TestCategory;
  *
  * @author saden
  */
+@ToString
+@EqualsAndHashCode
 public class TestSettings {
 
     private Class<? extends TestRunner> testRunnerClass;

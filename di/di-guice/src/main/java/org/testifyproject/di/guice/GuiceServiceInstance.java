@@ -76,6 +76,7 @@ public class GuiceServiceInstance implements ServiceInstance {
 
     @Override
     public void inject(Object instance) {
+        //XXX: should we throw an exception if the injector is not running?
         if (isRunning()) {
             injector.injectMembers(instance);
         }

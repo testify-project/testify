@@ -17,7 +17,6 @@ package org.testifyproject.di.hk2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -26,8 +25,6 @@ import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.tools.Discoverable;
 
@@ -67,6 +64,17 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
         return serviceInstance;
     }
 
+    @Override
+    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+
+        testDescriptor.getModules().stream()
+                .forEach(serviceInstance::addModules);
+
+        testDescriptor.getScans().stream()
+                .forEach(serviceInstance::addScans);
+    }
+
     void enableExtras(String methodName, ServiceLocator serviceLocator) {
         String className = "org.glassfish.hk2.extras.ExtrasUtilities";
 
@@ -83,21 +91,4 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
             LoggingUtil.INSTANCE.debug("Method '{}' not found in class {}", methodName, className, e);
         }
     }
-
-    @Override
-    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        List<Module> modules = testDescriptor.getModules();
-
-        if (!modules.isEmpty()) {
-            modules.stream().forEach(serviceInstance::addModules);
-        }
-
-        List<Scan> scans = testDescriptor.getScans();
-
-        if (!scans.isEmpty()) {
-            scans.stream().forEach(serviceInstance::addScans);
-        }
-    }
-
 }

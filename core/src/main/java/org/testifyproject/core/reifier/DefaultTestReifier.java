@@ -56,7 +56,7 @@ public class DefaultTestReifier implements TestReifier {
         });
     }
 
-    void processTestField(TestContext testContext,
+    public void processTestField(TestContext testContext,
             FieldDescriptor testFieldDescriptor,
             CutDescriptor cutDescriptor,
             Object cutInstance) {
@@ -65,14 +65,14 @@ public class DefaultTestReifier implements TestReifier {
         String testFieldName = testFieldDescriptor.getDefinedName();
         Type testFieldGenericType = testFieldDescriptor.getGenericType();
 
-        Optional<FieldDescriptor> foundCutMatch
+        Optional<FieldDescriptor> foundMatchingField
                 = cutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName);
 
-        if (!foundCutMatch.isPresent()) {
-            foundCutMatch = cutDescriptor.findFieldDescriptor(testFieldGenericType);
+        if (!foundMatchingField.isPresent()) {
+            foundMatchingField = cutDescriptor.findFieldDescriptor(testFieldGenericType);
         }
 
-        foundCutMatch.ifPresent(cutFieldDescriptor
+        foundMatchingField.ifPresent(cutFieldDescriptor
                 -> processCutField(testFieldDescriptor,
                         cutFieldDescriptor,
                         testInstance,
@@ -81,7 +81,7 @@ public class DefaultTestReifier implements TestReifier {
         );
     }
 
-    void processCutField(FieldDescriptor testFieldDescriptor,
+    public void processCutField(FieldDescriptor testFieldDescriptor,
             FieldDescriptor cutFieldDescriptor,
             Object testInstance,
             Object cutInstance,

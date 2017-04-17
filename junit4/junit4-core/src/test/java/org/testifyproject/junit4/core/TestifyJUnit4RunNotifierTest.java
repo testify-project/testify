@@ -15,14 +15,19 @@
  */
 package org.testifyproject.junit4.core;
 
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.MultipleFailureException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  *
@@ -32,14 +37,14 @@ public class TestifyJUnit4RunNotifierTest {
 
     TestifyJUnit4RunNotifier cut;
     RunNotifier runNotifier;
-    Description description;
+    Description testDescription;
 
     @Before
     public void init() {
         runNotifier = mock(RunNotifier.class);
-        description = mock(Description.class);
+        testDescription = mock(Description.class);
 
-        cut = TestifyJUnit4RunNotifier.of(runNotifier, description);
+        cut = TestifyJUnit4RunNotifier.of(runNotifier, testDescription);
     }
 
     @Test(expected = NullPointerException.class)
@@ -48,7 +53,8 @@ public class TestifyJUnit4RunNotifierTest {
     }
 
     @Test
-    public void givenFailureFireTestAssumptionsFailedShouldFireAssumptionFailed() {
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void givenFailureWithMethodNameFireTestAssumptionsFailedShouldFireAssumptionFailed() {
         Failure failure = mock(Failure.class);
         Description failureDescription = mock(Description.class);
         String methodName = "methodName";
@@ -59,8 +65,115 @@ public class TestifyJUnit4RunNotifierTest {
         given(failure.getException()).willReturn(exception);
 
         cut.fireTestAssumptionFailed(failure);
-        
-       verify(runNotifier).fireTestAssumptionFailed(failure);
+
+        verify(failure).getDescription();
+        verify(failureDescription).getMethodName();
+        verify(failure).getException();
+        verify(runNotifier).fireTestAssumptionFailed(failure);
+    }
+
+    @Test
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void givenFailureWithoutMethodNameFireTestAssumptionsFailedShouldFireAssumptionFailed() {
+        Failure failure = mock(Failure.class);
+        Description failureDescription = mock(Description.class);
+        Throwable exception = mock(Throwable.class);
+
+        given(failure.getDescription()).willReturn(failureDescription);
+        given(failure.getException()).willReturn(exception);
+
+        cut.fireTestAssumptionFailed(failure);
+
+        verify(failure).getDescription();
+        verify(failureDescription).getMethodName();
+        verify(failure).getException();
+        verify(runNotifier).fireTestAssumptionFailed(failure);
+    }
+
+    @Test
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void givenFailureWithMethodNameFireTestFailureShouldFireAssumptionFailed() {
+        Failure failure = mock(Failure.class);
+        Description failureDescription = mock(Description.class);
+        String methodName = "methodName";
+        Throwable exception = mock(Throwable.class);
+
+        given(failure.getDescription()).willReturn(failureDescription);
+        given(failureDescription.getMethodName()).willReturn(methodName);
+        given(failure.getException()).willReturn(exception);
+
+        cut.fireTestFailure(failure);
+
+        verify(failure).getDescription();
+        verify(failureDescription).getMethodName();
+        verify(failure).getException();
+        verify(runNotifier).fireTestFailure(failure);
+    }
+
+    @Test
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void givenFailureWithoutMethodNameFireTestFailureShouldFireAssumptionFailed() {
+        Failure failure = mock(Failure.class);
+        Description failureDescription = mock(Description.class);
+        Throwable exception = mock(Throwable.class);
+
+        given(failure.getDescription()).willReturn(failureDescription);
+        given(failure.getException()).willReturn(exception);
+
+        cut.fireTestFailure(failure);
+
+        verify(failure).getDescription();
+        verify(failureDescription).getMethodName();
+        verify(failure).getException();
+        verify(runNotifier).fireTestFailure(failure);
+    }
+
+    @Test
+    public void givenDescriptionFireTestIgnoredShouldFireTestIgnored() {
+        Description description = mock(Description.class);
+
+        cut.fireTestIgnored(description);
+
+        verify(runNotifier).fireTestIgnored(description);
+    }
+
+    @Test
+    public void givenDescriptionFireTestStartedShouldFireTestStarted() {
+        Description description = mock(Description.class);
+
+        cut.fireTestStarted(description);
+
+        verify(runNotifier).fireTestStarted(description);
+    }
+
+    @Test
+    public void givenDescriptionFireTestFinishedShouldFireTestFinished() {
+        Description description = mock(Description.class);
+
+        cut.fireTestFinished(description);
+
+        verify(runNotifier).fireTestFinished(description);
+    }
+
+    @Test
+    public void givenAssumptionViolatedExceptionAddFailedAssumptionShouldFireTestAssumptionFailed() {
+        AssumptionViolatedException exception = mock(AssumptionViolatedException.class);
+
+        cut.addFailedAssumption(exception);
+
+        verify(runNotifier).fireTestAssumptionFailed(any(Failure.class));
+    }
+
+    @Test
+    public void givenMultipleFailureExceptionAddFailureShouldAddFailure() {
+        MultipleFailureException exception = mock(MultipleFailureException.class);
+        Exception failure = mock(Exception.class);
+        List<Throwable> failures = ImmutableList.of(failure);
+
+        given(exception.getFailures()).willReturn(failures);
+        cut.addFailure(exception);
+
+        verify(runNotifier).fireTestFailure(any(Failure.class));
     }
 
 }
