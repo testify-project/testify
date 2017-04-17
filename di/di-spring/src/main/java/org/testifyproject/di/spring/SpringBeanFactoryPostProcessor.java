@@ -28,7 +28,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Controller;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
@@ -49,7 +48,7 @@ public class SpringBeanFactoryPostProcessor implements
 
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
-    private List<ResourceProvider> resourceProviders;
+    List<ResourceProvider> resourceProviders;
 
     public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance) {
         this.testContext = testContext;
@@ -79,24 +78,14 @@ public class SpringBeanFactoryPostProcessor implements
                 Configuration configuration = beanType.getAnnotation(Configuration.class);
 
                 if (configuration == null) {
-                    processConfiguration(
-                            beanDefinition,
+                    processConfiguration(beanFactory, beanDefinition,
                             beanType,
-                            beanFactory,
                             beanName,
                             replacedBeanNames);
                 }
 
-                //by default spring eagerly initilizes singleton scoped beans
-                //so lets insure that controller entry points are prototype
-                //scoped and thus make them lazy.
-                Controller controller = beanType.getAnnotation(Controller.class);
-
-                if (controller != null) {
-                    beanDefinition.setScope(SCOPE_PROTOTYPE);
-                }
+                beanDefinition.setScope(SCOPE_PROTOTYPE);
             }
-
         }
 
         beanFactory.addBeanPostProcessor(new SpringReifierPostProcessor(testContext));
@@ -108,21 +97,19 @@ public class SpringBeanFactoryPostProcessor implements
         }
     }
 
-    void processConfiguration(BeanDefinition beanDefinition,
+    void processConfiguration(DefaultListableBeanFactory beanFactory,
+            BeanDefinition beanDefinition,
             Class<?> beanType,
-            DefaultListableBeanFactory beanFactory,
             String beanName,
             Set<String> replacedBeanNames) {
-        //if configuration annotation is not defined lets look for
-        //the factory bean of the bean
         String factoryBeanName = beanDefinition.getFactoryBeanName();
         Fixture fixture = beanType.getAnnotation(Fixture.class);
 
-        //if fixture is null but the factory bean is not defined
-        //then try to get the fixture annotation from the factory
-        //bean type
+        //if fixture is null but the factory bean is defined then try
+        //to get the fixture annotation from the factory bean type
         if (fixture == null && factoryBeanName != null) {
             Class<?> factoryBeanType = beanFactory.getType(factoryBeanName);
+
             fixture = factoryBeanType.isAnnotationPresent(Configuration.class)
                     ? factoryBeanType.getAnnotation(Fixture.class)
                     : null;
@@ -133,13 +120,14 @@ public class SpringBeanFactoryPostProcessor implements
         //in the bean annotated with fixture and thus replacying
         //all production beans with test fixture beans
         if (fixture != null) {
-            processFixture(beanFactory, beanType, beanName, beanDefinition, fixture, replacedBeanNames);
+            processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
         }
     }
 
     void processFixture(DefaultListableBeanFactory beanFactory,
-            Class<?> beanType, String beanName,
             BeanDefinition beanDefinition,
+            Class<?> beanType,
+            String beanName,
             Fixture fixture,
             Set<String> replacedBeanNames) {
         String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
