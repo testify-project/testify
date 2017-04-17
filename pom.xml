@@ -479,6 +479,8 @@
                             <exclude>nbproject/**</exclude>
                             <exclude>secrets/**</exclude>
                             <exclude>archetype.properties</exclude>
+                            <exclude>.mvn/**</exclude>
+                            <exclude>mvnw*</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
