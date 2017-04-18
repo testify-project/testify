@@ -1,11 +1,12 @@
 # Testify
 [![Build Status](https://travis-ci.org/testify-project/testify.svg?branch=develop)](https://travis-ci.org/testify-project/testify)
+[![CodecovIO](https://codecov.io/github/testify-project/testify/coverage.svg?branch=develop)](https://codecov.io/github/testify-project/testify?branch=develop)
+[![Maven Central](https://img.shields.io/maven-central/v/org.testifyproject/parent.svg)]()
+[![Javadocs](http://www.javadoc.io/badge/org.testifyproject/api.svg?color=red)](http://www.javadoc.io/doc/org.testifyproject/api)
+[![License](https://img.shields.io/badge/license-Apache%20License%202-lightgrey.svg)](https://github.com/testify-project/testify/blob/develop/LICENSE)
 [![Stories in Progress](https://badge.waffle.io/testify-project/testify.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/testify-project/testify)
 [![Stories in Ready](https://badge.waffle.io/testify-project/testify.svg?label=ready&title=Ready)](http://waffle.io/testify-project/testify)
 [![Join the chat on Gitter](https://badges.gitter.im/testify-project/Lobby.svg)](https://gitter.im/testify-project/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![CodecovIO](https://codecov.io/github/testify-project/testify/coverage.svg?branch=develop)](https://codecov.io/github/testify-project/testify?branch=develop)
-[![Maven Central](https://img.shields.io/maven-central/v/org.testifyproject/parent.svg)]()
-[![License](https://img.shields.io/badge/license-Apache%20License%202-lightgrey.svg)](https://github.com/testify-project/testify/blob/develop/LICENSE)
 
 [![Throughput Graph](https://graphs.waffle.io/testify-project/testify/throughput.svg)](https://waffle.io/testify-project/testify/metrics)
 
@@ -16,10 +17,10 @@ Testify is an annotation driven Java Testing Framework that provides uniform and
 - Uniform Annotations for Unit, Integration and System Testing
 - Managed Test Case Configuration, Isolation, and Execution
 - JSR-330 Dependency Injection Annotations Support
-- JUnit Testing Framework Support
+- JUnit 4 Testing Framework Support
 - Pluggable Mocking SPI (Mockito and EasyMock supported)
-- Pluggable Test Resource SPI (HSQL, ElasticSearch, ZooKeeper, etc supported)
-- Pluggable Container Test Resource SPI (Docker Container supported)
+- Pluggable Local Test Resource SPI (HSQL, ElasticSearch, ZooKeeper, etc supported)
+- Pluggable Virtual Test Resource SPI (Docker Container supported)
 - Pluggable Server SPI (Undertow Supported)
 - Pluggable Client SPI (JAX-RS Client supported)
 - Spring Integration Testing
