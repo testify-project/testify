@@ -26,12 +26,22 @@
     
     <artifactId>junit4-core</artifactId>
     <name>JUnit 4 Core</name>
+    <description>A module that contains base Testify JUnit 4 TestRunner implementation and a JUnit test runner for running unit tests</description>
 
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.level</groupId>
+            <artifactId>unit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
         
         <!-- Annotation Processors Dependencies -->
