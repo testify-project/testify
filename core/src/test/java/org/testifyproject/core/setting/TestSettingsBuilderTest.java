@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.core;
+package org.testifyproject.core.setting;
 
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,20 +35,6 @@ public class TestSettingsBuilderTest {
     @Before
     public void init() {
         cut = TestSettingsBuilder.builder();
-    }
-
-    @Test
-    public void callToBuildShouldReturnTestSettingsWithCategoriesFromSystemProperty() {
-        String key = "testify.categories";
-        String value = "unit,integration";
-
-        System.setProperty(key, value);
-
-        TestSettings result = cut.categories(value).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getCategories()).isEqualTo(value);
-        System.clearProperty(key);
     }
 
     @Test
@@ -102,16 +88,6 @@ public class TestSettingsBuilderTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getLevel()).isEqualTo(setting);
-    }
-
-    @Test
-    public void givenCategoriesBuildShouldReturnTestSettings() {
-        String setting = "unit,integration";
-
-        TestSettings result = cut.categories(setting).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getCategories()).isEqualTo(setting);
     }
 
 }

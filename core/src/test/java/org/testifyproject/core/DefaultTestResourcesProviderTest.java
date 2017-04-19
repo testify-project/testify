@@ -49,6 +49,11 @@ public class DefaultTestResourcesProviderTest {
         cut = new DefaultTestResourcesProvider(serviceLocatorUtil, resourceProviders);
     }
 
+    @Test
+    public void callToDefaultConstructorShouldReturnNewInstance() {
+        cut = new DefaultTestResourcesProvider();
+    }
+
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextStartShouldThrowException() {
         TestContext testContext = null;

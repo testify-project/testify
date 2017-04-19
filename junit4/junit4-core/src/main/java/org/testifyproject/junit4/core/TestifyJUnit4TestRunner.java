@@ -18,7 +18,6 @@ package org.testifyproject.junit4.core;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.junit.internal.AssumptionViolatedException;
@@ -48,9 +47,11 @@ import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
+import org.testifyproject.core.setting.TestSettings;
 import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.core.util.SettingUtil;
 import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.extension.annotation.UnitTest;
@@ -81,8 +82,10 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
         this.testSettings = testSettings;
 
         try {
-            TestifyJUnit4CategoryFilter categoryFilter
-                    = TestifyJUnit4CategoryFilter.of(testSettings.getLevel(), testSettings.getCategories());
+            TestifyJUnit4CategoryFilter categoryFilter = TestifyJUnit4CategoryFilter.of(
+                    testSettings.getLevel(),
+                    SettingUtil.INSTANCE.getSystemCategories()
+            );
             filter(categoryFilter);
         } catch (NoTestsRemainException e) {
             LoggingUtil.INSTANCE.debug("No test remain", e);
@@ -186,11 +189,11 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 .resourceStartStrategy(testSettings.getResourceStartStrategy())
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
-                .methodDescriptor(methodDescriptor)
+                .testMethodDescriptor(methodDescriptor)
                 .testRunner(testRunner)
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
-                .properties(new HashMap<>())
+                .properties(SettingUtil.INSTANCE.getSettings())
                 .dependencies(testSettings.getDependencies())
                 .build();
 

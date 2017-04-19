@@ -36,7 +36,7 @@ public class DefaultTestContextBuilder {
     private TestRunner testRunner;
     private MockProvider mockProvider;
 
-    private Map<String, Object> properties = new ConcurrentHashMap<>();
+    private final Map<String, Object> properties = new ConcurrentHashMap<>();
     private Map<String, String> dependencies = Collections.emptyMap();
 
     /**
@@ -63,7 +63,7 @@ public class DefaultTestContextBuilder {
         return this;
     }
 
-    public DefaultTestContextBuilder methodDescriptor(MethodDescriptor methodDescriptor) {
+    public DefaultTestContextBuilder testMethodDescriptor(MethodDescriptor methodDescriptor) {
         this.methodDescriptor = methodDescriptor;
         return this;
     }
@@ -84,7 +84,7 @@ public class DefaultTestContextBuilder {
     }
 
     public DefaultTestContextBuilder properties(Map<String, Object> properties) {
-        this.properties = properties;
+        this.properties.putAll(properties);
         return this;
     }
 
@@ -97,7 +97,7 @@ public class DefaultTestContextBuilder {
         DefaultTestContext testContext = new DefaultTestContext();
 
         testContext.setDependencies(dependencies);
-        testContext.setMethodDescriptor(methodDescriptor);
+        testContext.setTestMethodDescriptor(methodDescriptor);
         testContext.setMockProvider(mockProvider);
         testContext.setProperties(properties);
         testContext.setResourceStartStrategy(resourceStartStrategy);

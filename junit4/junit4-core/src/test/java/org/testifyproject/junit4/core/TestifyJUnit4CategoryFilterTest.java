@@ -65,7 +65,9 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenUnsupportedTestShouldRunShouldReturnFalse() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, "unit");
+        String[] categories = new String[]{"unit"};
+
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
 
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
@@ -79,7 +81,9 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenTestClassWithLocalResourceShouldRunShouldReturnTrue() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, "local");
+        String[] categories = new String[]{"local"};
+
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
 
         Description description = mock(Description.class);
         Class testClass = LocalResourceTestClass.class;
@@ -94,7 +98,8 @@ public class TestifyJUnit4CategoryFilterTest {
 
     @Test
     public void givenTestClassWithVirtualResourceShouldRunShouldReturnTrue() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, "integration");
+        String[] categories = new String[]{"integration"};
+        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
 
         Description description = mock(Description.class);
         Class testClass = VirtualResourceTestClass.class;

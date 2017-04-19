@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.core;
+package org.testifyproject.core.setting;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.testifyproject.StartStrategy;
 import static org.testifyproject.StartStrategy.UNDEFINED;
@@ -33,7 +34,8 @@ public class TestSettingsBuilder {
     private StartStrategy startStrategy = UNDEFINED;
     private final ImmutableMap.Builder<String, String> dependencies = ImmutableMap.builder();
     private TestCategory.Level level;
-    private String categories;
+    private String[] categories;
+    private Map<String, Object> properties = new HashMap<>();
 
     /**
      * Create a new test settings builder instance.
@@ -69,11 +71,6 @@ public class TestSettingsBuilder {
         return this;
     }
 
-    public TestSettingsBuilder categories(String categories) {
-        this.categories = categories;
-        return this;
-    }
-
     public TestSettings build() {
         TestSettings testSettings = new TestSettings();
 
@@ -81,12 +78,6 @@ public class TestSettingsBuilder {
         testSettings.setLevel(level);
         testSettings.setResourceStartStrategy(startStrategy);
         testSettings.setTestRunnerClass(testRunnerClass);
-
-        if (categories == null) {
-            categories = System.getProperty("testify.categories");
-        }
-
-        testSettings.setCategories(categories);
 
         return testSettings;
     }

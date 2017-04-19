@@ -58,6 +58,16 @@
             <artifactId>external-bytebuddy</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-guava</artifactId>
+            <version>${buildtools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-snakeyaml</artifactId>
+            <version>${buildtools.version}</version>
+        </dependency>
 
         <!-- Annotation Processors Dependencies -->
         <dependency>

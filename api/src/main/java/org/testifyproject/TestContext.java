@@ -49,6 +49,13 @@ public interface TestContext extends PropertiesTrait {
     String getMethodName();
 
     /**
+     * Get the test method descriptor associated with the test context.
+     *
+     * @return test method descriptor
+     */
+    MethodDescriptor getTestMethodDescriptor();
+
+    /**
      * Get test class associated with the test context.
      *
      * @return the test class instance

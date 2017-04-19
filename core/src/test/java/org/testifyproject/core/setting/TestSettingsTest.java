@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.core;
+package org.testifyproject.core.setting;
 
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,12 +73,4 @@ public class TestSettingsTest {
         assertThat(result).isEqualTo(setting);
     }
 
-    @Test
-    public void validateCategoriesProperty() {
-        String setting = "unit,integration";
-        cut.setCategories(setting);
-
-        String result = cut.getCategories();
-        assertThat(result).isEqualTo(setting);
-    }
 }

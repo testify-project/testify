@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
@@ -33,7 +34,6 @@ import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_ARGUMENTS;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.TestConfigurer;
 
 /**
  * A class that intercepts methods of classes that extend or implement
@@ -87,7 +87,7 @@ public class SpringApplicationInterceptor {
         ServiceProvider serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
 
         ServiceInstance serviceInstance
-                = testContextHolder.execute((Function< TestContext, ServiceInstance>) testContext
+                = testContextHolder.execute((Function<TestContext, ServiceInstance>) testContext
                         -> serviceProvider.configure(testContext, configurableApplicationContext)
                 );
 

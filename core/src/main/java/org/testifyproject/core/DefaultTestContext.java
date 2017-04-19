@@ -65,6 +65,11 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
+    public MethodDescriptor getTestMethodDescriptor() {
+        return methodDescriptor;
+    }
+
+    @Override
     public String getName() {
         return getTestName() + "." + getMethodName();
     }
@@ -136,7 +141,7 @@ public class DefaultTestContext implements TestContext {
         this.testDescriptor = testDescriptor;
     }
 
-    void setMethodDescriptor(MethodDescriptor methodDescriptor) {
+    void setTestMethodDescriptor(MethodDescriptor methodDescriptor) {
         this.methodDescriptor = methodDescriptor;
     }
 

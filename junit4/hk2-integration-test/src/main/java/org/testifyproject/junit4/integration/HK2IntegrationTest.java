@@ -18,7 +18,7 @@ package org.testifyproject.junit4.integration;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.core.TestCategory;
-import org.testifyproject.junit4.core.TestSettingsBuilder;
+import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 
 /**

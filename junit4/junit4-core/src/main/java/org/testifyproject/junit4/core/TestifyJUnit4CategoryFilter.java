@@ -35,22 +35,22 @@ public class TestifyJUnit4CategoryFilter extends Filter {
     public static final String FILTER_DESCRIPTION = "test categories filter";
 
     private final TestCategory.Level level;
-    private final String testifyCategories;
+    private final String[] categories;
 
-    TestifyJUnit4CategoryFilter(TestCategory.Level level, String testifyCategories) {
+    TestifyJUnit4CategoryFilter(TestCategory.Level level, String[] categories) {
         this.level = level;
-        this.testifyCategories = testifyCategories;
+        this.categories = categories;
     }
 
     /**
      * Create a test category filter instance.
      *
      * @param level test category level associated with the filter
-     * @param testifyCategories testify categories associated with the filter
+     * @param categories testify categories associated with the filter
      * @return a filter instance.
      */
-    public static final TestifyJUnit4CategoryFilter of(TestCategory.Level level, String testifyCategories) {
-        return new TestifyJUnit4CategoryFilter(level, testifyCategories);
+    public static final TestifyJUnit4CategoryFilter of(TestCategory.Level level, String[] categories) {
+        return new TestifyJUnit4CategoryFilter(level, categories);
     }
 
     @Override
@@ -59,9 +59,7 @@ public class TestifyJUnit4CategoryFilter extends Filter {
         TestDescriptor testDescriptor = AnalyzerUtil.INSTANCE.analyzeTestClass(testClass);
         Boolean shouldRun = true;
 
-        if (testifyCategories != null) {
-            String[] categories = testifyCategories.split(",");
-
+        if (categories != null) {
             ImmutableList<Enum> desiredCategories = ImmutableList.<Enum>builder()
                     .addAll(TestCategory.find(TestCategory.Level.class, categories))
                     .addAll(TestCategory.find(TestCategory.Dynamic.class, categories))

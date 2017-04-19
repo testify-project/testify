@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.core;
+package org.testifyproject.core.setting;
 
 import java.util.Map;
 import lombok.EqualsAndHashCode;
@@ -35,7 +35,8 @@ public class TestSettings {
     private StartStrategy resourceStartStrategy;
     private Map<String, String> dependencies;
     private TestCategory.Level level;
-    private String categories;
+    private String[] categories;
+    private Map<String, Object> properties;
 
     TestSettings() {
     }
@@ -70,14 +71,6 @@ public class TestSettings {
 
     void setLevel(TestCategory.Level level) {
         this.level = level;
-    }
-
-    public String getCategories() {
-        return categories;
-    }
-
-    void setCategories(String categories) {
-        this.categories = categories;
     }
 
 }

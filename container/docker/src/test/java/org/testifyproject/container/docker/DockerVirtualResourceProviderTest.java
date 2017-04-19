@@ -26,6 +26,7 @@ import static org.mockito.Mockito.mock;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceInstance;
@@ -35,7 +36,6 @@ import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
-import org.testifyproject.TestConfigurer;
 
 /**
  *
@@ -77,7 +77,7 @@ public class DockerVirtualResourceProviderTest {
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
-                .methodDescriptor(methodDescriptor)
+                .testMethodDescriptor(methodDescriptor)
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
