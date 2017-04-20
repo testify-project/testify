@@ -51,7 +51,7 @@ public class SettingUtil {
         do {
             Path path = currentDir.resolve(".testify.yml");
 
-            if (Files.exists(path)) {
+            if (path.toFile().exists()) {
                 testify = path;
                 break;
             }
@@ -82,8 +82,8 @@ public class SettingUtil {
 
         return Stream.of(result.split(","))
                 .filter(p -> !p.isEmpty())
-                .map(p -> p.trim())
-                .map(p -> p.toUpperCase())
+                .map(String::trim)
+                .map(String::toUpperCase)
                 .toArray(String[]::new);
     }
 

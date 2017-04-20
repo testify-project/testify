@@ -136,7 +136,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                         LoggingUtil.INSTANCE.debug("performing cleanup of '{}'", testContext.getName());
 
                         TestRunner testRunner = testContext.getTestRunner();
-                        testRunner.stop();
+                        testRunner.stop(testContext);
                         TestContextHolder.INSTANCE.remove();
                     });
                 }

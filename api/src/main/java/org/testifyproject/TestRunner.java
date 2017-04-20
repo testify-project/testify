@@ -31,7 +31,8 @@ public interface TestRunner {
 
     /**
      * Stop the test.
+     *
+     * @param testContext the test context
      */
-    default void stop() {
-    }
+    void stop(TestContext testContext);
 }

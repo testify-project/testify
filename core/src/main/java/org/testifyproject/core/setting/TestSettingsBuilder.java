@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core.setting;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.testifyproject.StartStrategy;
 import static org.testifyproject.StartStrategy.UNDEFINED;
@@ -34,8 +33,6 @@ public class TestSettingsBuilder {
     private StartStrategy startStrategy = UNDEFINED;
     private final ImmutableMap.Builder<String, String> dependencies = ImmutableMap.builder();
     private TestCategory.Level level;
-    private String[] categories;
-    private Map<String, Object> properties = new HashMap<>();
 
     /**
      * Create a new test settings builder instance.

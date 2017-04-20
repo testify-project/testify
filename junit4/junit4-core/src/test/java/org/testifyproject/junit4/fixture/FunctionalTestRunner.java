@@ -31,7 +31,7 @@ public class FunctionalTestRunner implements TestRunner {
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext) {
     }
 
 }
