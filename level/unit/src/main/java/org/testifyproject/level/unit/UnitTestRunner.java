@@ -39,7 +39,6 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class UnitTestRunner implements TestRunner {
 
-    TestContext testContext;
     private final ServiceLocatorUtil serviceLocatorUtil;
 
     public UnitTestRunner() {
@@ -52,7 +51,6 @@ public class UnitTestRunner implements TestRunner {
 
     @Override
     public void start(TestContext testContext) {
-        this.testContext = testContext;
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
@@ -86,7 +84,7 @@ public class UnitTestRunner implements TestRunner {
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();

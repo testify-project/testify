@@ -13,34 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.level.system.fixture;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Answers;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import java.net.URI;
+import org.testifyproject.ClientInstance;
+import org.testifyproject.ClientProvider;
+import org.testifyproject.TestContext;
 
 /**
  *
  * @author saden
  */
-public class TestRunnerTest {
+public class TestClientProvider implements ClientProvider {
 
-    TestRunner cut;
-
-    @Before
-    public void init() {
-        cut = mock(TestRunner.class, Answers.CALLS_REAL_METHODS);
+    @Override
+    public Object configure(TestContext testContext, URI baseURI) {
+        return null;
     }
 
-    @Test
-    public void callToStopShouldDoNothing() {
-        cut.stop();
+    @Override
+    public ClientInstance create(TestContext testContext, URI baseURI, Object configuration) {
+        return null;
+    }
 
-        verify(cut).stop();
-        verifyNoMoreInteractions(cut);
+    @Override
+    public void destroy() {
     }
 
 }

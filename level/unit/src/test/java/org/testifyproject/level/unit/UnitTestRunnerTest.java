@@ -139,7 +139,7 @@ public class UnitTestRunnerTest {
 
     @Test
     public void callToStopShouldStopTest() {
-        TestContext testContext = cut.testContext = mock(TestContext.class);
+        TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
 
@@ -153,7 +153,7 @@ public class UnitTestRunnerTest {
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
 
-        cut.stop();
+        cut.stop(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();

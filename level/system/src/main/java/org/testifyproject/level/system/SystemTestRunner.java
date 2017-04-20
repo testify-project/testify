@@ -34,6 +34,7 @@ import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.ConfigurationVerifier;
 import org.testifyproject.extension.FieldReifier;
+import org.testifyproject.extension.TestReifier;
 import org.testifyproject.extension.WiringVerifier;
 import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.tools.Discoverable;
@@ -47,16 +48,24 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class SystemTestRunner implements TestRunner {
 
-    private TestContext testContext;
+    TestResourcesProvider testResourcesProvider;
+    ServerProvider serverProvider;
+    ClientProvider clientProvider;
 
-    private ServerProvider serverProvider;
-    private TestResourcesProvider testResourcesProvider;
-    private ServiceInstance serviceInstance;
-    private ClientProvider clientProvider;
+    private final ServiceLocatorUtil serviceLocatorUtil;
+    private final ReflectionUtil reflectionUtil;
+
+    public SystemTestRunner() {
+        this(ServiceLocatorUtil.INSTANCE, ReflectionUtil.INSTANCE);
+    }
+
+    SystemTestRunner(ServiceLocatorUtil serviceLocatorUtil, ReflectionUtil reflectionUtil) {
+        this.serviceLocatorUtil = serviceLocatorUtil;
+        this.reflectionUtil = reflectionUtil;
+    }
 
     @Override
     public void start(TestContext testContext) {
-        this.testContext = testContext;
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
@@ -69,18 +78,18 @@ public class SystemTestRunner implements TestRunner {
             //create and initalize mock fields. this is necessary so we can configure
             //expected interaction prior to making a call to the application
             //endpoints
-            ServiceLocatorUtil.INSTANCE.findAllWithFilter(FieldReifier.class, SystemTest.class)
+            serviceLocatorUtil.findAllWithFilter(FieldReifier.class, SystemTest.class)
                     .forEach(p -> p.reify(testContext));
 
-            ServiceLocatorUtil.INSTANCE.findAllWithFilter(ConfigurationVerifier.class, SystemTest.class)
+            serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, SystemTest.class)
                     .forEach(p -> p.verify(testContext));
 
             //create server provider instance
             Class<? extends ServerProvider> serverProviderType = application.serverProvider();
             if (serverProviderType.equals(ServerProvider.class)) {
-                serverProvider = ServiceLocatorUtil.INSTANCE.getOne(ServerProvider.class);
+                serverProvider = serviceLocatorUtil.getOne(ServerProvider.class);
             } else {
-                serverProvider = ReflectionUtil.INSTANCE.newInstance(serverProviderType);
+                serverProvider = reflectionUtil.newInstance(serverProviderType);
             }
 
             //configure and start the server
@@ -90,18 +99,15 @@ public class SystemTestRunner implements TestRunner {
 
             Optional<ServiceInstance> foundServiceInstance = testContext.findProperty(SERVICE_INSTANCE);
 
-            if (foundServiceInstance.isPresent()) {
-                //get the service instance that became available after the server started
-                serviceInstance = foundServiceInstance.get();
-
+            foundServiceInstance.ifPresent(serviceInstance -> {
                 //add constants to the service instance to make them available for injection
                 serviceInstance.addConstant(testContext, null, TestContext.class);
 
-                createApplicationServer(serverInstance, application);
-                createApplicationClient(application, serverInstance, testContext, testConfigurer);
+                addServer(serviceInstance, application, serverInstance);
+                addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
 
                 //reifiy the test class
-                testResourcesProvider = ServiceLocatorUtil.INSTANCE.getOne(TestResourcesProvider.class);
+                testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
                 testResourcesProvider.start(testContext, serviceInstance);
 
                 //XXX: Some DI framework (i.e. Spring) require that the service instance
@@ -112,93 +118,20 @@ public class SystemTestRunner implements TestRunner {
                 serviceInstance.init();
 
                 testContext.getCutDescriptor().ifPresent(cutDescriptor
-                        -> createClassUnderTest(cutDescriptor, application, testInstance)
+                        -> createClassUnderTest(cutDescriptor, application, serviceInstance, testInstance)
                 );
 
-                ServiceLocatorUtil.INSTANCE.findAllWithFilter(org.testifyproject.extension.TestReifier.class, SystemTest.class)
+                serviceLocatorUtil.findAllWithFilter(TestReifier.class, SystemTest.class)
                         .forEach(p -> p.reify(testContext));
 
-                ServiceLocatorUtil.INSTANCE.findAllWithFilter(WiringVerifier.class, SystemTest.class)
+                serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, SystemTest.class)
                         .forEach(p -> p.verify(testContext));
-
-            }
-        }
-    }
-
-    void createClassUnderTest(CutDescriptor cutDescriptor, Application application, Object testInstance) {
-        Class cutType = cutDescriptor.getType();
-        Object cutInstance;
-
-        if (ClientInstance.class.isAssignableFrom(cutType)) {
-            cutInstance = serviceInstance.getService(cutType);
-        } else {
-            cutInstance = serviceInstance.getService(cutType, application.clientName());
-        }
-
-        cutDescriptor.setValue(testInstance, cutInstance);
-    }
-
-    void createApplicationServer(ServerInstance serverInstance, Application application) {
-        //add the client instance itself to the dependency injection service
-        String serverInstanceName = serverProvider.getClass().getSimpleName();
-        Class serverInstanceContract = ServerInstance.class;
-        serviceInstance.addConstant(serverInstance, serverInstanceName, serverInstanceContract);
-
-        //add the underlying server instance to the dependency injection service
-        serviceInstance.replace(serverInstance, application.serverName(), application.serverContract());
-    }
-
-    void createApplicationClient(Application application,
-            ServerInstance serverInstance,
-            TestContext testContext,
-            TestConfigurer testConfigurer) {
-        //create client provider instance
-        Class<? extends ClientProvider> clientProviderType = application.clientProvider();
-        if (clientProviderType.equals(ClientProvider.class)) {
-            clientProvider = ServiceLocatorUtil.INSTANCE.getOne(ClientProvider.class);
-        } else {
-            clientProvider = ReflectionUtil.INSTANCE.newInstance(clientProviderType);
-        }
-        //inject the client provider with services
-        serviceInstance.inject(clientProvider);
-        //configure and create the client
-        URI baseURI = serverInstance.getBaseURI();
-        Object clientConfig = clientProvider.configure(testContext, baseURI);
-        clientConfig = testConfigurer.configure(testContext, clientConfig);
-        ClientInstance clientInstance = clientProvider.create(testContext, baseURI, clientConfig);
-        //add the client instance itself to the dependency injection service
-        String clientInstanceName = clientProvider.getClass().getSimpleName();
-        Class clientInstanceContract = ClientInstance.class;
-        serviceInstance.addConstant(clientInstance, clientInstanceName, clientInstanceContract);
-        //add the underlying client instance to the dependency injection service
-        serviceInstance.replace(clientInstance, application.clientName(), application.clientContract());
-    }
-
-    void addConstant(ServiceInstance serviceInstance,
-            Object constant,
-            Optional<String> name,
-            Optional<Class> contract) {
-
-        if (name.isPresent() && contract.isPresent()) {
-            serviceInstance.addConstant(
-                    constant,
-                    name.get(),
-                    contract.get());
-        } else if (contract.isPresent()) {
-            serviceInstance.addConstant(
-                    constant,
-                    null,
-                    contract.get());
-        } else if (name.isPresent()) {
-            serviceInstance.addConstant(
-                    constant,
-                    name.get(),
-                    null);
+            });
         }
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
         Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
@@ -223,4 +156,59 @@ public class SystemTestRunner implements TestRunner {
         }
     }
 
+    void createClassUnderTest(CutDescriptor cutDescriptor,
+            Application application,
+            ServiceInstance serviceInstance,
+            Object testInstance) {
+        Class cutType = cutDescriptor.getType();
+        Object cutValue;
+
+        if (ClientInstance.class.isAssignableFrom(cutType)) {
+            cutValue = serviceInstance.getService(cutType);
+        } else {
+            cutValue = serviceInstance.getService(cutType, application.clientName());
+        }
+
+        cutDescriptor.setValue(testInstance, cutValue);
+    }
+
+    void addServer(ServiceInstance serviceInstance,
+            Application application,
+            ServerInstance serverInstance) {
+        //add the client instance itself to the dependency injection service
+        String serverInstanceName = serverProvider.getClass().getSimpleName();
+        Class serverInstanceContract = ServerInstance.class;
+
+        //add the underlying server instance to the dependency injection service
+        serviceInstance.addConstant(serverInstance, serverInstanceName, serverInstanceContract);
+        serviceInstance.replace(serverInstance, application.serverName(), application.serverContract());
+    }
+
+    void addClient(ServiceInstance serviceInstance,
+            Application application,
+            ServerInstance serverInstance,
+            TestContext testContext,
+            TestConfigurer testConfigurer) {
+        //create client provider instance
+        Class<? extends ClientProvider> clientProviderType = application.clientProvider();
+
+        if (clientProviderType.equals(ClientProvider.class)) {
+            clientProvider = serviceLocatorUtil.getOne(ClientProvider.class);
+        } else {
+            clientProvider = reflectionUtil.newInstance(clientProviderType);
+        }
+        //inject the client provider with services
+        serviceInstance.inject(clientProvider);
+        //configure and create the client
+        URI baseURI = serverInstance.getBaseURI();
+        Object clientConfig = clientProvider.configure(testContext, baseURI);
+        clientConfig = testConfigurer.configure(testContext, clientConfig);
+        ClientInstance clientInstance = clientProvider.create(testContext, baseURI, clientConfig);
+        //add the client instance itself to the dependency injection service
+        String clientInstanceName = clientProvider.getClass().getSimpleName();
+        Class clientInstanceContract = ClientInstance.class;
+        serviceInstance.addConstant(clientInstance, clientInstanceName, clientInstanceContract);
+        //add the underlying client instance to the dependency injection service
+        serviceInstance.replace(clientInstance, application.clientName(), application.clientContract());
+    }
 }

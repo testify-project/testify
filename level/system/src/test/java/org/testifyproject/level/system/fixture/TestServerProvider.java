@@ -13,25 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.fixture;
+package org.testifyproject.level.system.fixture;
 
+import org.testifyproject.ServerInstance;
+import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.TestRunner;
-import org.testifyproject.tools.Discoverable;
 
 /**
  *
  * @author saden
  */
-@Discoverable
-public class FunctionalTestRunner implements TestRunner {
+public class TestServerProvider implements ServerProvider {
 
     @Override
-    public void start(TestContext testContext) {
+    public Object configure(TestContext testContext) {
+        return null;
     }
 
     @Override
-    public void stop(TestContext testContext) {
+    public ServerInstance start(Object configuration) {
+        return null;
+    }
+
+    @Override
+    public void stop() {
+
     }
 
 }

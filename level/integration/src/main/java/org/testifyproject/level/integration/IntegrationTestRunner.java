@@ -45,7 +45,6 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class IntegrationTestRunner implements TestRunner {
 
-    TestContext testContext;
     ServiceInstance serviceInstance;
     TestResourcesProvider testResourcesProvider;
 
@@ -61,7 +60,6 @@ public class IntegrationTestRunner implements TestRunner {
 
     @Override
     public void start(TestContext testContext) {
-        this.testContext = testContext;
         Object testInstance = testContext.getTestInstance();
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
         Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
@@ -120,7 +118,7 @@ public class IntegrationTestRunner implements TestRunner {
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
 
