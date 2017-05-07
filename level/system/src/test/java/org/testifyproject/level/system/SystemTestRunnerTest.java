@@ -28,11 +28,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -117,7 +117,7 @@ public class SystemTestRunnerTest {
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
         given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(serverConfig)).willReturn(serverInstance);
+        given(serverProvider.start(testContext, serverConfig)).willReturn(serverInstance);
         given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
 
         sut.start(testContext);
@@ -131,7 +131,7 @@ public class SystemTestRunnerTest {
         verify(serviceLocatorUtil).getOne(serverProviderType);
         verify(serverProvider).configure(testContext);
         verify(testConfigurer).configure(testContext, serverConfig);
-        verify(serverProvider).start(serverConfig);
+        verify(serverProvider).start(testContext, serverConfig);
         verify(testContext).<ServiceInstance>findProperty(SERVICE_INSTANCE);
     }
 
@@ -165,7 +165,7 @@ public class SystemTestRunnerTest {
         given(reflectionUtil.newInstance(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
         given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(serverConfig)).willReturn(serverInstance);
+        given(serverProvider.start(testContext, serverConfig)).willReturn(serverInstance);
         given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
 
         sut.start(testContext);
@@ -179,7 +179,7 @@ public class SystemTestRunnerTest {
         verify(reflectionUtil).newInstance(serverProviderType);
         verify(serverProvider).configure(testContext);
         verify(testConfigurer).configure(testContext, serverConfig);
-        verify(serverProvider).start(serverConfig);
+        verify(serverProvider).start(testContext, serverConfig);
         verify(testContext).<ServiceInstance>findProperty(SERVICE_INSTANCE);
     }
 
@@ -225,7 +225,7 @@ public class SystemTestRunnerTest {
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
         given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(serverConfig)).willReturn(serverInstance);
+        given(serverProvider.start(testContext, serverConfig)).willReturn(serverInstance);
         given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
         willDoNothing().given(sut).addServer(serviceInstance, application, serverInstance);
         willDoNothing().given(sut).addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
@@ -247,7 +247,7 @@ public class SystemTestRunnerTest {
         verify(serviceLocatorUtil).getOne(serverProviderType);
         verify(serverProvider).configure(testContext);
         verify(testConfigurer).configure(testContext, serverConfig);
-        verify(serverProvider).start(serverConfig);
+        verify(serverProvider).start(testContext, serverConfig);
         verify(testContext).<ServiceInstance>findProperty(SERVICE_INSTANCE);
         verify(serviceInstance).addConstant(testContext, null, TestContext.class);
         verify(sut).addServer(serviceInstance, application, serverInstance);
@@ -269,6 +269,9 @@ public class SystemTestRunnerTest {
         TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(TestResourcesProvider.class);
         ClientProvider clientProvider = sut.clientProvider = mock(ClientProvider.class);
         ServerProvider serverProvider = sut.serverProvider = mock(ServerProvider.class);
+        ServerInstance serverInstance = sut.serverInstance = mock(ServerInstance.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
+        Optional<ServiceInstance> foundServiceInstance = Optional.of(serviceInstance);
 
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
@@ -279,6 +282,7 @@ public class SystemTestRunnerTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
 
         sut.stop(testContext);
 
@@ -286,9 +290,9 @@ public class SystemTestRunnerTest {
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
         verify(sutDescriptor).destroy(testInstance);
-        verify(testResourcesProvider).stop(testContext);
+        verify(testResourcesProvider).stop(testContext, serviceInstance);
         verify(clientProvider).destroy();
-        verify(serverProvider).stop();
+        verify(serverProvider).stop(testContext, serverInstance);
     }
 
     @Test

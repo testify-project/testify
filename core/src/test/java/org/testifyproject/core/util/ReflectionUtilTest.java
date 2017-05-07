@@ -98,7 +98,7 @@ public class ReflectionUtilTest {
         assertThat(greeting).isNotNull();
         verify(interceptor).hello(any(Callable.class));
     }
-    
+
     @Test
     public void givenClassAndInterceptSubclassShouldSubclassTheClass()
             throws Exception {

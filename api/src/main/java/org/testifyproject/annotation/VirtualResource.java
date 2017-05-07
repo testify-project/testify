@@ -152,7 +152,7 @@ public @interface VirtualResource {
      *
      * @return timeout duration.
      */
-    long timeout() default 300000;
+    long timeout() default 60000;
 
     /**
      * Time unit for delay, max delay, and duration.

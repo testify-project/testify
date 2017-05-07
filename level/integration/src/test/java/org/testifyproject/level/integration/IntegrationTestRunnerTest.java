@@ -26,11 +26,11 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -171,7 +171,8 @@ public class IntegrationTestRunnerTest {
     public void callToStopShouldStopTest() {
         TestContext testContext = mock(TestContext.class);
         TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(TestResourcesProvider.class);
-        ServiceInstance serviceInstance = sut.serviceInstance = mock(ServiceInstance.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
+        Optional<ServiceInstance> foundServiceInstance = Optional.of(serviceInstance);
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
@@ -184,6 +185,7 @@ public class IntegrationTestRunnerTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
 
         sut.stop(testContext);
 
@@ -191,7 +193,7 @@ public class IntegrationTestRunnerTest {
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
         verify(sutDescriptor).destroy(testInstance);
-        verify(testResourcesProvider).stop(testContext);
+        verify(testResourcesProvider).stop(testContext, serviceInstance);
         verify(serviceInstance).destroy();
 
     }

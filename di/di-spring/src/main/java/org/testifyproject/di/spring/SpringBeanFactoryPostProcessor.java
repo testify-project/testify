@@ -158,7 +158,7 @@ public class SpringBeanFactoryPostProcessor implements
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders.forEach(ResourceProvider::stop);
+            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
         }
     }
 

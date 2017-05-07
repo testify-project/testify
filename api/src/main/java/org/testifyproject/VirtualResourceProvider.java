@@ -58,7 +58,10 @@ public interface VirtualResourceProvider<S, T> {
 
     /**
      * Stop the virtual resource.
+     *
+     * @param testContext the test context
+     * @param virtualResource test class virtual resource annotation
      */
-    void stop();
+    void stop(TestContext testContext, S virtualResource);
 
 }

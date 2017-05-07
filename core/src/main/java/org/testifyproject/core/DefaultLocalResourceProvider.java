@@ -16,9 +16,9 @@
 package org.testifyproject.core;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
@@ -44,13 +44,13 @@ import org.testifyproject.tools.Discoverable;
 public class DefaultLocalResourceProvider implements ResourceProvider {
 
     private ReflectionUtil reflectionUtil;
-    private Queue<LocalResourceProvider> localResourceProviders;
+    private Map<LocalResource, LocalResourceProvider> localResourceProviders;
 
     public DefaultLocalResourceProvider() {
-        this(ReflectionUtil.INSTANCE, new ConcurrentLinkedQueue<>());
+        this(ReflectionUtil.INSTANCE, new LinkedHashMap<>());
     }
 
-    DefaultLocalResourceProvider(ReflectionUtil reflectionUtil, Queue<LocalResourceProvider> localResourceProviders) {
+    DefaultLocalResourceProvider(ReflectionUtil reflectionUtil, Map<LocalResource, LocalResourceProvider> localResourceProviders) {
         this.reflectionUtil = reflectionUtil;
         this.localResourceProviders = localResourceProviders;
     }
@@ -68,12 +68,13 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
         localResources.parallelStream().forEach(localResource -> {
             Class<? extends LocalResourceProvider> resourceProviderType = localResource.value();
 
-            LocalResourceProvider resourceProvider = reflectionUtil.newInstance(resourceProviderType);
-            serviceInstance.inject(resourceProvider);
-            Object configuration = resourceProvider.configure(testContext);
+            LocalResourceProvider localResourceProvider = reflectionUtil.newInstance(resourceProviderType);
+            serviceInstance.inject(localResourceProvider);
+            Object configuration = localResourceProvider.configure(testContext);
             configuration = testConfigurer.configure(testContext, configuration);
 
-            LocalResourceInstance<?, ?> localResourceInstance = resourceProvider.start(testContext, configuration);
+            LocalResourceInstance<?, ?> localResourceInstance
+                    = localResourceProvider.start(testContext, localResource, configuration);
 
             processResource(localResourceInstance, localResource, serviceInstance);
             processClient(localResourceInstance, localResource, serviceInstance);
@@ -87,7 +88,7 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
                 serviceInstance.addConstant(localResourceInstance, resourceName, resourceContract);
             }
 
-            localResourceProviders.add(resourceProvider);
+            localResourceProviders.put(localResource, localResourceProvider);
         });
     }
 
@@ -116,8 +117,10 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
     }
 
     @Override
-    public void stop() {
-        localResourceProviders.parallelStream().forEach(LocalResourceProvider::stop);
+    public void stop(TestContext testContext) {
+        localResourceProviders.forEach((localResource, localResourceProvider)
+                -> localResourceProvider.stop(testContext, localResource)
+        );
     }
 
 }

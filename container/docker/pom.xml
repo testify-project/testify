@@ -26,6 +26,16 @@
 
     <artifactId>docker</artifactId>
     <name>Docker Container</name>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>

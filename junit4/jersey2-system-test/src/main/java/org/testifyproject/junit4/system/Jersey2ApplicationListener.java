@@ -33,8 +33,8 @@ import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 
 /**
- * A Jersey 2 application event listeners that listens for application events to initialize, start
- * and stop test resources.
+ * A Jersey 2 application event listeners that listens for application events to
+ * initialize, start and stop test resources.
  *
  * @author saden
  */
@@ -79,7 +79,7 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
 
     void destroy(TestContext testContext) {
         if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders.forEach(ResourceProvider::stop);
+            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
         }
     }
 

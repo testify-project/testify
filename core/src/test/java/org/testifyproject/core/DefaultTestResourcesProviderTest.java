@@ -82,14 +82,15 @@ public class DefaultTestResourcesProviderTest {
     @Test
     public void givenEagerResourceStrategyStopShouldStopResources() {
         TestContext testContext = mock(TestContext.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
         ResourceProvider resourceProvider = mock(ResourceProvider.class);
         resourceProviders.add(resourceProvider);
         StartStrategy resourceStartStrategy = StartStrategy.EAGER;
 
         given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
 
-        sut.stop(testContext);
+        sut.stop(testContext, serviceInstance);
 
-        verify(resourceProvider).stop();
+        verify(resourceProvider).stop(testContext);
     }
 }

@@ -15,9 +15,9 @@
  */
 package org.testifyproject.core;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceInstance;
@@ -39,7 +40,6 @@ import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.fixture.resource.ValidVirtualResourceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.TestConfigurer;
 
 /**
  *
@@ -50,13 +50,13 @@ public class DefaultVirtualResourceProviderTest {
     DefaultVirtualResourceProvider sut;
     ServiceLocatorUtil serviceLocatorUtil;
     ReflectionUtil reflectionUtil;
-    Queue<VirtualResourceProvider> virtualResourceProviders;
+    Map<VirtualResource, VirtualResourceProvider> virtualResourceProviders;
 
     @Before
     public void init() {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
         reflectionUtil = mock(ReflectionUtil.class);
-        virtualResourceProviders = mock(Queue.class, delegatesTo(new ConcurrentLinkedQueue<>()));
+        virtualResourceProviders = mock(Map.class, delegatesTo(new LinkedHashMap<>()));
 
         sut = new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, virtualResourceProviders);
     }
@@ -185,22 +185,15 @@ public class DefaultVirtualResourceProviderTest {
     }
 
     @Test
-    public void callToStopWithNoElementsStopShouldStopVirtualResourceProvider() {
-        sut.stop();
-
-        verify(virtualResourceProviders).parallelStream();
-        verifyNoMoreInteractions(virtualResourceProviders);
-    }
-
-    @Test
     public void callToStopWithElementsStopShouldStopVirtualResourceProvider() {
+        TestContext testContext = mock(TestContext.class);
+        VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
-        virtualResourceProviders.add(virtualResourceProvider);
+        virtualResourceProviders.put(virtualResource, virtualResourceProvider);
 
-        sut.stop();
+        sut.stop(testContext);
 
-        verify(virtualResourceProviders).parallelStream();
-        verify(virtualResourceProvider).stop();
+        verify(virtualResourceProvider).stop(testContext, virtualResource);
         verifyNoMoreInteractions(virtualResourceProvider);
     }
 

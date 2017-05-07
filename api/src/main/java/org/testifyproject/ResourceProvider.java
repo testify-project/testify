@@ -34,7 +34,9 @@ public interface ResourceProvider {
 
     /**
      * Stop all the resources.
+     *
+     * @param testContext the test context
      */
-    void stop();
+    void stop(TestContext testContext);
 
 }

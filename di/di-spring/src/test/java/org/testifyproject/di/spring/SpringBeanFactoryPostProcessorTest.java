@@ -202,7 +202,7 @@ public class SpringBeanFactoryPostProcessorTest {
         sut.onApplicationEvent(event);
 
         verify(testContext).getResourceStartStrategy();
-        verify(resourceProvider).stop();
+        verify(resourceProvider).stop(testContext);
     }
 
 }

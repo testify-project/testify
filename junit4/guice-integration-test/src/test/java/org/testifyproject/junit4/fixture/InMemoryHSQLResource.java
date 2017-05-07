@@ -23,12 +23,13 @@ import org.hsqldb.jdbc.JDBCDataSource;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.LocalResourceInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
 
 /**
  * An implementation of LocalResourceProvider that provides an in-memory HSQL
- DataSource and connection.
+ * DataSource and connection.
  *
  * @author saden
  */
@@ -48,7 +49,9 @@ public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSourc
     }
 
     @Override
-    public LocalResourceInstance<DataSource, Connection> start(TestContext testContext, JDBCDataSource dataSource) {
+    public LocalResourceInstance<DataSource, Connection> start(TestContext testContext,
+            LocalResource localResource,
+            JDBCDataSource dataSource) {
         try {
             server = dataSource;
             client = dataSource.getConnection();
@@ -63,7 +66,7 @@ public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSourc
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext, LocalResource localResource) {
         try {
             server.getConnection()
                     .createStatement()
@@ -73,5 +76,4 @@ public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSourc
             throw ExceptionUtil.INSTANCE.propagate(e);
         }
     }
-
 }

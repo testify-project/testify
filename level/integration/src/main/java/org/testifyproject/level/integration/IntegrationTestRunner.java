@@ -18,9 +18,9 @@ package org.testifyproject.level.integration;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Set;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -45,7 +45,6 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class IntegrationTestRunner implements TestRunner {
 
-    ServiceInstance serviceInstance;
     TestResourcesProvider testResourcesProvider;
 
     private final ServiceLocatorUtil serviceLocatorUtil;
@@ -75,7 +74,7 @@ public class IntegrationTestRunner implements TestRunner {
 
         Object serviceContext = serviceProvider.create(testContext);
 
-        serviceInstance = serviceProvider.configure(testContext, serviceContext);
+        ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceContext);
         testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
         serviceInstance.addConstant(testContext, null, TestContext.class);
 
@@ -130,8 +129,11 @@ public class IntegrationTestRunner implements TestRunner {
         testContext.getSutDescriptor()
                 .ifPresent(p -> p.destroy(testInstance));
 
+        ServiceInstance serviceInstance = testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
+                .orElse(null);
+
         if (testResourcesProvider != null) {
-            testResourcesProvider.stop(testContext);
+            testResourcesProvider.stop(testContext, serviceInstance);
         }
 
         if (serviceInstance != null) {

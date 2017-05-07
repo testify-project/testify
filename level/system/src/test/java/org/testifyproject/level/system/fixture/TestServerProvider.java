@@ -31,13 +31,12 @@ public class TestServerProvider implements ServerProvider {
     }
 
     @Override
-    public ServerInstance start(Object configuration) {
+    public ServerInstance start(TestContext testContext, Object configuration) {
         return null;
     }
 
     @Override
-    public void stop() {
-
+    public void stop(TestContext testContext, ServerInstance serverInstance) {
     }
 
 }

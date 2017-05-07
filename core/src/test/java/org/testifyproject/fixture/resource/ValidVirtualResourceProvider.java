@@ -40,7 +40,8 @@ public class ValidVirtualResourceProvider implements VirtualResourceProvider<Vir
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext, VirtualResource virtualResource) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

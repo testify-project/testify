@@ -27,6 +27,7 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
@@ -42,7 +43,6 @@ import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.TestConfigurer;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.
@@ -102,53 +102,40 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     }
 
     @Override
-    public ServerInstance<EmbeddedServletContainer> start(SpringApplicationBuilder configuration) {
+    public ServerInstance<EmbeddedServletContainer> start(TestContext testContext, SpringApplicationBuilder configuration) {
         LoggingUtil.INSTANCE.debug("starting spring boot application");
         SpringApplication application = configuration.build();
-        Optional<TestContext> foundTextContext = TEST_CONTEXT_HOLDER.get();
 
-        if (foundTextContext.isPresent()) {
-            TestContext testContext = foundTextContext.get();
+        testContext.addProperty(APP, application);
+        testContext.addProperty(APP_NAME, testContext.getName());
 
-            testContext.addProperty(APP, application);
-            testContext.addProperty(APP_NAME, testContext.getName());
+        LoggingUtil.INSTANCE.debug("running spring boot application");
+        application.run();
 
-            LoggingUtil.INSTANCE.debug("running spring boot application");
-            application.run();
+        Optional<ServletContext> servletContext = testContext.findProperty(APP_SERVLET_CONTEXT);
+        Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
 
-            Optional<ServletContext> servletContext = testContext.findProperty(APP_SERVLET_CONTEXT);
-            Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
+        if (servletContext.isPresent() && servletContainer.isPresent()) {
+            EmbeddedServletContainer container = servletContainer.get();
+            ServletContext context = servletContext.get();
 
-            if (servletContext.isPresent() && servletContainer.isPresent()) {
-                EmbeddedServletContainer container = servletContainer.get();
-                ServletContext context = servletContext.get();
+            String uri = format(DEFAULT_URI_FORMAT, container.getPort(), context.getContextPath());
+            URI baseURI = URI.create(uri);
 
-                String uri = format(DEFAULT_URI_FORMAT, container.getPort(), context.getContextPath());
-                URI baseURI = URI.create(uri);
+            LoggingUtil.INSTANCE.debug("creating spring boot application server instance");
 
-                LoggingUtil.INSTANCE.debug("creating spring boot application server instance");
-
-                return DefaultServerInstance.of(baseURI, container);
-            }
+            return DefaultServerInstance.of(baseURI, container);
         }
 
-        throw ExceptionUtil.INSTANCE.propagate("TestContext not set");
+        throw ExceptionUtil.INSTANCE.propagate("servlet context and container not found");
     }
 
     @Override
-    public void stop() {
-        LoggingUtil.INSTANCE.debug("stopping spring application");
-        TEST_CONTEXT_HOLDER.exesute(testContext -> {
-            testContext.findProperty(APP_SERVLET_CONTAINER)
-                    .map(EmbeddedServletContainer.class::cast)
-                    .ifPresent(servletContainer -> {
-                        LoggingUtil.INSTANCE.debug("stopping spring boot application servlet container");
-                        servletContainer.stop();
-
-                    });
-
-            TEST_CONTEXT_HOLDER.remove();
-        });
+    public void stop(TestContext testContext, ServerInstance<EmbeddedServletContainer> serverInstance) {
+        LoggingUtil.INSTANCE.debug("Stopping spring application");
+        EmbeddedServletContainer container = serverInstance.getInstance();
+        LoggingUtil.INSTANCE.debug("Stopping spring boot application servlet container");
+        container.stop();
     }
 
 }

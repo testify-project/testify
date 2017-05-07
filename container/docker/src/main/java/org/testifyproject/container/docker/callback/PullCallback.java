@@ -71,18 +71,22 @@ public class PullCallback implements ResultCallback<PullResponseItem> {
 
     @Override
     public void onError(Throwable throwable) {
-        LoggingUtil.INSTANCE.error("Pull failed: ", throwable);
+        LoggingUtil.INSTANCE.error("Image '{}:{}' pull failed: ",
+                virtualResource.value(), virtualResource.version(), throwable);
+        latch.countDown();
     }
 
     @Override
     public void onComplete() {
-        LoggingUtil.INSTANCE.info("Image '{}:{}' pulled", virtualResource.value(), virtualResource.version());
+        LoggingUtil.INSTANCE.info("Image '{}:{}' pulled",
+                virtualResource.value(), virtualResource.version());
         latch.countDown();
     }
 
     @Override
     public void close() throws IOException {
-        LoggingUtil.INSTANCE.debug("Closing pull of '{}:{}' image", virtualResource.value(), virtualResource.version());
+        LoggingUtil.INSTANCE.debug("Closing pull of '{}:{}' image",
+                virtualResource.value(), virtualResource.version());
     }
 
 }

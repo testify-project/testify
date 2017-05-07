@@ -19,10 +19,10 @@ import java.net.URI;
 import java.util.Optional;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -51,6 +51,7 @@ public class SystemTestRunner implements TestRunner {
     TestResourcesProvider testResourcesProvider;
     ServerProvider serverProvider;
     ClientProvider clientProvider;
+    ServerInstance serverInstance;
 
     private final ServiceLocatorUtil serviceLocatorUtil;
     private final ReflectionUtil reflectionUtil;
@@ -95,7 +96,7 @@ public class SystemTestRunner implements TestRunner {
             //configure and start the server
             Object serverConfig = serverProvider.configure(testContext);
             serverConfig = testConfigurer.configure(testContext, serverConfig);
-            ServerInstance serverInstance = serverProvider.start(serverConfig);
+            serverInstance = serverProvider.start(testContext, serverConfig);
 
             Optional<ServiceInstance> foundServiceInstance = testContext.findProperty(SERVICE_INSTANCE);
 
@@ -148,11 +149,14 @@ public class SystemTestRunner implements TestRunner {
         }
 
         if (serverProvider != null) {
-            serverProvider.stop();
+            serverProvider.stop(testContext, serverInstance);
         }
 
         if (testResourcesProvider != null) {
-            testResourcesProvider.stop(testContext);
+            ServiceInstance serviceInstance = testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
+                    .orElse(null);
+
+            testResourcesProvider.stop(testContext, serviceInstance);
         }
     }
 
