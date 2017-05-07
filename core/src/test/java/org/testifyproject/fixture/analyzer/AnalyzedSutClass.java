@@ -22,11 +22,11 @@ import java.util.UUID;
  *
  * @author saden
  */
-public class AnalyzedCutClass {
+public class AnalyzedSutClass {
 
     private final Map<UUID, String> store;
 
-    AnalyzedCutClass(Map<UUID, String> store) {
+    AnalyzedSutClass(Map<UUID, String> store) {
         this.store = store;
     }
 

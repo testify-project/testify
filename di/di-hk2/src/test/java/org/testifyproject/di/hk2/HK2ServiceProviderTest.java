@@ -37,11 +37,11 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class HK2ServiceProviderTest {
 
-    HK2ServiceProvider cut;
+    HK2ServiceProvider sut;
 
     @Before
     public void init() {
-        cut = new HK2ServiceProvider();
+        sut = new HK2ServiceProvider();
     }
 
     @Test
@@ -51,7 +51,7 @@ public class HK2ServiceProviderTest {
 
         given(testContext.getName()).willReturn(testName);
 
-        ServiceLocator result = cut.create(testContext);
+        ServiceLocator result = sut.create(testContext);
 
         assertThat(result).isNotNull();
     }
@@ -61,7 +61,7 @@ public class HK2ServiceProviderTest {
         TestContext testContext = mock(TestContext.class);
         ServiceLocator serviceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
 
-        ServiceInstance result = cut.configure(testContext, serviceLocator);
+        ServiceInstance result = sut.configure(testContext, serviceLocator);
 
         assertThat(result).isNotNull();
         assertThat((ServiceLocator) result.getContext()).isEqualTo(serviceLocator);
@@ -83,7 +83,7 @@ public class HK2ServiceProviderTest {
         given(testDescriptor.getModules()).willReturn(modules);
         given(testDescriptor.getScans()).willReturn(scans);
 
-        cut.postConfigure(testContext, serviceInstance);
+        sut.postConfigure(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getModules();

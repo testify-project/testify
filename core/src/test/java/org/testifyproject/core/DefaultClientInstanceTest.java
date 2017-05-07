@@ -26,7 +26,7 @@ import org.testifyproject.ClientInstance;
  */
 public class DefaultClientInstanceTest {
 
-    ClientInstance<Object> cut;
+    ClientInstance<Object> sut;
     Object client;
     Class<Object> contract;
 
@@ -35,24 +35,24 @@ public class DefaultClientInstanceTest {
         client = new Object();
         contract = Object.class;
 
-        cut = DefaultClientInstance.of(client, contract);
+        sut = DefaultClientInstance.of(client, contract);
 
-        assertThat(cut.getInstance()).isEqualTo(client);
-        assertThat(cut.getContract()).contains(contract);
+        assertThat(sut.getInstance()).isEqualTo(client);
+        assertThat(sut.getContract()).contains(contract);
     }
 
     @Test
     public void givenBaseURIAndClientOfShouldReturn() {
-        cut = DefaultClientInstance.of(client);
+        sut = DefaultClientInstance.of(client);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getInstance()).isEqualTo(client);
-        assertThat(cut.getContract()).isEmpty();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getInstance()).isEqualTo(client);
+        assertThat(sut.getContract()).isEmpty();
     }
 
     @Test
     public void callToGetClientShouldReturnClient() {
-        Object result = cut.getInstance();
+        Object result = sut.getInstance();
 
         assertThat(result).isEqualTo(client);
     }
@@ -61,28 +61,28 @@ public class DefaultClientInstanceTest {
     public void givenNullInstancesShouldNotBeEqual() {
         ClientInstance<Object> instance = null;
 
-        assertThat(cut).isNotEqualTo(instance);
+        assertThat(sut).isNotEqualTo(instance);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         ClientInstance<Object> uneuqual = DefaultClientInstance.of(new Object());
 
-        assertThat(cut).isNotEqualTo(uneuqual);
-        assertThat(cut.hashCode()).isNotEqualTo(uneuqual.hashCode());
+        assertThat(sut).isNotEqualTo(uneuqual);
+        assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
 
     }
 
@@ -90,13 +90,13 @@ public class DefaultClientInstanceTest {
     public void givenEqualInstancesShouldBeEqual() {
         ClientInstance<Object> equal = DefaultClientInstance.of(client, contract);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains(
                 "DefaultClientInstance",

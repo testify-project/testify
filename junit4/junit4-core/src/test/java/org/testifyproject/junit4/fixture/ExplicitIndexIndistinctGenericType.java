@@ -32,7 +32,7 @@ public class ExplicitIndexIndistinctGenericType {
         this.hello2 = hello2;
     }
 
-    public String execute() {
+    public String exesute() {
         return hello1.get().greet() + " " + hello2.get().greet();
 
     }

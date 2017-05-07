@@ -35,23 +35,23 @@ import org.testifyproject.fixture.locator.impl.SingleImplementationContractImpl;
  */
 public class ServiceLocatorUtilTest {
 
-    ServiceLocatorUtil cut;
+    ServiceLocatorUtil sut;
 
     @Before
     public void init() {
-        cut = new ServiceLocatorUtil();
+        sut = new ServiceLocatorUtil();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullFindOneShouldReturnThrowException() {
-        cut.findOne(null);
+        sut.findOne(null);
     }
 
     @Test
     public void givenContractWithoutImplementationFindOneShouldReturnEmptyOptional() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
 
-        Optional<NoImplementationConract> result = cut.findOne(contract);
+        Optional<NoImplementationConract> result = sut.findOne(contract);
 
         assertThat(result).isEmpty();
     }
@@ -60,21 +60,21 @@ public class ServiceLocatorUtilTest {
     public void givenContractWithImplementationsFindOneShouldReturnOptionalWithImplementation() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
 
-        Optional<MultiImplmentationContract> result = cut.findOne(contract);
+        Optional<MultiImplmentationContract> result = sut.findOne(contract);
 
         assertThat(result).isNotEmpty();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullFindAllShouldReturnThrowException() {
-        cut.findAll(null);
+        sut.findAll(null);
     }
 
     @Test
     public void givenContractWithoutImplementationFindAllShouldReturnEmptyList() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
 
-        List<NoImplementationConract> result = cut.findAll(contract);
+        List<NoImplementationConract> result = sut.findAll(contract);
 
         assertThat(result).isEmpty();
     }
@@ -83,7 +83,7 @@ public class ServiceLocatorUtilTest {
     public void givenContractWithImplementationsFindAllShouldReturnListWithImplementation() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
 
-        List<MultiImplmentationContract> result = cut.findAll(contract);
+        List<MultiImplmentationContract> result = sut.findAll(contract);
 
         assertThat(result).hasSize(2);
     }
@@ -92,33 +92,33 @@ public class ServiceLocatorUtilTest {
     public void givenContractWithImplementationsFindAllWithFilterShouldReturnListWithImplementation() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
 
-        List<MultiImplmentationContract> result = cut.findAllWithFilter(contract, UnitTest.class);
+        List<MultiImplmentationContract> result = sut.findAllWithFilter(contract, UnitTest.class);
 
         assertThat(result).hasSize(1);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullGetOneShouldReturnThrowException() {
-        cut.getOne(null);
+        sut.getOne(null);
     }
 
     @Test(expected = TestifyException.class)
     public void givenContractWithoutImplementationGetOneShouldReturnThrowException() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
-        cut.getOne(contract);
+        sut.getOne(contract);
     }
 
     @Test(expected = TestifyException.class)
     public void givenContractWithMultipleImplementationsGetOneShouldReturnThrowException() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
-        cut.getOne(contract);
+        sut.getOne(contract);
     }
 
     @Test
     public void givenContractWithSingleImplementationsGetOneShouldReturnImplementation() {
         Class<SingleImplementationContract> contract = SingleImplementationContract.class;
 
-        SingleImplementationContract result = cut.getOne(contract);
+        SingleImplementationContract result = sut.getOne(contract);
 
         assertThat(result).isNotNull();
     }
@@ -127,7 +127,7 @@ public class ServiceLocatorUtilTest {
     public void givenContractWithSingleImplementationsGetOneWithFilterShouldReturnImplementation() {
         Class<SingleImplementationContract> contract = SingleImplementationContract.class;
 
-        SingleImplementationContract result = cut.getOneWithFilter(contract, UnitTest.class);
+        SingleImplementationContract result = sut.getOneWithFilter(contract, UnitTest.class);
 
         assertThat(result).isNotNull();
     }
@@ -137,7 +137,7 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = null;
         Class<SecondMultiImplmentationContract> implementation = SecondMultiImplmentationContract.class;
 
-        cut.getOne(contract, implementation);
+        sut.getOne(contract, implementation);
     }
 
     @Test(expected = NullPointerException.class)
@@ -145,7 +145,7 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<? extends MultiImplmentationContract> implementation = null;
 
-        cut.getOne(contract, implementation);
+        sut.getOne(contract, implementation);
     }
 
     @Test(expected = TestifyException.class)
@@ -153,7 +153,7 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<MultiImplmentationContract> implementation = MultiImplmentationContract.class;
 
-        cut.getOne(contract, implementation);
+        sut.getOne(contract, implementation);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<SecondMultiImplmentationContract> implementation = SecondMultiImplmentationContract.class;
 
-        MultiImplmentationContract result = cut.getOne(contract, implementation);
+        MultiImplmentationContract result = sut.getOne(contract, implementation);
 
         assertThat(result).isNotNull();
     }
@@ -171,7 +171,7 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = null;
         Class<SecondMultiImplmentationContract> defaultImplementation = SecondMultiImplmentationContract.class;
 
-        cut.getOneOrDefault(contract, defaultImplementation);
+        sut.getOneOrDefault(contract, defaultImplementation);
     }
 
     @Test(expected = NullPointerException.class)
@@ -179,7 +179,7 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<? extends MultiImplmentationContract> defaultImplementation = null;
 
-        cut.getOneOrDefault(contract, defaultImplementation);
+        sut.getOneOrDefault(contract, defaultImplementation);
     }
 
     @Test(expected = TestifyException.class)
@@ -187,7 +187,7 @@ public class ServiceLocatorUtilTest {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
         Class<NoImplementationConract> defaultImplementation = NoImplementationConract.class;
 
-        cut.getOneOrDefault(contract, defaultImplementation);
+        sut.getOneOrDefault(contract, defaultImplementation);
     }
 
     @Test
@@ -195,7 +195,7 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
         Class<SecondMultiImplmentationContract> defaultImplementation = SecondMultiImplmentationContract.class;
 
-        MultiImplmentationContract result = cut.getOneOrDefault(contract, defaultImplementation);
+        MultiImplmentationContract result = sut.getOneOrDefault(contract, defaultImplementation);
 
         assertThat(result).isInstanceOf(FirstMultiImplmentationContract.class);
     }
@@ -205,28 +205,28 @@ public class ServiceLocatorUtilTest {
         Class<SingleImplementationContract> contract = SingleImplementationContract.class;
         Class<SingleImplementationContractImpl> defaultImplementation = SingleImplementationContractImpl.class;
 
-        SingleImplementationContract result = cut.getOneOrDefault(contract, defaultImplementation);
+        SingleImplementationContract result = sut.getOneOrDefault(contract, defaultImplementation);
 
         assertThat(result).isInstanceOf(SingleImplementationContractImpl.class);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullGetAllShouldReturnThrowException() {
-        cut.getAll(null);
+        sut.getAll(null);
     }
 
     @Test(expected = TestifyException.class)
     public void givenContractWithoutImplementationGetAllShouldThrowException() {
         Class<NoImplementationConract> contract = NoImplementationConract.class;
 
-        cut.getAll(contract);
+        sut.getAll(contract);
     }
 
     @Test
     public void givenContractWithImplementationsGetAllShouldReturnListWithImplementation() {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
 
-        List<MultiImplmentationContract> result = cut.getAll(contract);
+        List<MultiImplmentationContract> result = sut.getAll(contract);
 
         assertThat(result).hasSize(2);
     }

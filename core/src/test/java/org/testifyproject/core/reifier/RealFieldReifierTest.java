@@ -37,16 +37,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class RealFieldReifierTest {
     
-    RealFieldReifier cut;
+    RealFieldReifier sut;
 
     @Before
     public void init() {
-        cut = new RealFieldReifier();
+        sut = new RealFieldReifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.reify(null);
+        sut.reify(null);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class RealFieldReifierTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -88,7 +88,7 @@ public class RealFieldReifierTest {
         given(fieldDescriptor.getType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -119,7 +119,7 @@ public class RealFieldReifierTest {
         given(fieldDescriptor.getType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();

@@ -33,11 +33,11 @@ import org.testifyproject.TestDescriptor;
  */
 public class DefaultTestConfigurerTest {
 
-    DefaultTestConfigurer cut;
+    DefaultTestConfigurer sut;
 
     @Before
     public void init() {
-        cut = new DefaultTestConfigurer();
+        sut = new DefaultTestConfigurer();
     }
 
     @Test(expected = NullPointerException.class)
@@ -45,7 +45,7 @@ public class DefaultTestConfigurerTest {
         TestContext testContext = null;
         Object configuration = mock(Object.class);
 
-        cut.configure(testContext, configuration);
+        sut.configure(testContext, configuration);
 
     }
 
@@ -54,7 +54,7 @@ public class DefaultTestConfigurerTest {
         TestContext testContext = mock(TestContext.class);
         Object configuration = null;
 
-        cut.configure(testContext, configuration);
+        sut.configure(testContext, configuration);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class DefaultTestConfigurerTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.findConfigHandler(configurableType)).willReturn(configHandler);
 
-        Object result = cut.configure(testContext, configuration);
+        Object result = sut.configure(testContext, configuration);
 
         assertThat(result).isEqualTo(configuration);
         verify(testContext).getTestDescriptor();
@@ -95,7 +95,7 @@ public class DefaultTestConfigurerTest {
         given(configHandler.getInstance()).willReturn(foundConfigInstance);
         given(configHandler.invoke(configInstance, configuration)).willReturn(foundValue);
 
-        Object result = cut.configure(testContext, configuration);
+        Object result = sut.configure(testContext, configuration);
 
         assertThat(result).isEqualTo(value);
         verify(testContext).getTestDescriptor();
@@ -124,7 +124,7 @@ public class DefaultTestConfigurerTest {
         given(configHandler.getInstance()).willReturn(foundConfigInstance);
         given(configHandler.invoke(testInstance, configuration)).willReturn(foundValue);
 
-        Object result = cut.configure(testContext, configuration);
+        Object result = sut.configure(testContext, configuration);
 
         assertThat(result).isEqualTo(value);
         verify(testContext).getTestDescriptor();
@@ -153,7 +153,7 @@ public class DefaultTestConfigurerTest {
         given(configHandler.getInstance()).willReturn(foundConfigInstance);
         given(configHandler.invoke(configInstance, configuration)).willReturn(foundValue);
 
-        Object result = cut.configure(testContext, configuration);
+        Object result = sut.configure(testContext, configuration);
 
         assertThat(result).isEqualTo(configuration);
         verify(testContext).getTestDescriptor();

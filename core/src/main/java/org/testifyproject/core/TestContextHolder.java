@@ -74,11 +74,11 @@ public class TestContextHolder {
     }
 
     /**
-     * Execute the given consumer function if the the current thread has a test context.
+     * Exesute the given consumer function if the the current thread has a test context.
      *
      * @param consumer the consumer function
      */
-    public synchronized void execute(Consumer<TestContext> consumer) {
+    public synchronized void exesute(Consumer<TestContext> consumer) {
         TestContext testContext = inheritableThreadLocal.get();
 
         if (testContext != null) {
@@ -87,13 +87,13 @@ public class TestContextHolder {
     }
 
     /**
-     * Execute the given function if the the current thread has a test context.
+     * Exesute the given function if the the current thread has a test context.
      *
      * @param <R> the function result type
      * @param function the consumer function
      * @return the function result
      */
-    public synchronized <R> R execute(Function<TestContext, R> function) {
+    public synchronized <R> R exesute(Function<TestContext, R> function) {
         TestContext testContext = inheritableThreadLocal.get();
         R result = null;
 

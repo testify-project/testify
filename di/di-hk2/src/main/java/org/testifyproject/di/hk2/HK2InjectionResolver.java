@@ -55,7 +55,7 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
 
     @Override
     public Object resolve(Injectee injectee, ServiceHandle root) {
-        return testContext.getCutDescriptor().map(cutDescriptor -> {
+        return testContext.getSutDescriptor().map(sutDescriptor -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
             MockProvider mockProvider = testContext.getMockProvider();
             Object testInstance = testContext.getTestInstance();
@@ -80,7 +80,7 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
     }
 
     Object findThreeThirtyService(Injectee injectee, ServiceHandle root) {
-        //TODO: we need to be able to get the acutal injectee resolver for types
+        //TODO: we need to be able to get the asutal injectee resolver for types
         //other than @Inject. HK2 no longer provides ability to do that via API
         //will file a bug.
         InjectionResolver threeThirtyResolver

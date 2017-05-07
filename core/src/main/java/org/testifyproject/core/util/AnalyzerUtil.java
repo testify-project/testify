@@ -19,11 +19,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.asm.ClassReader;
-import org.testifyproject.core.analyzer.CutClassAnalyzer;
-import org.testifyproject.core.analyzer.DefaultCutDescriptor;
+import org.testifyproject.core.analyzer.SutClassAnalyzer;
+import org.testifyproject.core.analyzer.DefaultSutDescriptor;
 import org.testifyproject.core.analyzer.DefaultTestDescriptor;
 import org.testifyproject.core.analyzer.TestClassAnalyzer;
 
@@ -35,7 +35,7 @@ import org.testifyproject.core.analyzer.TestClassAnalyzer;
 public class AnalyzerUtil {
 
     private static final Map<Class, TestDescriptor> TEST_DESCRIPTORS = new ConcurrentHashMap<>();
-    private static final Map<Field, CutDescriptor> CUT_DESCRIPTORS = new ConcurrentHashMap<>();
+    private static final Map<Field, SutDescriptor> SUT_DESCRIPTORS = new ConcurrentHashMap<>();
 
     public static final AnalyzerUtil INSTANCE = new AnalyzerUtil();
 
@@ -61,19 +61,19 @@ public class AnalyzerUtil {
 
     }
 
-    public CutDescriptor analyzeCutField(Field field) {
-        return CUT_DESCRIPTORS.computeIfAbsent(field, p -> {
+    public SutDescriptor analyzeSutField(Field field) {
+        return SUT_DESCRIPTORS.computeIfAbsent(field, p -> {
             try {
-                CutDescriptor cutDescriptor = DefaultCutDescriptor.of(field);
-                CutClassAnalyzer cutClassAnalyzer = new CutClassAnalyzer(field, cutDescriptor);
+                SutDescriptor sutDescriptor = DefaultSutDescriptor.of(field);
+                SutClassAnalyzer sutClassAnalyzer = new SutClassAnalyzer(field, sutDescriptor);
 
-                ClassReader cutReader = new ClassReader(field.getType().getName());
-                cutReader.accept(cutClassAnalyzer, ClassReader.SKIP_DEBUG);
+                ClassReader sutReader = new ClassReader(field.getType().getName());
+                sutReader.accept(sutClassAnalyzer, ClassReader.SKIP_DEBUG);
 
-                return cutDescriptor;
+                return sutDescriptor;
             } catch (IOException e) {
                 throw ExceptionUtil.INSTANCE.propagate(
-                        "Analysis of class under test '{}' failed.",
+                        "Analysis of system under test '{}' failed.",
                         e,
                         field.getType().getSimpleName()
                 );

@@ -25,7 +25,7 @@ import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import static java.util.stream.Stream.of;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.asm.ClassVisitor;
@@ -37,28 +37,28 @@ import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 
 /**
- * A class visitor implementation that performs analysis on the class under test.
+ * A class visitor implementation that performs analysis on the system under test.
  *
  * @author saden
  */
-public class CutClassAnalyzer extends ClassVisitor {
+public class SutClassAnalyzer extends ClassVisitor {
 
     public static final String CONSTRUCTOR_NAME = "<init>";
-    private final Field cutField;
-    private final CutDescriptor cutDescriptor;
+    private final Field sutField;
+    private final SutDescriptor sutDescriptor;
 
-    public CutClassAnalyzer(Field cutField, CutDescriptor cutDescriptor) {
+    public SutClassAnalyzer(Field sutField, SutDescriptor sutDescriptor) {
         super(ASM5);
-        this.cutField = cutField;
-        this.cutDescriptor = cutDescriptor;
+        this.sutField = sutField;
+        this.sutDescriptor = sutDescriptor;
     }
 
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         return doPrivileged((PrivilegedAction<FieldVisitor>) () -> {
             try {
-                Class<?> cutType = cutField.getType();
-                Field field = cutType.getDeclaredField(name);
+                Class<?> sutType = sutField.getType();
+                Field field = sutType.getDeclaredField(name);
                 field.setAccessible(true);
 
                 ReflectionUtil.INSTANCE.removeFinalModifier(field);
@@ -67,8 +67,8 @@ public class CutClassAnalyzer extends ClassVisitor {
                 return null;
             } catch (NoSuchFieldException | SecurityException e) {
                 throw ExceptionUtil.INSTANCE.propagate(
-                        "Could not get  field '{}' in class under test '{}'.",
-                        e, name, cutField.getDeclaringClass().getSimpleName());
+                        "Could not get  field '{}' in system under test '{}'.",
+                        e, name, sutField.getDeclaringClass().getSimpleName());
             }
         });
     }
@@ -81,8 +81,8 @@ public class CutClassAnalyzer extends ClassVisitor {
                 Class[] parameterTypes = of(type.getArgumentTypes()).map(this::getClass).toArray(Class[]::new);
 
                 try {
-                    Constructor<?> constructor = cutField.getType().getDeclaredConstructor(parameterTypes);
-                    cutDescriptor.addProperty(CutDescriptorProperties.CONSTRUCTOR, constructor);
+                    Constructor<?> constructor = sutField.getType().getDeclaredConstructor(parameterTypes);
+                    sutDescriptor.addProperty(SutDescriptorProperties.CONSTRUCTOR, constructor);
 
                     Parameter[] parameters = constructor.getParameters();
                     for (int index = 0; index < parameters.length; index++) {
@@ -91,7 +91,7 @@ public class CutClassAnalyzer extends ClassVisitor {
                 } catch (NoSuchMethodException | SecurityException e) {
                     throw ExceptionUtil.INSTANCE.propagate(
                             "Constructor with '{}' parameters not accessible in '{}' class.",
-                            e, Arrays.toString(parameterTypes), cutField.getDeclaringClass().getTypeName());
+                            e, Arrays.toString(parameterTypes), sutField.getDeclaringClass().getTypeName());
                 }
             }
 
@@ -107,9 +107,9 @@ public class CutClassAnalyzer extends ClassVisitor {
         DescriptorKey typeKey = DescriptorKey.of(fieldType);
         DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
 
-        cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
-        cutDescriptor.addMapEntry(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
-        cutDescriptor.addListElement(CutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+        sutDescriptor.addMapEntry(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
+        sutDescriptor.addMapEntry(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
+        sutDescriptor.addListElement(SutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
     }
 
     void saveParamter(Parameter parameter, int index) {
@@ -121,9 +121,9 @@ public class CutClassAnalyzer extends ClassVisitor {
         DescriptorKey typeKey = DescriptorKey.of(paramterType);
         DescriptorKey typeAndNameKey = DescriptorKey.of(paramterType, paramterName);
 
-        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeKey, paramterDescriptor);
-        cutDescriptor.addMapEntry(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeAndNameKey, paramterDescriptor);
-        cutDescriptor.addListElement(CutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
+        sutDescriptor.addMapEntry(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeKey, paramterDescriptor);
+        sutDescriptor.addMapEntry(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeAndNameKey, paramterDescriptor);
+        sutDescriptor.addListElement(SutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
     }
 
     Class<?> getClass(org.testifyproject.asm.Type type) {

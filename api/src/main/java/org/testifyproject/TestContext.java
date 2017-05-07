@@ -70,11 +70,11 @@ public interface TestContext extends PropertiesTrait {
     TestDescriptor getTestDescriptor();
 
     /**
-     * Get the class under test descriptor.
+     * Get the system under test descriptor.
      *
-     * @return an optional with cut descriptor, empty optional otherwise
+     * @return an optional with sut descriptor, empty optional otherwise
      */
-    Optional<CutDescriptor> getCutDescriptor();
+    Optional<SutDescriptor> getSutDescriptor();
 
     /**
      * Get the test class instance.
@@ -84,12 +84,12 @@ public interface TestContext extends PropertiesTrait {
     Object getTestInstance();
 
     /**
-     * get the cut class instance.
+     * get the sut class instance.
      *
-     * @param <T> cut instance type
-     * @return an instance of the cut class.
+     * @param <T> sut instance type
+     * @return an instance of the sut class.
      */
-    <T> Optional<T> getCutInstance();
+    <T> Optional<T> getSutInstance();
 
     /**
      * Get the test runner associated with the test context.
@@ -131,7 +131,7 @@ public interface TestContext extends PropertiesTrait {
     /**
      * Indicates whether test resources should be eagerly started. Note that
      * during integration tests resources can be started right before the test
-     * case is executed but in system tests the start of resources must be
+     * case is exesuted but in system tests the start of resources must be
      * delayed until the application server is running.
      *
      * @return resource start strategy

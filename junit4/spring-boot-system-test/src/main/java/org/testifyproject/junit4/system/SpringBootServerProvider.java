@@ -138,7 +138,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     @Override
     public void stop() {
         LoggingUtil.INSTANCE.debug("stopping spring application");
-        TEST_CONTEXT_HOLDER.execute(testContext -> {
+        TEST_CONTEXT_HOLDER.exesute(testContext -> {
             testContext.findProperty(APP_SERVLET_CONTAINER)
                     .map(EmbeddedServletContainer.class::cast)
                     .ifPresent(servletContainer -> {

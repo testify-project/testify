@@ -24,7 +24,8 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ### Changed
 - Adopted Semantic Testing
-  - Changed serverName and serverContract attributes in RequiresResource to resourceName and resourceContract
+  - Renamed @Cut to @Sut
+  - Renamed serverName and serverContract attributes in RequiresResource to resourceName and resourceContract
   - Renamed @RequiresResource annotation to @LocalResource
   - Renamed @RequiresContainer annotation to @VirtualResource
   - Renamed ResourceProvder contract to LocalResourceProvider

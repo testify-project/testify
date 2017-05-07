@@ -38,9 +38,9 @@ import java.lang.annotation.Target;
  * {@literal @}Module(MyModule.class)
  *  public class MyModuleServiceiT {
  *
- *     {@literal @}Cut
+ *     {@literal @}Sut
  *     {@literal @}Fixture(init = "init", destroy = "destroy")
- *      MyService cut;
+ *      MyService sut;
  *
  * }
  * </code>

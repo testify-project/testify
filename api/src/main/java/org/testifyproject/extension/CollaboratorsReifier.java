@@ -18,7 +18,7 @@ package org.testifyproject.extension;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method for reification of test and cut class based
+ * A contract that defines a method for reification of test and sut class based
  * on the presence of {@link org.testifyproject.annotation.CollaboratorProvider}
  * class on the test class.
  *

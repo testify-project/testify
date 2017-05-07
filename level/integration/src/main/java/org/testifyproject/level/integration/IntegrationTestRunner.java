@@ -18,7 +18,7 @@ package org.testifyproject.level.integration;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Set;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestConfigurer;
@@ -62,7 +62,7 @@ public class IntegrationTestRunner implements TestRunner {
     public void start(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
-        Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
+        Optional<SutDescriptor> foundSutDescriptor = testContext.getSutDescriptor();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
         serviceLocatorUtil.findAllWithFilter(FieldReifier.class, IntegrationTest.class)
@@ -92,16 +92,16 @@ public class IntegrationTestRunner implements TestRunner {
         //test class and test fixtures.
         serviceInstance.init();
 
-        foundCutDescriptor.ifPresent(cutDescriptor -> {
+        foundSutDescriptor.ifPresent(sutDescriptor -> {
             Set<Class<? extends Annotation>> nameQualifers = serviceInstance.getNameQualifers();
             Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
-            Class cutType = cutDescriptor.getType();
+            Class sutType = sutDescriptor.getType();
 
-            Annotation[] cutQualifiers
-                    = cutDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
+            Annotation[] sutQualifiers
+                    = sutDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
 
-            Object cutInstance = serviceInstance.getService(cutType, cutQualifiers);
-            cutDescriptor.setValue(testInstance, cutInstance);
+            Object sutInstance = serviceInstance.getService(sutType, sutQualifiers);
+            sutDescriptor.setValue(testInstance, sutInstance);
         });
 
         if (testDescriptor.getCollaboratorProvider().isPresent()) {
@@ -126,8 +126,8 @@ public class IntegrationTestRunner implements TestRunner {
         testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.destroy(testInstance));
 
-        //invoke destroy method on cut field annotated with Fixture
-        testContext.getCutDescriptor()
+        //invoke destroy method on sut field annotated with Fixture
+        testContext.getSutDescriptor()
                 .ifPresent(p -> p.destroy(testInstance));
 
         if (testResourcesProvider != null) {

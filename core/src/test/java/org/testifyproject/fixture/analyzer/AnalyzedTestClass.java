@@ -21,7 +21,7 @@ import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
@@ -36,8 +36,8 @@ import org.testifyproject.annotation.Scan;
 @ConfigHandler(AnalyzedConfigHandler.class)
 public class AnalyzedTestClass {
 
-    @Cut
-    AnalyzedCutClass cut;
+    @Sut
+    AnalyzedSutClass sut;
 
     @Fake
     Map<UUID, String> store;

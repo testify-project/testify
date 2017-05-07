@@ -29,47 +29,47 @@ import org.testifyproject.fixture.TestFieldService;
  */
 public class DefaultFieldDescriptorTest {
 
-    FieldDescriptor cut;
+    FieldDescriptor sut;
     Field field;
 
     @Before
     public void init() throws NoSuchFieldException {
-        field = TestFieldService.class.getDeclaredField("cut");
-        cut = new DefaultFieldDescriptor(field);
+        field = TestFieldService.class.getDeclaredField("sut");
+        sut = new DefaultFieldDescriptor(field);
     }
 
     @Test
     public void givenFieldOfShouldReturnFieldDescriptor() {
-        cut = DefaultFieldDescriptor.of(field);
+        sut = DefaultFieldDescriptor.of(field);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getMember()).isEqualTo(field);
+        assertThat(sut).isNotNull();
+        assertThat(sut.getMember()).isEqualTo(field);
     }
 
     @Test
     public void callToGetMemberShouldReturnField() {
-        Field result = cut.getMember();
+        Field result = sut.getMember();
 
         assertThat(result).isEqualTo(field);
     }
 
     @Test
     public void callToGetTypeShouldReturnType() {
-        Class<?> result = cut.getType();
+        Class<?> result = sut.getType();
 
         assertThat(result).isEqualTo(field.getType());
     }
 
     @Test
     public void callToGetGenericTypeShouldReturnGenericType() {
-        Type result = cut.getGenericType();
+        Type result = sut.getGenericType();
 
         assertThat(result).isEqualTo(field.getGenericType());
     }
 
     @Test
     public void callToGetDefinedNameShouldReturnFieldName() {
-        String result = cut.getDefinedName();
+        String result = sut.getDefinedName();
 
         assertThat(result).isEqualTo(field.getName());
     }
@@ -78,9 +78,9 @@ public class DefaultFieldDescriptorTest {
     public void callToGetDefinedNameForRealFieldShouldReturnRealFieldName() throws NoSuchFieldException {
         String name = "real";
         field = TestFieldService.class.getDeclaredField(name);
-        cut = new DefaultFieldDescriptor(field);
+        sut = new DefaultFieldDescriptor(field);
 
-        String result = cut.getDefinedName();
+        String result = sut.getDefinedName();
 
         assertThat(result).isEqualTo(name);
     }
@@ -89,9 +89,9 @@ public class DefaultFieldDescriptorTest {
     public void callToGetDefinedNameForFakeFieldShouldReturnFakeFieldName() throws NoSuchFieldException {
         String name = "fake";
         field = TestFieldService.class.getDeclaredField(name);
-        cut = new DefaultFieldDescriptor(field);
+        sut = new DefaultFieldDescriptor(field);
 
-        String result = cut.getDefinedName();
+        String result = sut.getDefinedName();
 
         assertThat(result).isEqualTo(name);
     }
@@ -100,50 +100,50 @@ public class DefaultFieldDescriptorTest {
     public void callToGetDefinedNameForVirtualFieldShouldReturnVirtualFieldName() throws NoSuchFieldException {
         String name = "virtual";
         field = TestFieldService.class.getDeclaredField(name);
-        cut = new DefaultFieldDescriptor(field);
+        sut = new DefaultFieldDescriptor(field);
 
-        String result = cut.getDefinedName();
+        String result = sut.getDefinedName();
 
         assertThat(result).isEqualTo(name);
     }
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        assertThat(cut).isNotEqualTo(null);
+        assertThat(sut).isNotEqualTo(null);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         FieldDescriptor unequal = DefaultFieldDescriptor.of(null);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         FieldDescriptor equal = DefaultFieldDescriptor.of(field);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultFieldDescriptor", "field");
     }

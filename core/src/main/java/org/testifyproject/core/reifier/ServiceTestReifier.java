@@ -42,7 +42,7 @@ public class ServiceTestReifier implements TestReifier {
             Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
 
             //if there are any fields on the test class that are not collaborators
-            //of the cut class and are annotated with DI supported injection
+            //of the sut class and are annotated with DI supported injection
             //annotations then get the services and initialize the test fields.
             testContext.getTestDescriptor().getFieldDescriptors().parallelStream()
                     .filter(fieldDescriptor -> !fieldDescriptor.getValue(testInstance).isPresent())

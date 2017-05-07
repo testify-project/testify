@@ -16,7 +16,7 @@
 package org.testifyproject;
 
 /**
- * An SPI contract for starting and stopping resources required by the class
+ * An SPI contract for starting and stopping resources required by the system
  * under test.
  *
  * @author saden

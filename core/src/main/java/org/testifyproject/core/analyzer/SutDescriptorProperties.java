@@ -20,32 +20,32 @@ package org.testifyproject.core.analyzer;
  *
  * @author saden
  */
-public class CutDescriptorProperties {
+public class SutDescriptorProperties {
 
     /**
-     * Cut Descriptor Constructor property key.
+     * Sut Descriptor Constructor property key.
      */
     public static final String CONSTRUCTOR = "constructor";
 
     /**
-     * Cut Descriptor Field Descriptor property key.
+     * Sut Descriptor Field Descriptor property key.
      */
     public static final String FIELD_DESCRIPTORS = "fieldDescriptors";
 
     /**
-     * Cut Descriptor field descriptors cache property key.
+     * Sut Descriptor field descriptors cache property key.
      */
     public static final String FIELD_DESCRIPTORS_CACHE = "fieldDescriptorsCache";
 
     /**
-     * Cut Descriptor Parameter Descriptor property key.
+     * Sut Descriptor Parameter Descriptor property key.
      */
     public static final String PARAMETER_DESCRIPTORS = "paramterDescriptors";
     /**
-     * Cut Descriptor Parameter Descriptor cache property key.
+     * Sut Descriptor Parameter Descriptor cache property key.
      */
     public static final String PARAMETER_DESCRIPTORS_CACHE = "paramterDescriptorsCache";
 
-    private CutDescriptorProperties() {
+    private SutDescriptorProperties() {
     }
 }

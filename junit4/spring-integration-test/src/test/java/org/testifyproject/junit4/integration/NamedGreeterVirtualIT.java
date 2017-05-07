@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
@@ -35,8 +35,8 @@ import org.testifyproject.junit4.fixture.common.NamedGreeter;
 @RunWith(SpringIntegrationTest.class)
 public class NamedGreeterVirtualIT {
 
-    @Cut
-    NamedGreeter cut;
+    @Sut
+    NamedGreeter sut;
 
     @Virtual
     @Named("Ciao")
@@ -44,9 +44,9 @@ public class NamedGreeterVirtualIT {
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(greeting).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull()
+        assertThat(sut.getGreeting()).isNotNull()
                 .isSameAs(greeting)
                 .isInstanceOf(Greeting.class);
 

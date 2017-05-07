@@ -22,7 +22,7 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
@@ -32,18 +32,18 @@ import org.testifyproject.fixture.common.InvalidTestClass;
  *
  * @author saden
  */
-public class CutConfigurationVerifierTest {
+public class SutConfigurationVerifierTest {
 
-    CutConfigurationVerifier cut;
+    SutConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new CutConfigurationVerifier();
+        sut = new SutConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -51,39 +51,39 @@ public class CutConfigurationVerifierTest {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         String testClassName = InvalidTestClass.class.getSimpleName();
-        Optional<CutDescriptor> foundCutDescriptor = empty();
+        Optional<SutDescriptor> foundSutDescriptor = empty();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getTestClassName();
-            verify(testContext).getCutDescriptor();
+            verify(testContext).getSutDescriptor();
             throw e;
         }
 
     }
 
     @Test
-    public void givenCutFieldTestContextVerifyShouldDoNothing() {
+    public void givenSutFieldTestContextVerifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         String testClassName = InvalidTestClass.class.getSimpleName();
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
     }
 }

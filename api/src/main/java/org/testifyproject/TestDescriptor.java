@@ -57,7 +57,7 @@ public interface TestDescriptor extends PropertiesTrait {
     ClassLoader getTestClassLoader();
 
     /**
-     * Get the class under test collaborator provider associated with the test
+     * Get the system under test collaborator provider associated with the test
      * class.
      *
      * @return an optional with method descriptor, empty optional otherwise
@@ -72,11 +72,11 @@ public interface TestDescriptor extends PropertiesTrait {
     Optional<Application> getApplication();
 
     /**
-     * Get the class under test field associated with the test class.
+     * Get the system under test field associated with the test class.
      *
-     * @return an optional with cut class field, empty optional otherwise
+     * @return an optional with sut class field, empty optional otherwise
      */
-    Optional<Field> getCutField();
+    Optional<Field> getSutField();
 
     /**
      * Get a list method handlers for all the config handlers associated with

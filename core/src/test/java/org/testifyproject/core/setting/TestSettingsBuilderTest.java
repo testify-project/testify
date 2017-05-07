@@ -30,18 +30,18 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class TestSettingsBuilderTest {
 
-    TestSettingsBuilder cut;
+    TestSettingsBuilder sut;
 
     @Before
     public void init() {
-        cut = TestSettingsBuilder.builder();
+        sut = TestSettingsBuilder.builder();
     }
 
     @Test
     public void givenTestRunnerClassBuildShouldReturnTestSettings() {
         Class<TestRunner> setting = TestRunner.class;
 
-        TestSettings result = cut.testRunnerClass(setting).build();
+        TestSettings result = sut.testRunnerClass(setting).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getTestRunnerClass()).isEqualTo(setting);
@@ -51,7 +51,7 @@ public class TestSettingsBuilderTest {
     public void givenResourceStartStrategyBuildShouldReturnTestSettings() {
         StartStrategy setting = StartStrategy.EAGER;
 
-        TestSettings result = cut.resourceStartStrategy(setting).build();
+        TestSettings result = sut.resourceStartStrategy(setting).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getResourceStartStrategy()).isEqualTo(setting);
@@ -62,7 +62,7 @@ public class TestSettingsBuilderTest {
         String className = "className";
         String displaceName = "Display Name";
 
-        TestSettings result = cut.dependency(className, displaceName).build();
+        TestSettings result = sut.dependency(className, displaceName).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getDependencies()).containsEntry(className, displaceName);
@@ -74,7 +74,7 @@ public class TestSettingsBuilderTest {
         String displaceName = "Display Name";
         Map<String, String> setting = ImmutableMap.of(className, displaceName);
 
-        TestSettings result = cut.dependencies(setting).build();
+        TestSettings result = sut.dependencies(setting).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getDependencies()).containsEntry(className, displaceName);
@@ -84,7 +84,7 @@ public class TestSettingsBuilderTest {
     public void givenLevelBuildShouldReturnTestSettings() {
         TestCategory.Level setting = TestCategory.Level.INTEGRATION;
 
-        TestSettings result = cut.level(setting).build();
+        TestSettings result = sut.level(setting).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getLevel()).isEqualTo(setting);

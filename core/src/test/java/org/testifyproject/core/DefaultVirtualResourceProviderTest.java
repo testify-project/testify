@@ -47,7 +47,7 @@ import org.testifyproject.TestConfigurer;
  */
 public class DefaultVirtualResourceProviderTest {
 
-    DefaultVirtualResourceProvider cut;
+    DefaultVirtualResourceProvider sut;
     ServiceLocatorUtil serviceLocatorUtil;
     ReflectionUtil reflectionUtil;
     Queue<VirtualResourceProvider> virtualResourceProviders;
@@ -58,7 +58,7 @@ public class DefaultVirtualResourceProviderTest {
         reflectionUtil = mock(ReflectionUtil.class);
         virtualResourceProviders = mock(Queue.class, delegatesTo(new ConcurrentLinkedQueue<>()));
 
-        cut = new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, virtualResourceProviders);
+        sut = new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, virtualResourceProviders);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class DefaultVirtualResourceProviderTest {
         TestContext testContext = null;
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class DefaultVirtualResourceProviderTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
@@ -124,7 +124,7 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, serviceName, virtualResourceInstanceType);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
@@ -168,7 +168,7 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, serviceName, virtualResourceInstanceType);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
@@ -186,7 +186,7 @@ public class DefaultVirtualResourceProviderTest {
 
     @Test
     public void callToStopWithNoElementsStopShouldStopVirtualResourceProvider() {
-        cut.stop();
+        sut.stop();
 
         verify(virtualResourceProviders).parallelStream();
         verifyNoMoreInteractions(virtualResourceProviders);
@@ -197,7 +197,7 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         virtualResourceProviders.add(virtualResourceProvider);
 
-        cut.stop();
+        sut.stop();
 
         verify(virtualResourceProviders).parallelStream();
         verify(virtualResourceProvider).stop();

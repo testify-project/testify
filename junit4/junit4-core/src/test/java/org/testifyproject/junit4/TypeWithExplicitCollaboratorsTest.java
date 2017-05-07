@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.CollaboratorProvider;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.junit4.fixture.TypeWithExplicitCollaborators;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -31,8 +31,8 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
 @RunWith(UnitTest.class)
 public class TypeWithExplicitCollaboratorsTest {
 
-    @Cut
-    TypeWithExplicitCollaborators cut;
+    @Sut
+    TypeWithExplicitCollaborators sut;
 
     @Virtual
     Hello hello;
@@ -46,9 +46,9 @@ public class TypeWithExplicitCollaboratorsTest {
 
     @Test
     public void validateInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(hello).isNotNull()
-                .isSameAs(cut.getHello());
+                .isSameAs(sut.getHello());
     }
 
 }

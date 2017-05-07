@@ -15,9 +15,9 @@
  */
 package org.testifyproject.junit4.fixture.filter;
 
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.junit4.fixture.common.CutClass;
+import org.testifyproject.junit4.fixture.common.SutClass;
 
 /**
  *
@@ -26,7 +26,7 @@ import org.testifyproject.junit4.fixture.common.CutClass;
 @VirtualResource("test")
 public class VirtualResourceTestClass {
 
-    @Cut
-    CutClass cut;
+    @Sut
+    SutClass sut;
 
 }

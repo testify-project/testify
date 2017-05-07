@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -38,16 +38,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class RealConfigurationVerifierTest {
 
-    RealConfigurationVerifier cut;
+    RealConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new RealConfigurationVerifier();
+        sut = new RealConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -55,44 +55,44 @@ public class RealConfigurationVerifierTest {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         String testClassName = InvalidTestClass.class.getSimpleName();
-        Optional<CutDescriptor> foundCutDescriptor = empty();
+        Optional<SutDescriptor> foundSutDescriptor = empty();
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getTestClassName();
-            verify(testContext).getCutDescriptor();
+            verify(testContext).getSutDescriptor();
             verify(testDescriptor).getFieldDescriptors();
             throw e;
         }
     }
 
     @Test
-    public void givenCutFieldTestContextVerifyShouldDoNothing() {
+    public void givenSutFieldTestContextVerifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         String testClassName = InvalidTestClass.class.getSimpleName();
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testDescriptor).getFieldDescriptors();
     }
 
@@ -101,7 +101,7 @@ public class RealConfigurationVerifierTest {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         String testClassName = InvalidTestClass.class.getSimpleName();
-        Optional<CutDescriptor> foundCutDescriptor = Optional.empty();
+        Optional<SutDescriptor> foundSutDescriptor = Optional.empty();
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Real real = mock(Real.class);
@@ -109,15 +109,15 @@ public class RealConfigurationVerifierTest {
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getReal()).willReturn(foundReal);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testDescriptor).getFieldDescriptors();
         verify(fieldDescriptor).getReal();
     }

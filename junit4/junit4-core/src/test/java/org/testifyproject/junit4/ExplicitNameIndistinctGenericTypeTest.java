@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ExplicitNameIndistinctGenericType;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -36,8 +36,8 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
 @RunWith(UnitTest.class)
 public class ExplicitNameIndistinctGenericTypeTest {
 
-    @Cut
-    ExplicitNameIndistinctGenericType cut;
+    @Sut
+    ExplicitNameIndistinctGenericType sut;
 
     @Fake
     Supplier<Hello> english;
@@ -47,15 +47,15 @@ public class ExplicitNameIndistinctGenericTypeTest {
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(english).isNotNull();
         assertThat(esp).isNotNull();
-        assertThat(cut.getEnglish()).isSameAs(english);
-        assertThat(cut.getSpanish()).isSameAs(esp);
+        assertThat(sut.getEnglish()).isSameAs(english);
+        assertThat(sut.getSpanish()).isSameAs(esp);
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
+    public void givenNothingClassToExesuteShouldReturnHello() {
         String englishGreeting = "Hello";
         String spanishGreeting = "Hola";
         Hello englishInstance = mock(Hello.class);
@@ -66,7 +66,7 @@ public class ExplicitNameIndistinctGenericTypeTest {
         given(englishInstance.greet()).willReturn(englishGreeting);
         given(spanishInstance.greet()).willReturn(spanishGreeting);
 
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(englishGreeting + " " + spanishGreeting);
         verify(english).get();

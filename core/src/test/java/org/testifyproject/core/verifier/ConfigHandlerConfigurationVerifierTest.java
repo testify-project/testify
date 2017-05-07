@@ -33,16 +33,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class ConfigHandlerConfigurationVerifierTest {
 
-    ConfigHandlerConfigurationVerifier cut;
+    ConfigHandlerConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new ConfigHandlerConfigurationVerifier();
+        sut = new ConfigHandlerConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -58,7 +58,7 @@ public class ConfigHandlerConfigurationVerifierTest {
         given(configHandler.getParameterTypes()).willReturn(paramterTypes);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getConfigHandlers();
@@ -80,7 +80,7 @@ public class ConfigHandlerConfigurationVerifierTest {
         given(configHandler.getParameterTypes()).willReturn(paramterTypes);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getConfigHandlers();
@@ -107,7 +107,7 @@ public class ConfigHandlerConfigurationVerifierTest {
         given(configHandler.getDeclaringClassName()).willReturn(testName);
         given(configHandler.getReturnType()).willReturn(returnType);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getConfigHandlers();

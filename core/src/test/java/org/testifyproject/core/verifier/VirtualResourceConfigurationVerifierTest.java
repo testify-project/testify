@@ -35,16 +35,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class VirtualResourceConfigurationVerifierTest {
 
-    VirtualResourceConfigurationVerifier cut;
+    VirtualResourceConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new VirtualResourceConfigurationVerifier();
+        sut = new VirtualResourceConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -60,7 +60,7 @@ public class VirtualResourceConfigurationVerifierTest {
         given(virtualResource.provider()).willReturn(provider);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getVirtualResources();
@@ -81,7 +81,7 @@ public class VirtualResourceConfigurationVerifierTest {
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
         given(virtualResource.provider()).willReturn(provider);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getVirtualResources();

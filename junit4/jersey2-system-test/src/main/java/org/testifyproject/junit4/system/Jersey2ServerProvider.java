@@ -80,7 +80,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
     @Override
     @SuppressWarnings("UseSpecificCatch")
     public ServerInstance<HttpServer> start(ResourceConfig configuration) {
-        return TestContextHolder.INSTANCE.execute(testContext -> {
+        return TestContextHolder.INSTANCE.exesute(testContext -> {
             URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PATH));
             // create and start a new instance of grizzly http server
             HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, configuration, true);
@@ -93,9 +93,9 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
                 String host = networkListener.getHost();
                 int port = networkListener.getPort();
 
-                URI acutalURI = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, host, port, DEFAULT_PATH));
+                URI asutalURI = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, host, port, DEFAULT_PATH));
 
-                serverInstance = DefaultServerInstance.of(acutalURI, server);
+                serverInstance = DefaultServerInstance.of(asutalURI, server);
 
                 testContext.addProperty(APP_SERVLET_CONTAINER, server);
                 testContext.addProperty(APP, configuration);
@@ -108,7 +108,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
 
     @Override
     public void stop() {
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.exesute(testContext -> {
             Optional<HttpServer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
             HttpServer httpServer = servletContainer.get();
             httpServer.shutdownNow();

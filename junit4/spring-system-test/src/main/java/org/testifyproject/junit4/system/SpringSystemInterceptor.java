@@ -64,7 +64,7 @@ public class SpringSystemInterceptor {
     public void configureAndRefreshWebApplicationContext(@SuperCall Callable<ConfigurableWebApplicationContext> zuper,
             @Argument(0) ConfigurableWebApplicationContext applicationContext) throws Exception {
 
-        testContextHolder.execute(testContext -> {
+        testContextHolder.exesute(testContext -> {
             TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
             ConfigurableWebApplicationContext configuredApplicationContext
@@ -82,7 +82,7 @@ public class SpringSystemInterceptor {
     public Class<?>[] getRootConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
         Class<?>[] result = zuper.call();
 
-        return testContextHolder.execute(testContext -> {
+        return testContextHolder.exesute(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
             Stream<Class<?>> modules = Stream.empty();
 

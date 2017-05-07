@@ -59,7 +59,7 @@ public @interface VirtualResource {
     String version() default "latest";
 
     /**
-     * The command used to execute the virtual resource.
+     * The command used to exesute the virtual resource.
      *
      * @return the command.
      */

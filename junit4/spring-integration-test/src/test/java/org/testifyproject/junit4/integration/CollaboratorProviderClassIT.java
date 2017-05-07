@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.testifyproject.annotation.CollaboratorProvider;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.junit4.fixture.common.DirectGreeter;
 import org.testifyproject.junit4.fixture.common.DirectGreeterCollaboratorProvider;
@@ -36,19 +36,19 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
 @CollaboratorProvider(DirectGreeterCollaboratorProvider.class)
 public class CollaboratorProviderClassIT {
 
-    @Cut
-    DirectGreeter cut;
+    @Sut
+    DirectGreeter sut;
 
     @Test
     public void verifyInjection() {
         //XXX: the collaborator is provided by the @CollaboratorProvider annotation
         //on the test class and it is a mock instance.
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getGreeting())
+        assertThat(sut).isNotNull();
+        assertThat(sut.getGreeting())
                 .isNotNull()
                 .isInstanceOf(Hello.class);
 
-        assertThat(Mockito.mockingDetails(cut.getGreeting()).isMock()).isTrue();
+        assertThat(Mockito.mockingDetails(sut.getGreeting()).isMock()).isTrue();
     }
 }

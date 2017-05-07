@@ -49,7 +49,7 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class SpringBeanFactoryPostProcessorTest {
 
-    SpringBeanFactoryPostProcessor cut;
+    SpringBeanFactoryPostProcessor sut;
     TestContext testContext;
     ServiceInstance serviceInstance;
 
@@ -58,12 +58,12 @@ public class SpringBeanFactoryPostProcessorTest {
         testContext = mock(TestContext.class);
         serviceInstance = mock(ServiceInstance.class);
 
-        cut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance));
+        sut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance));
     }
 
     @Test
     public void callToGetOrderShouldReturnLoweestPrecedence() {
-        int result = cut.getOrder();
+        int result = sut.getOrder();
 
         assertThat(result).isEqualTo(LOWEST_PRECEDENCE);
     }
@@ -81,14 +81,14 @@ public class SpringBeanFactoryPostProcessorTest {
         given(beanFactory.getBeanDefinitionNames()).willReturn(beanNames);
         given(beanFactory.getBeanDefinition(beanName)).willReturn(beanDefinition);
         given(beanFactory.getType(beanName)).willReturn(beanType);
-        willDoNothing().given(cut).processConfiguration(
+        willDoNothing().given(sut).processConfiguration(
                 eq(beanFactory),
                 eq(beanDefinition),
                 eq(beanType),
                 eq(beanName),
                 any(Set.class));
 
-        cut.postProcessBeanFactory(configurableListableBeanFactory);
+        sut.postProcessBeanFactory(configurableListableBeanFactory);
 
         verify(beanFactory).getBeanDefinitionNames();
         verify(beanFactory).getBeanDefinition(beanName);
@@ -107,7 +107,7 @@ public class SpringBeanFactoryPostProcessorTest {
         String factoryBeanName = "factoryBeanName";
 
         given(beanDefinition.getFactoryBeanName()).willReturn(factoryBeanName);
-        willDoNothing().given(cut).processFixture(
+        willDoNothing().given(sut).processFixture(
                 eq(beanFactory),
                 eq(beanDefinition),
                 eq(beanType),
@@ -115,7 +115,7 @@ public class SpringBeanFactoryPostProcessorTest {
                 any(Fixture.class),
                 eq(replacedBeanNames));
 
-        cut.processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
+        sut.processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
 
         verify(beanDefinition).getFactoryBeanName();
     }
@@ -133,7 +133,7 @@ public class SpringBeanFactoryPostProcessorTest {
         given(beanDefinition.getFactoryBeanName()).willReturn(factoryBeanName);
         given(beanFactory.getType(factoryBeanName)).willReturn(factoryBeanType);
 
-        willDoNothing().given(cut).processFixture(
+        willDoNothing().given(sut).processFixture(
                 eq(beanFactory),
                 eq(beanDefinition),
                 eq(beanType),
@@ -141,7 +141,7 @@ public class SpringBeanFactoryPostProcessorTest {
                 any(Fixture.class),
                 eq(replacedBeanNames));
 
-        cut.processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
+        sut.processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
 
         verify(beanDefinition).getFactoryBeanName();
         verify(beanFactory).getType(factoryBeanName);
@@ -160,7 +160,7 @@ public class SpringBeanFactoryPostProcessorTest {
 
         given(beanFactory.getBeanNamesForType(beanType)).willReturn(beanNamesForType);
 
-        cut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
+        sut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
 
         verify(beanFactory).getBeanNamesForType(beanType);
         verify(beanFactory).removeBeanDefinition(beanNameForType);
@@ -181,7 +181,7 @@ public class SpringBeanFactoryPostProcessorTest {
         given(fixture.init()).willReturn("init");
         given(fixture.destroy()).willReturn("destroy");
 
-        cut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
+        sut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
 
         assertThat(replacedBeanNames).isNotEmpty();
         verify(beanFactory).getBeanNamesForType(beanType);
@@ -195,11 +195,11 @@ public class SpringBeanFactoryPostProcessorTest {
         ResourceProvider resourceProvider = mock(ResourceProvider.class);
         List<ResourceProvider> resourceProviders = ImmutableList.of(resourceProvider);
 
-        cut.resourceProviders = resourceProviders;
+        sut.resourceProviders = resourceProviders;
         given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
         ContextClosedEvent event = mock(ContextClosedEvent.class);
 
-        cut.onApplicationEvent(event);
+        sut.onApplicationEvent(event);
 
         verify(testContext).getResourceStartStrategy();
         verify(resourceProvider).stop();

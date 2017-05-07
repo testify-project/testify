@@ -33,11 +33,11 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class VirtualResourceInstanceTest {
 
-    VirtualResourceInstance cut;
+    VirtualResourceInstance sut;
 
     @Before
     public void init() {
-        cut = mock(VirtualResourceInstance.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(VirtualResourceInstance.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test
@@ -46,9 +46,9 @@ public class VirtualResourceInstanceTest {
         Integer localPort = 2000;
         Map<Integer, Integer> mappedPorts = ImmutableMap.of(hostPort, localPort);
 
-        given(cut.getMappedPorts()).willReturn(mappedPorts);
+        given(sut.getMappedPorts()).willReturn(mappedPorts);
 
-        Optional<Integer> result = cut.findFirstExposedPort();
+        Optional<Integer> result = sut.findFirstExposedPort();
 
         assertThat(result).contains(hostPort);
     }
@@ -61,9 +61,9 @@ public class VirtualResourceInstanceTest {
         String hostAddress = "127.0.0.1";
 
         given(address.getHostAddress()).willReturn(hostAddress);
-        given(cut.getAddress()).willReturn(address);
+        given(sut.getAddress()).willReturn(address);
 
-        URI result = cut.getURI(scheme, port);
+        URI result = sut.getURI(scheme, port);
 
         assertThat(result)
                 .hasScheme(scheme)

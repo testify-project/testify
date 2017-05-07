@@ -34,8 +34,8 @@ public class TestContextPropertiesTest {
         assertThat(TestContextProperties.APP_SERVLET_CONTAINER).isNotEmpty();
         assertThat(TestContextProperties.APP_SERVLET_CONTEXT).isNotEmpty();
         assertThat(TestContextProperties.BASE_URI).isNotEmpty();
-        assertThat(TestContextProperties.CUT_DESCRIPTOR).isNotEmpty();
-        assertThat(TestContextProperties.CUT_INSTANCE).isNotEmpty();
+        assertThat(TestContextProperties.SUT_DESCRIPTOR).isNotEmpty();
+        assertThat(TestContextProperties.SUT_INSTANCE).isNotEmpty();
         assertThat(TestContextProperties.SERVICE_INSTANCE).isNotEmpty();
     }
     

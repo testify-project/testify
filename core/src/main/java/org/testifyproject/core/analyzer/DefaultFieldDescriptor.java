@@ -27,7 +27,7 @@ import org.testifyproject.annotation.Virtual;
 
 /**
  * A descriptor class used to access properties of or perform operations on an analyzed test class
- * or the class under test fields. getF
+ * or the system under test fields. getF
  *
  * @author saden
  */

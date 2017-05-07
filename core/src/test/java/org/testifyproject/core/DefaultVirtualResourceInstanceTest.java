@@ -30,7 +30,7 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class DefaultVirtualResourceInstanceTest {
 
-    VirtualResourceInstance cut;
+    VirtualResourceInstance sut;
 
     String name;
     InetAddress address;
@@ -42,49 +42,49 @@ public class DefaultVirtualResourceInstanceTest {
         address = mock(InetAddress.class);
         mappedPorts = ImmutableMap.of(1000, 2000);
 
-        cut = DefaultVirtualResourceInstance.of(name, address, mappedPorts);
+        sut = DefaultVirtualResourceInstance.of(name, address, mappedPorts);
     }
 
     @Test
-    public void validateCutInstance() {
-        assertThat(cut).isNotNull();
-        assertThat(cut.getName()).isEqualTo(name);
-        assertThat(cut.getAddress()).isEqualTo(address);
-        assertThat(cut.getMappedPorts()).isEqualTo(mappedPorts);
+    public void validateSutInstance() {
+        assertThat(sut).isNotNull();
+        assertThat(sut.getName()).isEqualTo(name);
+        assertThat(sut.getAddress()).isEqualTo(address);
+        assertThat(sut.getMappedPorts()).isEqualTo(mappedPorts);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null, address, mappedPorts);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, address, mappedPorts);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultVirtualResourceInstance", "name", "address", "mappedPorts");
     }

@@ -23,23 +23,25 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation used on single test class field to denote the field as the
- * Class Under Test (CUT).
+ * System Under Test (SUT). Please note that what constitutes the system under
+ * test depends on the context of what we are testing. It refer to a class, a
+ * service, or a client used to communicate with an application.
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface Cut {
+public @interface Sut {
 
     /**
      * <p>
-     * Indicates whether the class under test instance is a virtual instance
+     * Indicates whether the system under test instance is a virtual instance
      * (delegated mock). This is useful if you wish to stub or verify package
-     * private methods of the class under test or verify certain interactions.
+     * private methods of the system under test or verify certain interactions.
      * </p>
      * <p>
-     * By default the cut class is not a virtual instance.
+     * By default the SUT is not a virtual instance.
      * </p>
      *
      * @return true if a virtual instance is created, false otherwise.

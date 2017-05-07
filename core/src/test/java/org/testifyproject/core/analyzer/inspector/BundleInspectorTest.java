@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Bundle;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
-import org.testifyproject.fixture.common.CutClass;
+import org.testifyproject.fixture.common.SutClass;
 
 /**
  *
@@ -29,20 +29,20 @@ import org.testifyproject.fixture.common.CutClass;
  */
 public class BundleInspectorTest {
 
-    BundleInspector cut;
+    BundleInspector sut;
 
     @Before
     public void init() {
-        cut = new BundleInspector();
+        sut = new BundleInspector();
     }
 
     @Test
     public void givenClassWithoutBundleMetaAnnotationInspectShouldInspectClass() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        Class<?> annotatedType = CutClass.class;
+        Class<?> annotatedType = SutClass.class;
         Bundle bundle = mock(Bundle.class);
 
-        cut.inspect(testDescriptor, annotatedType, bundle);
+        sut.inspect(testDescriptor, annotatedType, bundle);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class BundleInspectorTest {
         Class<?> annotatedType = AnalyzedTestClass.class;
         Bundle bundle = mock(Bundle.class);
 
-        cut.inspect(testDescriptor, annotatedType, bundle);
+        sut.inspect(testDescriptor, annotatedType, bundle);
     }
 
 }

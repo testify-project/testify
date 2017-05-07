@@ -19,38 +19,38 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.trait.FieldTrait;
 import org.testifyproject.trait.MockTrait;
 import org.testifyproject.trait.PropertiesTrait;
 
 /**
  * A contract that defines methods to access properties of or perform operations
- * on a class under test (CUT).
+ * on a system under test (SUT).
  *
  * @author saden
  */
-public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
+public interface SutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
 
     /**
-     * Get {@link Cut} annotation.
+     * Get {@link Sut} annotation.
      *
-     * @return cut annotation
+     * @return sut annotation
      */
-    default Cut getCut() {
-        return getMember().getDeclaredAnnotation(Cut.class);
+    default Sut getSut() {
+        return getMember().getDeclaredAnnotation(Sut.class);
     }
 
     /**
-     * Get the constructor of the class under test class.
+     * Get the constructor of the system under test class.
      *
-     * @return class under test constructor.
+     * @return system under test constructor.
      */
     Constructor getConstructor();
 
     /**
      * Get a list of field descriptors for all the fields associated with the
-     * class under test .
+     * system under test .
      *
      * @return a list with field descriptor, empty list otherwise
      */
@@ -58,15 +58,15 @@ public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
 
     /**
      * Get a list of parameter descriptors for all the parameters associated
-     * with the class under test's constructor.
+     * with the system under test's constructor.
      *
      * @return a list with parameter descriptor, empty list otherwise
      */
     Collection<ParameterDescriptor> getParameterDescriptors();
 
     /**
-     * Find the descriptor for a field with the given type and name on the class
-     * under test.
+     * Find the descriptor for a field with the given type and name on the
+     * system under test.
      *
      * @param type the field type
      * @param name the field name
@@ -75,7 +75,7 @@ public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
     Optional<FieldDescriptor> findFieldDescriptor(Type type, String name);
 
     /**
-     * Find the descriptor for a field with the given type on the class under
+     * Find the descriptor for a field with the given type on the system under
      * test.
      *
      * @param type the field type
@@ -85,7 +85,7 @@ public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
 
     /**
      * Find the descriptor for a constructor parameter with the given type and
-     * name on the class under test.
+     * name on the system under test.
      *
      * @param type the parameter type
      * @param name the parameter name
@@ -95,7 +95,7 @@ public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
 
     /**
      * Find the descriptor for a constructor parameter with the given type on
-     * the class under test.
+     * the system under test.
      *
      * @param type the parameter type
      * @return an optional with a parameter descriptor, empty optional otherwise
@@ -103,21 +103,21 @@ public interface CutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
     Optional<ParameterDescriptor> findParameterDescriptor(Type type);
 
     /**
-     * Determine if the given type is the same type or super type of the class
+     * Determine if the given type is the same type or super type of the system
      * under test.
      *
      * @param type the type
      * @return true if type is the same or super type, false otherwise
      */
-    Boolean isCutClass(Type type);
+    Boolean isSutClass(Type type);
 
     /**
-     * Determine if the the {@link Cut} annotation is a delegated mock.
+     * Determine if the the {@link Sut} annotation is a delegated mock.
      *
-     * @return true if the member is a delegated cut
+     * @return true if the member is a delegated sut
      */
-    default Boolean isVirtualCut() {
-        return getCut().value();
+    default Boolean isVirtualSut() {
+        return getSut().value();
     }
 
 }

@@ -18,14 +18,11 @@ package org.testifyproject.junit4.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
-import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Real;
-import org.testifyproject.junit4.fixture.common.DirectGreeter;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
-import org.testifyproject.junit4.fixture.common.impl.Hello;
+import org.testifyproject.junit4.fixture.common.Greeting;
+import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
 
 /**
  *
@@ -33,26 +30,14 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
  */
 @Module(GreeterConfig.class)
 @RunWith(SpringIntegrationTest.class)
-public class ConfigHandlerMethodIT {
+public class QualifiedSutIT {
 
     @Sut
-    DirectGreeter sut;
-
-    @Real
-    Hello greeting;
-
-    boolean configured = false;
-
-    @ConfigHandler
-    void configurer(ApplicationContext context) {
-        context.getApplicationName();
-        configured = true;
-    }
+    @CustomQualifier
+    Greeting sut;
 
     @Test
-    public void verifyInjection() {
+    public void verityInjection() {
         assertThat(sut).isNotNull();
-        assertThat(sut.getGreeting()).isNotNull();
-        assertThat(configured).isTrue();
     }
 }

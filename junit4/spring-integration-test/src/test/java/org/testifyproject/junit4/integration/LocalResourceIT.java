@@ -40,7 +40,7 @@ import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
 public class LocalResourceIT {
 
     @Real
-    EntityManagerFactory cut;
+    EntityManagerFactory sut;
 
     @Real
     GreetingService greetingService;
@@ -52,13 +52,13 @@ public class LocalResourceIT {
         GreetingEntity entity = new GreetingEntity(phrase);
 
         //Act
-        EntityManager em = cut.createEntityManager();
+        EntityManager em = sut.createEntityManager();
         em.getTransaction().begin();
         em.persist(entity);
         em.getTransaction().commit();
 
         //Assert
-        em = cut.createEntityManager();
+        em = sut.createEntityManager();
         Query query = em.createQuery("SELECT e FROM GreetingEntity e");
         assertThat(query).isNotNull();
         List<GreetingEntity> entities = query.getResultList();

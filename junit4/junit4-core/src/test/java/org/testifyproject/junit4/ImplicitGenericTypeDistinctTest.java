@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ImplicitGenericTypeDistinct;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -37,8 +37,8 @@ import org.testifyproject.junit4.fixture.collaborator.World;
 @RunWith(UnitTest.class)
 public class ImplicitGenericTypeDistinctTest {
 
-    @Cut
-    ImplicitGenericTypeDistinct cut;
+    @Sut
+    ImplicitGenericTypeDistinct sut;
 
     @Fake
     Supplier<Hello> hello;
@@ -48,15 +48,15 @@ public class ImplicitGenericTypeDistinctTest {
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(hello).isNotNull();
         assertThat(world).isNotNull();
-        assertThat(cut.getHello()).isSameAs(hello);
-        assertThat(cut.getWorld()).isSameAs(world);
+        assertThat(sut.getHello()).isSameAs(hello);
+        assertThat(sut.getWorld()).isSameAs(world);
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
+    public void givenNothingClassToExesuteShouldReturnHello() {
         String helloGreeting = "Hello";
         String worldGreeting = "World!";
         Hello helloInstance = mock(Hello.class);
@@ -67,7 +67,7 @@ public class ImplicitGenericTypeDistinctTest {
         given(helloInstance.greet()).willReturn(helloGreeting);
         given(worldInstance.greet()).willReturn(worldGreeting);
 
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(helloGreeting + " " + worldGreeting);
         verify(hello).get();

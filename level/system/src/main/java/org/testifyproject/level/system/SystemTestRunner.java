@@ -19,7 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
@@ -117,8 +117,8 @@ public class SystemTestRunner implements TestRunner {
                 //test class and test fixtures.
                 serviceInstance.init();
 
-                testContext.getCutDescriptor().ifPresent(cutDescriptor
-                        -> createClassUnderTest(cutDescriptor, application, serviceInstance, testInstance)
+                testContext.getSutDescriptor().ifPresent(sutDescriptor
+                        -> createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance)
                 );
 
                 serviceLocatorUtil.findAllWithFilter(TestReifier.class, SystemTest.class)
@@ -134,14 +134,14 @@ public class SystemTestRunner implements TestRunner {
     public void stop(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
-        Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
+        Optional<SutDescriptor> sutDescriptor = testContext.getSutDescriptor();
 
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.destroy(testInstance));
 
-        //invoke destroy method on cut field annotated with Fixture
-        cutDescriptor.ifPresent(p -> p.destroy(testInstance));
+        //invoke destroy method on sut field annotated with Fixture
+        sutDescriptor.ifPresent(p -> p.destroy(testInstance));
 
         if (clientProvider != null) {
             clientProvider.destroy();
@@ -156,20 +156,20 @@ public class SystemTestRunner implements TestRunner {
         }
     }
 
-    void createClassUnderTest(CutDescriptor cutDescriptor,
+    void createClassUnderTest(SutDescriptor sutDescriptor,
             Application application,
             ServiceInstance serviceInstance,
             Object testInstance) {
-        Class cutType = cutDescriptor.getType();
-        Object cutValue;
+        Class sutType = sutDescriptor.getType();
+        Object sutValue;
 
-        if (ClientInstance.class.isAssignableFrom(cutType)) {
-            cutValue = serviceInstance.getService(cutType);
+        if (ClientInstance.class.isAssignableFrom(sutType)) {
+            sutValue = serviceInstance.getService(sutType);
         } else {
-            cutValue = serviceInstance.getService(cutType, application.clientName());
+            sutValue = serviceInstance.getService(sutType, application.clientName());
         }
 
-        cutDescriptor.setValue(testInstance, cutValue);
+        sutDescriptor.setValue(testInstance, sutValue);
     }
 
     void addServer(ServiceInstance serviceInstance,

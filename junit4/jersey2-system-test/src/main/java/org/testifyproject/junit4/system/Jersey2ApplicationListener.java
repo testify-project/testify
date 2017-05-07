@@ -49,7 +49,7 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
 
     @Override
     public void onEvent(ApplicationEvent event) {
-        testContextHolder.execute(testContext -> {
+        testContextHolder.exesute(testContext -> {
             ApplicationEvent.Type eventType = event.getType();
 
             if (eventType == INITIALIZATION_FINISHED) {

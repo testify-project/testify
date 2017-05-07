@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.CollaboratorProvider;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.common.DirectGreeter;
@@ -36,8 +36,8 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
 @RunWith(SpringIntegrationTest.class)
 public class CollaboratorProviderMethodIT {
 
-    @Cut
-    DirectGreeter cut;
+    @Sut
+    DirectGreeter sut;
 
     @Real
     Hello greeting;
@@ -54,12 +54,12 @@ public class CollaboratorProviderMethodIT {
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(cut.getGreeting())
+        assertThat(sut).isNotNull();
+        assertThat(sut.getGreeting())
                 .isNotNull()
                 .isInstanceOf(Hello.class);
 
-        assertThat(Mockito.mockingDetails(cut.getGreeting()).isMock()).isTrue();
+        assertThat(Mockito.mockingDetails(sut.getGreeting()).isMock()).isTrue();
         assertThat(configured).isTrue();
     }
 }

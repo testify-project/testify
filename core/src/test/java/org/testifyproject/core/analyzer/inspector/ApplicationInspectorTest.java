@@ -29,11 +29,11 @@ import org.testifyproject.core.analyzer.TestDescriptorProperties;
  */
 public class ApplicationInspectorTest {
 
-    ApplicationInspector cut;
+    ApplicationInspector sut;
 
     @Before
     public void init() {
-        cut = new ApplicationInspector();
+        sut = new ApplicationInspector();
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ApplicationInspectorTest {
         Class<?> annotatedType = Object.class;
         Application annotation = mock(Application.class);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addProperty(TestDescriptorProperties.APPLICATION, annotation);
     }

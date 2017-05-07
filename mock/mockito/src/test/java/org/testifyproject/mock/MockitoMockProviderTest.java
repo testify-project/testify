@@ -28,27 +28,27 @@ import org.testifyproject.fixture.Mockable;
  */
 public class MockitoMockProviderTest {
 
-    MockitoMockProvider cut;
+    MockitoMockProvider sut;
 
     @Before
     public void init() {
-        cut = new MockitoMockProvider();
+        sut = new MockitoMockProvider();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullCreateShouldThrowException() {
-        cut.createFake(null);
+        sut.createFake(null);
     }
 
     @Test
     public void givenTypeCreateShouldReturnMockInstance() {
-        Mockable result = cut.createFake(Mockable.class);
+        Mockable result = sut.createFake(Mockable.class);
         assertThat(MockUtil.isMock(result)).isTrue();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenTypeAndNullDelegateCreateShouldThrowException() {
-        Mockable result = cut.createVirtual(Mockable.class, null);
+        Mockable result = sut.createVirtual(Mockable.class, null);
         result.getUpdated();
     }
 
@@ -56,7 +56,7 @@ public class MockitoMockProviderTest {
     public void givenTypeAndDelegateCreateShouldReturnMockInstance() {
         Mockable delegate = new Mockable();
 
-        Mockable result = cut.createVirtual(Mockable.class, delegate);
+        Mockable result = sut.createVirtual(Mockable.class, delegate);
         assertThat(MockUtil.isMock(result)).isTrue();
 
         result.setUpdated(Boolean.TRUE);
@@ -66,21 +66,21 @@ public class MockitoMockProviderTest {
     @Test
     public void givenNullIsMockShouldReturnFalse() {
         Mockable instance = null;
-        Boolean result = cut.isMock(instance);
+        Boolean result = sut.isMock(instance);
         assertThat(result).isFalse();
     }
 
     @Test
     public void givenNonMockIsMockShouldReturnFalse() {
         Mockable instance = new Mockable();
-        Boolean result = cut.isMock(instance);
+        Boolean result = sut.isMock(instance);
         assertThat(result).isFalse();
     }
 
     @Test
     public void givenMockIsMockShouldReturnFalse() {
         Mockable instance = mock(Mockable.class);
-        Boolean result = cut.isMock(instance);
+        Boolean result = sut.isMock(instance);
         assertThat(result).isTrue();
     }
 

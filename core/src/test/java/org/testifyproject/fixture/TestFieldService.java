@@ -15,7 +15,7 @@
  */
 package org.testifyproject.fixture;
 
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.annotation.Real;
@@ -27,11 +27,11 @@ import org.testifyproject.annotation.Virtual;
  */
 public class TestFieldService {
 
-    @Cut
-    TestContract cut;
+    @Sut
+    TestContract sut;
 
-    @Cut(true)
-    TestContract virtualCut;
+    @Sut(true)
+    TestContract virtualSut;
 
     @Real
     @Fixture

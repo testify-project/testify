@@ -34,16 +34,16 @@ import org.testifyproject.fixture.common.InvalidTestClass;
  */
 public class ApplicationConfigurationVerifierTest {
     
-    ApplicationConfigurationVerifier cut;
+    ApplicationConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new ApplicationConfigurationVerifier();
+        sut = new ApplicationConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -58,7 +58,7 @@ public class ApplicationConfigurationVerifierTest {
         given(testDescriptor.getApplication()).willReturn(foundApplication);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getTestClassName();
@@ -80,7 +80,7 @@ public class ApplicationConfigurationVerifierTest {
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getApplication()).willReturn(foundApplication);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();

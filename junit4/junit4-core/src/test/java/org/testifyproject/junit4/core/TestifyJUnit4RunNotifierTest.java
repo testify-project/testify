@@ -35,7 +35,7 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class TestifyJUnit4RunNotifierTest {
 
-    TestifyJUnit4RunNotifier cut;
+    TestifyJUnit4RunNotifier sut;
     RunNotifier runNotifier;
     Description testDescription;
 
@@ -44,12 +44,12 @@ public class TestifyJUnit4RunNotifierTest {
         runNotifier = mock(RunNotifier.class);
         testDescription = mock(Description.class);
 
-        cut = TestifyJUnit4RunNotifier.of(runNotifier, testDescription);
+        sut = TestifyJUnit4RunNotifier.of(runNotifier, testDescription);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullFailureFireTestAssumptionsFailedShouldThrowException() {
-        cut.fireTestAssumptionFailed(null);
+        sut.fireTestAssumptionFailed(null);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TestifyJUnit4RunNotifierTest {
         given(failureDescription.getMethodName()).willReturn(methodName);
         given(failure.getException()).willReturn(exception);
 
-        cut.fireTestAssumptionFailed(failure);
+        sut.fireTestAssumptionFailed(failure);
 
         verify(failure).getDescription();
         verify(failureDescription).getMethodName();
@@ -82,7 +82,7 @@ public class TestifyJUnit4RunNotifierTest {
         given(failure.getDescription()).willReturn(failureDescription);
         given(failure.getException()).willReturn(exception);
 
-        cut.fireTestAssumptionFailed(failure);
+        sut.fireTestAssumptionFailed(failure);
 
         verify(failure).getDescription();
         verify(failureDescription).getMethodName();
@@ -102,7 +102,7 @@ public class TestifyJUnit4RunNotifierTest {
         given(failureDescription.getMethodName()).willReturn(methodName);
         given(failure.getException()).willReturn(exception);
 
-        cut.fireTestFailure(failure);
+        sut.fireTestFailure(failure);
 
         verify(failure).getDescription();
         verify(failureDescription).getMethodName();
@@ -120,7 +120,7 @@ public class TestifyJUnit4RunNotifierTest {
         given(failure.getDescription()).willReturn(failureDescription);
         given(failure.getException()).willReturn(exception);
 
-        cut.fireTestFailure(failure);
+        sut.fireTestFailure(failure);
 
         verify(failure).getDescription();
         verify(failureDescription).getMethodName();
@@ -132,7 +132,7 @@ public class TestifyJUnit4RunNotifierTest {
     public void givenDescriptionFireTestIgnoredShouldFireTestIgnored() {
         Description description = mock(Description.class);
 
-        cut.fireTestIgnored(description);
+        sut.fireTestIgnored(description);
 
         verify(runNotifier).fireTestIgnored(description);
     }
@@ -141,7 +141,7 @@ public class TestifyJUnit4RunNotifierTest {
     public void givenDescriptionFireTestStartedShouldFireTestStarted() {
         Description description = mock(Description.class);
 
-        cut.fireTestStarted(description);
+        sut.fireTestStarted(description);
 
         verify(runNotifier).fireTestStarted(description);
     }
@@ -150,7 +150,7 @@ public class TestifyJUnit4RunNotifierTest {
     public void givenDescriptionFireTestFinishedShouldFireTestFinished() {
         Description description = mock(Description.class);
 
-        cut.fireTestFinished(description);
+        sut.fireTestFinished(description);
 
         verify(runNotifier).fireTestFinished(description);
     }
@@ -159,7 +159,7 @@ public class TestifyJUnit4RunNotifierTest {
     public void givenAssumptionViolatedExceptionAddFailedAssumptionShouldFireTestAssumptionFailed() {
         AssumptionViolatedException exception = mock(AssumptionViolatedException.class);
 
-        cut.addFailedAssumption(exception);
+        sut.addFailedAssumption(exception);
 
         verify(runNotifier).fireTestAssumptionFailed(any(Failure.class));
     }
@@ -171,7 +171,7 @@ public class TestifyJUnit4RunNotifierTest {
         List<Throwable> failures = ImmutableList.of(failure);
 
         given(exception.getFailures()).willReturn(failures);
-        cut.addFailure(exception);
+        sut.addFailure(exception);
 
         verify(runNotifier).fireTestFailure(any(Failure.class));
     }

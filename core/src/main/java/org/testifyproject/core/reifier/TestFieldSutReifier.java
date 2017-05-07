@@ -17,30 +17,30 @@ package org.testifyproject.core.reifier;
 
 import org.testifyproject.TestContext;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.extension.CutReifier;
+import org.testifyproject.extension.SutReifier;
 import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies the cut class.
+ * A class that reifies the sut class.
  *
  * @author saden
  */
 @UnitTest
 @Discoverable
-public class TestFieldCutReifier implements CutReifier {
+public class TestFieldSutReifier implements SutReifier {
 
     @Override
     public void reify(TestContext testContext) {
 
-        testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
+        testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
             Object testInstance = testContext.getTestInstance();
 
-            Object cutValue = cutDescriptor.getValue(testInstance).orElseGet(()
-                    -> ReflectionUtil.INSTANCE.newInstance(cutDescriptor.getType())
+            Object sutValue = sutDescriptor.getValue(testInstance).orElseGet(()
+                    -> ReflectionUtil.INSTANCE.newInstance(sutDescriptor.getType())
             );
 
-            cutDescriptor.setValue(testInstance, cutValue);
+            sutDescriptor.setValue(testInstance, sutValue);
         });
     }
 

@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
@@ -35,16 +35,16 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
 @RunWith(SpringIntegrationTest.class)
 public class ProviderGreeterVirtualIT {
 
-    @Cut
-    ProviderGreeter cut;
+    @Sut
+    ProviderGreeter sut;
 
     @Virtual
     Provider<Hello> provider;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(provider).isNotNull().isSameAs(cut.getProvider());
+        assertThat(sut).isNotNull();
+        assertThat(provider).isNotNull().isSameAs(sut.getProvider());
         assertThat(Mockito.mockingDetails(provider).isMock()).isTrue();
     }
 

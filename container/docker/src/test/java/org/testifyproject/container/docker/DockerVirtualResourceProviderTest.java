@@ -43,22 +43,22 @@ import static org.testifyproject.github.dockerjava.core.DockerClientConfig.creat
  */
 public class DockerVirtualResourceProviderTest {
 
-    DockerVirtualResourceProvider cut;
+    DockerVirtualResourceProvider sut;
 
     @Before
     public void init() {
-        cut = new DockerVirtualResourceProvider();
+        sut = new DockerVirtualResourceProvider();
     }
 
     @After
     public void destroy() {
-        cut.stop();
+        sut.stop();
     }
 
     @Test
     public void callToConfigureShouldReturnBuilder() {
         TestContext testContext = mock(TestContext.class);
-        DockerClientConfig.DockerClientConfigBuilder result = cut.configure(testContext);
+        DockerClientConfig.DockerClientConfigBuilder result = sut.configure(testContext);
         assertThat(result).isNotNull();
     }
 
@@ -93,7 +93,7 @@ public class DockerVirtualResourceProviderTest {
 
         DockerClientConfig.DockerClientConfigBuilder builder = createDefaultConfigBuilder()
                 .withDockerHost(DEFAULT_DAEMON_URI);
-        VirtualResourceInstance result = cut.start(testContext, virtualResource, builder);
+        VirtualResourceInstance result = sut.start(testContext, virtualResource, builder);
         assertThat(result).isNotNull();
     }
 

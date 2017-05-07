@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -35,8 +35,8 @@ import org.testifyproject.junit4.fixture.collaborator.World;
 @RunWith(UnitTest.class)
 public class ImplicitTypeDistinctTypesTest {
 
-    @Cut
-    ImplicitTypeDistinctTypes cut;
+    @Sut
+    ImplicitTypeDistinctTypes sut;
 
     @Fake
     Hello hello;
@@ -46,21 +46,21 @@ public class ImplicitTypeDistinctTypesTest {
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(hello).isNotNull();
         assertThat(world).isNotNull();
-        assertThat(cut.getHello()).isSameAs(hello);
-        assertThat(cut.getWorld()).isSameAs(world);
+        assertThat(sut.getHello()).isSameAs(hello);
+        assertThat(sut.getWorld()).isSameAs(world);
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
+    public void givenNothingClassToExesuteShouldReturnHello() {
         String helloGreeting = "Hello";
         String worldGreeting = "World!";
         given(hello.greet()).willReturn(helloGreeting);
         given(world.greet()).willReturn(worldGreeting);
 
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(helloGreeting + " " + worldGreeting);
         verify(hello).greet();

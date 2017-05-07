@@ -37,11 +37,11 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class SpringServiceProviderTest {
 
-    SpringServiceProvider cut;
+    SpringServiceProvider sut;
 
     @Before
     public void init() {
-        cut = new SpringServiceProvider();
+        sut = new SpringServiceProvider();
     }
 
     @Test
@@ -51,7 +51,7 @@ public class SpringServiceProviderTest {
 
         given(testContext.getName()).willReturn(testName);
 
-        ConfigurableApplicationContext result = cut.create(testContext);
+        ConfigurableApplicationContext result = sut.create(testContext);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(testName);
@@ -66,7 +66,7 @@ public class SpringServiceProviderTest {
 
         given(testContext.getName()).willReturn(testName);
 
-        ServiceInstance result = cut.configure(testContext, applicationContext);
+        ServiceInstance result = sut.configure(testContext, applicationContext);
 
         assertThat(result).isNotNull();
         assertThat((ConfigurableApplicationContext) result.getContext()).isEqualTo(applicationContext);
@@ -91,7 +91,7 @@ public class SpringServiceProviderTest {
         given(testDescriptor.getModules()).willReturn(modules);
         given(testDescriptor.getScans()).willReturn(scans);
 
-        cut.postConfigure(testContext, serviceInstance);
+        sut.postConfigure(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getModules();

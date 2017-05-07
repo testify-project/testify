@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.junit4.fixture.scan.ScanGreeterService;
@@ -34,17 +34,17 @@ import org.testifyproject.junit4.fixture.scan.ScanGreetingService;
 @RunWith(HK2IntegrationTest.class)
 public class ScanDescriptorIT {
 
-    @Cut
-    ScanGreeterService cut;
+    @Sut
+    ScanGreeterService sut;
 
     @Real
     ScanGreetingContract greeting;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(greeting).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull()
+        assertThat(sut.getGreeting()).isNotNull()
                 .isSameAs(greeting)
                 .isInstanceOf(ScanGreetingService.class);
 

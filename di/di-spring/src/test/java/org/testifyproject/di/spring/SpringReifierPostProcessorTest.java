@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.springframework.beans.PropertyValues;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
@@ -45,38 +45,38 @@ import org.testifyproject.guava.common.reflect.TypeToken;
  */
 public class SpringReifierPostProcessorTest {
 
-    SpringReifierPostProcessor cut;
+    SpringReifierPostProcessor sut;
     TestContext testContext;
 
     @Before
     public void init() {
         testContext = mock(TestContext.class);
 
-        cut = new SpringReifierPostProcessor(testContext);
+        sut = new SpringReifierPostProcessor(testContext);
     }
 
     @Test
-    public void givenTestContextWithoutCutDescriptorResolveShouldReturnNull() {
+    public void givenTestContextWithoutSutDescriptorResolveShouldReturnNull() {
         Class beanClass = Object.class;
         String beanName = "beanName";
-        Optional<CutDescriptor> foundCutDescriptor = Optional.empty();
+        Optional<SutDescriptor> foundSutDescriptor = Optional.empty();
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
 
-        Object result = cut.postProcessBeforeInstantiation(beanClass, beanName);
+        Object result = sut.postProcessBeforeInstantiation(beanClass, beanName);
 
         assertThat(result).isNull();
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verifyNoMoreInteractions(testContext);
     }
 
     @Test
-    public void givenTestContextWithCutDescriptorResolveShouldReturnFieldValue() {
+    public void givenTestContextWithSutDescriptorResolveShouldReturnFieldValue() {
         Class beanClass = Object.class;
         String beanName = "beanName";
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = new Object();
@@ -88,7 +88,7 @@ public class SpringReifierPostProcessorTest {
         Fake fake = mock(Fake.class);
         Optional<Fake> foundFake = Optional.of(fake);
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -97,11 +97,11 @@ public class SpringReifierPostProcessorTest {
         given(fieldDescriptor.getGenericType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
 
-        Object result = cut.postProcessBeforeInstantiation(beanClass, beanName);
+        Object result = sut.postProcessBeforeInstantiation(beanClass, beanName);
 
         assertThat(result).isEqualTo(value);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
@@ -111,11 +111,11 @@ public class SpringReifierPostProcessorTest {
     }
 
     @Test
-    public void givenTestContextWithCutDescriptorResolveShouldReturnFakeInstance() {
+    public void givenTestContextWithSutDescriptorResolveShouldReturnFakeInstance() {
         Class beanClass = Object.class;
         String beanName = "beanName";
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = new Object();
@@ -128,7 +128,7 @@ public class SpringReifierPostProcessorTest {
         Fake fake = mock(Fake.class);
         Optional<Fake> foundFake = Optional.of(fake);
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -137,11 +137,11 @@ public class SpringReifierPostProcessorTest {
         given(fieldDescriptor.getGenericType()).willReturn(fieldType);
         given(mockProvider.createFake(Object.class)).willReturn(value);
 
-        Object result = cut.postProcessBeforeInstantiation(beanClass, beanName);
+        Object result = sut.postProcessBeforeInstantiation(beanClass, beanName);
 
         assertThat(result).isEqualTo(value);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
@@ -150,11 +150,11 @@ public class SpringReifierPostProcessorTest {
     }
 
     @Test
-    public void givenTestContextWithCutDescriptorAndNoFakeFieldResolveShouldReturnNull() {
+    public void givenTestContextWithSutDescriptorAndNoFakeFieldResolveShouldReturnNull() {
         Class beanClass = Object.class;
         String beanName = "beanName";
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = new Object();
@@ -163,42 +163,42 @@ public class SpringReifierPostProcessorTest {
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Optional<Fake> foundFake = Optional.empty();
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getFake()).willReturn(foundFake);
 
-        Object result = cut.postProcessBeforeInstantiation(beanClass, beanName);
+        Object result = sut.postProcessBeforeInstantiation(beanClass, beanName);
 
         assertThat(result).isNull();
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
     }
 
     @Test
-    public void callToProcessAfterInitializationShouldReturnSetCutFieldAndReturnBean() {
+    public void callToProcessAfterInitializationShouldReturnSetSutFieldAndReturnBean() {
         Object bean = new Object();
         String beanName = "beanName";
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         Type beanClass = Object.class;
         Object testInstance = new Object();
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
-        given(cutDescriptor.isCutClass(beanClass)).willReturn(true);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(sutDescriptor.isSutClass(beanClass)).willReturn(true);
         given(testContext.getTestInstance()).willReturn(testInstance);
 
-        Object result = cut.postProcessAfterInitialization(bean, beanName);
+        Object result = sut.postProcessAfterInitialization(bean, beanName);
 
         assertThat(result).isSameAs(bean);
-        verify(testContext).getCutDescriptor();
-        verify(cutDescriptor).isCutClass(beanClass);
-        verify(cutDescriptor).setValue(testInstance, bean);
+        verify(testContext).getSutDescriptor();
+        verify(sutDescriptor).isSutClass(beanClass);
+        verify(sutDescriptor).setValue(testInstance, bean);
     }
 
     @Test
@@ -206,7 +206,7 @@ public class SpringReifierPostProcessorTest {
         Object bean = new Object();
         String beanName = "beanName";
 
-        boolean result = cut.postProcessAfterInstantiation(bean, beanName);
+        boolean result = sut.postProcessAfterInstantiation(bean, beanName);
 
         assertThat(result).isTrue();
 
@@ -219,7 +219,7 @@ public class SpringReifierPostProcessorTest {
         Object bean = new Object();
         String beanName = "beanName";
 
-        PropertyValues result = cut.postProcessPropertyValues(propertyValues, pds, bean, beanName);
+        PropertyValues result = sut.postProcessPropertyValues(propertyValues, pds, bean, beanName);
 
         assertThat(result).isSameAs(propertyValues);
     }
@@ -229,7 +229,7 @@ public class SpringReifierPostProcessorTest {
         Object bean = new Object();
         String beanName = "beanName";
 
-        Object result = cut.postProcessBeforeInitialization(bean, beanName);
+        Object result = sut.postProcessBeforeInitialization(bean, beanName);
 
         assertThat(result).isSameAs(bean);
     }
@@ -238,7 +238,7 @@ public class SpringReifierPostProcessorTest {
     public void givenProviderGetRawTypeTokenShouldReturnRawType() {
         TypeToken<Provider<String>> typeToken = new TypeToken<Provider<String>>() {
         };
-        TypeToken result = cut.getRawTypeToken(typeToken.getType());
+        TypeToken result = sut.getRawTypeToken(typeToken.getType());
 
         assertThat(result.getRawType()).isEqualTo(String.class);
     }
@@ -247,7 +247,7 @@ public class SpringReifierPostProcessorTest {
     public void givenOptionalGetRawTypeTokenShouldReturnRawType() {
         TypeToken<Optional<String>> typeToken = new TypeToken<Optional<String>>() {
         };
-        TypeToken result = cut.getRawTypeToken(typeToken.getType());
+        TypeToken result = sut.getRawTypeToken(typeToken.getType());
 
         assertThat(result.getRawType()).isEqualTo(String.class);
     }
@@ -256,7 +256,7 @@ public class SpringReifierPostProcessorTest {
     public void givenMapProviderGetRawTypeTokenShouldReturnRawType() {
         TypeToken<Map<Integer, String>> typeToken = new TypeToken<Map<Integer, String>>() {
         };
-        TypeToken result = cut.getRawTypeToken(typeToken.getType());
+        TypeToken result = sut.getRawTypeToken(typeToken.getType());
 
         assertThat(result.getRawType()).isEqualTo(String.class);
     }
@@ -265,7 +265,7 @@ public class SpringReifierPostProcessorTest {
     public void givenCollectionProviderGetRawTypeTokenShouldReturnRawType() {
         TypeToken<Collection<String>> typeToken = new TypeToken<Collection<String>>() {
         };
-        TypeToken result = cut.getRawTypeToken(typeToken.getType());
+        TypeToken result = sut.getRawTypeToken(typeToken.getType());
 
         assertThat(result.getRawType()).isEqualTo(String.class);
     }

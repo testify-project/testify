@@ -32,11 +32,11 @@ import org.junit.Test;
  */
 public class SettingUtilTest {
 
-    SettingUtil cut;
+    SettingUtil sut;
 
     @Before
     public void init() {
-        cut = new SettingUtil();
+        sut = new SettingUtil();
     }
 
     @Test
@@ -53,7 +53,7 @@ public class SettingUtilTest {
                 StandardOpenOption.WRITE,
                 StandardOpenOption.TRUNCATE_EXISTING);
 
-        Map<String, Object> result = cut.getSettings();
+        Map<String, Object> result = sut.getSettings();
 
         assertThat(result).containsEntry("hello", "world");
         Files.deleteIfExists(path);
@@ -73,7 +73,7 @@ public class SettingUtilTest {
                 StandardOpenOption.WRITE,
                 StandardOpenOption.TRUNCATE_EXISTING);
 
-        Map<String, Object> result = cut.getSettings();
+        Map<String, Object> result = sut.getSettings();
 
         assertThat(result).containsEntry("hello", "world");
         Files.deleteIfExists(path);
@@ -82,7 +82,7 @@ public class SettingUtilTest {
     @Test
     public void givenEmptyCategoriesGetSystemCategoriesShouldReturnEmptyArray() {
         System.clearProperty("testify.categories");
-        String[] result = cut.getSystemCategories();
+        String[] result = sut.getSystemCategories();
 
         assertThat(result).isEmpty();
     }
@@ -91,7 +91,7 @@ public class SettingUtilTest {
     public void givenCategoriesGetSystemCategoriesShouldReturnEmptyArray() {
         System.setProperty("testify.categories", "unit,integration");
 
-        String[] result = cut.getSystemCategories();
+        String[] result = sut.getSystemCategories();
 
         assertThat(result).contains("UNIT", "INTEGRATION");
         System.clearProperty("testify.categories");

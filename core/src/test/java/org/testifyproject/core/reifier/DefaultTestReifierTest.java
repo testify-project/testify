@@ -25,7 +25,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
@@ -40,38 +40,38 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class DefaultTestReifierTest {
 
-    DefaultTestReifier cut;
+    DefaultTestReifier sut;
 
     @Before
     public void init() {
-        cut = spy(new DefaultTestReifier());
+        sut = spy(new DefaultTestReifier());
     }
 
     @Test
     public void callToReifyShouldReifyCollaborators() {
         TestContext testContext = mock(TestContext.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         Object testInstance = new Object();
-        Object cutInstance = new Object();
-        Optional<Object> foundCutInstance = Optional.of(cutInstance);
+        Object sutInstance = new Object();
+        Optional<Object> foundSutInstance = Optional.of(sutInstance);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         FieldDescriptor testFieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(testFieldDescriptor);
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(cutDescriptor.getValue(testInstance)).willReturn(foundCutInstance);
+        given(sutDescriptor.getValue(testInstance)).willReturn(foundSutInstance);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(testFieldDescriptor.isInjectable()).willReturn(true);
-        willDoNothing().given(cut).processTestField(testContext, testFieldDescriptor, cutDescriptor, cutInstance);
+        willDoNothing().given(sut).processTestField(testContext, testFieldDescriptor, sutDescriptor, sutInstance);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestInstance();
-        verify(cutDescriptor).getValue(testInstance);
+        verify(sutDescriptor).getValue(testInstance);
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getFieldDescriptors();
         verify(testFieldDescriptor).isInjectable();
@@ -81,108 +81,108 @@ public class DefaultTestReifierTest {
     public void givenTypeAndNameMatchingFieldProcessTestFieldShouldProcessTestField() {
         TestContext testContext = mock(TestContext.class);
         FieldDescriptor testFieldDescriptor = mock(FieldDescriptor.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Object cutInstance = new Object();
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Object sutInstance = new Object();
 
         MockProvider mockProvder = mock(MockProvider.class);
         Object testInstance = new Object();
         String testFieldName = "fieldName";
         Type testFieldGenericType = Object.class;
-        FieldDescriptor cutFieldDescriptor = mock(FieldDescriptor.class);
-        Optional<FieldDescriptor> foundMatchingField = Optional.of(cutFieldDescriptor);
+        FieldDescriptor sutFieldDescriptor = mock(FieldDescriptor.class);
+        Optional<FieldDescriptor> foundMatchingField = Optional.of(sutFieldDescriptor);
 
         given(testContext.getMockProvider()).willReturn(mockProvder);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testFieldDescriptor.getDefinedName()).willReturn(testFieldName);
         given(testFieldDescriptor.getGenericType()).willReturn(testFieldGenericType);
-        given(cutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(foundMatchingField);
-        willDoNothing().given(cut).processCutField(testFieldDescriptor, cutFieldDescriptor, testInstance, cutInstance, mockProvder);
+        given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(foundMatchingField);
+        willDoNothing().given(sut).processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
 
-        cut.processTestField(testContext, testFieldDescriptor, cutDescriptor, cutInstance);
+        sut.processTestField(testContext, testFieldDescriptor, sutDescriptor, sutInstance);
 
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
         verify(testFieldDescriptor).getDefinedName();
         verify(testFieldDescriptor).getGenericType();
-        verify(cutDescriptor).findFieldDescriptor(testFieldGenericType, testFieldName);
+        verify(sutDescriptor).findFieldDescriptor(testFieldGenericType, testFieldName);
     }
 
     @Test
     public void givenTypeMatchingFieldProcessTestFieldShouldProcessTestField() {
         TestContext testContext = mock(TestContext.class);
         FieldDescriptor testFieldDescriptor = mock(FieldDescriptor.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Object cutInstance = new Object();
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Object sutInstance = new Object();
 
         MockProvider mockProvder = mock(MockProvider.class);
         Object testInstance = new Object();
         String testFieldName = "fieldName";
         Type testFieldGenericType = Object.class;
-        FieldDescriptor cutFieldDescriptor = mock(FieldDescriptor.class);
+        FieldDescriptor sutFieldDescriptor = mock(FieldDescriptor.class);
         Optional<FieldDescriptor> unfoundMatchingField = Optional.empty();
-        Optional<FieldDescriptor> foundMatchingField = Optional.of(cutFieldDescriptor);
+        Optional<FieldDescriptor> foundMatchingField = Optional.of(sutFieldDescriptor);
 
         given(testContext.getMockProvider()).willReturn(mockProvder);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testFieldDescriptor.getDefinedName()).willReturn(testFieldName);
         given(testFieldDescriptor.getGenericType()).willReturn(testFieldGenericType);
-        given(cutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(unfoundMatchingField);
-        given(cutDescriptor.findFieldDescriptor(testFieldGenericType)).willReturn(foundMatchingField);
-        willDoNothing().given(cut).processCutField(testFieldDescriptor, cutFieldDescriptor, testInstance, cutInstance, mockProvder);
+        given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(unfoundMatchingField);
+        given(sutDescriptor.findFieldDescriptor(testFieldGenericType)).willReturn(foundMatchingField);
+        willDoNothing().given(sut).processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
 
-        cut.processTestField(testContext, testFieldDescriptor, cutDescriptor, cutInstance);
+        sut.processTestField(testContext, testFieldDescriptor, sutDescriptor, sutInstance);
 
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
         verify(testFieldDescriptor).getDefinedName();
         verify(testFieldDescriptor).getGenericType();
-        verify(cutDescriptor).findFieldDescriptor(testFieldGenericType, testFieldName);
-        verify(cutDescriptor).findFieldDescriptor(testFieldGenericType);
+        verify(sutDescriptor).findFieldDescriptor(testFieldGenericType, testFieldName);
+        verify(sutDescriptor).findFieldDescriptor(testFieldGenericType);
     }
 
     @Test
-    public void givenCutFieldAndVirtualTestFieldProcessCutFieldShouldSetTestFieldToVirtualInstance() {
+    public void givenSutFieldAndVirtualTestFieldProcessSutFieldShouldSetTestFieldToVirtualInstance() {
         FieldDescriptor testFieldDescriptor = mock(FieldDescriptor.class);
-        FieldDescriptor cutFieldDescriptor = mock(FieldDescriptor.class);
+        FieldDescriptor sutFieldDescriptor = mock(FieldDescriptor.class);
         Object testInstance = new Object();
-        Object cutInstance = new Object();
+        Object sutInstance = new Object();
         MockProvider mockProvder = mock(MockProvider.class);
         Class testFieldType = Object.class;
         Optional<Object> testFieldValue = Optional.empty();
-        Object cutValue = new Object();
-        Optional<Object> cutFieldValue = Optional.of(cutValue);
+        Object sutValue = new Object();
+        Optional<Object> sutFieldValue = Optional.of(sutValue);
         Virtual virtual = mock(Virtual.class);
         Optional<Virtual> foundVirtual = Optional.of(virtual);
         Object value = new Object();
 
         given(testFieldDescriptor.getType()).willReturn(testFieldType);
         given(testFieldDescriptor.getValue(testInstance)).willReturn(testFieldValue);
-        given(cutFieldDescriptor.getValue(cutInstance)).willReturn(cutFieldValue);
+        given(sutFieldDescriptor.getValue(sutInstance)).willReturn(sutFieldValue);
         given(testFieldDescriptor.getVirtual()).willReturn(foundVirtual);
-        given(mockProvder.createVirtual(testFieldType, cutValue)).willReturn(value);
+        given(mockProvder.createVirtual(testFieldType, sutValue)).willReturn(value);
 
-        cut.processCutField(testFieldDescriptor, cutFieldDescriptor, testInstance, cutInstance, mockProvder);
+        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
 
         verify(testFieldDescriptor).getType();
         verify(testFieldDescriptor).getValue(testInstance);
-        verify(cutFieldDescriptor).getValue(cutInstance);
+        verify(sutFieldDescriptor).getValue(sutInstance);
         verify(testFieldDescriptor).getVirtual();
-        verify(mockProvder).createVirtual(testFieldType, cutValue);
-        verify(cutFieldDescriptor).setValue(cutInstance, value);
+        verify(mockProvder).createVirtual(testFieldType, sutValue);
+        verify(sutFieldDescriptor).setValue(sutInstance, value);
         verify(testFieldDescriptor).setValue(testInstance, value);
     }
 
     @Test
-    public void givenCutFieldAndRealTestFieldProcessCutFieldShouldSetTestFieldToRealInstance() {
+    public void givenSutFieldAndRealTestFieldProcessSutFieldShouldSetTestFieldToRealInstance() {
         FieldDescriptor testFieldDescriptor = mock(FieldDescriptor.class);
-        FieldDescriptor cutFieldDescriptor = mock(FieldDescriptor.class);
+        FieldDescriptor sutFieldDescriptor = mock(FieldDescriptor.class);
         Object testInstance = new Object();
-        Object cutInstance = new Object();
+        Object sutInstance = new Object();
         MockProvider mockProvder = mock(MockProvider.class);
         Class testFieldType = Object.class;
         Optional<Object> testFieldValue = Optional.empty();
-        Object cutValue = new Object();
-        Optional<Object> cutFieldValue = Optional.of(cutValue);
+        Object sutValue = new Object();
+        Optional<Object> sutFieldValue = Optional.of(sutValue);
         Optional<Virtual> foundVirtual = Optional.empty();
         Real real = mock(Real.class);
         Optional<Real> foundReal = Optional.of(real);
@@ -190,43 +190,43 @@ public class DefaultTestReifierTest {
 
         given(testFieldDescriptor.getType()).willReturn(testFieldType);
         given(testFieldDescriptor.getValue(testInstance)).willReturn(testFieldValue);
-        given(cutFieldDescriptor.getValue(cutInstance)).willReturn(cutFieldValue);
+        given(sutFieldDescriptor.getValue(sutInstance)).willReturn(sutFieldValue);
         given(testFieldDescriptor.getVirtual()).willReturn(foundVirtual);
         given(testFieldDescriptor.getReal()).willReturn(foundReal);
 
-        cut.processCutField(testFieldDescriptor, cutFieldDescriptor, testInstance, cutInstance, mockProvder);
+        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
 
         verify(testFieldDescriptor).getType();
         verify(testFieldDescriptor).getValue(testInstance);
-        verify(cutFieldDescriptor).getValue(cutInstance);
+        verify(sutFieldDescriptor).getValue(sutInstance);
         verify(testFieldDescriptor).getVirtual();
-        verify(cutFieldDescriptor).setValue(cutInstance, cutValue);
-        verify(testFieldDescriptor).setValue(testInstance, cutValue);
+        verify(sutFieldDescriptor).setValue(sutInstance, sutValue);
+        verify(testFieldDescriptor).setValue(testInstance, sutValue);
     }
 
     @Test
-    public void givenTestFieldProcessCutFieldShouldSetCutFieldToRealInstance() {
+    public void givenTestFieldProcessSutFieldShouldSetSutFieldToRealInstance() {
         FieldDescriptor testFieldDescriptor = mock(FieldDescriptor.class);
-        FieldDescriptor cutFieldDescriptor = mock(FieldDescriptor.class);
+        FieldDescriptor sutFieldDescriptor = mock(FieldDescriptor.class);
         Object testInstance = new Object();
-        Object cutInstance = new Object();
+        Object sutInstance = new Object();
         MockProvider mockProvder = mock(MockProvider.class);
         Class testFieldType = Object.class;
         Object testValue = new Object();
         Optional<Object> testFieldValue = Optional.of(testValue);
-        Optional<Object> cutFieldValue = Optional.empty();
+        Optional<Object> sutFieldValue = Optional.empty();
         Object value = new Object();
 
         given(testFieldDescriptor.getType()).willReturn(testFieldType);
         given(testFieldDescriptor.getValue(testInstance)).willReturn(testFieldValue);
-        given(cutFieldDescriptor.getValue(cutInstance)).willReturn(cutFieldValue);
+        given(sutFieldDescriptor.getValue(sutInstance)).willReturn(sutFieldValue);
 
-        cut.processCutField(testFieldDescriptor, cutFieldDescriptor, testInstance, cutInstance, mockProvder);
+        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
 
         verify(testFieldDescriptor).getType();
         verify(testFieldDescriptor).getValue(testInstance);
-        verify(cutFieldDescriptor).getValue(cutInstance);
-        verify(cutFieldDescriptor).setValue(cutInstance, testValue);
+        verify(sutFieldDescriptor).getValue(sutInstance);
+        verify(sutFieldDescriptor).setValue(sutInstance, testValue);
         verify(testFieldDescriptor).setValue(testInstance, testValue);
     }
 

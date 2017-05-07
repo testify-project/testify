@@ -16,7 +16,7 @@
 package org.testifyproject.core.verifier;
 
 import java.util.Optional;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -26,23 +26,23 @@ import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure that the test class contains a field annotated with
- * {@link org.testifyproject.annotation.Cut} annotation.
+ * {@link org.testifyproject.annotation.Sut} annotation.
  *
  * @author saden
  */
 @UnitTest
 @Discoverable
-public class CutConfigurationVerifier implements ConfigurationVerifier {
+public class SutConfigurationVerifier implements ConfigurationVerifier {
 
     @Override
     public void verify(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         String testClassName = testDescriptor.getTestClassName();
 
-        Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
+        Optional<SutDescriptor> foundSutDescriptor = testContext.getSutDescriptor();
 
-        ExceptionUtil.INSTANCE.raise(!foundCutDescriptor.isPresent(),
-                "Test class '{}' does not define a field annotated with @Cut class.",
+        ExceptionUtil.INSTANCE.raise(!foundSutDescriptor.isPresent(),
+                "Test class '{}' does not define a field annotated with @Sut class.",
                 testClassName);
     }
 

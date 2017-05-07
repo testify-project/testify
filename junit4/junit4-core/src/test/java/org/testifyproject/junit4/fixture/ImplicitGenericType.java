@@ -30,7 +30,7 @@ public class ImplicitGenericType {
         this.hello = collaborator;
     }
 
-    public String execute() {
+    public String exesute() {
         return hello.get().greet();
 
     }

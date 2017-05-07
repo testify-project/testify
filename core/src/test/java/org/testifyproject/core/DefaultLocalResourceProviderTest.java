@@ -45,7 +45,7 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class DefaultLocalResourceProviderTest {
 
-    DefaultLocalResourceProvider cut;
+    DefaultLocalResourceProvider sut;
     ReflectionUtil reflectionUtil;
     Queue<LocalResourceProvider> resourceProviders;
 
@@ -54,7 +54,7 @@ public class DefaultLocalResourceProviderTest {
         reflectionUtil = mock(ReflectionUtil.class);
         resourceProviders = mock(Queue.class, delegatesTo(new ConcurrentLinkedQueue()));
 
-        cut = new DefaultLocalResourceProvider(reflectionUtil, resourceProviders);
+        sut = new DefaultLocalResourceProvider(reflectionUtil, resourceProviders);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class DefaultLocalResourceProviderTest {
         TestContext testContext = null;
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class DefaultLocalResourceProviderTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getLocalResources()).willReturn(virtualResources);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
@@ -133,7 +133,7 @@ public class DefaultLocalResourceProviderTest {
         willDoNothing().given(serviceInstance).addConstant(localResourceInstance, null, localResourceInstanceType);
         given(localResource.name()).willReturn(name);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
@@ -200,7 +200,7 @@ public class DefaultLocalResourceProviderTest {
         willDoNothing().given(serviceInstance).addConstant(localResourceInstance, name, localResourceInstanceType);
         given(localResource.name()).willReturn(name);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
@@ -228,7 +228,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToStopWithNoElementsStopShouldStopVirtualResourceProvider() {
-        cut.stop();
+        sut.stop();
 
         verify(resourceProviders).parallelStream();
         verifyNoMoreInteractions(resourceProviders);
@@ -239,7 +239,7 @@ public class DefaultLocalResourceProviderTest {
         LocalResourceProvider resourceProvider = mock(LocalResourceProvider.class);
         resourceProviders.add(resourceProvider);
 
-        cut.stop();
+        sut.stop();
 
         verify(resourceProviders).parallelStream();
         verify(resourceProvider).stop();

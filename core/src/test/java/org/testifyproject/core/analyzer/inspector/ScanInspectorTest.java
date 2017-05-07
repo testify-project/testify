@@ -29,11 +29,11 @@ import org.testifyproject.core.analyzer.TestDescriptorProperties;
  */
 public class ScanInspectorTest {
 
-    ScanInspector cut;
+    ScanInspector sut;
 
     @Before
     public void init() {
-        cut = new ScanInspector();
+        sut = new ScanInspector();
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ScanInspectorTest {
         Class<?> annotatedType = Object.class;
         Scan annotation = mock(Scan.class);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addListElement(TestDescriptorProperties.SCANS, annotation);
     }

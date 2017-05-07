@@ -30,21 +30,21 @@ import org.testifyproject.TestifyException;
  */
 public class ExceptionUtilTest {
 
-    ExceptionUtil cut;
+    ExceptionUtil sut;
     LoggingUtil loggingUtil;
 
     @Before
     public void init() {
         loggingUtil = mock(LoggingUtil.class, delegatesTo(LoggingUtil.INSTANCE));
 
-        cut = new ExceptionUtil(loggingUtil);
+        sut = new ExceptionUtil(loggingUtil);
     }
 
     @Test
     public void givenCausePropogateShouldReturn() {
         Throwable cause = mock(Throwable.class);
 
-        TestifyException result = cut.propagate(cause);
+        TestifyException result = sut.propagate(cause);
 
         assertThat(result).isNotNull();
         assertThat(result.getCause()).isEqualTo(cause);
@@ -57,7 +57,7 @@ public class ExceptionUtilTest {
         String messageFormat = greeting + "{}";
         Object[] args = new Object[]{name};
 
-        TestifyException result = cut.propagate(messageFormat, args);
+        TestifyException result = sut.propagate(messageFormat, args);
 
         assertThat(result).isNotNull();
         assertThat(result.getMessage()).contains(greeting, name);
@@ -72,7 +72,7 @@ public class ExceptionUtilTest {
         Object[] args = new Object[]{name};
         Throwable cause = mock(Throwable.class);
 
-        TestifyException result = cut.propagate(messageFormat, cause, args);
+        TestifyException result = sut.propagate(messageFormat, cause, args);
 
         assertThat(result).isNotNull();
         assertThat(result.getCause()).isEqualTo(cause);
@@ -88,7 +88,7 @@ public class ExceptionUtilTest {
         Object[] args = new Object[]{name};
 
         try {
-            cut.raise(messageFormat, args);
+            sut.raise(messageFormat, args);
         } catch (TestifyException e) {
             verify(loggingUtil).formatMessage(messageFormat, args);
         }
@@ -102,7 +102,7 @@ public class ExceptionUtilTest {
         String messageFormat = greeting + "{}";
         Object[] args = new Object[]{name};
 
-        cut.raise(condition, messageFormat, args);
+        sut.raise(condition, messageFormat, args);
 
         verifyZeroInteractions(loggingUtil);
     }
@@ -116,7 +116,7 @@ public class ExceptionUtilTest {
         Object[] args = new Object[]{name};
 
         try {
-            cut.raise(condition, messageFormat, args);
+            sut.raise(condition, messageFormat, args);
         } catch (TestifyException e) {
             verify(loggingUtil).formatMessage(messageFormat, args);
         }
@@ -131,7 +131,7 @@ public class ExceptionUtilTest {
         Object[] args = new Object[]{name};
         Throwable cause = mock(Throwable.class);
 
-        cut.raise(condition, messageFormat, cause, args);
+        sut.raise(condition, messageFormat, cause, args);
 
         verifyZeroInteractions(loggingUtil);
     }
@@ -146,7 +146,7 @@ public class ExceptionUtilTest {
         Throwable cause = mock(Throwable.class);
 
         try {
-            cut.raise(condition, messageFormat, cause, args);
+            sut.raise(condition, messageFormat, cause, args);
         } catch (TestifyException e) {
             verify(loggingUtil).formatMessage(messageFormat, args);
         }

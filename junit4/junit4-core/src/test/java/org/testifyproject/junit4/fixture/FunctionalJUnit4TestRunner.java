@@ -28,7 +28,7 @@ import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 public class FunctionalJUnit4TestRunner extends TestifyJUnit4TestRunner {
 
     /**
-     * Create a new test runner instance for the class under test.
+     * Create a new test runner instance for the system under test.
      *
      * @param testClass the test class type
      *

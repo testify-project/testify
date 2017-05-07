@@ -18,9 +18,9 @@ package org.testifyproject.junit4.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.FunctionalJUnit4TestRunner;
-import org.testifyproject.junit4.fixture.common.CutClass;
+import org.testifyproject.junit4.fixture.common.SutClass;
 
 /**
  *
@@ -29,8 +29,8 @@ import org.testifyproject.junit4.fixture.common.CutClass;
 @RunWith(FunctionalJUnit4TestRunner.class)
 public class TestifyJUnit4TestRunnerTest {
 
-    @Cut
-    CutClass cut;
+    @Sut
+    SutClass sut;
 
     @Test
     public void runWithFunctionalTest() {

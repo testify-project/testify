@@ -26,7 +26,7 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.ServiceInstance;
@@ -52,28 +52,28 @@ import org.testifyproject.guava.common.collect.ImmutableSet;
  */
 public class IntegrationTestRunnerTest {
 
-    IntegrationTestRunner cut;
+    IntegrationTestRunner sut;
     ServiceLocatorUtil serviceLocatorUtil;
 
     @Before
     public void init() {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
 
-        cut = new IntegrationTestRunner(serviceLocatorUtil);
+        sut = new IntegrationTestRunner(serviceLocatorUtil);
     }
 
     @Test
     public void callToDefaultConstructorShouldReturnNewInstance() {
-        cut = new IntegrationTestRunner();
+        sut = new IntegrationTestRunner();
 
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullStartTestContextShouldThrowException() {
         TestContext testContext = null;
 
-        cut.start(testContext);
+        sut.start(testContext);
     }
 
     @Test
@@ -81,8 +81,8 @@ public class IntegrationTestRunnerTest {
         TestContext testContext = mock(TestContext.class);
         Object testInstance = new Object();
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
 
         FieldReifier fieldReifier = mock(FieldReifier.class);
@@ -97,9 +97,9 @@ public class IntegrationTestRunnerTest {
         TestResourcesProvider testResourcesProvider = mock(TestResourcesProvider.class);
         Set<Class<? extends Annotation>> nameQualifiers = ImmutableSet.of();
         Set<Class<? extends Annotation>> customQualifiers = ImmutableSet.of();
-        Class cutType = Object.class;
-        Annotation[] cutQualifiers = {};
-        Object cutInstance = new Object();
+        Class sutType = Object.class;
+        Annotation[] sutQualifiers = {};
+        Object sutInstance = new Object();
         MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
         Optional<MethodDescriptor> foundCollaboratorProvider = Optional.of(collaboratorProvider);
 
@@ -114,7 +114,7 @@ public class IntegrationTestRunnerTest {
 
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, IntegrationTest.class))
                 .willReturn(fieldReifiers);
@@ -126,9 +126,9 @@ public class IntegrationTestRunnerTest {
         given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
         given(serviceInstance.getNameQualifers()).willReturn(nameQualifiers);
         given(serviceInstance.getCustomQualifiers()).willReturn(customQualifiers);
-        given(cutDescriptor.getType()).willReturn(cutType);
-        given(cutDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers)).willReturn(cutQualifiers);
-        given(serviceInstance.getService(cutType, cutQualifiers)).willReturn(cutInstance);
+        given(sutDescriptor.getType()).willReturn(sutType);
+        given(sutDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers)).willReturn(sutQualifiers);
+        given(serviceInstance.getService(sutType, sutQualifiers)).willReturn(sutInstance);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
         given(serviceLocatorUtil.findAllWithFilter(CollaboratorsReifier.class, IntegrationTest.class))
                 .willReturn(collaboratorsReifiers);
@@ -137,11 +137,11 @@ public class IntegrationTestRunnerTest {
         given(serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, IntegrationTest.class))
                 .willReturn(wiringVerifiers);
 
-        cut.start(testContext);
+        sut.start(testContext);
 
         verify(testContext).getTestInstance();
         verify(testContext).getTestConfigurer();
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, IntegrationTest.class);
         verify(serviceLocatorUtil).findAllWithFilter(ConfigurationVerifier.class, IntegrationTest.class);
@@ -157,10 +157,10 @@ public class IntegrationTestRunnerTest {
         verify(serviceInstance).init();
         verify(serviceInstance).getNameQualifers();
         verify(serviceInstance).getCustomQualifiers();
-        verify(cutDescriptor).getType();
-        verify(cutDescriptor).getMetaAnnotations(nameQualifiers, customQualifiers);
-        verify(serviceInstance).getService(cutType, cutQualifiers);
-        verify(cutDescriptor).setValue(testInstance, cutInstance);
+        verify(sutDescriptor).getType();
+        verify(sutDescriptor).getMetaAnnotations(nameQualifiers, customQualifiers);
+        verify(serviceInstance).getService(sutType, sutQualifiers);
+        verify(sutDescriptor).setValue(testInstance, sutInstance);
         verify(testDescriptor).getCollaboratorProvider();
         verify(serviceLocatorUtil).findAllWithFilter(CollaboratorsReifier.class, IntegrationTest.class);
         verify(serviceLocatorUtil).findAllWithFilter(TestReifier.class, IntegrationTest.class);
@@ -170,27 +170,27 @@ public class IntegrationTestRunnerTest {
     @Test
     public void callToStopShouldStopTest() {
         TestContext testContext = mock(TestContext.class);
-        TestResourcesProvider testResourcesProvider = cut.testResourcesProvider = mock(TestResourcesProvider.class);
-        ServiceInstance serviceInstance = cut.serviceInstance = mock(ServiceInstance.class);
+        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(TestResourcesProvider.class);
+        ServiceInstance serviceInstance = sut.serviceInstance = mock(ServiceInstance.class);
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
 
-        cut.stop(testContext);
+        sut.stop(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
-        verify(cutDescriptor).destroy(testInstance);
+        verify(sutDescriptor).destroy(testInstance);
         verify(testResourcesProvider).stop(testContext);
         verify(serviceInstance).destroy();
 

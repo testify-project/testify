@@ -31,31 +31,31 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  */
 public class ServerInstanceTest {
 
-    ServerInstance<String> cut;
+    ServerInstance<String> sut;
 
     @Before
     public void init() {
-        cut = mock(ServerInstance.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(ServerInstance.class, Answers.CALLS_REAL_METHODS);
     }
 
     @After
     public void destroy() {
-        verifyNoMoreInteractions(cut);
+        verifyNoMoreInteractions(sut);
     }
 
     @Test
     public void callToGetNameShouldReturnEmptyOptional() {
-        Optional<String> result = cut.getName();
+        Optional<String> result = sut.getName();
 
         assertThat(result).isEmpty();
-        verify(cut).getName();
+        verify(sut).getName();
     }
 
     @Test
     public void callToGetContractShouldReturnEmptyOptional() {
-        Optional<Class<? extends String>> result = cut.getContract();
+        Optional<Class<? extends String>> result = sut.getContract();
 
         assertThat(result).isEmpty();
-        verify(cut).getContract();
+        verify(sut).getContract();
     }
 }

@@ -16,14 +16,14 @@
 package org.testifyproject.level.unit;
 
 import java.util.Optional;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorsReifier;
 import org.testifyproject.extension.ConfigurationVerifier;
-import org.testifyproject.extension.CutReifier;
+import org.testifyproject.extension.SutReifier;
 import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.TestReifier;
 import org.testifyproject.extension.WiringVerifier;
@@ -57,7 +57,7 @@ public class UnitTestRunner implements TestRunner {
         serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, UnitTest.class)
                 .forEach(p -> p.verify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(CutReifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitTest.class)
                 .forEach(p -> p.reify(testContext));
 
         if (testDescriptor.getCollaboratorProvider().isPresent()) {
@@ -75,8 +75,8 @@ public class UnitTestRunner implements TestRunner {
         testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.init(testInstance));
 
-        //invoke init method on cut field annotated with Fixture
-        testContext.getCutDescriptor()
+        //invoke init method on sut field annotated with Fixture
+        testContext.getSutDescriptor()
                 .ifPresent(p -> p.init(testInstance));
 
         serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, UnitTest.class)
@@ -87,14 +87,14 @@ public class UnitTestRunner implements TestRunner {
     public void stop(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
+        Optional<SutDescriptor> sutDescriptor = testContext.getSutDescriptor();
 
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.destroy(testInstance));
 
-        //invoke destroy method on cut field annotated with Fixture
-        cutDescriptor
+        //invoke destroy method on sut field annotated with Fixture
+        sutDescriptor
                 .ifPresent(p -> p.destroy(testInstance));
     }
 

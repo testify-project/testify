@@ -17,7 +17,7 @@ package org.testifyproject.core.reifier;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
@@ -38,18 +38,18 @@ public class DefaultTestReifier implements TestReifier {
 
     @Override
     public void reify(TestContext testContext) {
-        testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
+        testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
             Object testInstance = testContext.getTestInstance();
 
-            cutDescriptor.getValue(testInstance).ifPresent(cutInstance
+            sutDescriptor.getValue(testInstance).ifPresent(sutInstance
                     -> testContext.getTestDescriptor().getFieldDescriptors().stream()
                             .filter(FieldDescriptor::isInjectable)
                             .forEach(testFieldDescriptor
                                     -> processTestField(
                                     testContext,
                                     testFieldDescriptor,
-                                    cutDescriptor,
-                                    cutInstance)
+                                    sutDescriptor,
+                                    sutInstance)
                             )
             );
 
@@ -58,48 +58,48 @@ public class DefaultTestReifier implements TestReifier {
 
     public void processTestField(TestContext testContext,
             FieldDescriptor testFieldDescriptor,
-            CutDescriptor cutDescriptor,
-            Object cutInstance) {
+            SutDescriptor sutDescriptor,
+            Object sutInstance) {
         MockProvider mockProvider = testContext.getMockProvider();
         Object testInstance = testContext.getTestInstance();
         String testFieldName = testFieldDescriptor.getDefinedName();
         Type testFieldGenericType = testFieldDescriptor.getGenericType();
 
         Optional<FieldDescriptor> foundMatchingField
-                = cutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName);
+                = sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName);
 
         if (!foundMatchingField.isPresent()) {
-            foundMatchingField = cutDescriptor.findFieldDescriptor(testFieldGenericType);
+            foundMatchingField = sutDescriptor.findFieldDescriptor(testFieldGenericType);
         }
 
-        foundMatchingField.ifPresent(cutFieldDescriptor
-                -> processCutField(testFieldDescriptor,
-                        cutFieldDescriptor,
+        foundMatchingField.ifPresent(sutFieldDescriptor
+                -> processSutField(testFieldDescriptor,
+                        sutFieldDescriptor,
                         testInstance,
-                        cutInstance,
+                        sutInstance,
                         mockProvider)
         );
     }
 
-    public void processCutField(FieldDescriptor testFieldDescriptor,
-            FieldDescriptor cutFieldDescriptor,
+    public void processSutField(FieldDescriptor testFieldDescriptor,
+            FieldDescriptor sutFieldDescriptor,
             Object testInstance,
-            Object cutInstance,
+            Object sutInstance,
             MockProvider mockProvider) {
         Class<?> testFieldType = testFieldDescriptor.getType();
 
         Optional<Object> testFieldValue = testFieldDescriptor.getValue(testInstance);
-        Optional<Object> cutFieldValue = cutFieldDescriptor.getValue(cutInstance);
+        Optional<Object> sutFieldValue = sutFieldDescriptor.getValue(sutInstance);
         Object value = null;
-        Object cutValue;
+        Object sutValue;
 
-        if (cutFieldValue.isPresent()) {
-            cutValue = cutFieldValue.get();
+        if (sutFieldValue.isPresent()) {
+            sutValue = sutFieldValue.get();
 
             if (testFieldDescriptor.getVirtual().isPresent()) {
-                value = mockProvider.createVirtual(testFieldType, cutValue);
+                value = mockProvider.createVirtual(testFieldType, sutValue);
             } else if (testFieldDescriptor.getReal().isPresent()) {
-                value = cutValue;
+                value = sutValue;
             }
         }
 
@@ -107,7 +107,7 @@ public class DefaultTestReifier implements TestReifier {
             value = testFieldValue.get();
         }
 
-        cutFieldDescriptor.setValue(cutInstance, value);
+        sutFieldDescriptor.setValue(sutInstance, value);
         testFieldDescriptor.setValue(testInstance, value);
     }
 

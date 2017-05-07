@@ -34,7 +34,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.slf4j.MDC;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestConfigurer;
@@ -69,7 +69,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
     private TestSettings testSettings;
 
     /**
-     * Create a new test runner instance for the class under test.
+     * Create a new test runner instance for the system under test.
      *
      * @param testClass the test class type
      * @param testSettings settings for the test
@@ -132,7 +132,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 notifier.pleaseStop();
             } finally {
                 if (!isIgnored(method)) {
-                    TestContextHolder.INSTANCE.execute(testContext -> {
+                    TestContextHolder.INSTANCE.exesute(testContext -> {
                         LoggingUtil.INSTANCE.debug("performing cleanup of '{}'", testContext.getName());
 
                         TestRunner testRunner = testContext.getTestRunner();
@@ -197,11 +197,11 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 .dependencies(testSettings.getDependencies())
                 .build();
 
-        Optional<Field> cutField = testDescriptor.getCutField();
+        Optional<Field> sutField = testDescriptor.getSutField();
 
-        if (cutField.isPresent()) {
-            CutDescriptor cutDescriptor = AnalyzerUtil.INSTANCE.analyzeCutField(cutField.get());
-            testContext.addProperty(TestContextProperties.CUT_DESCRIPTOR, cutDescriptor);
+        if (sutField.isPresent()) {
+            SutDescriptor sutDescriptor = AnalyzerUtil.INSTANCE.analyzeSutField(sutField.get());
+            testContext.addProperty(TestContextProperties.SUT_DESCRIPTOR, sutDescriptor);
         }
 
         LoggingUtil.INSTANCE.debug(
@@ -212,28 +212,28 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
         testRunner.start(testContext);
 
         LoggingUtil.INSTANCE.debug(
-                "executing test method {}#{}'",
+                "exesuting test method {}#{}'",
                 javaClass.getName(), method.getName()
         );
         Statement statement = methodInvoker(frameworkMethod, testInstance);
         statement = possiblyExpectingExceptions(frameworkMethod, testInstance, statement);
 
         LoggingUtil.INSTANCE.debug(
-                "executing statement before lifecycle methods for {}#{}'",
+                "exesuting statement before lifecycle methods for {}#{}'",
                 javaClass.getName(),
                 method.getName()
         );
         statement = withBefores(frameworkMethod, testInstance, statement);
 
         LoggingUtil.INSTANCE.debug(
-                "executing statement after lifecycle methods for {}#{}'",
+                "exesuting statement after lifecycle methods for {}#{}'",
                 javaClass.getName(),
                 method.getName()
         );
         statement = withAfters(frameworkMethod, testInstance, statement);
 
         LoggingUtil.INSTANCE.debug(
-                "executing statement rules lifecycle methods for {}#{}'",
+                "exesuting statement rules lifecycle methods for {}#{}'",
                 javaClass.getName(),
                 method.getName()
         );

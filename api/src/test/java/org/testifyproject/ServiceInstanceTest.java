@@ -34,11 +34,11 @@ import org.testifyproject.annotation.Scan;
  */
 public class ServiceInstanceTest {
 
-    ServiceInstance cut;
+    ServiceInstance sut;
 
     @Before
     public void init() {
-        cut = mock(ServiceInstance.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(ServiceInstance.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test(expected = NullPointerException.class)
@@ -47,7 +47,7 @@ public class ServiceInstanceTest {
         String overrideName = "overrideName";
         Class overrideContract = Class.class;
 
-        cut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance, overrideName, overrideContract);
     }
 
     @Test
@@ -68,14 +68,14 @@ public class ServiceInstanceTest {
         given(instance.getName()).willReturn(nameResult);
         given(instance.getContract()).willReturn(contractResult);
 
-        cut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance, overrideName, overrideContract);
 
         verify(instance).getInstance();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(cut).replace(instance, overrideName, overrideContract);
-        verify(cut).replace(constant, overrideName, contract);
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, overrideName, contract);
     }
 
     @Test
@@ -96,14 +96,14 @@ public class ServiceInstanceTest {
         given(instance.getName()).willReturn(nameResult);
         given(instance.getContract()).willReturn(contractResult);
 
-        cut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance, overrideName, overrideContract);
 
         verify(instance).getInstance();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(cut).replace(instance, overrideName, overrideContract);
-        verify(cut).replace(constant, name, overrideContract);
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, name, overrideContract);
     }
 
     @Test
@@ -124,45 +124,45 @@ public class ServiceInstanceTest {
         given(instance.getName()).willReturn(nameResult);
         given(instance.getContract()).willReturn(contractResult);
 
-        cut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance, overrideName, overrideContract);
 
         verify(instance).getInstance();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(cut).replace(instance, overrideName, overrideContract);
-        verify(cut).replace(constant, name, contract);
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, name, contract);
     }
 
     @Test
     public void callToIsRunningShouldReturnFalse() {
-        Boolean result = cut.isRunning();
+        Boolean result = sut.isRunning();
 
         assertThat(result).isFalse();
-        verify(cut).isRunning();
+        verify(sut).isRunning();
     }
 
     @Test
     public void callToInitShouldDoNothing() {
-        cut.init();
+        sut.init();
 
-        verify(cut).init();
+        verify(sut).init();
     }
 
     @Test
     public void callToDestroyShouldDoNothing() {
-        cut.destroy();
+        sut.destroy();
 
-        verify(cut).destroy();
+        verify(sut).destroy();
     }
 
     @Test
     public void callToAddScansShouldDoNothing() {
         Scan scan = mock(Scan.class);
 
-        cut.addScans(scan);
+        sut.addScans(scan);
 
-        verify(cut).addScans(scan);
+        verify(sut).addScans(scan);
         verifyZeroInteractions(scan);
     }
 
@@ -170,25 +170,25 @@ public class ServiceInstanceTest {
     public void callToInjectShouldDoNothing() {
         Object instance = mock(Object.class);
 
-        cut.inject(instance);
+        sut.inject(instance);
 
-        verify(cut).inject(instance);
+        verify(sut).inject(instance);
         verifyZeroInteractions(instance);
     }
 
     @Test
     public void callToGetNameQualifiersShouldReturnAnnotations() {
-        Set<Class<? extends Annotation>> result = cut.getNameQualifers();
+        Set<Class<? extends Annotation>> result = sut.getNameQualifers();
 
         assertThat(result).isEmpty();
-        verify(cut).getNameQualifers();
+        verify(sut).getNameQualifers();
     }
 
     @Test
     public void callToGetCustomQualifiersShouldReturnAnnotations() {
-        Set<Class<? extends Annotation>> result = cut.getCustomQualifiers();
+        Set<Class<? extends Annotation>> result = sut.getCustomQualifiers();
 
         assertThat(result).isEmpty();
-        verify(cut).getCustomQualifiers();
+        verify(sut).getCustomQualifiers();
     }
 }

@@ -21,7 +21,7 @@ import org.testifyproject.trait.TypeTrait;
 
 /**
  * A contract that defines methods to access properties of or perform operations
- * on a class under test (CUT) constructor parameters.
+ * on a system under test (SUT) constructor parameters.
  *
  * @author saden
  */

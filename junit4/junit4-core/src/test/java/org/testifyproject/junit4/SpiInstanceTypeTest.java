@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.SpiInstanceType;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -32,8 +32,8 @@ import org.testifyproject.junit4.fixture.collaborator.World;
 @RunWith(UnitTest.class)
 public class SpiInstanceTypeTest {
 
-    @Cut
-    SpiInstanceType cut;
+    @Sut
+    SpiInstanceType sut;
 
     @Fake
     Hello hello;
@@ -46,10 +46,10 @@ public class SpiInstanceTypeTest {
 
     @Test
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
-        assertThat(cut.getHello()).isNotNull().isSameAs(hello);
-        assertThat(cut.getHELLO()).isNotNull().isSameAs(HELLO);
-        assertThat(cut.getWorld()).isNotNull().isSameAs(world);
+        assertThat(sut).isNotNull();
+        assertThat(sut.getHello()).isNotNull().isSameAs(hello);
+        assertThat(sut.getHELLO()).isNotNull().isSameAs(HELLO);
+        assertThat(sut.getWorld()).isNotNull().isSameAs(world);
 
         assertThat(Mockito.mockingDetails(hello).isMock()).isTrue();
         assertThat(Mockito.mockingDetails(HELLO).isMock()).isTrue();

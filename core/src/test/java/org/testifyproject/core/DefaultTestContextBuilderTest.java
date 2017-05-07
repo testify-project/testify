@@ -35,17 +35,17 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class DefaultTestContextBuilderTest {
 
-    DefaultTestContextBuilder cut;
+    DefaultTestContextBuilder sut;
 
     @Before
     public void init() {
-        cut = DefaultTestContextBuilder.builder();
+        sut = DefaultTestContextBuilder.builder();
     }
 
     @Test
     public void givenResourceStartStrategyBuildShouldReturnTestContext() {
         StartStrategy value = StartStrategy.EAGER;
-        TestContext result = cut.resourceStartStrategy(value).build();
+        TestContext result = sut.resourceStartStrategy(value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getResourceStartStrategy()).isEqualTo(value);
@@ -54,7 +54,7 @@ public class DefaultTestContextBuilderTest {
     @Test
     public void givenTestInstanceBuildShouldReturnTestContext() {
         Object value = new Object();
-        TestContext result = cut.testInstance(value).build();
+        TestContext result = sut.testInstance(value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getTestInstance()).isEqualTo(value);
@@ -63,7 +63,7 @@ public class DefaultTestContextBuilderTest {
     @Test
     public void givenTestDescriptorBuildShouldReturnTestContext() {
         TestDescriptor value = mock(TestDescriptor.class);
-        TestContext result = cut.testDescriptor(value).build();
+        TestContext result = sut.testDescriptor(value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getTestDescriptor()).isEqualTo(value);
@@ -72,7 +72,7 @@ public class DefaultTestContextBuilderTest {
     @Test
     public void givenMethodDescriptorBuildShouldReturnTestContext() {
         MethodDescriptor value = mock(MethodDescriptor.class);
-        TestContext result = cut.testMethodDescriptor(value).build();
+        TestContext result = sut.testMethodDescriptor(value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getTestMethodDescriptor()).isEqualTo(value);
@@ -81,7 +81,7 @@ public class DefaultTestContextBuilderTest {
     @Test
     public void givenTestRunnerBuildShouldReturnTestContext() {
         TestRunner value = mock(TestRunner.class);
-        TestContext result = cut.testRunner(value).build();
+        TestContext result = sut.testRunner(value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getTestRunner()).isEqualTo(value);
@@ -90,7 +90,7 @@ public class DefaultTestContextBuilderTest {
     @Test
     public void givenTestConfigurerBuildShouldReturnTestContext() {
         TestConfigurer value = mock(TestConfigurer.class);
-        TestContext result = cut.testConfigurer(value).build();
+        TestContext result = sut.testConfigurer(value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getTestConfigurer()).isEqualTo(value);
@@ -99,7 +99,7 @@ public class DefaultTestContextBuilderTest {
     @Test
     public void givenMockProviderBuildShouldReturnTestContext() {
         MockProvider value = mock(MockProvider.class);
-        TestContext result = cut.mockProvider(value).build();
+        TestContext result = sut.mockProvider(value).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getMockProvider()).isEqualTo(value);
@@ -110,7 +110,7 @@ public class DefaultTestContextBuilderTest {
         String key = "key";
         String value = "value";
         Map<String, Object> map = ImmutableMap.of(key, value);
-        TestContext result = cut.properties(map).build();
+        TestContext result = sut.properties(map).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getProperties()).containsEntry(key, value);
@@ -121,7 +121,7 @@ public class DefaultTestContextBuilderTest {
         String key = "key";
         String value = "value";
         Map<String, String> map = ImmutableMap.of(key, value);
-        TestContext result = cut.dependencies(map).build();
+        TestContext result = sut.dependencies(map).build();
 
         assertThat(result).isNotNull();
         assertThat(result.getDependencies()).containsEntry(key, value);

@@ -32,7 +32,7 @@ import org.testifyproject.LocalResourceInstance;
  */
 public class DefaultLocalResourceInstanceTest {
 
-    LocalResourceInstance<Object, Object> cut;
+    LocalResourceInstance<Object, Object> sut;
 
     Instance<Object> instance;
     Instance<Object> client;
@@ -44,26 +44,26 @@ public class DefaultLocalResourceInstanceTest {
         client = mock(Instance.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = DefaultLocalResourceInstance.of(instance, client, properties);
+        sut = DefaultLocalResourceInstance.of(instance, client, properties);
     }
 
     @Test
     public void callToGetInstanceShouldReturnLocalResourceInstance() {
-        Instance<Object> result = cut.getResource();
+        Instance<Object> result = sut.getResource();
 
         assertThat(result).isEqualTo(instance);
     }
 
     @Test
     public void callToGetClientShouldReturnOptionalWithClientInstance() {
-        Optional<Instance<Object>> result = cut.getClient();
+        Optional<Instance<Object>> result = sut.getClient();
 
         assertThat(result).contains(client);
     }
 
     @Test
     public void givenNonExistentProperty() {
-        Optional<Object> result = cut.findProperty("non");
+        Optional<Object> result = sut.findProperty("non");
 
         assertThat(result).isEmpty();
     }
@@ -74,7 +74,7 @@ public class DefaultLocalResourceInstanceTest {
         String value = "value";
         properties.put(name, value);
 
-        Optional<Object> result = cut.findProperty(name);
+        Optional<Object> result = sut.findProperty(name);
 
         assertThat(result).contains(value);
     }
@@ -83,15 +83,15 @@ public class DefaultLocalResourceInstanceTest {
     public void givenNullInstancesShouldNotBeEqual() {
         LocalResourceInstance<Object, Object> localResourceInstance = null;
 
-        assertThat(cut).isNotEqualTo(localResourceInstance);
+        assertThat(sut).isNotEqualTo(localResourceInstance);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
@@ -99,13 +99,13 @@ public class DefaultLocalResourceInstanceTest {
         LocalResourceInstance<Object, Object> uneuqual
                 = DefaultLocalResourceInstance.of(instance, null, null);
 
-        assertThat(cut).isNotEqualTo(uneuqual);
-        assertThat(cut.hashCode()).isNotEqualTo(uneuqual.hashCode());
+        assertThat(sut).isNotEqualTo(uneuqual);
+        assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
@@ -113,13 +113,13 @@ public class DefaultLocalResourceInstanceTest {
         LocalResourceInstance<Object, Object> equal
                 = DefaultLocalResourceInstance.of(instance, client, properties);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultLocalResourceInstance", "instance", "client", "properties");
     }

@@ -24,7 +24,7 @@ import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 /**
  * A JUnit unit test runner. This class is the main entry point for running a
  * unit test using {@link org.junit.runner.RunWith} and provides means of
- * creating your class under test and substituting mock instances of its
+ * creating your system under test and substituting mock instances of its
  * collaborators.
  *
  * @author saden
@@ -32,7 +32,7 @@ import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 public class UnitTest extends TestifyJUnit4TestRunner {
 
     /**
-     * Create a new test runner instance for the class under test.
+     * Create a new test runner instance for the system under test.
      *
      * @param testClass the test class type
      *

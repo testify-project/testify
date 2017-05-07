@@ -20,7 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
@@ -36,17 +36,17 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
 @RunWith(HK2IntegrationTest.class)
 public class IgnoreTestClassIT {
 
-    @Cut
-    DirectGreeter cut;
+    @Sut
+    DirectGreeter sut;
 
     @Real
     Hello greeting;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(greeting).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull()
+        assertThat(sut.getGreeting()).isNotNull()
                 .isSameAs(greeting)
                 .isInstanceOf(Hello.class);
 

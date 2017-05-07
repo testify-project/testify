@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.ParameterDescriptor;
-import org.testifyproject.fixture.analyzer.AnalyzedCutClass;
+import org.testifyproject.fixture.analyzer.AnalyzedSutClass;
 
 /**
  *
@@ -31,19 +31,19 @@ import org.testifyproject.fixture.analyzer.AnalyzedCutClass;
  */
 public class DefaultParameterDescriptorTest {
 
-    ParameterDescriptor cut;
+    ParameterDescriptor sut;
     Parameter parameter;
     Integer index;
 
     @Before
     public void init() throws NoSuchMethodException {
-        Constructor<AnalyzedCutClass> constructor
-                = AnalyzedCutClass.class.getDeclaredConstructor(Map.class);
+        Constructor<AnalyzedSutClass> constructor
+                = AnalyzedSutClass.class.getDeclaredConstructor(Map.class);
 
         index = 0;
         parameter = constructor.getParameters()[index];
 
-        cut = new DefaultParameterDescriptor(parameter, index);
+        sut = new DefaultParameterDescriptor(parameter, index);
     }
 
     @Test
@@ -55,76 +55,76 @@ public class DefaultParameterDescriptorTest {
 
     @Test
     public void callToGetAnnotatedElementShouldReturnParameter() {
-        Parameter result = cut.getAnnotatedElement();
+        Parameter result = sut.getAnnotatedElement();
 
         assertThat(result).isEqualTo(parameter);
     }
 
     @Test
     public void callToGetNameShouldReturnParameterName() {
-        String result = cut.getName();
+        String result = sut.getName();
 
         assertThat(result).isEqualTo(parameter.getName());
     }
 
     @Test
     public void callToGetTypeShouldReturnParameterType() {
-        Class<?> result = cut.getType();
+        Class<?> result = sut.getType();
 
         assertThat(result).isEqualTo(parameter.getType());
     }
 
     @Test
     public void callToGetIndexShouldReturnParameterIndex() {
-        Integer result = cut.getIndex();
+        Integer result = sut.getIndex();
 
         assertThat(result).isEqualTo(index);
     }
 
     @Test
     public void callToGetGenericTypeShouldReturnParameterGenericType() {
-        Type result = cut.getGenericType();
+        Type result = sut.getGenericType();
 
         assertThat(result).isEqualTo(parameter.getParameterizedType());
     }
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        assertThat(cut).isNotEqualTo(null);
+        assertThat(sut).isNotEqualTo(null);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         ParameterDescriptor unequal = DefaultParameterDescriptor.of(parameter, -1);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         ParameterDescriptor equal = DefaultParameterDescriptor.of(parameter, index);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultParameterDescriptor", "parameter", "index");
     }

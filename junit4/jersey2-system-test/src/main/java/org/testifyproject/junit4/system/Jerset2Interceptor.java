@@ -67,7 +67,7 @@ public class Jerset2Interceptor {
             SSLEngineConfigurator sslEngineConfigurator,
             boolean start) throws Exception {
 
-        testContextHolder.execute(testContext -> {
+        testContextHolder.exesute(testContext -> {
             ApplicationHandler applicationHandler = handler.getApplicationHandler();
             ServiceLocator serviceLocator = applicationHandler.getServiceLocator();
             serviceLocator = testContext.getTestConfigurer().configure(testContext, serviceLocator);

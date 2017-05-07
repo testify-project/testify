@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture.common;
-
-import org.testifyproject.annotation.Cut;
+package org.testifyproject.junit4.fixture.common;
 
 /**
  *
  * @author saden
  */
-public class CutClass {
-    
-    @Cut
-    CollaboratorClass cut;
-    
+public class SutClass {
+
+    public String sayHello() {
+        return "Hello!";
+    }
 }

@@ -27,7 +27,7 @@ import org.testifyproject.ServerInstance;
  */
 public class DefaultServerInstanceTest {
 
-    ServerInstance<Object> cut;
+    ServerInstance<Object> sut;
     URI baseURI;
     Object server;
     Class<Object> contract;
@@ -38,53 +38,53 @@ public class DefaultServerInstanceTest {
         server = new Object();
         contract = Object.class;
 
-        cut = DefaultServerInstance.of(baseURI, server, contract);
+        sut = DefaultServerInstance.of(baseURI, server, contract);
 
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getInstance()).isEqualTo(server);
-        assertThat(cut.getContract()).contains(contract);
+        assertThat(sut.getBaseURI()).isEqualTo(baseURI);
+        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getContract()).contains(contract);
     }
 
     @Test
     public void givenBaseURIAndServerOfShouldReturn() {
-        cut = DefaultServerInstance.of(baseURI, server);
+        sut = DefaultServerInstance.of(baseURI, server);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getInstance()).isEqualTo(server);
-        assertThat(cut.getContract()).isEmpty();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getBaseURI()).isEqualTo(baseURI);
+        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getContract()).isEmpty();
     }
 
     @Test
     public void givenNameOfShouldReturn() {
-        cut = DefaultServerInstance.of(baseURI, server);
+        sut = DefaultServerInstance.of(baseURI, server);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getInstance()).isEqualTo(server);
-        assertThat(cut.getContract()).isEmpty();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getBaseURI()).isEqualTo(baseURI);
+        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getContract()).isEmpty();
     }
 
     @Test
     public void givenContractOfShouldReturn() {
-        cut = DefaultServerInstance.of(baseURI, server, contract);
+        sut = DefaultServerInstance.of(baseURI, server, contract);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(cut.getInstance()).isEqualTo(server);
-        assertThat(cut.getContract()).contains(contract);
+        assertThat(sut).isNotNull();
+        assertThat(sut.getBaseURI()).isEqualTo(baseURI);
+        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getContract()).contains(contract);
     }
 
     @Test
     public void callToGetBaseURIShouldReturnURI() {
-        URI result = cut.getBaseURI();
+        URI result = sut.getBaseURI();
 
         assertThat(result).isEqualTo(baseURI);
     }
 
     @Test
     public void callToGetInstanceShouldReturnServer() {
-        Object result = cut.getInstance();
+        Object result = sut.getInstance();
 
         assertThat(result).isEqualTo(server);
     }
@@ -93,28 +93,28 @@ public class DefaultServerInstanceTest {
     public void givenNullInstancesShouldNotBeEqual() {
         ServerInstance<Object> instance = null;
 
-        assertThat(cut).isNotEqualTo(instance);
+        assertThat(sut).isNotEqualTo(instance);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         ServerInstance<Object> uneuqual = DefaultServerInstance.of(baseURI, new Object());
 
-        assertThat(cut).isNotEqualTo(uneuqual);
-        assertThat(cut.hashCode()).isNotEqualTo(uneuqual.hashCode());
+        assertThat(sut).isNotEqualTo(uneuqual);
+        assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
 
     }
 
@@ -123,13 +123,13 @@ public class DefaultServerInstanceTest {
         ServerInstance<Object> equal
                 = DefaultServerInstance.of(baseURI, server, contract);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains(
                 "DefaultServerInstance",

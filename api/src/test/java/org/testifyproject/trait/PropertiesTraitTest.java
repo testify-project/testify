@@ -32,20 +32,20 @@ import static org.mockito.Mockito.mock;
  */
 public class PropertiesTraitTest {
 
-    PropertiesTrait cut;
+    PropertiesTrait sut;
     Map properties;
 
     @Before
     public void init() {
-        cut = mock(PropertiesTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(PropertiesTrait.class, Answers.CALLS_REAL_METHODS);
         properties = new HashMap();
 
-        given(cut.getProperties()).willReturn(properties);
+        given(sut.getProperties()).willReturn(properties);
     }
 
     @Test
     public void callToGetPropertiesShouldReturnEmptyResult() {
-        Map<String, Object> result = cut.getProperties();
+        Map<String, Object> result = sut.getProperties();
 
         assertThat(result).isEmpty();
     }
@@ -54,7 +54,7 @@ public class PropertiesTraitTest {
     public void givenNonExistentKeyGetPropertyShouldReturnEmptyResult() {
         String key = "non";
 
-        Object result = cut.getProperty(key);
+        Object result = sut.getProperty(key);
 
         assertThat(result).isNull();
     }
@@ -66,7 +66,7 @@ public class PropertiesTraitTest {
 
         properties.put(key, value);
 
-        String result = cut.getProperty(key);
+        String result = sut.getProperty(key);
 
         assertThat(result).isEqualTo(value);
     }
@@ -75,7 +75,7 @@ public class PropertiesTraitTest {
     public void givenNonExistentKeyFindPropertyShouldReturnEmptyResult() {
         String key = "non";
 
-        Optional<Object> result = cut.findProperty(key);
+        Optional<Object> result = sut.findProperty(key);
 
         assertThat(result).isEmpty();
     }
@@ -87,7 +87,7 @@ public class PropertiesTraitTest {
 
         properties.put(key, value);
 
-        Optional<Object> result = cut.findProperty(key);
+        Optional<Object> result = sut.findProperty(key);
 
         assertThat(result).contains(value);
     }
@@ -97,7 +97,7 @@ public class PropertiesTraitTest {
         String key = "key";
         String value = "value";
 
-        cut.addProperty(key, value);
+        sut.addProperty(key, value);
 
         assertThat(properties).containsEntry(key, value);
     }
@@ -106,7 +106,7 @@ public class PropertiesTraitTest {
     public void givenNonExistingKeyFindListShouldReturnEmptyList() {
         String key = "key";
 
-        List<Object> result = cut.findList(key);
+        List<Object> result = sut.findList(key);
 
         assertThat(result).isEmpty();
 
@@ -119,7 +119,7 @@ public class PropertiesTraitTest {
 
         properties.put(key, value);
 
-        List<Object> result = cut.findList(key);
+        List<Object> result = sut.findList(key);
 
         assertThat(result).isEqualTo(value);
     }
@@ -129,7 +129,7 @@ public class PropertiesTraitTest {
         String key = "key";
         String element = "element";
 
-        cut.addListElement(key, element);
+        sut.addListElement(key, element);
 
         List<String> result = (List) properties.get(key);
 
@@ -140,7 +140,7 @@ public class PropertiesTraitTest {
     public void givenNonExistingKeyFindMapShouldReturnEmptyList() {
         String key = "key";
 
-        Map<Object, Object> result = cut.findMap(key);
+        Map<Object, Object> result = sut.findMap(key);
 
         assertThat(result).isEmpty();
 
@@ -153,7 +153,7 @@ public class PropertiesTraitTest {
 
         properties.put(key, value);
 
-        Map<Object, Object> result = cut.findMap(key);
+        Map<Object, Object> result = sut.findMap(key);
 
         assertThat(result).isEqualTo(value);
     }
@@ -164,7 +164,7 @@ public class PropertiesTraitTest {
         String entryKey = "entryKey";
         String entryValue = "entryValue";
 
-        cut.addMapEntry(key, entryKey, entryValue);
+        sut.addMapEntry(key, entryKey, entryValue);
 
         Map<Object, Object> result = (Map) properties.get(key);
 
