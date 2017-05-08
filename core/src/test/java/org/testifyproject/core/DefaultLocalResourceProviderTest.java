@@ -92,7 +92,7 @@ public class DefaultLocalResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithNoConfigurationShouldStart() {
+    public void callToStartWithNoConfigurationShouldStart() throws Exception {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
@@ -159,7 +159,7 @@ public class DefaultLocalResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithConfigurationShouldStart() {
+    public void callToStartWithConfigurationShouldStart() throws Exception {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
@@ -227,7 +227,7 @@ public class DefaultLocalResourceProviderTest {
     }
 
     @Test
-    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() {
+    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() throws Exception {
         TestContext testContext = mock(TestContext.class);
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceProvider localResourceProvider = mock(LocalResourceProvider.class);

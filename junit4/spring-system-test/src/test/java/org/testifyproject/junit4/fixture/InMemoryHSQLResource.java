@@ -17,7 +17,6 @@ package org.testifyproject.junit4.fixture;
 
 import static java.lang.String.format;
 import java.sql.Connection;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.hsqldb.jdbc.JDBCDataSource;
 import org.testifyproject.LocalResourceInstance;
@@ -25,7 +24,6 @@ import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.LocalResourceInstanceBuilder;
-import org.testifyproject.core.util.ExceptionUtil;
 
 /**
  * An implementation of LocalResourceProvider that provides an in-memory HSQL
@@ -51,29 +49,24 @@ public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSourc
     @Override
     public LocalResourceInstance<DataSource, Connection> start(TestContext testContext,
             LocalResource localResource,
-            JDBCDataSource dataSource) {
-        try {
-            server = dataSource;
-            client = dataSource.getConnection();
+            JDBCDataSource dataSource)
+            throws Exception {
+        server = dataSource;
+        client = dataSource.getConnection();
 
-            return LocalResourceInstanceBuilder.builder()
-                    .resource(server, "inmemoryHSQLDataSource", DataSource.class)
-                    .client(client, "inmemoryHSQLConnection", Connection.class)
-                    .build();
-        } catch (SQLException e) {
-            throw ExceptionUtil.INSTANCE.propagate(e);
-        }
+        return LocalResourceInstanceBuilder.builder()
+                .resource(server, "inmemoryHSQLDataSource", DataSource.class)
+                .client(client, "inmemoryHSQLConnection", Connection.class)
+                .build();
+
     }
 
     @Override
-    public void stop(TestContext testContext, LocalResource localResource) {
-        try {
-            server.getConnection()
-                    .createStatement()
-                    .executeQuery("SHUTDOWN");
-            client.close();
-        } catch (SQLException e) {
-            throw ExceptionUtil.INSTANCE.propagate(e);
-        }
+    public void stop(TestContext testContext, LocalResource localResource)
+            throws Exception {
+        server.getConnection()
+                .createStatement()
+                .executeQuery("SHUTDOWN");
+        client.close();
     }
 }

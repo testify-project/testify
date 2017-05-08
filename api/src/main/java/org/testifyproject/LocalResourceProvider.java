@@ -55,15 +55,19 @@ public interface LocalResourceProvider<T, S, C> {
      * @param localResource test class local resource annotation
      * @param config the local resource configuration
      * @return a local resource instance
+     * @throws java.lang.Exception an exception thrown while starting
      */
-    LocalResourceInstance<S, C> start(TestContext testContext, LocalResource localResource, T config);
+    LocalResourceInstance<S, C> start(TestContext testContext, LocalResource localResource, T config)
+            throws Exception;
 
     /**
      * Stop the local resource.
      *
      * @param testContext the test context
      * @param localResource test class local resource annotation
+     * @throws java.lang.Exception an exception thrown while stopping
      */
-    void stop(TestContext testContext, LocalResource localResource);
+    void stop(TestContext testContext, LocalResource localResource)
+            throws Exception;
 
 }

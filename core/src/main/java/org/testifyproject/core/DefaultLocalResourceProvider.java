@@ -28,6 +28,7 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
 
@@ -73,22 +74,26 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
             Object configuration = localResourceProvider.configure(testContext);
             configuration = testConfigurer.configure(testContext, configuration);
 
-            LocalResourceInstance<?, ?> localResourceInstance
-                    = localResourceProvider.start(testContext, localResource, configuration);
+            try {
+                LocalResourceInstance<?, ?> localResourceInstance
+                        = localResourceProvider.start(testContext, localResource, configuration);
 
-            processResource(localResourceInstance, localResource, serviceInstance);
-            processClient(localResourceInstance, localResource, serviceInstance);
+                processResource(localResourceInstance, localResource, serviceInstance);
+                processClient(localResourceInstance, localResource, serviceInstance);
 
-            String resourceName = localResource.name();
-            Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
+                String resourceName = localResource.name();
+                Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
 
-            if (resourceName.isEmpty()) {
-                serviceInstance.addConstant(localResourceInstance, null, resourceContract);
-            } else {
-                serviceInstance.addConstant(localResourceInstance, resourceName, resourceContract);
+                if (resourceName.isEmpty()) {
+                    serviceInstance.addConstant(localResourceInstance, null, resourceContract);
+                } else {
+                    serviceInstance.addConstant(localResourceInstance, resourceName, resourceContract);
+                }
+
+                localResourceProviders.put(localResource, localResourceProvider);
+            } catch (Exception e) {
+                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, resourceProviderType);
             }
-
-            localResourceProviders.put(localResource, localResourceProvider);
         });
     }
 
@@ -118,9 +123,13 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
     @Override
     public void stop(TestContext testContext) {
-        localResourceProviders.forEach((localResource, localResourceProvider)
-                -> localResourceProvider.stop(testContext, localResource)
-        );
+        localResourceProviders.forEach((localResource, localResourceProvider) -> {
+            try {
+                localResourceProvider.stop(testContext, localResource);
+            } catch (Exception e) {
+                throw ExceptionUtil.INSTANCE.propagate("Could not stop '{}' resource", e, localResource.value());
+            }
+        });
     }
 
 }
