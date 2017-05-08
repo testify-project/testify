@@ -28,14 +28,14 @@ was added, changed, deprecated, removed, fix and security fixes.
   - Renamed serverName and serverContract attributes in RequiresResource to resourceName and resourceContract
   - Renamed @RequiresResource annotation to @LocalResource
   - Renamed @RequiresContainer annotation to @VirtualResource
-  - Renamed ResourceProvder contract to LocalResourceProvider
-  - Renamed ContainerProvider contract to VirtualResourceProvider
+  - Renamed ResourceProvder contract to LocalResourceProvider and updated method signatures
+  - Renamed ContainerProvider contract to VirtualResourceProvider and updated method signatures
   - Renamed ResourceInstance contract to LocalResourceInstance
   - Renamed ContainerInstance contract to VirtualResourceInstance
   - Renamed DefaultContainerInstance to DefaultVirtualResourceInstance
   - Renamed DefaultResourceInstance to DefaultLocalResourceInstance
   - Renamed ResourceInstanceBuilder to LocalResourceInstanceBuilder
-  - Renamed ReificationProvider to TestResourcesProvider
+  - Renamed ReificationProvider to TestResourcesProvider and updated method signatures
   - Renamed TestReifier to TestConfigurer
 
 ## [0.9.2] - 2017-03-20
