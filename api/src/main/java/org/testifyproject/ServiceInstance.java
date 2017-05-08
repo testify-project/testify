@@ -102,23 +102,23 @@ public interface ServiceInstance {
      */
     default <T> void replace(Instance<T> instance, String overrideName, Class overrideContract) {
         T constant = instance.getInstance();
-        Optional<String> nameResult = instance.getName();
-        Optional<Class<? extends T>> contractResult = instance.getContract();
+        Optional<String> foundName = instance.getName();
+        Optional<Class<? extends T>> foundContract = instance.getContract();
 
         String name = null;
 
         if (overrideName != null && !overrideName.isEmpty()) {
             name = overrideName;
-        } else if (nameResult.isPresent()) {
-            name = nameResult.get();
+        } else if (foundName.isPresent()) {
+            name = foundName.get();
         }
 
         Class<? extends T> contract = null;
 
         if (overrideContract != null && !void.class.equals(overrideContract)) {
             contract = overrideContract;
-        } else if (contractResult.isPresent()) {
-            contract = contractResult.get();
+        } else if (foundContract.isPresent()) {
+            contract = foundContract.get();
         }
 
         replace(constant, name, contract);

@@ -21,6 +21,7 @@ was added, changed, deprecated, removed, fix and security fixes.
   - Added CutReifier contract for reifying the class under test
   - Added FieldReifier contract for reifying the test class fields
   - Added CollaboratorsReifier contract to reify cut class based on provided collaborators
+- Added support for configuring behavior through ".testify.yml" configuration file
 
 ### Changed
 - Adopted Semantic Testing
