@@ -15,6 +15,8 @@
  */
 package org.testifyproject;
 
+import org.testifyproject.annotation.LocalResource;
+
 /**
  * A contract that defines methods to configure, start an stop a local resource.
  *
@@ -27,17 +29,18 @@ public interface LocalResourceProvider<T, S, C> {
 
     /**
      * <p>
-     * A method to configure a local resource. Configuring a local resource
-     * for testing typically involves creating a configuration object that can
-     * be further configured by a test class method annotated with
+     * A method to configure a local resource. Configuring a local resource for
+     * testing typically involves creating a configuration object that can be
+     * further configured by a test class method annotated with
      * {@link org.testifyproject.annotation.ConfigHandler}.
      * </p>
      * <p>
      * Note that implementation of this method should not do any work beyond
      * returning configuration object. That is to is to say it should be
-     * stateless and should not perform instantiation of the local resource
-     * for testing as that should be handled in
-     * {@link #start(TestContext, java.lang.Object)} method.
+     * stateless and should not perform instantiation of the local resource for
+     * testing as that should be handled in
+     * {@link #start(org.testifyproject.TestContext, org.testifyproject.annotation.LocalResource, java.lang.Object) }
+     * method.
      * </p>
      *
      * @param testContext the test context
@@ -46,18 +49,21 @@ public interface LocalResourceProvider<T, S, C> {
     T configure(TestContext testContext);
 
     /**
-     * Start the local resource with the given testContext and
-     * configuration.
+     * Start the local resource with the given testContext and configuration.
      *
      * @param testContext the test context
+     * @param localResource test class local resource annotation
      * @param config the local resource configuration
      * @return a local resource instance
      */
-    LocalResourceInstance<S, C> start(TestContext testContext, T config);
+    LocalResourceInstance<S, C> start(TestContext testContext, LocalResource localResource, T config);
 
     /**
      * Stop the local resource.
+     *
+     * @param testContext the test context
+     * @param localResource test class local resource annotation
      */
-    void stop();
+    void stop(TestContext testContext, LocalResource localResource);
 
 }

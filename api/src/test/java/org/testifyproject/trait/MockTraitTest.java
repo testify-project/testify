@@ -35,20 +35,20 @@ import org.testifyproject.fixture.InjectableFieldService;
  */
 public class MockTraitTest {
 
-    MockTrait cut;
+    MockTrait sut;
 
     @Before
     public void init() {
-        cut = mock(MockTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(MockTrait.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test
     public void givenNonRealFieldGetRealShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("non");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Real> result = cut.getReal();
+        Optional<Real> result = sut.getReal();
 
         assertThat(result).isEmpty();
     }
@@ -57,9 +57,9 @@ public class MockTraitTest {
     public void givenRealFieldGetRealShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("real");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Real> result = cut.getReal();
+        Optional<Real> result = sut.getReal();
 
         assertThat(result).isPresent();
     }
@@ -68,9 +68,9 @@ public class MockTraitTest {
     public void givenNonFakeFieldGetFakeShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("non");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Fake> result = cut.getFake();
+        Optional<Fake> result = sut.getFake();
 
         assertThat(result).isEmpty();
     }
@@ -79,9 +79,9 @@ public class MockTraitTest {
     public void givenFakeFieldGetFakeShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("fake");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Fake> result = cut.getFake();
+        Optional<Fake> result = sut.getFake();
 
         assertThat(result).isPresent();
     }
@@ -90,9 +90,9 @@ public class MockTraitTest {
     public void givenNonVirtualFieldGetVirtualShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("non");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Virtual> result = cut.getVirtual();
+        Optional<Virtual> result = sut.getVirtual();
 
         assertThat(result).isEmpty();
     }
@@ -101,9 +101,9 @@ public class MockTraitTest {
     public void givenVirutalFieldGetVirtualShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("virtual");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Virtual> result = cut.getVirtual();
+        Optional<Virtual> result = sut.getVirtual();
 
         assertThat(result).isPresent();
     }
@@ -112,9 +112,9 @@ public class MockTraitTest {
     public void givenNonFixtureFieldGetFixtureShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("non");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Fixture> result = cut.getFixture();
+        Optional<Fixture> result = sut.getFixture();
 
         assertThat(result).isEmpty();
     }
@@ -123,9 +123,9 @@ public class MockTraitTest {
     public void givenFixtureFieldGetFixtureShouldReturnEmptyOptional() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("real");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Optional<Fixture> result = cut.getFixture();
+        Optional<Fixture> result = sut.getFixture();
 
         assertThat(result).isPresent();
     }
@@ -134,9 +134,9 @@ public class MockTraitTest {
     public void callToIsMockOnRealFieldShouldReturnFalse() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("real");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isMock();
+        Boolean result = sut.isMock();
 
         assertThat(result).isFalse();
     }
@@ -145,9 +145,9 @@ public class MockTraitTest {
     public void callToIsMockOnFakeFieldShouldReturnTrue() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("fake");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isMock();
+        Boolean result = sut.isMock();
 
         assertThat(result).isTrue();
     }
@@ -156,9 +156,9 @@ public class MockTraitTest {
     public void callToIsMockOnVirtualFieldShouldReturnTrue() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("virtual");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isMock();
+        Boolean result = sut.isMock();
 
         assertThat(result).isTrue();
     }
@@ -167,9 +167,9 @@ public class MockTraitTest {
     public void callToIsInjectableOnRealFieldShouldReturnTrue() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("real");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isInjectable();
+        Boolean result = sut.isInjectable();
 
         assertThat(result).isTrue();
     }
@@ -178,9 +178,9 @@ public class MockTraitTest {
     public void callToIsInjectableOnFakeFieldShouldReturnTrue() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("fake");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isInjectable();
+        Boolean result = sut.isInjectable();
 
         assertThat(result).isTrue();
     }
@@ -189,9 +189,9 @@ public class MockTraitTest {
     public void callToIsInjectableOnVirtualFieldShouldReturnTrue() throws NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("virtual");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isInjectable();
+        Boolean result = sut.isInjectable();
 
         assertThat(result).isTrue();
     }

@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ImplicitGenericType;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -37,29 +37,29 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
 @RunWith(UnitTest.class)
 public class ImplicitGenericTypeInitializationTest {
 
-    @Cut
-    ImplicitGenericType cut;
+    @Sut
+    ImplicitGenericType sut;
 
     @Fake
     Supplier<Hello> hello = () -> new Hello();
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(hello).isNotNull();
-        assertThat(cut.getHello()).isSameAs(hello);
+        assertThat(sut.getHello()).isSameAs(hello);
         assertThat(Mockito.mockingDetails(hello).isMock()).isTrue();
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
+    public void givenNothingClassToExesuteShouldReturnHello() {
         String helloGreeting = "Hello";
         Hello helloInstance = mock(Hello.class);
 
         given(hello.get()).willReturn(helloInstance);
         given(helloInstance.greet()).willReturn(helloGreeting);
 
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(helloGreeting);
         verify(hello).get();

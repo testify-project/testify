@@ -24,7 +24,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.ProvideSystemProperty;
 
 /**
  *
@@ -32,11 +34,15 @@ import org.junit.Test;
  */
 public class SettingUtilTest {
 
-    SettingUtil cut;
+    SettingUtil sut;
 
+    @Rule
+    public ProvideSystemProperty provideSystemProperty 
+            = new ProvideSystemProperty("testify.categories", "unit,integration");
+    
     @Before
     public void init() {
-        cut = new SettingUtil();
+        sut = new SettingUtil();
     }
 
     @Test
@@ -53,7 +59,7 @@ public class SettingUtilTest {
                 StandardOpenOption.WRITE,
                 StandardOpenOption.TRUNCATE_EXISTING);
 
-        Map<String, Object> result = cut.getSettings();
+        Map<String, Object> result = sut.getSettings();
 
         assertThat(result).containsEntry("hello", "world");
         Files.deleteIfExists(path);
@@ -73,27 +79,16 @@ public class SettingUtilTest {
                 StandardOpenOption.WRITE,
                 StandardOpenOption.TRUNCATE_EXISTING);
 
-        Map<String, Object> result = cut.getSettings();
+        Map<String, Object> result = sut.getSettings();
 
         assertThat(result).containsEntry("hello", "world");
         Files.deleteIfExists(path);
     }
 
     @Test
-    public void givenEmptyCategoriesGetSystemCategoriesShouldReturnEmptyArray() {
-        System.clearProperty("testify.categories");
-        String[] result = cut.getSystemCategories();
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     public void givenCategoriesGetSystemCategoriesShouldReturnEmptyArray() {
-        System.setProperty("testify.categories", "unit,integration");
-
-        String[] result = cut.getSystemCategories();
+        String[] result = sut.getSystemCategories();
 
         assertThat(result).contains("UNIT", "INTEGRATION");
-        System.clearProperty("testify.categories");
     }
 }

@@ -22,51 +22,51 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.fixture.InjectableFieldService;
 
 /**
  *
  * @author saden
  */
-public class CutDescriptorTest {
+public class SutDescriptorTest {
 
-    CutDescriptor cut;
+    SutDescriptor sut;
 
     @Before
     public void init() {
-        cut = mock(CutDescriptor.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(SutDescriptor.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test
-    public void givenCutFieldGetCutShouldReturnEmptyOptional() throws NoSuchFieldException {
-        Field field = InjectableFieldService.class.getDeclaredField("cut");
+    public void givenSutFieldGetSutShouldReturnEmptyOptional() throws NoSuchFieldException {
+        Field field = InjectableFieldService.class.getDeclaredField("sut");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Cut result = cut.getCut();
+        Sut result = sut.getSut();
 
         assertThat(result).isNotNull();
     }
 
     @Test
-    public void callToIsVirtualCutOnNonVirtualCutFieldShouldReturnFalse() throws NoSuchFieldException {
-        Field field = InjectableFieldService.class.getDeclaredField("cut");
+    public void callToIsVirtualSutOnNonVirtualSutFieldShouldReturnFalse() throws NoSuchFieldException {
+        Field field = InjectableFieldService.class.getDeclaredField("sut");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isVirtualCut();
+        Boolean result = sut.isVirtualSut();
 
         assertThat(result).isFalse();
     }
 
     @Test
-    public void callToIsVirtualCutOnVirtualCutFieldShouldReturnFalse() throws NoSuchFieldException {
-        Field field = InjectableFieldService.class.getDeclaredField("virtualCut");
+    public void callToIsVirtualSutOnVirtualSutFieldShouldReturnFalse() throws NoSuchFieldException {
+        Field field = InjectableFieldService.class.getDeclaredField("virtualSut");
 
-        given(cut.getMember()).willReturn(field);
+        given(sut.getMember()).willReturn(field);
 
-        Boolean result = cut.isVirtualCut();
+        Boolean result = sut.isVirtualSut();
 
         assertThat(result).isTrue();
     }

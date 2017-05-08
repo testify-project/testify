@@ -45,7 +45,7 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class DefaultTestDescriptorTest {
 
-    TestDescriptor cut;
+    TestDescriptor sut;
     Class<AnalyzedTestClass> testClass;
     Map<String, Object> properties;
 
@@ -54,7 +54,7 @@ public class DefaultTestDescriptorTest {
         testClass = AnalyzedTestClass.class;
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = DefaultTestDescriptor.of(testClass, properties);
+        sut = DefaultTestDescriptor.of(testClass, properties);
     }
 
     @Test
@@ -66,42 +66,42 @@ public class DefaultTestDescriptorTest {
 
     @Test
     public void callToGetPropertiesShouldReturnProperties() {
-        Map<String, Object> result = cut.getProperties();
+        Map<String, Object> result = sut.getProperties();
 
         assertThat(result).isEqualTo(properties);
     }
 
     @Test
     public void callToGetTestClassShouldReturn() {
-        Class<?> result = cut.getTestClass();
+        Class<?> result = sut.getTestClass();
 
         assertThat(result).isEqualTo(testClass);
     }
 
     @Test
     public void callToGetTestClassLoaderShouldReturn() {
-        ClassLoader result = cut.getTestClassLoader();
+        ClassLoader result = sut.getTestClassLoader();
 
         assertThat(result).isEqualTo(testClass.getClassLoader());
     }
 
     @Test
     public void callToGetTestClassNameShouldReturn() {
-        String result = cut.getTestClassName();
+        String result = sut.getTestClassName();
 
         assertThat(result).isEqualTo(testClass.getSimpleName());
     }
 
     @Test
     public void callToGetApplicationShouldReturn() {
-        Optional<Application> result = cut.getApplication();
+        Optional<Application> result = sut.getApplication();
 
         assertThat(result).isNotNull();
     }
 
     @Test
-    public void callToGetCutFieldShouldReturn() {
-        Optional<Field> result = cut.getCutField();
+    public void callToGetSutFieldShouldReturn() {
+        Optional<Field> result = sut.getSutField();
 
         assertThat(result).isNotNull();
     }
@@ -111,7 +111,7 @@ public class DefaultTestDescriptorTest {
         Module value = mock(Module.class);
         properties.put(TestDescriptorProperties.MODULES, ImmutableList.of(value));
 
-        List<Module> result = cut.getModules();
+        List<Module> result = sut.getModules();
 
         assertThat(result).containsExactly(value);
     }
@@ -121,7 +121,7 @@ public class DefaultTestDescriptorTest {
         Scan value = mock(Scan.class);
         properties.put(TestDescriptorProperties.SCANS, ImmutableList.of(value));
 
-        List<Scan> result = cut.getScans();
+        List<Scan> result = sut.getScans();
 
         assertThat(result).containsExactly(value);
     }
@@ -131,7 +131,7 @@ public class DefaultTestDescriptorTest {
         LocalResource value = mock(LocalResource.class);
         properties.put(TestDescriptorProperties.LOCAL_RESOURCES, ImmutableList.of(value));
 
-        List<LocalResource> result = cut.getLocalResources();
+        List<LocalResource> result = sut.getLocalResources();
 
         assertThat(result).containsExactly(value);
     }
@@ -141,14 +141,14 @@ public class DefaultTestDescriptorTest {
         VirtualResource value = mock(VirtualResource.class);
         properties.put(TestDescriptorProperties.VIRTUAL_RESOURCES, ImmutableList.of(value));
 
-        List<VirtualResource> result = cut.getVirtualResources();
+        List<VirtualResource> result = sut.getVirtualResources();
 
         assertThat(result).containsExactly(value);
     }
 
     @Test
     public void callToGetCollaboratorProviderShouldReturn() {
-        Optional<MethodDescriptor> result = cut.getCollaboratorProvider();
+        Optional<MethodDescriptor> result = sut.getCollaboratorProvider();
 
         assertThat(result).isNotNull();
     }
@@ -158,7 +158,7 @@ public class DefaultTestDescriptorTest {
         MethodDescriptor value = mock(MethodDescriptor.class);
         properties.put(TestDescriptorProperties.CONFIG_HANDLERS, ImmutableList.of(value));
 
-        List<MethodDescriptor> result = cut.getConfigHandlers();
+        List<MethodDescriptor> result = sut.getConfigHandlers();
 
         assertThat(result).containsExactly(value);
     }
@@ -171,7 +171,7 @@ public class DefaultTestDescriptorTest {
         List<FieldDescriptor> value = ImmutableList.of(fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS, value);
 
-        Collection<FieldDescriptor> result = cut.getFieldDescriptors();
+        Collection<FieldDescriptor> result = sut.getFieldDescriptors();
 
         assertThat(result).containsExactly(fieldDescriptor);
     }
@@ -184,7 +184,7 @@ public class DefaultTestDescriptorTest {
         Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
-        Optional<FieldDescriptor> result = cut.findFieldDescriptor(type);
+        Optional<FieldDescriptor> result = sut.findFieldDescriptor(type);
 
         assertThat(result).contains(fieldDescriptor);
     }
@@ -200,7 +200,7 @@ public class DefaultTestDescriptorTest {
         Class<String> searchType = String.class;
         given(fieldDescriptor.isSupertypeOf(searchType)).willReturn(true);
 
-        Optional<FieldDescriptor> result = cut.findFieldDescriptor(searchType);
+        Optional<FieldDescriptor> result = sut.findFieldDescriptor(searchType);
 
         assertThat(result).contains(fieldDescriptor);
     }
@@ -214,7 +214,7 @@ public class DefaultTestDescriptorTest {
         Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
-        Optional<FieldDescriptor> result = cut.findFieldDescriptor(type, name);
+        Optional<FieldDescriptor> result = sut.findFieldDescriptor(type, name);
 
         assertThat(result).contains(fieldDescriptor);
     }
@@ -226,48 +226,48 @@ public class DefaultTestDescriptorTest {
         properties.put(TestDescriptorProperties.CONFIG_HANDLERS, ImmutableList.of(value));
         given(value.hasParameterTypes(parameterType)).willReturn(Boolean.TRUE);
 
-        Optional<MethodDescriptor> result = cut.findConfigHandler(parameterType);
+        Optional<MethodDescriptor> result = sut.findConfigHandler(parameterType);
 
         assertThat(result).contains(value);
     }
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        assertThat(cut).isNotEqualTo(null);
+        assertThat(sut).isNotEqualTo(null);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         TestDescriptor unequal = DefaultTestDescriptor.of(Class.class);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         TestDescriptor equal = DefaultTestDescriptor.of(testClass, properties);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultTestDescriptor", "testClass");
     }

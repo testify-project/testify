@@ -37,16 +37,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class FakeFieldReifierTest {
 
-    FakeFieldReifier cut;
+    FakeFieldReifier sut;
 
     @Before
     public void init() {
-        cut = new FakeFieldReifier();
+        sut = new FakeFieldReifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.reify(null);
+        sut.reify(null);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class FakeFieldReifierTest {
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -93,7 +93,7 @@ public class FakeFieldReifierTest {
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
         given(mockProvider.isMock(fieldValue)).willReturn(true);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -130,7 +130,7 @@ public class FakeFieldReifierTest {
         given(mockProvider.isMock(fieldValue)).willReturn(false);
         given(mockProvider.createVirtual(eq(fieldType), any(fieldType))).willReturn(fieldValue);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -167,7 +167,7 @@ public class FakeFieldReifierTest {
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
         given(mockProvider.createFake(fieldType)).willReturn(fieldValue);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();

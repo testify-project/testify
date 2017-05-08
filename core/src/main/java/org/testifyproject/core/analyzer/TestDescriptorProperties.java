@@ -58,9 +58,9 @@ public class TestDescriptorProperties {
     public static final String LOCAL_RESOURCES = "localResources";
 
     /**
-     * Test Descriptor cut field property key.
+     * Test Descriptor sut field property key.
      */
-    public static final String CUT_FIELD = "cutField";
+    public static final String SUT_FIELD = "sutField";
 
     /**
      * Test Descriptor field descriptors property key.

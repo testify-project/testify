@@ -39,9 +39,9 @@ public class SpringDefaultProviderTest {
 
         given(serviceInstance.getService(type)).willReturn(service);
 
-        Provider cut = SpringDefaultProvider.of(serviceInstance, type);
+        Provider sut = SpringDefaultProvider.of(serviceInstance, type);
 
-        Object result = cut.get();
+        Object result = sut.get();
         assertThat(result).isEqualTo(service);
         verify(serviceInstance).getService(type);
     }
@@ -55,9 +55,9 @@ public class SpringDefaultProviderTest {
 
         given(serviceInstance.getService(type, qualifiers)).willReturn(service);
 
-        Provider cut = SpringDefaultProvider.of(serviceInstance, type, qualifiers);
+        Provider sut = SpringDefaultProvider.of(serviceInstance, type, qualifiers);
 
-        Object result = cut.get();
+        Object result = sut.get();
         assertThat(result).isEqualTo(service);
         verify(serviceInstance).getService(type, qualifiers);
     }

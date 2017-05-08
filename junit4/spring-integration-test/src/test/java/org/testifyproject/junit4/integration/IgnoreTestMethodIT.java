@@ -20,7 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.common.DirectGreeter;
@@ -35,8 +35,8 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
 @RunWith(SpringIntegrationTest.class)
 public class IgnoreTestMethodIT {
 
-    @Cut
-    DirectGreeter cut;
+    @Sut
+    DirectGreeter sut;
 
     @Real
     Hello greeting;
@@ -44,9 +44,9 @@ public class IgnoreTestMethodIT {
     @Ignore
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(greeting).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull()
+        assertThat(sut.getGreeting()).isNotNull()
                 .isSameAs(greeting)
                 .isInstanceOf(Hello.class);
 

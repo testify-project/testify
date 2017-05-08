@@ -16,7 +16,7 @@
 package org.testifyproject;
 
 /**
- * An SPI contract for starting and stopping resources required by the class
+ * An SPI contract for starting and stopping resources required by the system
  * under test.
  *
  * @author saden
@@ -34,7 +34,9 @@ public interface ResourceProvider {
 
     /**
      * Stop all the resources.
+     *
+     * @param testContext the test context
      */
-    void stop();
+    void stop(TestContext testContext);
 
 }

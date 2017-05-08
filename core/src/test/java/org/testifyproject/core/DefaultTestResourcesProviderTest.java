@@ -37,7 +37,7 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class DefaultTestResourcesProviderTest {
 
-    DefaultTestResourcesProvider cut;
+    DefaultTestResourcesProvider sut;
     ServiceLocatorUtil serviceLocatorUtil;
     Queue resourceProviders;
 
@@ -46,12 +46,12 @@ public class DefaultTestResourcesProviderTest {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
         resourceProviders = new ConcurrentLinkedQueue();
 
-        cut = new DefaultTestResourcesProvider(serviceLocatorUtil, resourceProviders);
+        sut = new DefaultTestResourcesProvider(serviceLocatorUtil, resourceProviders);
     }
 
     @Test
     public void callToDefaultConstructorShouldReturnNewInstance() {
-        cut = new DefaultTestResourcesProvider();
+        sut = new DefaultTestResourcesProvider();
     }
 
     @Test(expected = NullPointerException.class)
@@ -59,7 +59,7 @@ public class DefaultTestResourcesProviderTest {
         TestContext testContext = null;
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class DefaultTestResourcesProviderTest {
         given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
         given(serviceLocatorUtil.findAll(ResourceProvider.class)).willReturn(foundResourceProviders);
 
-        cut.start(testContext, serviceInstance);
+        sut.start(testContext, serviceInstance);
 
         assertThat(resourceProviders).contains(resourceProvider);
         verify(resourceProvider).start(testContext, serviceInstance);
@@ -82,14 +82,15 @@ public class DefaultTestResourcesProviderTest {
     @Test
     public void givenEagerResourceStrategyStopShouldStopResources() {
         TestContext testContext = mock(TestContext.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
         ResourceProvider resourceProvider = mock(ResourceProvider.class);
         resourceProviders.add(resourceProvider);
         StartStrategy resourceStartStrategy = StartStrategy.EAGER;
 
         given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
 
-        cut.stop(testContext);
+        sut.stop(testContext, serviceInstance);
 
-        verify(resourceProvider).stop();
+        verify(resourceProvider).stop(testContext);
     }
 }

@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.DefaultConstructorType;
 
 /**
@@ -29,18 +29,18 @@ import org.testifyproject.junit4.fixture.DefaultConstructorType;
 @RunWith(UnitTest.class)
 public class DefaultConstructorTest {
 
-    @Cut
-    DefaultConstructorType cut;
+    @Sut
+    DefaultConstructorType sut;
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
+    public void givenNothingClassToExesuteShouldReturnHello() {
         String greeting = "Hello!";
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(greeting);
     }

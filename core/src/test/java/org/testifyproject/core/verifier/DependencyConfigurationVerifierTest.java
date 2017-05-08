@@ -31,16 +31,16 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class DependencyConfigurationVerifierTest {
 
-    DependencyConfigurationVerifier cut;
+    DependencyConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new DependencyConfigurationVerifier();
+        sut = new DependencyConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -51,7 +51,7 @@ public class DependencyConfigurationVerifierTest {
         given(testContext.getDependencies()).willReturn(dependencies);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getDependencies();
             throw e;
@@ -66,7 +66,7 @@ public class DependencyConfigurationVerifierTest {
 
         given(testContext.getDependencies()).willReturn(dependencies);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getDependencies();
 

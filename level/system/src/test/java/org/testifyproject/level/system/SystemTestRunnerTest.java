@@ -28,11 +28,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
-import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -56,7 +56,7 @@ import org.testifyproject.level.system.fixture.TestServerProvider;
  */
 public class SystemTestRunnerTest {
 
-    SystemTestRunner cut;
+    SystemTestRunner sut;
 
     ServiceLocatorUtil serviceLocatorUtil;
     ReflectionUtil reflectionUtil;
@@ -66,7 +66,7 @@ public class SystemTestRunnerTest {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
         reflectionUtil = mock(ReflectionUtil.class);
 
-        cut = spy(new SystemTestRunner(serviceLocatorUtil, reflectionUtil));
+        sut = spy(new SystemTestRunner(serviceLocatorUtil, reflectionUtil));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SystemTestRunnerTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getApplication()).willReturn(foundApplication);
 
-        cut.start(testContext);
+        sut.start(testContext);
 
         verify(testContext).getTestConfigurer();
         verify(testContext).getTestDescriptor();
@@ -117,10 +117,10 @@ public class SystemTestRunnerTest {
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
         given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(serverConfig)).willReturn(serverInstance);
+        given(serverProvider.start(testContext, serverConfig)).willReturn(serverInstance);
         given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
 
-        cut.start(testContext);
+        sut.start(testContext);
 
         verify(testContext).getTestConfigurer();
         verify(testContext).getTestDescriptor();
@@ -131,7 +131,7 @@ public class SystemTestRunnerTest {
         verify(serviceLocatorUtil).getOne(serverProviderType);
         verify(serverProvider).configure(testContext);
         verify(testConfigurer).configure(testContext, serverConfig);
-        verify(serverProvider).start(serverConfig);
+        verify(serverProvider).start(testContext, serverConfig);
         verify(testContext).<ServiceInstance>findProperty(SERVICE_INSTANCE);
     }
 
@@ -165,10 +165,10 @@ public class SystemTestRunnerTest {
         given(reflectionUtil.newInstance(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
         given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(serverConfig)).willReturn(serverInstance);
+        given(serverProvider.start(testContext, serverConfig)).willReturn(serverInstance);
         given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
 
-        cut.start(testContext);
+        sut.start(testContext);
 
         verify(testContext).getTestConfigurer();
         verify(testContext).getTestDescriptor();
@@ -179,7 +179,7 @@ public class SystemTestRunnerTest {
         verify(reflectionUtil).newInstance(serverProviderType);
         verify(serverProvider).configure(testContext);
         verify(testConfigurer).configure(testContext, serverConfig);
-        verify(serverProvider).start(serverConfig);
+        verify(serverProvider).start(testContext, serverConfig);
         verify(testContext).<ServiceInstance>findProperty(SERVICE_INSTANCE);
     }
 
@@ -210,8 +210,8 @@ public class SystemTestRunnerTest {
 
         WiringVerifier wiringVerifier = mock(WiringVerifier.class);
         List<WiringVerifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
 
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
@@ -225,18 +225,18 @@ public class SystemTestRunnerTest {
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
         given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(serverConfig)).willReturn(serverInstance);
+        given(serverProvider.start(testContext, serverConfig)).willReturn(serverInstance);
         given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
-        willDoNothing().given(cut).addServer(serviceInstance, application, serverInstance);
-        willDoNothing().given(cut).addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
+        willDoNothing().given(sut).addServer(serviceInstance, application, serverInstance);
+        willDoNothing().given(sut).addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
         given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
-        willDoNothing().given(cut).createClassUnderTest(cutDescriptor, application, serviceInstance, testInstance);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        willDoNothing().given(sut).createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance);
         given(serviceLocatorUtil.findAllWithFilter(TestReifier.class, SystemTest.class))
                 .willReturn(testReifiers);
         given(serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, SystemTest.class))
                 .willReturn(wiringVerifiers);
-        cut.start(testContext);
+        sut.start(testContext);
 
         verify(testContext).getTestConfigurer();
         verify(testContext).getTestDescriptor();
@@ -247,15 +247,15 @@ public class SystemTestRunnerTest {
         verify(serviceLocatorUtil).getOne(serverProviderType);
         verify(serverProvider).configure(testContext);
         verify(testConfigurer).configure(testContext, serverConfig);
-        verify(serverProvider).start(serverConfig);
+        verify(serverProvider).start(testContext, serverConfig);
         verify(testContext).<ServiceInstance>findProperty(SERVICE_INSTANCE);
         verify(serviceInstance).addConstant(testContext, null, TestContext.class);
-        verify(cut).addServer(serviceInstance, application, serverInstance);
-        verify(cut).addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
+        verify(sut).addServer(serviceInstance, application, serverInstance);
+        verify(sut).addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
         verify(serviceInstance).init();
         verify(serviceLocatorUtil).getOne(TestResourcesProvider.class);
-        verify(testContext).getCutDescriptor();
-        verify(cut).createClassUnderTest(cutDescriptor, application, serviceInstance, testInstance);
+        verify(testContext).getSutDescriptor();
+        verify(sut).createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance);
         verify(serviceLocatorUtil).findAllWithFilter(TestReifier.class, SystemTest.class);
         verify(serviceLocatorUtil).findAllWithFilter(WiringVerifier.class, SystemTest.class);
     }
@@ -266,72 +266,76 @@ public class SystemTestRunnerTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
 
-        TestResourcesProvider testResourcesProvider = cut.testResourcesProvider = mock(TestResourcesProvider.class);
-        ClientProvider clientProvider = cut.clientProvider = mock(ClientProvider.class);
-        ServerProvider serverProvider = cut.serverProvider = mock(ServerProvider.class);
+        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(TestResourcesProvider.class);
+        ClientProvider clientProvider = sut.clientProvider = mock(ClientProvider.class);
+        ServerProvider serverProvider = sut.serverProvider = mock(ServerProvider.class);
+        ServerInstance serverInstance = sut.serverInstance = mock(ServerInstance.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
+        Optional<ServiceInstance> foundServiceInstance = Optional.of(serviceInstance);
 
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
 
-        cut.stop(testContext);
+        sut.stop(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
-        verify(cutDescriptor).destroy(testInstance);
-        verify(testResourcesProvider).stop(testContext);
+        verify(sutDescriptor).destroy(testInstance);
+        verify(testResourcesProvider).stop(testContext, serviceInstance);
         verify(clientProvider).destroy();
-        verify(serverProvider).stop();
+        verify(serverProvider).stop(testContext, serverInstance);
     }
 
     @Test
     public void callToCreateClassUnderTestWithClientInstanceShouldGetClassUnderTest() {
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
         Application application = mock(Application.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
         Object testInstance = new Object();
 
-        Class cutType = ClientInstance.class;
-        Object cutValue = new Object();
+        Class sutType = ClientInstance.class;
+        Object sutValue = new Object();
 
-        given(cutDescriptor.getType()).willReturn(cutType);
-        given(serviceInstance.getService(cutType)).willReturn(cutValue);
+        given(sutDescriptor.getType()).willReturn(sutType);
+        given(serviceInstance.getService(sutType)).willReturn(sutValue);
 
-        cut.createClassUnderTest(cutDescriptor, application, serviceInstance, testInstance);
+        sut.createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance);
 
-        verify(cutDescriptor).getType();
-        verify(serviceInstance).getService(cutType);
-        verify(cutDescriptor).setValue(testInstance, cutValue);
+        verify(sutDescriptor).getType();
+        verify(serviceInstance).getService(sutType);
+        verify(sutDescriptor).setValue(testInstance, sutValue);
     }
 
     @Test
     public void callToCreateClassUnderTestWithClientShouldGetClassUnderTest() {
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
         Application application = mock(Application.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
         Object testInstance = new Object();
 
-        Class cutType = Object.class;
-        Object cutValue = new Object();
+        Class sutType = Object.class;
+        Object sutValue = new Object();
         String name = "clientName";
 
-        given(cutDescriptor.getType()).willReturn(cutType);
+        given(sutDescriptor.getType()).willReturn(sutType);
         given(application.clientName()).willReturn(name);
-        given(serviceInstance.getService(cutType, name)).willReturn(cutValue);
+        given(serviceInstance.getService(sutType, name)).willReturn(sutValue);
 
-        cut.createClassUnderTest(cutDescriptor, application, serviceInstance, testInstance);
+        sut.createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance);
 
-        verify(cutDescriptor).getType();
+        verify(sutDescriptor).getType();
         verify(application).clientName();
-        verify(serviceInstance).getService(cutType, name);
-        verify(cutDescriptor).setValue(testInstance, cutValue);
+        verify(serviceInstance).getService(sutType, name);
+        verify(sutDescriptor).setValue(testInstance, sutValue);
     }
 
     @Test
@@ -340,14 +344,14 @@ public class SystemTestRunnerTest {
         Application application = mock(Application.class);
         ServerInstance serverInstance = mock(ServerInstance.class);
 
-        ServerProvider serverProvider = cut.serverProvider = mock(ServerProvider.class);
+        ServerProvider serverProvider = sut.serverProvider = mock(ServerProvider.class);
         String name = serverProvider.getClass().getSimpleName();
         Class contract = ServerInstance.class;
 
         given(application.serverName()).willReturn(name);
         given(application.serverContract()).willReturn(contract);
 
-        cut.addServer(serviceInstance, application, serverInstance);
+        sut.addServer(serviceInstance, application, serverInstance);
 
         verify(serviceInstance).addConstant(serverInstance, name, contract);
         verify(serviceInstance).replace(serverInstance, name, contract);
@@ -364,7 +368,7 @@ public class SystemTestRunnerTest {
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
 
         Class clientProviderType = ClientProvider.class;
-        ClientProvider clientProvider = cut.clientProvider = mock(ClientProvider.class);
+        ClientProvider clientProvider = sut.clientProvider = mock(ClientProvider.class);
         URI baseURI = URI.create("http://test");
         Object clientConfig = new Object();
         ClientInstance clientInstance = mock(ClientInstance.class);
@@ -381,7 +385,7 @@ public class SystemTestRunnerTest {
         given(application.clientName()).willReturn(name);
         given(application.clientContract()).willReturn(contract);
 
-        cut.addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
+        sut.addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
 
         verify(application).clientProvider();
         verify(serviceLocatorUtil).getOne(clientProviderType);
@@ -405,7 +409,7 @@ public class SystemTestRunnerTest {
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
 
         Class clientProviderType = TestClientProvider.class;
-        ClientProvider clientProvider = cut.clientProvider = mock(TestClientProvider.class);
+        ClientProvider clientProvider = sut.clientProvider = mock(TestClientProvider.class);
         URI baseURI = URI.create("http://test");
         Object clientConfig = new Object();
         ClientInstance clientInstance = mock(ClientInstance.class);
@@ -422,7 +426,7 @@ public class SystemTestRunnerTest {
         given(application.clientName()).willReturn(name);
         given(application.clientContract()).willReturn(contract);
 
-        cut.addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
+        sut.addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
 
         verify(application).clientProvider();
         verify(reflectionUtil).newInstance(clientProviderType);

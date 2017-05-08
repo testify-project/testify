@@ -24,81 +24,81 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 
 /**
  *
  * @author saden
  */
-public class TestFieldCutReifierTest {
+public class TestFieldSutReifierTest {
 
-    TestFieldCutReifier cut;
+    TestFieldSutReifier sut;
 
     @Before
     public void init() {
-        cut = new TestFieldCutReifier();
+        sut = new TestFieldSutReifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.reify(null);
+        sut.reify(null);
     }
 
     @Test
-    public void givenTestContextWithoutCutDescriptorReifyShouldDoNothing() {
+    public void givenTestContextWithoutSutDescriptorReifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.empty();
+        Optional<SutDescriptor> foundSutDescriptor = Optional.empty();
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
     }
 
     @Test
-    public void givenCutDescriptorWithValueReifyShouldDoNothing() {
+    public void givenSutDescriptorWithValueReifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         Object testInstance = mock(Object.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
-        Object cutValue = new Object();
-        Optional<Object> foundValue = Optional.of(cutValue);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+        Object sutValue = new Object();
+        Optional<Object> foundValue = Optional.of(sutValue);
 
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
-        given(cutDescriptor.getValue(testInstance)).willReturn(foundValue);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(sutDescriptor.getValue(testInstance)).willReturn(foundValue);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestInstance();
-        verify(testContext).getCutDescriptor();
-        verify(cutDescriptor).getValue(testInstance);
-        verify(cutDescriptor).setValue(testInstance, cutValue);
-        verifyNoMoreInteractions(cutDescriptor);
+        verify(testContext).getSutDescriptor();
+        verify(sutDescriptor).getValue(testInstance);
+        verify(sutDescriptor).setValue(testInstance, sutValue);
+        verifyNoMoreInteractions(sutDescriptor);
     }
 
     @Test
-    public void givenCutDescriptorWithoutValueReifyShouldSetCutField() {
+    public void givenSutDescriptorWithoutValueReifyShouldSetSutField() {
         TestContext testContext = mock(TestContext.class);
         Object testInstance = mock(Object.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
-        Class cutType = Object.class;
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+        Class sutType = Object.class;
         Optional<Object> foundValue = Optional.empty();
 
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
-        given(cutDescriptor.getValue(testInstance)).willReturn(foundValue);
-        given(cutDescriptor.getType()).willReturn(cutType);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(sutDescriptor.getValue(testInstance)).willReturn(foundValue);
+        given(sutDescriptor.getType()).willReturn(sutType);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestInstance();
-        verify(testContext).getCutDescriptor();
-        verify(cutDescriptor).getType();
-        verify(cutDescriptor).setValue(eq(testInstance), any(cutType));
+        verify(testContext).getSutDescriptor();
+        verify(sutDescriptor).getType();
+        verify(sutDescriptor).setValue(eq(testInstance), any(sutType));
     }
 
 }

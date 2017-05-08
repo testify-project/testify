@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.module.GreeterModule;
@@ -35,17 +35,17 @@ import org.testifyproject.junit4.fixture.module.GreetingService;
 @RunWith(SpringIntegrationTest.class)
 public class ModuleIT {
 
-    @Cut
-    GreeterService cut;
+    @Sut
+    GreeterService sut;
 
     @Real
     GreetingContract contract;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(contract).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull()
+        assertThat(sut.getGreeting()).isNotNull()
                 .isSameAs(contract)
                 .isInstanceOf(GreetingService.class);
 

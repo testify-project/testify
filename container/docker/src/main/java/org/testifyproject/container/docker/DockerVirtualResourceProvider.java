@@ -77,34 +77,38 @@ public class DockerVirtualResourceProvider
         DockerClientConfig clientConfig = configBuilder.build();
         LoggingUtil.INSTANCE.info("Connecting to {}", clientConfig.getDockerHost());
         client = DockerClientBuilder.getInstance(clientConfig).build();
-
-        CountDownLatch latch = new CountDownLatch(1);
-        if (virtualResource.pull()) {
-            PullCallback callback = new PullCallback(virtualResource, latch);
-            client.pullImageCmd(virtualResource.value())
-                    .withTag(virtualResource.version())
-                    .exec(callback);
-        } else {
-            latch.countDown();
-        }
-
-        boolean done = false;
-
-        try {
-            done = latch.await(virtualResource.timeout(), virtualResource.unit());
-        } catch (InterruptedException e) {
-            LoggingUtil.INSTANCE.warn("await countdown latch interrupted", e);
-            Thread.currentThread().interrupt();
-        }
-
-        ExceptionUtil.INSTANCE.raise(
-                !done,
-                "Could not start virtual resource '{}' for test '{}'",
-                virtualResource.value(),
-                testContext.getName()
-        );
-
         String image = virtualResource.value() + ":" + virtualResource.version();
+
+        if (virtualResource.pull()) {
+            RetryPolicy retryPolicy = new RetryPolicy()
+                    .retryOn(Throwable.class)
+                    .withBackoff(virtualResource.delay(), virtualResource.maxDelay(), virtualResource.unit())
+                    .withMaxRetries(virtualResource.maxRetries());
+
+            Failsafe.with(retryPolicy)
+                    .onRetry(throwable
+                            -> LoggingUtil.INSTANCE.warn("Retrying pull request of image '{}'",
+                            image, throwable)
+                    )
+                    .onFailure(throwable
+                            -> LoggingUtil.INSTANCE.error("Image image '{}' could not be pulled: ", image, throwable))
+                    .run(() -> {
+                        try {
+                            CountDownLatch latch = new CountDownLatch(1);
+                            client.pullImageCmd(virtualResource.value())
+                                    .withTag(virtualResource.version())
+                                    .exec(new PullCallback(virtualResource, latch));
+
+                            ExceptionUtil.INSTANCE.raise(!latch.await(virtualResource.timeout(), virtualResource.unit()),
+                                    "Could not start virtual resource '{}' for test '{}'",
+                                    virtualResource.value(), testContext.getName()
+                            );
+                        } catch (InterruptedException e) {
+                            LoggingUtil.INSTANCE.warn("Image '{}' pull request interrupted",  image);
+                            Thread.currentThread().interrupt();
+                        }
+                    });
+        }
 
         CreateContainerCmd cmd = client.createContainerCmd(image);
         cmd.withPublishAllPorts(true);
@@ -165,7 +169,7 @@ public class DockerVirtualResourceProvider
                 @Override
                 public void run() {
                     if (started.compareAndSet(true, false)) {
-                        removeContainer(containerId);
+                        removeContainer(containerId, virtualResource);
                     }
                 }
             });
@@ -178,9 +182,10 @@ public class DockerVirtualResourceProvider
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext, VirtualResource virtualResource) {
         if (started.compareAndSet(true, false)) {
-            removeContainer(containerResponse.getId());
+            removeContainer(containerResponse.getId(), virtualResource);
+
             try {
                 client.close();
             } catch (IOException e) {
@@ -189,23 +194,26 @@ public class DockerVirtualResourceProvider
         }
     }
 
-    private void removeContainer(String containerId) {
+    void removeContainer(String containerId, VirtualResource virtualResource) {
         LoggingUtil.INSTANCE.info("Stopping and Removing Docker Container {}", containerId);
-        client.stopContainerCmd(containerId).exec();
 
-        try {
-            client.waitContainerCmd(containerId)
-                    .exec(new WaitCallback(containerId))
-                    .awaitCompletion();
-        } catch (InterruptedException e) {
-            LoggingUtil.INSTANCE.warn("wating for container interrupted", e);
-            Thread.currentThread().interrupt();
+        if (client.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+            client.stopContainerCmd(containerId).exec();
+
+            try {
+                client.waitContainerCmd(containerId)
+                        .exec(new WaitCallback(containerId))
+                        .awaitCompletion();
+            } catch (InterruptedException e) {
+                LoggingUtil.INSTANCE.warn("wating for container interrupted", e);
+                Thread.currentThread().interrupt();
+            }
         }
 
         RetryPolicy retryPolicy = new RetryPolicy()
                 .retryOn(Throwable.class)
-                .withBackoff(1000, 8000, TimeUnit.MILLISECONDS)
-                .withMaxRetries(3)
+                .withBackoff(virtualResource.delay(), virtualResource.maxDelay(), virtualResource.unit())
+                .withMaxRetries(virtualResource.maxRetries())
                 .withMaxDuration(8000, TimeUnit.MILLISECONDS);
 
         Failsafe.with(retryPolicy)

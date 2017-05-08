@@ -16,9 +16,9 @@
 package org.testifyproject.junit4.fixture.filter;
 
 import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.LocalResource;
-import org.testifyproject.junit4.fixture.common.CutClass;
+import org.testifyproject.junit4.fixture.common.SutClass;
 
 /**
  *
@@ -27,7 +27,7 @@ import org.testifyproject.junit4.fixture.common.CutClass;
 @LocalResource(LocalResourceProvider.class)
 public class LocalResourceTestClass {
 
-    @Cut
-    CutClass cut;
+    @Sut
+    SutClass sut;
 
 }

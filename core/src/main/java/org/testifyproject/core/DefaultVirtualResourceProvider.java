@@ -16,10 +16,11 @@
 package org.testifyproject.core;
 
 import java.util.Collection;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceInstance;
@@ -28,7 +29,6 @@ import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.TestConfigurer;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -44,15 +44,15 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
     private ServiceLocatorUtil serviceLocatorUtil;
     private ReflectionUtil reflectionUtil;
-    private Queue<VirtualResourceProvider> virtualResourceProviders;
+    private Map<VirtualResource, VirtualResourceProvider> virtualResourceProviders;
 
     public DefaultVirtualResourceProvider() {
-        this(ServiceLocatorUtil.INSTANCE, ReflectionUtil.INSTANCE, new ConcurrentLinkedQueue<>());
+        this(ServiceLocatorUtil.INSTANCE, ReflectionUtil.INSTANCE, new LinkedHashMap<>());
     }
 
     DefaultVirtualResourceProvider(ServiceLocatorUtil serviceLocatorUtil,
             ReflectionUtil reflectionUtil,
-            Queue<VirtualResourceProvider> virtualResourceProviders) {
+            Map<VirtualResource, VirtualResourceProvider> virtualResourceProviders) {
         this.serviceLocatorUtil = serviceLocatorUtil;
         this.reflectionUtil = reflectionUtil;
         this.virtualResourceProviders = virtualResourceProviders;
@@ -93,13 +93,15 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
             serviceInstance.addConstant(virtualResourceInstance, serviceName, VirtualResourceInstance.class);
 
-            virtualResourceProviders.add(virtualResourceProvider);
+            virtualResourceProviders.put(virtualResource, virtualResourceProvider);
         });
     }
 
     @Override
-    public void stop() {
-        virtualResourceProviders.parallelStream().forEach(VirtualResourceProvider::stop);
+    public void stop(TestContext testContex) {
+        virtualResourceProviders.forEach((virtualResource, virtualResourceProvider)
+                -> virtualResourceProvider.stop(testContex, virtualResource)
+        );
     }
 
 }

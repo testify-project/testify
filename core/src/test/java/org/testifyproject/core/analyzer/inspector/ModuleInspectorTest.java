@@ -29,11 +29,11 @@ import org.testifyproject.core.analyzer.TestDescriptorProperties;
  */
 public class ModuleInspectorTest {
 
-    ModuleInspector cut;
+    ModuleInspector sut;
 
     @Before
     public void init() {
-        cut = new ModuleInspector();
+        sut = new ModuleInspector();
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ModuleInspectorTest {
         Class<?> annotatedType = Object.class;
         Module annotation = mock(Module.class);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addListElement(TestDescriptorProperties.MODULES, annotation);
     }

@@ -37,46 +37,46 @@ import org.testifyproject.fixture.reflection.SubclassedGreeter;
  */
 public class ReflectionUtilTest {
 
-    ReflectionUtil cut;
+    ReflectionUtil sut;
 
     @Before
     public void init() {
-        cut = new ReflectionUtil();
+        sut = new ReflectionUtil();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullNewInstanceShouldThrowException() {
-        cut.newInstance(null);
+        sut.newInstance(null);
     }
 
     @Test
     public void givenAnnotationClassNewInstanceShouldReturnAnnotationInstance() {
-        CustomAnnotation result = cut.newInstance(CustomAnnotation.class);
+        CustomAnnotation result = sut.newInstance(CustomAnnotation.class);
 
         assertThat(result).isNotNull();
         assertThat(result.value()).isEqualTo("custom");
     }
 
     @Test
-    public void givenClassWithDefaultConstrcutorAndArgsNewInstanceShouldIgnoreArgs() {
-        cut.newInstance(DefaultConstructorService.class, "test");
+    public void givenClassWithDefaultConstrsutorAndArgsNewInstanceShouldIgnoreArgs() {
+        sut.newInstance(DefaultConstructorService.class, "test");
     }
 
     @Test
-    public void givenClassWithDefaultConstrcutorNewInstanceShouldReturnInstance() {
-        DefaultConstructorService result = cut.newInstance(DefaultConstructorService.class);
+    public void givenClassWithDefaultConstrsutorNewInstanceShouldReturnInstance() {
+        DefaultConstructorService result = sut.newInstance(DefaultConstructorService.class);
 
         assertThat(result).isNotNull();
     }
 
     @Test
-    public void givenClassWithCustomConstrcutorAndNoArgsNewInstanceShouldIgnoreArgs() {
-        cut.newInstance(CustomConstructorService.class);
+    public void givenClassWithCustomConstrsutorAndNoArgsNewInstanceShouldIgnoreArgs() {
+        sut.newInstance(CustomConstructorService.class);
     }
 
     @Test
-    public void givenClassWithCustomConstrcutorAndArgsNewInstanceShouldReturnInstance() {
-        CustomConstructorService result = cut.newInstance(CustomConstructorService.class, "Hello!");
+    public void givenClassWithCustomConstrsutorAndArgsNewInstanceShouldReturnInstance() {
+        CustomConstructorService result = sut.newInstance(CustomConstructorService.class, "Hello!");
 
         assertThat(result).isNotNull();
     }
@@ -88,7 +88,7 @@ public class ReflectionUtilTest {
         String className = "org.testifyproject.fixture.reflection.RebasedGreeter";
         ClassLoader classLoader = this.getClass().getClassLoader();
 
-        DynamicType.Loaded<?> result = cut.rebase(className, classLoader, interceptor);
+        DynamicType.Loaded<?> result = sut.rebase(className, classLoader, interceptor);
 
         assertThat(result).isNotNull();
 
@@ -98,7 +98,7 @@ public class ReflectionUtilTest {
         assertThat(greeting).isNotNull();
         verify(interceptor).hello(any(Callable.class));
     }
-    
+
     @Test
     public void givenClassAndInterceptSubclassShouldSubclassTheClass()
             throws Exception {
@@ -106,7 +106,7 @@ public class ReflectionUtilTest {
         Class<SubclassedGreeter> classType = SubclassedGreeter.class;
         ClassLoader classLoader = this.getClass().getClassLoader();
 
-        Class<? extends SubclassedGreeter> result = cut.subclass(classType, classLoader, interceptor);
+        Class<? extends SubclassedGreeter> result = sut.subclass(classType, classLoader, interceptor);
 
         assertThat(result).isNotNull();
 

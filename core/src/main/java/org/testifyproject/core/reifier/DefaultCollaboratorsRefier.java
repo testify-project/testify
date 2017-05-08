@@ -17,7 +17,7 @@ package org.testifyproject.core.reifier;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
@@ -28,7 +28,7 @@ import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies the cut and test based on the presence of
+ * A class that reifies the sut and test based on the presence of
  * {@link org.testifyproject.annotation.CollaboratorProvider} class on the test
  * class.
  *
@@ -43,26 +43,26 @@ public class DefaultCollaboratorsRefier implements CollaboratorsReifier {
     public void reify(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
 
-        testContext.getCutDescriptor()
-                .ifPresent(cutDescriptor
-                        -> cutDescriptor.getValue(testInstance)
-                        .ifPresent(cutValue
+        testContext.getSutDescriptor()
+                .ifPresent(sutDescriptor
+                        -> sutDescriptor.getValue(testInstance)
+                        .ifPresent(sutValue
                                 -> testContext.getTestDescriptor().getCollaboratorProvider()
                                 .ifPresent(methodDescriptor
                                         -> getCollaborators(methodDescriptor, testInstance)
                                         .ifPresent(collaborators
                                                 -> processCollaborators(
                                                 testContext,
-                                                cutDescriptor,
-                                                cutValue,
+                                                sutDescriptor,
+                                                sutValue,
                                                 convertToArray(collaborators))
                                         )
                                 )));
     }
 
     public void processCollaborators(TestContext testContext,
-            CutDescriptor cutDescriptor,
-            Object cutValue,
+            SutDescriptor sutDescriptor,
+            Object sutValue,
             Object[] collaborators) {
 
         for (Object collaborator : collaborators) {
@@ -83,11 +83,11 @@ public class DefaultCollaboratorsRefier implements CollaboratorsReifier {
             }
 
             Optional<FieldDescriptor> foundFieldDescriptor
-                    = cutDescriptor.findFieldDescriptor(collaboratorType);
+                    = sutDescriptor.findFieldDescriptor(collaboratorType);
 
             if (foundFieldDescriptor.isPresent()) {
                 FieldDescriptor fieldDescriptor = foundFieldDescriptor.get();
-                fieldDescriptor.setValue(cutValue, collaborator);
+                fieldDescriptor.setValue(sutValue, collaborator);
             }
         }
     }

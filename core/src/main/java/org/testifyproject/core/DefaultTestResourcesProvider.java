@@ -59,9 +59,9 @@ public class DefaultTestResourcesProvider implements TestResourcesProvider {
     }
 
     @Override
-    public void stop(TestContext testContext) {
+    public void stop(TestContext testContext, ServiceInstance serviceInstance) {
         if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
-            resourceProviders.forEach(ResourceProvider::stop);
+            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
         }
     }
 

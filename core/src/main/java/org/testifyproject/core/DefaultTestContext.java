@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.ServiceInstance;
@@ -120,13 +120,13 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public Optional<CutDescriptor> getCutDescriptor() {
-        return findProperty(TestContextProperties.CUT_DESCRIPTOR);
+    public Optional<SutDescriptor> getSutDescriptor() {
+        return findProperty(TestContextProperties.SUT_DESCRIPTOR);
     }
 
     @Override
-    public <T> Optional<T> getCutInstance() {
-        return findProperty(TestContextProperties.CUT_INSTANCE);
+    public <T> Optional<T> getSutInstance() {
+        return findProperty(TestContextProperties.SUT_INSTANCE);
     }
 
     void setResourceStartStrategy(StartStrategy resourceStartStrategy) {

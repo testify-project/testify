@@ -31,11 +31,11 @@ import org.testifyproject.core.analyzer.TestDescriptorProperties;
  */
 public class ModulesInspectorTest {
 
-    ModulesInspector cut;
+    ModulesInspector sut;
 
     @Before
     public void init() {
-        cut = new ModulesInspector();
+        sut = new ModulesInspector();
     }
 
     @Test
@@ -47,7 +47,7 @@ public class ModulesInspectorTest {
 
         given(annotation.value()).willReturn(new Module[]{element});
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addListElement(TestDescriptorProperties.MODULES, element);
     }

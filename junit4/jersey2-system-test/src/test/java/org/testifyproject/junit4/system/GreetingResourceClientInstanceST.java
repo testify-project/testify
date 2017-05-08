@@ -24,15 +24,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.GreeterApplication;
 
 @RunWith(Jersey2SystemTest.class)
 @Application(GreeterApplication.class)
 public class GreetingResourceClientInstanceST {
 
-    @Cut
-    ClientInstance<WebTarget> cut;
+    @Sut
+    ClientInstance<WebTarget> sut;
 
     @Test
     public void verifyInjections() {
@@ -40,7 +40,7 @@ public class GreetingResourceClientInstanceST {
         String phrase = "Hello";
 
         //Act
-        Response result = cut.getInstance()
+        Response result = sut.getInstance()
                 .path("/")
                 .request()
                 .post(Entity.json(phrase));

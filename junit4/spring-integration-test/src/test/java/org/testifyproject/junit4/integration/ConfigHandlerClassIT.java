@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.testifyproject.annotation.ConfigHandler;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.common.DirectGreeter;
@@ -37,8 +37,8 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
 @ConfigHandler(DirectGreeterConfigHandler.class)
 public class ConfigHandlerClassIT {
 
-    @Cut
-    DirectGreeter cut;
+    @Sut
+    DirectGreeter sut;
 
     @Real
     Hello greeting;
@@ -48,8 +48,8 @@ public class ConfigHandlerClassIT {
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getGreeting()).isNotNull();
         assertThat(applicationContext.getId()).isEqualTo("test");
     }
 }

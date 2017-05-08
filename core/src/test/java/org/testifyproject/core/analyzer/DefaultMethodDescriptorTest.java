@@ -28,7 +28,7 @@ import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
  */
 public class DefaultMethodDescriptorTest {
 
-    MethodDescriptor cut;
+    MethodDescriptor sut;
 
     Method method;
     Object instance;
@@ -38,71 +38,71 @@ public class DefaultMethodDescriptorTest {
         method = AnalyzedTestClass.class.getDeclaredMethod("collaborators");
         instance = new Object();
 
-        cut = new DefaultMethodDescriptor(method, instance);
+        sut = new DefaultMethodDescriptor(method, instance);
     }
 
     @Test
-    public void validateCutInstance() {
-        assertThat(cut).isNotNull();
-        assertThat(cut.getMember()).isEqualTo(method);
-        assertThat(cut.getInstance()).contains(instance);
+    public void validateSutInstance() {
+        assertThat(sut).isNotNull();
+        assertThat(sut.getMember()).isEqualTo(method);
+        assertThat(sut.getInstance()).contains(instance);
     }
 
     @Test
     public void givenInstanceOfShouldReturn() {
-        cut = DefaultMethodDescriptor.of(method);
+        sut = DefaultMethodDescriptor.of(method);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getMember()).isEqualTo(method);
-        assertThat(cut.getInstance()).isEmpty();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getMember()).isEqualTo(method);
+        assertThat(sut.getInstance()).isEmpty();
     }
 
     @Test
     public void givenInstanceAndNameOfShouldReturn() {
-        cut = DefaultMethodDescriptor.of(method, instance);
+        sut = DefaultMethodDescriptor.of(method, instance);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getMember()).isEqualTo(method);
-        assertThat(cut.getInstance()).contains(instance);
+        assertThat(sut).isNotNull();
+        assertThat(sut.getMember()).isEqualTo(method);
+        assertThat(sut.getInstance()).contains(instance);
     }
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        assertThat(cut).isNotEqualTo(null);
+        assertThat(sut).isNotEqualTo(null);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         MethodDescriptor unequal = DefaultMethodDescriptor.of(method, null);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         MethodDescriptor equal = DefaultMethodDescriptor.of(method, instance);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultMethodDescriptor", "method", "instance");
     }

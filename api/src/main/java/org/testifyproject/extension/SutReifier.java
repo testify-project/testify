@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.core.analyzer;
+package org.testifyproject.extension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import org.testifyproject.TestContext;
 
 /**
+ * A contract that defines a method for reifying the sut class.
  *
  * @author saden
  */
-public class CutDescriptorPropertiesTest {
+@FunctionalInterface
+public interface SutReifier {
 
-    @Test
-    public void verifyConstants() {
-        assertThat(CutDescriptorProperties.CONSTRUCTOR).isNotEmpty();
-        assertThat(CutDescriptorProperties.FIELD_DESCRIPTORS).isNotEmpty();
-        assertThat(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE).isNotEmpty();
-        assertThat(CutDescriptorProperties.PARAMETER_DESCRIPTORS).isNotEmpty();
-        assertThat(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE).isNotEmpty();
-    }
+    /**
+     * Reify the sut class using the given test context.
+     *
+     * @param testContext the test context
+     */
+    void reify(TestContext testContext);
 
 }

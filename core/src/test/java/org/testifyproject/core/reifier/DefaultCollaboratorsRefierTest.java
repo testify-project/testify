@@ -28,7 +28,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
@@ -43,21 +43,21 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class DefaultCollaboratorsRefierTest {
 
-    DefaultCollaboratorsRefier cut;
+    DefaultCollaboratorsRefier sut;
 
     @Before
     public void init() {
-        cut = spy(new DefaultCollaboratorsRefier());
+        sut = spy(new DefaultCollaboratorsRefier());
     }
 
     @Test
     public void callToReifyShouldReifyCollaborators() {
         TestContext testContext = mock(TestContext.class);
         Object testInstance = new Object();
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
-        Object cutValue = new Object();
-        Optional<Object> foundCutValue = Optional.of(cutValue);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+        Object sutValue = new Object();
+        Optional<Object> foundSutValue = Optional.of(sutValue);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
         Optional<MethodDescriptor> foundCollaboratorProvider = Optional.of(collaboratorProvider);
@@ -65,19 +65,19 @@ public class DefaultCollaboratorsRefierTest {
         Optional<Object> foundCollaborators = Optional.of(collaborators);
 
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
-        given(cutDescriptor.getValue(testInstance)).willReturn(foundCutValue);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(sutDescriptor.getValue(testInstance)).willReturn(foundSutValue);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
-        given(cut.getCollaborators(collaboratorProvider, testInstance)).willReturn(foundCollaborators);
-        given(cut.convertToArray(collaborators)).willReturn(collaborators);
-        willDoNothing().given(cut).processCollaborators(testContext, cutDescriptor, cutValue, collaborators);
+        given(sut.getCollaborators(collaboratorProvider, testInstance)).willReturn(foundCollaborators);
+        given(sut.convertToArray(collaborators)).willReturn(collaborators);
+        willDoNothing().given(sut).processCollaborators(testContext, sutDescriptor, sutValue, collaborators);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestInstance();
-        verify(testContext).getCutDescriptor();
-        verify(cutDescriptor).getValue(testInstance);
+        verify(testContext).getSutDescriptor();
+        verify(sutDescriptor).getValue(testInstance);
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getCollaboratorProvider();
     }
@@ -85,32 +85,32 @@ public class DefaultCollaboratorsRefierTest {
     @Test
     public void givenNullCollaboratorsProcessCollaboratorsShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Object cutValue = new Object();
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Object sutValue = new Object();
         Object[] collaborators = {null};
 
-        cut.processCollaborators(testContext, cutDescriptor, cutValue, collaborators);
+        sut.processCollaborators(testContext, sutDescriptor, sutValue, collaborators);
 
-        verifyZeroInteractions(testContext, cutDescriptor);
+        verifyZeroInteractions(testContext, sutDescriptor);
     }
     
     @Test
     public void givenNoCollaboratorsProcessCollaboratorsShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Object cutValue = new Object();
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Object sutValue = new Object();
         Object[] collaborators = {};
 
-        cut.processCollaborators(testContext, cutDescriptor, cutValue, collaborators);
+        sut.processCollaborators(testContext, sutDescriptor, sutValue, collaborators);
 
-        verifyZeroInteractions(testContext, cutDescriptor);
+        verifyZeroInteractions(testContext, sutDescriptor);
     }
 
     @Test
     public void givenMockCollaboratorProcessCollaboratorsShouldProcessMockCollaborator() {
         TestContext testContext = mock(TestContext.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Object cutValue = new Object();
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Object sutValue = new Object();
         Object collaborator = mock(Supplier.class);
         Type collaboratorType = Supplier.class;
         Object[] collaborators = {collaborator};
@@ -120,28 +120,28 @@ public class DefaultCollaboratorsRefierTest {
 
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(mockProvider.isMock(collaborator)).willReturn(true);
-        given(cutDescriptor.findFieldDescriptor(collaboratorType)).willReturn(foundFieldDescriptor);
+        given(sutDescriptor.findFieldDescriptor(collaboratorType)).willReturn(foundFieldDescriptor);
 
-        cut.processCollaborators(testContext, cutDescriptor, cutValue, collaborators);
+        sut.processCollaborators(testContext, sutDescriptor, sutValue, collaborators);
 
         verify(testContext).getMockProvider();
         verify(mockProvider).isMock(collaborator);
-        verify(cutDescriptor).findFieldDescriptor(collaboratorType);
-        verify(fieldDescriptor).setValue(cutValue, collaborator);
+        verify(sutDescriptor).findFieldDescriptor(collaboratorType);
+        verify(fieldDescriptor).setValue(sutValue, collaborator);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullConvertToArrayShouldThrowException() {
         Object value = null;
 
-        cut.convertToArray(value);
+        sut.convertToArray(value);
     }
 
     @Test
     public void givenArrayConvertToArrayShouldReturnArray() {
         Object[] value = {};
 
-        Object[] result = cut.convertToArray(value);
+        Object[] result = sut.convertToArray(value);
 
         assertThat(result).isEqualTo(value);
     }
@@ -151,7 +151,7 @@ public class DefaultCollaboratorsRefierTest {
         Object element = new Object();
         List value = ImmutableList.of(element);
 
-        Object[] result = cut.convertToArray(value);
+        Object[] result = sut.convertToArray(value);
 
         assertThat(result).containsExactly(element);
     }
@@ -160,7 +160,7 @@ public class DefaultCollaboratorsRefierTest {
     public void givenInvalidValueConvertToArrayShouldReturnArray() {
         Object value = new Object();
 
-        cut.convertToArray(value);
+        sut.convertToArray(value);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class DefaultCollaboratorsRefierTest {
         given(methodDescriptor.getInstance()).willReturn(foundInstance);
         given(methodDescriptor.invoke(instance)).willReturn(foundValue);
 
-        Optional<Object> result = cut.getCollaborators(methodDescriptor, testInstance);
+        Optional<Object> result = sut.getCollaborators(methodDescriptor, testInstance);
 
         assertThat(result).contains(value);
         verify(methodDescriptor).getInstance();
@@ -193,7 +193,7 @@ public class DefaultCollaboratorsRefierTest {
         given(methodDescriptor.getInstance()).willReturn(foundInstance);
         given(methodDescriptor.invoke(testInstance)).willReturn(foundValue);
 
-        Optional<Object> result = cut.getCollaborators(methodDescriptor, testInstance);
+        Optional<Object> result = sut.getCollaborators(methodDescriptor, testInstance);
 
         assertThat(result).contains(value);
         verify(methodDescriptor).getInstance();

@@ -24,7 +24,7 @@ import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies test classes with virtual cut.
+ * A class that reifies test classes with virtual sut.
  *
  * @author saden
  */
@@ -32,24 +32,24 @@ import org.testifyproject.tools.Discoverable;
 @IntegrationTest
 @SystemTest
 @Discoverable
-public class CutTestReifier implements TestReifier {
+public class SutTestReifier implements TestReifier {
 
     @Override
     public void reify(TestContext testContext) {
-        testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
+        testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
             Object testInstance = testContext.getTestInstance();
 
-            cutDescriptor.getValue(testInstance).ifPresent(cutInstance -> {
-                //If the cut is a virtual cut then create a virtual instance
-                //of the cut class and set it to the cut field
-                if (cutDescriptor.isVirtualCut()) {
-                    cutInstance = testContext.getMockProvider()
-                            .createVirtual(cutDescriptor.getType(), cutInstance);
+            sutDescriptor.getValue(testInstance).ifPresent(sutInstance -> {
+                //If the sut is a virtual sut then create a virtual instance
+                //of the sut class and set it to the sut field
+                if (sutDescriptor.isVirtualSut()) {
+                    sutInstance = testContext.getMockProvider()
+                            .createVirtual(sutDescriptor.getType(), sutInstance);
                 }
 
-                cutDescriptor.setValue(testInstance, cutInstance);
-                cutDescriptor.init(cutInstance);
-                testContext.addProperty(TestContextProperties.CUT_INSTANCE, cutInstance);
+                sutDescriptor.setValue(testInstance, sutInstance);
+                sutDescriptor.init(sutInstance);
+                testContext.addProperty(TestContextProperties.SUT_INSTANCE, sutInstance);
             });
         });
     }

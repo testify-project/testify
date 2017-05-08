@@ -68,7 +68,6 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     private static final String DEFAULT_URI = "http://0.0.0.0:0/";
     private static final int DEFAULT_PORT = 0;
 
-    private Undertow undertow;
     private ApplicationProvider applicationProvider;
 
     @Override
@@ -114,7 +113,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public ServerInstance<Undertow> start(DeploymentInfo deploymentInfo) {
+    public ServerInstance<Undertow> start(TestContext testContext, DeploymentInfo deploymentInfo) {
         try {
             DeploymentManager manager = Servlets.defaultContainer()
                     .addDeployment(deploymentInfo);
@@ -129,13 +128,13 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
             PathHandler pathHandler = Handlers.path(defaultHandler);
             pathHandler.addPrefixPath(path, httpHandler);
 
-            undertow = Undertow.builder()
+            Undertow undertow = Undertow.builder()
                     .addHttpListener(DEFAULT_PORT, host, pathHandler)
                     .build();
 
             undertow.start();
 
-            Integer port = getPorts().get(0);
+            Integer port = getPorts(undertow).get(0);
 
             URI baseURI = new URI(DEFAULT_SCHEME, null, host, port, path, null, null);
 
@@ -146,12 +145,12 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     }
 
     @Override
-    public void stop() {
-        undertow.stop();
+    public void stop(TestContext testContext, ServerInstance<Undertow> serverInstance) {
+        serverInstance.getInstance().stop();
         applicationProvider.stop();
     }
 
-    List<Integer> getPorts() {
+    List<Integer> getPorts(Undertow undertow) {
         List<Integer> ports = new ArrayList<>();
         Optional<Field> foundField = findField(Undertow.class, "channels");
 

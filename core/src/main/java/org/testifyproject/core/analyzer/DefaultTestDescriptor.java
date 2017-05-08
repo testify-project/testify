@@ -98,8 +98,8 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public Optional<Field> getCutField() {
-        return findProperty(TestDescriptorProperties.CUT_FIELD);
+    public Optional<Field> getSutField() {
+        return findProperty(TestDescriptorProperties.SUT_FIELD);
     }
 
     @Override

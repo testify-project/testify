@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.ImplicitType;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -31,22 +31,22 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
 @RunWith(UnitTest.class)
 public class ImplicitTypeRealTest {
 
-    @Cut
-    ImplicitType cut;
+    @Sut
+    ImplicitType sut;
 
     @Real
     Hello collaborator;
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(collaborator).isNotNull();
-        assertThat(cut.getHello()).isSameAs(collaborator);
+        assertThat(sut.getHello()).isSameAs(collaborator);
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
-        String result = cut.execute();
+    public void givenNothingClassToExesuteShouldReturnHello() {
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo("Hiya!");
     }

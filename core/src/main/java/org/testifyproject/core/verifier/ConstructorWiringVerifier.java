@@ -30,7 +30,7 @@ import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure that the class under test constructor parameters are defined as
+ * Insure that the system under test constructor parameters are defined as
  * collaborators on the test class.
  *
  * @author saden
@@ -49,9 +49,9 @@ public class ConstructorWiringVerifier implements WiringVerifier {
         Optional<MethodDescriptor> foundCollaboratorProvider = testDescriptor.getCollaboratorProvider();
 
         if (!foundCollaboratorProvider.isPresent()) {
-            testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
-                String cutClassName = cutDescriptor.getTypeName();
-                Collection<ParameterDescriptor> paramDescriptors = cutDescriptor.getParameterDescriptors();
+            testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
+                String sutClassName = sutDescriptor.getTypeName();
+                Collection<ParameterDescriptor> paramDescriptors = sutDescriptor.getParameterDescriptors();
 
                 List<ParameterDescriptor> undeclared = paramDescriptors.stream().collect(toList());
 
@@ -66,10 +66,10 @@ public class ConstructorWiringVerifier implements WiringVerifier {
                         .map(ParameterDescriptor::getTypeName)
                         .forEach(paramTypeName
                                 -> LoggingUtil.INSTANCE.warn(
-                                "Class under test '{}' defined in '{}' has a collaborator "
+                                "System under test '{}' defined in '{}' has a collaborator "
                                 + "of type '{}' but test class '{}' does not define a field of "
                                 + "type '{}' annotated with @Fake, @Real, or @Virtual.",
-                                cutClassName, testClassName, paramTypeName, testClassName, paramTypeName));
+                                sutClassName, testClassName, paramTypeName, testClassName, paramTypeName));
             });
         }
     }

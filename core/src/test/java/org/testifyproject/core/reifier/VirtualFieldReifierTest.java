@@ -37,16 +37,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class VirtualFieldReifierTest {
 
-    VirtualFieldReifier cut;
+    VirtualFieldReifier sut;
 
     @Before
     public void init() {
-        cut = new VirtualFieldReifier();
+        sut = new VirtualFieldReifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.reify(null);
+        sut.reify(null);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class VirtualFieldReifierTest {
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -93,7 +93,7 @@ public class VirtualFieldReifierTest {
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
         given(mockProvider.isMock(fieldValue)).willReturn(true);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -130,7 +130,7 @@ public class VirtualFieldReifierTest {
         given(mockProvider.isMock(any(fieldType))).willReturn(false);
         given(mockProvider.createVirtual(eq(fieldType), any(fieldType))).willReturn(fieldValue);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();

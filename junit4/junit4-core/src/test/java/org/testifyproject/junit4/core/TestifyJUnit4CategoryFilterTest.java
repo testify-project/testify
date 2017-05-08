@@ -33,32 +33,32 @@ import org.testifyproject.junit4.fixture.filter.VirtualResourceTestClass;
  */
 public class TestifyJUnit4CategoryFilterTest {
 
-    TestifyJUnit4CategoryFilter cut;
+    TestifyJUnit4CategoryFilter sut;
 
     @Before
     public void init() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullDescriptionShouldRunShouldThrowException() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
 
         Description description = null;
 
-        cut.shouldRun(description);
+        sut.shouldRun(description);
     }
 
     @Test
     public void givenNoSystemPropertyShouldRunShouldReturnTrue() {
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
 
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isTrue();
     }
@@ -67,14 +67,14 @@ public class TestifyJUnit4CategoryFilterTest {
     public void givenUnsupportedTestShouldRunShouldReturnFalse() {
         String[] categories = new String[]{"unit"};
 
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
 
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isFalse();
     }
@@ -83,7 +83,7 @@ public class TestifyJUnit4CategoryFilterTest {
     public void givenTestClassWithLocalResourceShouldRunShouldReturnTrue() {
         String[] categories = new String[]{"local"};
 
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
 
         Description description = mock(Description.class);
         Class testClass = LocalResourceTestClass.class;
@@ -91,7 +91,7 @@ public class TestifyJUnit4CategoryFilterTest {
         given(description.getTestClass()).willReturn(testClass);
         System.setProperty("testify.categories", "local");
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isTrue();
     }
@@ -99,7 +99,7 @@ public class TestifyJUnit4CategoryFilterTest {
     @Test
     public void givenTestClassWithVirtualResourceShouldRunShouldReturnTrue() {
         String[] categories = new String[]{"integration"};
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
 
         Description description = mock(Description.class);
         Class testClass = VirtualResourceTestClass.class;
@@ -107,14 +107,14 @@ public class TestifyJUnit4CategoryFilterTest {
         given(description.getTestClass()).willReturn(testClass);
         System.setProperty("testify.categories", "integration");
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isTrue();
     }
 
     @Test
     public void callToDescribeShouldReturnFilterDescription() {
-        String result = cut.describe();
+        String result = sut.describe();
 
         assertThat(result).isEqualTo(FILTER_DESCRIPTION);
     }

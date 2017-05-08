@@ -29,7 +29,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Bundle;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.asm.AnnotationVisitor;
 import org.testifyproject.asm.ClassVisitor;
 import org.testifyproject.asm.FieldVisitor;
@@ -54,7 +54,7 @@ public class TestClassAnalyzer extends ClassVisitor {
     public static final String CONSTRUCTOR_NAME = "<init>";
     public static final String STATIC_NAME = "<cinit>";
 
-    private int cutCount = 0;
+    private int sutCount = 0;
     private final Class<?> testClass;
     private final TestDescriptor testDescriptor;
 
@@ -100,12 +100,12 @@ public class TestClassAnalyzer extends ClassVisitor {
                 field.setAccessible(true);
                 ReflectionUtil.INSTANCE.removeFinalModifier(field);
 
-                Cut cut = field.getDeclaredAnnotation(Cut.class);
-                if (cut == null) {
+                Sut sut = field.getDeclaredAnnotation(Sut.class);
+                if (sut == null) {
                     saveField(field);
                 } else {
-                    testDescriptor.addProperty(TestDescriptorProperties.CUT_FIELD, field);
-                    cutCount++;
+                    testDescriptor.addProperty(TestDescriptorProperties.SUT_FIELD, field);
+                    sutCount++;
                 }
             } catch (NoSuchFieldException | SecurityException e) {
                 throw ExceptionUtil.INSTANCE.propagate(
@@ -138,10 +138,10 @@ public class TestClassAnalyzer extends ClassVisitor {
 
     @Override
     public void visitEnd() {
-        ExceptionUtil.INSTANCE.raise(cutCount > 1,
-                "Found {} fields annotated with @Cut in test class {}. Please insure "
-                + "that the test class has only one field annotated with @Cut.",
-                cutCount, testClass.getName());
+        ExceptionUtil.INSTANCE.raise(sutCount > 1,
+                "Found {} fields annotated with @Sut in test class {}. Please insure "
+                + "that the test class has only one field annotated with @Sut.",
+                sutCount, testClass.getName());
     }
 
     void saveField(Field field) {

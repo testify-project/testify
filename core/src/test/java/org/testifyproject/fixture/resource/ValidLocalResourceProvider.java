@@ -18,6 +18,7 @@ package org.testifyproject.fixture.resource;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -33,11 +34,11 @@ public class ValidLocalResourceProvider implements LocalResourceProvider {
     }
 
     @Override
-    public LocalResourceInstance start(TestContext testContext, Object config) {
+    public LocalResourceInstance start(TestContext testContext, LocalResource localResource, Object config) {
         return null;
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext, LocalResource localResource) {
     }
 }

@@ -34,7 +34,8 @@ public interface TestResourcesProvider {
      * Stop the test resources.
      *
      * @param testContext the test context
+     * @param serviceInstance the service instance
      */
-    void stop(TestContext testContext);
+    void stop(TestContext testContext, ServiceInstance serviceInstance);
 
 }

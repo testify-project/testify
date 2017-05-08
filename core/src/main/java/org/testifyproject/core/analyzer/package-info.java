@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * A package that contains class under test and test class analyzers,
+ * A package that contains system under test and test class analyzers,
  * descriptor implementation classes and various helper classes used during
  * analysis.
  */

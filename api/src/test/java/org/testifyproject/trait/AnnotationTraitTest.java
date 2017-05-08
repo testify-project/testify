@@ -37,29 +37,29 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class AnnotationTraitTest {
 
-    AnnotationTrait<Class<PrimaryTestService>> cut;
+    AnnotationTrait<Class<PrimaryTestService>> sut;
 
     @Before
     public void init() {
-        cut = mock(AnnotationTrait.class, Answers.CALLS_REAL_METHODS);
-        given(cut.getAnnotatedElement()).willReturn(PrimaryTestService.class);
+        sut = mock(AnnotationTrait.class, Answers.CALLS_REAL_METHODS);
+        given(sut.getAnnotatedElement()).willReturn(PrimaryTestService.class);
     }
 
     @Test
     public void callToGetAnnotatedElementShouldReturnTestService() {
-        Class<PrimaryTestService> result = cut.getAnnotatedElement();
+        Class<PrimaryTestService> result = sut.getAnnotatedElement();
 
         assertThat(result).isEqualTo(PrimaryTestService.class);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullGetAnnotationShouldThrowException() {
-        cut.getAnnotation(null);
+        sut.getAnnotation(null);
     }
 
     @Test
     public void givenNonExistenAnnotationGetAnnotationShouldReturnEmptyOptional() {
-        Optional<Documented> result = cut.getAnnotation(Documented.class);
+        Optional<Documented> result = sut.getAnnotation(Documented.class);
 
         assertThat(result).isEmpty();
     }
@@ -68,7 +68,7 @@ public class AnnotationTraitTest {
     public void givenExistingAnnotationGetAnnotationShouldReturnOptionalWithAnnotation() {
         Class<TestAnnotation> annotationType = TestAnnotation.class;
 
-        Optional<TestAnnotation> result = cut.getAnnotation(annotationType);
+        Optional<TestAnnotation> result = sut.getAnnotation(annotationType);
 
         assertThat(result).containsInstanceOf(annotationType);
     }
@@ -76,14 +76,14 @@ public class AnnotationTraitTest {
     @Test(expected = NullPointerException.class)
     public void givenNullGetAnnotationsShouldReturnEmptyList() {
         Class<Annotation> annotationType = null;
-        cut.getAnnotations(annotationType);
+        sut.getAnnotations(annotationType);
     }
 
     @Test
     public void givenNonExistenAnnotationGetAnnotationsShouldReturnEmptyList() {
         Class<Documented> annotationType = Documented.class;
 
-        List<Documented> result = cut.getAnnotations(annotationType);
+        List<Documented> result = sut.getAnnotations(annotationType);
 
         assertThat(result).isEmpty();
     }
@@ -92,7 +92,7 @@ public class AnnotationTraitTest {
     public void givenExistingAnnotationGetAnnotationsShouldReturnListWithAnnotations() {
         Class<TestAnnotation> annotationType = TestAnnotation.class;
 
-        List<TestAnnotation> result = cut.getAnnotations(annotationType);
+        List<TestAnnotation> result = sut.getAnnotations(annotationType);
 
         assertThat(result).hasSize(1);
     }
@@ -102,7 +102,7 @@ public class AnnotationTraitTest {
         Collection<Class<Annotation>> annotationType = null;
         Collection[] annotationTypes = new Collection[]{annotationType};
 
-        cut.getMetaAnnotations(annotationTypes);
+        sut.getMetaAnnotations(annotationTypes);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class AnnotationTraitTest {
         Collection<Class<Documented>> annotationType = ImmutableList.of(Documented.class);
         Collection[] annotationTypes = new Collection[]{annotationType};
 
-        Annotation[] result = cut.getMetaAnnotations(annotationTypes);
+        Annotation[] result = sut.getMetaAnnotations(annotationTypes);
 
         assertThat(result).isEmpty();
     }
@@ -120,7 +120,7 @@ public class AnnotationTraitTest {
         Collection<Class<Retention>> annotationType = ImmutableList.of(Retention.class);
         Collection[] annotationTypes = new Collection[]{annotationType};
 
-        Annotation[] result = cut.getMetaAnnotations(annotationTypes);
+        Annotation[] result = sut.getMetaAnnotations(annotationTypes);
 
         assertThat(result).hasSize(1);
     }
@@ -129,14 +129,14 @@ public class AnnotationTraitTest {
     public void givenNullArrayHasAnyAnnotationsShouldThrowException() {
         Class<Annotation>[] annotationTypes = null;
 
-        cut.hasAnyAnnotations(annotationTypes);
+        sut.hasAnyAnnotations(annotationTypes);
     }
 
     @Test
     public void givenNonExistentAnnotationArrayHasAnyAnnotationsShouldReturnFalse() {
         Class<Documented>[] annotationTypes = new Class[]{Documented.class};
 
-        boolean result = cut.hasAnyAnnotations(annotationTypes);
+        boolean result = sut.hasAnyAnnotations(annotationTypes);
 
         assertThat(result).isFalse();
     }
@@ -145,7 +145,7 @@ public class AnnotationTraitTest {
     public void givenExistingAnnotationArrayHasAnyAnnotationsShouldReturnFalse() {
         Class<TestAnnotation>[] annotationTypes = new Class[]{TestAnnotation.class};
 
-        boolean result = cut.hasAnyAnnotations(annotationTypes);
+        boolean result = sut.hasAnyAnnotations(annotationTypes);
 
         assertThat(result).isTrue();
     }
@@ -154,14 +154,14 @@ public class AnnotationTraitTest {
     public void givenNullCollectionHasAnyAnnotationsShouldThrowException() {
         Collection<Class<? extends Annotation>> annotationTypes = null;
 
-        cut.hasAnyAnnotations(annotationTypes);
+        sut.hasAnyAnnotations(annotationTypes);
     }
 
     @Test
     public void givenNonExistentAnnotationCollectionHasAnyAnnotationsShouldReturnEmptyArray() {
         Collection<Class<? extends Annotation>> annotationTypes = ImmutableList.of(Documented.class);
 
-        boolean result = cut.hasAnyAnnotations(annotationTypes);
+        boolean result = sut.hasAnyAnnotations(annotationTypes);
 
         assertThat(result).isFalse();
     }
@@ -170,7 +170,7 @@ public class AnnotationTraitTest {
     public void givenExistingAnnotationCollectionHasAnyAnnotationsShouldReturnEmptyArray() {
         Collection<Class<? extends Annotation>> annotationTypes = ImmutableList.of(TestAnnotation.class);
 
-        boolean result = cut.hasAnyAnnotations(annotationTypes);
+        boolean result = sut.hasAnyAnnotations(annotationTypes);
 
         assertThat(result).isTrue();
     }

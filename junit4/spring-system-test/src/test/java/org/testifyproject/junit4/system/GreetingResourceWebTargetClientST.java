@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
 import org.testifyproject.junit4.fixture.web.service.GreetingService;
@@ -33,8 +33,8 @@ import org.testifyproject.junit4.fixture.web.service.GreetingService;
 @Application(GreeterServletApplication.class)
 public class GreetingResourceWebTargetClientST {
 
-    @Cut
-    WebTarget cut;
+    @Sut
+    WebTarget sut;
 
     @Fake
     GreetingService greetingService;
@@ -44,7 +44,7 @@ public class GreetingResourceWebTargetClientST {
         String greeting = "Hi";
         given(greetingService.getGreeting()).willReturn(greeting);
 
-        Response result = cut.path("/").request().get();
+        Response result = sut.path("/").request().get();
 
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());

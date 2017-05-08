@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.junit4.fixture.GreeterApplication;
 import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
@@ -49,8 +49,8 @@ import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
 @RunWith(Jersey2SystemTest.class)
 public class GreetingResourceLocalResourceST {
 
-    @Cut
-    ClientInstance<WebTarget> cut;
+    @Sut
+    ClientInstance<WebTarget> sut;
 
     @Test
     public void givenHelloGetShouldReturnHello() {
@@ -58,7 +58,7 @@ public class GreetingResourceLocalResourceST {
         String phrase = "Hello";
 
         //Act
-        Response result = cut.getInstance()
+        Response result = sut.getInstance()
                 .path("/")
                 .request()
                 .post(Entity.json(phrase));

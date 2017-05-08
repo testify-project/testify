@@ -36,11 +36,11 @@ import org.testifyproject.fixture.inspector.TestEmptyCollaboratorProvider;
  */
 public class CollaboratorProviderInspectorTest {
 
-    CollaboratorProviderInspector cut;
+    CollaboratorProviderInspector sut;
 
     @Before
     public void init() {
-        cut = new CollaboratorProviderInspector();
+        sut = new CollaboratorProviderInspector();
     }
 
     @Test
@@ -52,7 +52,7 @@ public class CollaboratorProviderInspectorTest {
 
         given(annotation.value()).willReturn(providerType);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addProperty(eq(TestDescriptorProperties.COLLABORATOR_PROVIDER), any(MethodDescriptor.class));
     }
@@ -66,7 +66,7 @@ public class CollaboratorProviderInspectorTest {
 
         given(annotation.value()).willReturn(providerType);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verifyNoMoreInteractions(testDescriptor);
     }

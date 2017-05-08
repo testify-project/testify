@@ -51,7 +51,7 @@ import org.testifyproject.guava.common.reflect.TypeToken;
  */
 public class HK2ServiceInstanceTest {
 
-    HK2ServiceInstance cut;
+    HK2ServiceInstance sut;
     TestContext testContext;
     ServiceLocator serviceLocator;
 
@@ -59,17 +59,17 @@ public class HK2ServiceInstanceTest {
     public void init() {
         testContext = mock(TestContext.class);
         serviceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
-        cut = new HK2ServiceInstance(testContext, serviceLocator);
+        sut = new HK2ServiceInstance(testContext, serviceLocator);
     }
 
     @After
     public void destroy() {
-        cut.destroy();
+        sut.destroy();
     }
 
     @Test
     public void callToIsRunningShouldReturnTrue() {
-        assertThat(cut.isRunning()).isTrue();
+        assertThat(sut.isRunning()).isTrue();
     }
 
     @Test
@@ -79,7 +79,7 @@ public class HK2ServiceInstanceTest {
         assertThat(injectedService.getField()).isNull();
         assertThat(injectedService.getMethod()).isNull();
 
-        cut.inject(injectedService);
+        sut.inject(injectedService);
 
         assertThat(injectedService.getField()).isNotNull();
         assertThat(injectedService.getMethod()).isNotNull();
@@ -87,27 +87,27 @@ public class HK2ServiceInstanceTest {
 
     @Test
     public void callToGetContextShouldReturnServiceLocator() {
-        assertThat(cut.getContext())
+        assertThat(sut.getContext())
                 .isNotNull()
                 .isSameAs(serviceLocator);
     }
 
     @Test
     public void givenTypeGetServiceShouldReturnService() {
-        Hello result = cut.getService(Hello.class);
+        Hello result = sut.getService(Hello.class);
 
         assertThat(result).isNotNull();
     }
 
     @Test
     public void givenContractTypeGetServiceShouldReturnService() {
-        Greeting result = cut.getService(Greeting.class);
+        Greeting result = sut.getService(Greeting.class);
         assertThat(result).isNotNull();
     }
 
     @Test
     public void givenTypeAndNameGetServiceShouldReturnService() {
-        Haye result = cut.getService(Haye.class, "Haye");
+        Haye result = sut.getService(Haye.class, "Haye");
         assertThat(result).isNotNull();
     }
 
@@ -117,12 +117,12 @@ public class HK2ServiceInstanceTest {
         String name = "genericConstant";
         Class contract = GenericContract.class;
 
-        cut.addConstant(constant, name, contract);
+        sut.addConstant(constant, name, contract);
 
         TypeToken<GenericContract<String>> type = new TypeToken<GenericContract<String>>() {
         };
 
-        GenericContract<String> result = cut.getService(type.getType());
+        GenericContract<String> result = sut.getService(type.getType());
 
         assertThat(result).isNotNull();
     }
@@ -133,14 +133,14 @@ public class HK2ServiceInstanceTest {
         String name = "genericConstant";
         Class contract = GenericContract.class;
 
-        cut.addConstant(constant, name, contract);
+        sut.addConstant(constant, name, contract);
 
         TypeToken<GenericContract<String>> type = new TypeToken<GenericContract<String>>() {
         };
 
         Annotation[] qualifiers = new Annotation[]{new NamedImpl(name)};
 
-        GenericContract<String> result = cut.getService(type.getType(), qualifiers);
+        GenericContract<String> result = sut.getService(type.getType(), qualifiers);
 
         assertThat(result).isNotNull();
     }
@@ -148,7 +148,7 @@ public class HK2ServiceInstanceTest {
     @Test
     public void givenTypeAndAnnotationGetServiceShouldReturnService() {
         Annotation[] qualifiers = new Annotation[]{new NamedImpl("Haye")};
-        Haye result = cut.getService(Haye.class, qualifiers);
+        Haye result = sut.getService(Haye.class, qualifiers);
         assertThat(result).isNotNull();
     }
 
@@ -156,7 +156,7 @@ public class HK2ServiceInstanceTest {
     public void givenConstantAddConstantShouldAddTheInstanceToServiceLocator() {
         ConstantService service = new ConstantService("greeting");
 
-        cut.addConstant(service, null, null);
+        sut.addConstant(service, null, null);
 
         ConstantService result = serviceLocator.getService(ConstantService.class);
         assertThat(result).isNotNull();
@@ -167,7 +167,7 @@ public class HK2ServiceInstanceTest {
         ConstantService service = new ConstantService("greeting");
         String name = "testConstant";
 
-        cut.addConstant(service, name, null);
+        sut.addConstant(service, name, null);
 
         ConstantService result = serviceLocator.getService(ConstantService.class, name);
         assertThat(result).isNotNull();
@@ -179,7 +179,7 @@ public class HK2ServiceInstanceTest {
         String name = null;
         Class<ConstantContract> contract = ConstantContract.class;
 
-        cut.addConstant(service, name, contract);
+        sut.addConstant(service, name, contract);
 
         ConstantContract result = serviceLocator.getService(ConstantContract.class, name);
         assertThat(result).isNotNull();
@@ -191,7 +191,7 @@ public class HK2ServiceInstanceTest {
         String name = "testConstant";
         Class<ConstantContract> contract = ConstantContract.class;
 
-        cut.addConstant(service, name, contract);
+        sut.addConstant(service, name, contract);
 
         ConstantContract result = serviceLocator.getService(ConstantContract.class, name);
         assertThat(result).isNotNull();
@@ -203,7 +203,7 @@ public class HK2ServiceInstanceTest {
         Hello constant = new Hello();
         Class<Greeting> contract = Greeting.class;
 
-        cut.replace(constant, name, contract);
+        sut.replace(constant, name, contract);
 
         Greeting result = serviceLocator.getService(contract, name);
         assertThat(result).isSameAs(constant);
@@ -215,7 +215,7 @@ public class HK2ServiceInstanceTest {
         Hello constant = new Hello();
         Class<Greeting> contract = null;
 
-        cut.replace(constant, name, contract);
+        sut.replace(constant, name, contract);
 
         Greeting result = serviceLocator.getService(Hello.class, name);
         assertThat(result).isSameAs(constant);
@@ -227,7 +227,7 @@ public class HK2ServiceInstanceTest {
         Hello constant = new Hello();
         Class<Greeting> contract = Greeting.class;
 
-        cut.replace(constant, name, contract);
+        sut.replace(constant, name, contract);
 
         Greeting result = serviceLocator.getService(contract);
         assertThat(result).isSameAs(constant);
@@ -236,7 +236,7 @@ public class HK2ServiceInstanceTest {
     @Test
     public void givenModuleAddModuleShouldAddModule() {
         DefaultModule module = new DefaultModule(TestModule.class);
-        cut.addModules(module);
+        sut.addModules(module);
 
         WiredContract contract = serviceLocator.getService(WiredContract.class);
         WiredService service = serviceLocator.getService(WiredService.class);
@@ -248,16 +248,16 @@ public class HK2ServiceInstanceTest {
     @Test
     public void givenDescriptorResourceScanShouldAddServices() {
         serviceLocator = ServiceLocatorFactory.getInstance().create(null);
-        cut = new HK2ServiceInstance(testContext, serviceLocator);
+        sut = new HK2ServiceInstance(testContext, serviceLocator);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         ClassLoader classLoader = this.getClass().getClassLoader();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getTestClassLoader()).willReturn(classLoader);
 
-        cut.addScans(new DefaultScan("META-INF/hk2-locator/default"));
+        sut.addScans(new DefaultScan("META-INF/hk2-locator/default"));
 
-        Haye greeting = cut.getService(Haye.class);
+        Haye greeting = sut.getService(Haye.class);
         assertThat(greeting).isNotNull();
     }
 
@@ -265,7 +265,7 @@ public class HK2ServiceInstanceTest {
     public void givenProviderGetServiceShouldReturnProvider() {
         TypeToken<Provider<Greeting>> type = new TypeToken<Provider<Greeting>>() {
         };
-        Provider<Greeting> result = cut.getService(type.getType());
+        Provider<Greeting> result = sut.getService(type.getType());
 
         assertThat(result).isNotNull();
         assertThat(result.get()).isNotNull();
@@ -275,18 +275,18 @@ public class HK2ServiceInstanceTest {
     public void givenMapGetServiceShouldReturnMap() {
         TypeToken<IterableProvider<Greeting>> type = new TypeToken<IterableProvider<Greeting>>() {
         };
-        IterableProvider<Greeting> result = cut.getService(type.getType());
+        IterableProvider<Greeting> result = sut.getService(type.getType());
         assertThat(result).isNotEmpty();
     }
 
     @Test
     public void callToGetNameQualifersShouldReturnAnnotaitons() {
-        assertThat(cut.getNameQualifers()).hasSize(1);
+        assertThat(sut.getNameQualifers()).hasSize(1);
     }
 
     @Test
     public void callToGetCustomQualifiersShouldReturnAnnotaitons() {
-        assertThat(cut.getCustomQualifiers()).hasSize(1);
+        assertThat(sut.getCustomQualifiers()).hasSize(1);
     }
 
 }

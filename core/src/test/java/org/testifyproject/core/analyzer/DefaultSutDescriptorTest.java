@@ -29,10 +29,10 @@ import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
-import org.testifyproject.fixture.analyzer.AnalyzedCutClass;
+import org.testifyproject.fixture.analyzer.AnalyzedSutClass;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableMap;
@@ -41,59 +41,59 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  *
  * @author saden
  */
-public class DefaultCutDescriptorTest {
+public class DefaultSutDescriptorTest {
 
-    CutDescriptor cut;
+    SutDescriptor sut;
     Field field;
     Map properties;
 
     @Before
     public void init() throws NoSuchFieldException {
-        field = AnalyzedTestClass.class.getDeclaredField("cut");
+        field = AnalyzedTestClass.class.getDeclaredField("sut");
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = DefaultCutDescriptor.of(field, properties);
+        sut = DefaultSutDescriptor.of(field, properties);
     }
 
     @Test
-    public void givenFieldOfShouldReturnCutDescriptor() {
-        cut = DefaultCutDescriptor.of(field);
+    public void givenFieldOfShouldReturnSutDescriptor() {
+        sut = DefaultSutDescriptor.of(field);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getMember()).isEqualTo(field);
+        assertThat(sut).isNotNull();
+        assertThat(sut.getMember()).isEqualTo(field);
     }
 
     @Test
     public void callToGetPropertiesShouldReturnProperties() {
-        Map<String, Object> result = cut.getProperties();
+        Map<String, Object> result = sut.getProperties();
 
         assertThat(result).isEqualTo(properties);
     }
 
     @Test
     public void callToGetMemberShouldReturnField() {
-        Field result = cut.getMember();
+        Field result = sut.getMember();
 
         assertThat(result).isEqualTo(field);
     }
 
     @Test
     public void callToGetTypeShouldReturnType() {
-        Class<?> result = cut.getType();
+        Class<?> result = sut.getType();
 
         assertThat(result).isEqualTo(field.getType());
     }
 
     @Test
     public void callToGetGenericTypeShouldReturnGenericType() {
-        Type result = cut.getGenericType();
+        Type result = sut.getGenericType();
 
         assertThat(result).isEqualTo(field.getGenericType());
     }
 
     @Test
     public void callToGetClassLoaderShouldReturnClassLoader() {
-        ClassLoader result = cut.getClassLoader();
+        ClassLoader result = sut.getClassLoader();
 
         assertThat(result).isEqualTo(field.getType().getClassLoader());
     }
@@ -101,23 +101,23 @@ public class DefaultCutDescriptorTest {
     @Test
     public void callToGetConstructorShouldReturnConstructor() throws NoSuchMethodException {
         Constructor constructor = field.getType().getDeclaredConstructor(Map.class);
-        properties.put(CutDescriptorProperties.CONSTRUCTOR, constructor);
+        properties.put(SutDescriptorProperties.CONSTRUCTOR, constructor);
 
-        Constructor result = cut.getConstructor();
+        Constructor result = sut.getConstructor();
 
         assertThat(result).isEqualTo(constructor);
     }
 
     @Test
-    public void givenNonCutTypeIsCutClassShouldReturnFalse() {
-        Boolean result = cut.isCutClass(String.class);
+    public void givenNonSutTypeIsSutClassShouldReturnFalse() {
+        Boolean result = sut.isSutClass(String.class);
 
         assertThat(result).isFalse();
     }
 
     @Test
-    public void givenCutTypeIsCutClassShouldReturnFalse() {
-        Boolean result = cut.isCutClass(AnalyzedCutClass.class);
+    public void givenSutTypeIsSutClassShouldReturnFalse() {
+        Boolean result = sut.isSutClass(AnalyzedSutClass.class);
 
         assertThat(result).isTrue();
     }
@@ -126,9 +126,9 @@ public class DefaultCutDescriptorTest {
     public void callToGetFieldDescriptorsShouldReturn() {
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         List<FieldDescriptor> value = ImmutableList.of(fieldDescriptor);
-        properties.put(CutDescriptorProperties.FIELD_DESCRIPTORS, value);
+        properties.put(SutDescriptorProperties.FIELD_DESCRIPTORS, value);
 
-        Collection<FieldDescriptor> result = cut.getFieldDescriptors();
+        Collection<FieldDescriptor> result = sut.getFieldDescriptors();
 
         assertThat(result).containsExactly(fieldDescriptor);
     }
@@ -139,9 +139,9 @@ public class DefaultCutDescriptorTest {
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
-        properties.put(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
+        properties.put(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
-        Optional<FieldDescriptor> result = cut.findFieldDescriptor(type);
+        Optional<FieldDescriptor> result = sut.findFieldDescriptor(type);
 
         assertThat(result).contains(fieldDescriptor);
     }
@@ -152,12 +152,12 @@ public class DefaultCutDescriptorTest {
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
-        properties.put(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
+        properties.put(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
         Class<List> searchType = List.class;
 
         given(fieldDescriptor.isSupertypeOf(searchType)).willReturn(true);
         
-        Optional<FieldDescriptor> result = cut.findFieldDescriptor(searchType);
+        Optional<FieldDescriptor> result = sut.findFieldDescriptor(searchType);
 
         assertThat(result).contains(fieldDescriptor);
     }
@@ -169,9 +169,9 @@ public class DefaultCutDescriptorTest {
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
-        properties.put(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
+        properties.put(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
-        Optional<FieldDescriptor> result = cut.findFieldDescriptor(type, name);
+        Optional<FieldDescriptor> result = sut.findFieldDescriptor(type, name);
 
         assertThat(result).contains(fieldDescriptor);
     }
@@ -180,9 +180,9 @@ public class DefaultCutDescriptorTest {
     public void callToGetParameterDescriptorsShouldReturnParameterDescriptors() {
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
         List< ParameterDescriptor> value = ImmutableList.of(parameterDescriptor);
-        properties.put(CutDescriptorProperties.PARAMETER_DESCRIPTORS, value);
+        properties.put(SutDescriptorProperties.PARAMETER_DESCRIPTORS, value);
 
-        Collection<ParameterDescriptor> result = cut.getParameterDescriptors();
+        Collection<ParameterDescriptor> result = sut.getParameterDescriptors();
 
         assertThat(result).containsExactly(parameterDescriptor);
     }
@@ -193,9 +193,9 @@ public class DefaultCutDescriptorTest {
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
         Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey, parameterDescriptor);
-        properties.put(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
+        properties.put(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
 
-        Optional<ParameterDescriptor> result = cut.findParameterDescriptor(type);
+        Optional<ParameterDescriptor> result = sut.findParameterDescriptor(type);
 
         assertThat(result).contains(parameterDescriptor);
     }
@@ -206,12 +206,12 @@ public class DefaultCutDescriptorTest {
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
         Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey, parameterDescriptor);
-        properties.put(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
+        properties.put(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
         Class<List> searchType = List.class;
         
         given(parameterDescriptor.isSupertypeOf(searchType)).willReturn(true);
         
-        Optional<ParameterDescriptor> result = cut.findParameterDescriptor(searchType);
+        Optional<ParameterDescriptor> result = sut.findParameterDescriptor(searchType);
 
         assertThat(result).contains(parameterDescriptor);
     }
@@ -223,52 +223,52 @@ public class DefaultCutDescriptorTest {
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
         Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey, parameterDescriptor);
-        properties.put(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
+        properties.put(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
 
-        Optional<ParameterDescriptor> result = cut.findParameterDescriptor(type, name);
+        Optional<ParameterDescriptor> result = sut.findParameterDescriptor(type, name);
 
         assertThat(result).contains(parameterDescriptor);
     }
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        assertThat(cut).isNotEqualTo(null);
+        assertThat(sut).isNotEqualTo(null);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        DefaultCutDescriptor unequal = DefaultCutDescriptor.of(null);
+        DefaultSutDescriptor unequal = DefaultSutDescriptor.of(null);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        DefaultCutDescriptor equal = DefaultCutDescriptor.of(field, properties);
+        DefaultSutDescriptor equal = DefaultSutDescriptor.of(field, properties);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
-        assertThat(result).contains("DefaultCutDescriptor", "field");
+        assertThat(result).contains("DefaultSutDescriptor", "field");
     }
 
 }

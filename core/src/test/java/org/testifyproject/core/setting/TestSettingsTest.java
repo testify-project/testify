@@ -30,46 +30,46 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class TestSettingsTest {
 
-    TestSettings cut;
+    TestSettings sut;
 
     @Before
     public void init() {
-        cut = new TestSettings();
+        sut = new TestSettings();
     }
 
     @Test
     public void validateTestRunnerClassProperty() {
         Class<? extends TestRunner> setting = TestRunner.class;
-        cut.setTestRunnerClass(setting);
+        sut.setTestRunnerClass(setting);
 
-        Class<? extends TestRunner> result = cut.getTestRunnerClass();
+        Class<? extends TestRunner> result = sut.getTestRunnerClass();
         assertThat(result).isEqualTo(setting);
     }
 
     @Test
     public void validateResourceStartStrategyProperty() {
         StartStrategy setting = StartStrategy.EAGER;
-        cut.setResourceStartStrategy(setting);
+        sut.setResourceStartStrategy(setting);
 
-        StartStrategy result = cut.getResourceStartStrategy();
+        StartStrategy result = sut.getResourceStartStrategy();
         assertThat(result).isEqualTo(setting);
     }
 
     @Test
     public void validateDependenciesProperty() {
         Map<String, String> setting = ImmutableMap.of();
-        cut.setDependencies(setting);
+        sut.setDependencies(setting);
 
-        Map<String, String> result = cut.getDependencies();
+        Map<String, String> result = sut.getDependencies();
         assertThat(result).isEqualTo(setting);
     }
 
     @Test
     public void validateLevelProperty() {
         TestCategory.Level setting = TestCategory.Level.UNIT;
-        cut.setLevel(setting);
+        sut.setLevel(setting);
 
-        TestCategory.Level result = cut.getLevel();
+        TestCategory.Level result = sut.getLevel();
         assertThat(result).isEqualTo(setting);
     }
 

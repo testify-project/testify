@@ -30,6 +30,7 @@
 
     <properties>
         <slf4jtesting.version>1.0.1</slf4jtesting.version>
+        <systemrules.version>1.16.1</systemrules.version>
     </properties>
     
     <dependencies>
@@ -79,6 +80,12 @@
             <groupId>com.portingle</groupId>
             <artifactId>slf4jtesting</artifactId>
             <version>${slf4jtesting.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>${systemrules.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

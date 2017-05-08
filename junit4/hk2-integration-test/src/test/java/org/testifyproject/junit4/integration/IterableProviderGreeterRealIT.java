@@ -20,7 +20,7 @@ import org.glassfish.hk2.api.IterableProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
@@ -35,16 +35,16 @@ import org.testifyproject.junit4.fixture.common.Greeting;
 @RunWith(HK2IntegrationTest.class)
 public class IterableProviderGreeterRealIT {
 
-    @Cut
-    IterableProviderGreeter cut;
+    @Sut
+    IterableProviderGreeter sut;
 
     @Real
     IterableProvider<Greeting> greetings;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greetings).hasSize(4).isSameAs(cut.getGreetings());
+        assertThat(sut).isNotNull();
+        assertThat(greetings).hasSize(4).isSameAs(sut.getGreetings());
         assertThat(Mockito.mockingDetails(greetings).isMock()).isFalse();
     }
 

@@ -33,7 +33,7 @@ public class ImplicitGenericTypeDistinct {
         this.world = world;
     }
 
-    public String execute() {
+    public String exesute() {
         return hello.get().greet() + " " + world.get().greet();
 
     }

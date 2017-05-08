@@ -43,22 +43,27 @@ import static org.testifyproject.github.dockerjava.core.DockerClientConfig.creat
  */
 public class DockerVirtualResourceProviderTest {
 
-    DockerVirtualResourceProvider cut;
+    DockerVirtualResourceProvider sut;
+    TestContext testContext;
+    VirtualResource virtualResource;
 
     @Before
     public void init() {
-        cut = new DockerVirtualResourceProvider();
+        testContext = mock(TestContext.class);
+        VirtualResource delegate = ReflectionUtil.INSTANCE.newInstance(VirtualResource.class);
+        virtualResource = mock(VirtualResource.class, delegatesTo(delegate));
+
+        sut = new DockerVirtualResourceProvider();
     }
 
     @After
     public void destroy() {
-        cut.stop();
+        sut.stop(testContext, virtualResource);
     }
 
     @Test
     public void callToConfigureShouldReturnBuilder() {
-        TestContext testContext = mock(TestContext.class);
-        DockerClientConfig.DockerClientConfigBuilder result = cut.configure(testContext);
+        DockerClientConfig.DockerClientConfigBuilder result = sut.configure(testContext);
         assertThat(result).isNotNull();
     }
 
@@ -73,7 +78,7 @@ public class DockerVirtualResourceProviderTest {
         Map<String, Object> properties = mock(Map.class);
         Map<String, String> dependencies = mock(Map.class);
 
-        TestContext testContext = new DefaultTestContextBuilder()
+        testContext = new DefaultTestContextBuilder()
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
@@ -84,16 +89,15 @@ public class DockerVirtualResourceProviderTest {
                 .dependencies(dependencies)
                 .build();
 
-        VirtualResource delegate = ReflectionUtil.INSTANCE.newInstance(VirtualResource.class);
-        VirtualResource virtualResource = mock(VirtualResource.class, delegatesTo(delegate));
-        given(virtualResource.value()).willReturn("postgres");
-        given(virtualResource.version()).willReturn("9.4");
+        given(virtualResource.value()).willReturn("busybox");
+        given(virtualResource.version()).willReturn("latest");
         given(testContext.getTestName()).willReturn("TestClass");
         given(testContext.getMethodName()).willReturn("testMethod");
 
         DockerClientConfig.DockerClientConfigBuilder builder = createDefaultConfigBuilder()
                 .withDockerHost(DEFAULT_DAEMON_URI);
-        VirtualResourceInstance result = cut.start(testContext, virtualResource, builder);
+        VirtualResourceInstance result = sut.start(testContext, virtualResource, builder);
+
         assertThat(result).isNotNull();
     }
 

@@ -20,7 +20,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.fixture.analyzer.AnalyzedModule;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
@@ -31,24 +31,24 @@ import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
  */
 public class AnalyzerUtilTest {
 
-    AnalyzerUtil cut;
+    AnalyzerUtil sut;
 
     @Before
     public void init() {
-        cut = new AnalyzerUtil();
+        sut = new AnalyzerUtil();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullAnalyzeTestClassShouldThrowException() {
-        cut.analyzeTestClass(null);
+        sut.analyzeTestClass(null);
     }
 
     @Test
     public void givenTestClassAnalyzeTestClassShouldReturnTestDescriptor() {
-        TestDescriptor result = cut.analyzeTestClass(AnalyzedTestClass.class);
+        TestDescriptor result = sut.analyzeTestClass(AnalyzedTestClass.class);
 
         assertThat(result).isNotNull();
-        assertThat(result.getCutField()).isNotEmpty();
+        assertThat(result.getSutField()).isNotEmpty();
         assertThat(result.getConfigHandlers()).isNotEmpty();
         assertThat(result.getFieldDescriptors())
                 .allMatch(p -> p.getName().equals("store")
@@ -63,14 +63,14 @@ public class AnalyzerUtilTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullAnalyzeCutClassShouldThrowException() {
-        cut.analyzeCutField(null);
+    public void givenNullAnalyzeSutClassShouldThrowException() {
+        sut.analyzeSutField(null);
     }
 
     @Test
-    public void givenCutFieldAnalyzeCutClassShouldReturnCutDescriptor() throws NoSuchFieldException {
-        Field cutField = AnalyzedTestClass.class.getDeclaredField("cut");
-        CutDescriptor result = cut.analyzeCutField(cutField);
+    public void givenSutFieldAnalyzeSutClassShouldReturnSutDescriptor() throws NoSuchFieldException {
+        Field sutField = AnalyzedTestClass.class.getDeclaredField("sut");
+        SutDescriptor result = sut.analyzeSutField(sutField);
 
         assertThat(result).isNotNull();
         assertThat(result.getParameterDescriptors()).hasSize(1);

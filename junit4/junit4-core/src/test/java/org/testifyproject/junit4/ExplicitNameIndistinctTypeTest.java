@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ExplicitNameIndistinctType;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -34,8 +34,8 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
 @RunWith(UnitTest.class)
 public class ExplicitNameIndistinctTypeTest {
 
-    @Cut
-    ExplicitNameIndistinctType cut;
+    @Sut
+    ExplicitNameIndistinctType sut;
 
     @Fake
     Hello english;
@@ -45,21 +45,21 @@ public class ExplicitNameIndistinctTypeTest {
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(spanishi).isNotNull();
         assertThat(english).isNotNull();
-        assertThat(cut.getEnglish()).isSameAs(english);
-        assertThat(cut.getSpanish()).isSameAs(spanishi);
+        assertThat(sut.getEnglish()).isSameAs(english);
+        assertThat(sut.getSpanish()).isSameAs(spanishi);
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
+    public void givenNothingClassToExesuteShouldReturnHello() {
         String helloGreeting = "Hello";
         String worldGreeting = "Hola";
         given(english.greet()).willReturn(helloGreeting);
         given(spanishi.greet()).willReturn(worldGreeting);
 
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(helloGreeting + " " + worldGreeting);
         verify(english).greet();

@@ -45,7 +45,7 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
 
     @Override
     public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
-        return testContext.getCutDescriptor().map(cutDescriptor -> {
+        return testContext.getSutDescriptor().map(sutDescriptor -> {
             MockProvider mockProvider = testContext.getMockProvider();
 
             for (FieldDescriptor fieldDescriptor : testContext.getTestDescriptor().getFieldDescriptors()) {
@@ -97,12 +97,12 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
         Class<? extends Object> beanClass = bean.getClass();
 
         //XXX: DO NOT remove this  method and code as it is required to extract
-        //collaborators before the cut class is proxied down stream. Once the
-        //cut class is proxied we will not be able to access the cut class
+        //collaborators before the sut class is proxied down stream. Once the
+        //sut class is proxied we will not be able to access the sut class
         //fields with ease.
-        testContext.getCutDescriptor().ifPresent(cutDescriptor -> {
-            if (cutDescriptor.isCutClass(beanClass)) {
-                cutDescriptor.setValue(testContext.getTestInstance(), bean);
+        testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
+            if (sutDescriptor.isSutClass(beanClass)) {
+                sutDescriptor.setValue(testContext.getTestInstance(), bean);
             }
         });
 

@@ -38,7 +38,7 @@ import org.testifyproject.junit4.fixture.need.database.GreetingEntity;
 public class VirtualResourceIT {
 
     @Real
-    EntityManagerFactory cut;
+    EntityManagerFactory sut;
 
     @Test
     public void givenHelloGreetShouldSaveHello() {
@@ -47,13 +47,13 @@ public class VirtualResourceIT {
         GreetingEntity entity = new GreetingEntity(phrase);
 
         //Act
-        EntityManager entityManager = cut.createEntityManager();
+        EntityManager entityManager = sut.createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
 
         //Assert
-        EntityManager em = cut.createEntityManager();
+        EntityManager em = sut.createEntityManager();
         Query query = em.createQuery("SELECT e FROM GreetingEntity e");
         assertThat(query).isNotNull();
         List<GreetingEntity> entities = query.getResultList();

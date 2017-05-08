@@ -33,16 +33,16 @@ import org.testifyproject.TestifyException;
  */
 public class CollaboratorProviderConfigurationVerifierTest {
 
-    CollaboratorProviderConfigurationVerifier cut;
+    CollaboratorProviderConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new CollaboratorProviderConfigurationVerifier();
+        sut = new CollaboratorProviderConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class CollaboratorProviderConfigurationVerifierTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getCollaboratorProvider();
@@ -77,7 +77,7 @@ public class CollaboratorProviderConfigurationVerifierTest {
         given(collaboratorProvider.getDeclaringClassName()).willReturn(declaringClassName);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         }
         catch (Exception e) {
             verify(testContext).getTestDescriptor();
@@ -105,7 +105,7 @@ public class CollaboratorProviderConfigurationVerifierTest {
         given(collaboratorProvider.getName()).willReturn(methodName);
         given(collaboratorProvider.getDeclaringClassName()).willReturn(declaringClassName);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getCollaboratorProvider();
@@ -130,7 +130,7 @@ public class CollaboratorProviderConfigurationVerifierTest {
         given(collaboratorProvider.getName()).willReturn(methodName);
         given(collaboratorProvider.getDeclaringClassName()).willReturn(declaringClassName);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getCollaboratorProvider();

@@ -35,16 +35,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class ModuleConfigurationVerifierTest {
 
-    ModuleConfigurationVerifier cut;
+    ModuleConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new ModuleConfigurationVerifier();
+        sut = new ModuleConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -62,7 +62,7 @@ public class ModuleConfigurationVerifierTest {
         given(testDescriptor.getScans()).willReturn(foundScans);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         }
         catch (Exception e) {
             verify(testContext).getTestDescriptor();
@@ -87,7 +87,7 @@ public class ModuleConfigurationVerifierTest {
         given(testDescriptor.getModules()).willReturn(foundModules);
         given(testDescriptor.getScans()).willReturn(foundScans);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();
@@ -109,7 +109,7 @@ public class ModuleConfigurationVerifierTest {
         given(testDescriptor.getModules()).willReturn(foundModules);
         given(testDescriptor.getScans()).willReturn(foundScans);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();

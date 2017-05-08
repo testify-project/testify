@@ -13,31 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.integration;
+package org.testifyproject.core.analyzer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.junit4.fixture.GreetingModule;
-import org.testifyproject.junit4.fixture.common.CustomQualifier;
-import org.testifyproject.junit4.fixture.common.Greeting;
 
 /**
  *
  * @author saden
  */
-@Module(GreetingModule.class)
-@RunWith(GuiceIntegrationTest.class)
-public class QualifiedCutIT {
-
-    @Cut
-    @CustomQualifier
-    Greeting cut;
+public class SutDescriptorPropertiesTest {
 
     @Test
-    public void verityInjection() {
-        assertThat(cut).isNotNull();
+    public void verifyConstants() {
+        assertThat(SutDescriptorProperties.CONSTRUCTOR).isNotEmpty();
+        assertThat(SutDescriptorProperties.FIELD_DESCRIPTORS).isNotEmpty();
+        assertThat(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE).isNotEmpty();
+        assertThat(SutDescriptorProperties.PARAMETER_DESCRIPTORS).isNotEmpty();
+        assertThat(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE).isNotEmpty();
     }
+
 }

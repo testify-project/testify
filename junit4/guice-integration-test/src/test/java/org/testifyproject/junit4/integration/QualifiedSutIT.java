@@ -18,26 +18,26 @@ package org.testifyproject.junit4.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Cut;
-import org.testifyproject.annotation.Scan;
-import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
+import org.testifyproject.annotation.Sut;
+import org.testifyproject.annotation.Module;
+import org.testifyproject.junit4.fixture.GreetingModule;
+import org.testifyproject.junit4.fixture.common.CustomQualifier;
 import org.testifyproject.junit4.fixture.common.Greeting;
-import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
 
 /**
  *
  * @author saden
  */
-@Scan(DEFAULT_DESCRIPTOR)
-@RunWith(HK2IntegrationTest.class)
-public class QualifiedCutIT {
+@Module(GreetingModule.class)
+@RunWith(GuiceIntegrationTest.class)
+public class QualifiedSutIT {
 
-    @Cut
+    @Sut
     @CustomQualifier
-    Greeting cut;
+    Greeting sut;
 
     @Test
     public void verityInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
     }
 }

@@ -35,18 +35,18 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class GuiceServiceProviderTest {
     
-    GuiceServiceProvider cut;
+    GuiceServiceProvider sut;
     
     @Before
     public void init() {
-        cut = new GuiceServiceProvider();
+        sut = new GuiceServiceProvider();
     }
     
     @Test
     public void givenTestContextCreateShouldReturnInjector() {
         TestContext testContext = mock(TestContext.class);
         
-        Injector result = cut.create(testContext);
+        Injector result = sut.create(testContext);
         
         assertThat(result).isNotNull();
     }
@@ -56,7 +56,7 @@ public class GuiceServiceProviderTest {
         TestContext testContext = mock(TestContext.class);
         Injector injector = mock(Injector.class);
         
-        ServiceInstance result = cut.configure(testContext, injector);
+        ServiceInstance result = sut.configure(testContext, injector);
         
         assertThat(result).isNotNull();
         assertThat((Injector) result.getContext()).isEqualTo(injector);
@@ -73,7 +73,7 @@ public class GuiceServiceProviderTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getModules()).willReturn(modules);
         
-        cut.postConfigure(testContext, serviceInstance);
+        sut.postConfigure(testContext, serviceInstance);
         
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getModules();

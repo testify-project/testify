@@ -50,7 +50,7 @@ import org.testifyproject.guava.common.reflect.TypeToken;
  */
 public class SpringServiceInstanceTest {
 
-    SpringServiceInstance cut;
+    SpringServiceInstance sut;
     AnnotationConfigApplicationContext context;
 
     @Before
@@ -62,29 +62,29 @@ public class SpringServiceInstanceTest {
 
         scanner.scan("org.testifyproject.di.fixture");
         context.refresh();
-        cut = new SpringServiceInstance(context);
+        sut = new SpringServiceInstance(context);
     }
 
     @After
     public void destroy() {
-        cut.destroy();
+        sut.destroy();
     }
 
     @Test
     public void callToDestroyShouldDestroyApplicationContex() {
-        cut.destroy();
+        sut.destroy();
     }
 
     @Test
     public void callToGetContextShouldReturnApplicationContex() {
-        assertThat(cut.getContext())
+        assertThat(sut.getContext())
                 .isNotNull()
                 .isSameAs(context);
     }
 
     @Test
     public void callToIsRunningShouldReturnTrue() {
-        Boolean result = cut.isRunning();
+        Boolean result = sut.isRunning();
 
         assertThat(result).isTrue();
     }
@@ -93,8 +93,8 @@ public class SpringServiceInstanceTest {
     public void callToInitShouldInitApplicationContex() {
         ConfigurableApplicationContext context = new AnnotationConfigApplicationContext();
 
-        cut = new SpringServiceInstance(context);
-        cut.init();
+        sut = new SpringServiceInstance(context);
+        sut.init();
     }
 
     @Test
@@ -104,7 +104,7 @@ public class SpringServiceInstanceTest {
         assertThat(injectedGreeter.getField()).isNull();
         assertThat(injectedGreeter.getMethod()).isNull();
 
-        cut.inject(injectedGreeter);
+        sut.inject(injectedGreeter);
 
         assertThat(injectedGreeter.getField()).isNotNull();
         assertThat(injectedGreeter.getMethod()).isNotNull();
@@ -112,26 +112,26 @@ public class SpringServiceInstanceTest {
 
     @Test
     public void givenTypeGetServiceShouldReturnService() {
-        Hello greeting = cut.getService(Hello.class);
+        Hello greeting = sut.getService(Hello.class);
         assertThat(greeting).isNotNull();
     }
 
     @Test
     public void givenContractTypeGetServiceShouldReturnService() {
-        Greeting greeting = cut.getService(Greeting.class);
+        Greeting greeting = sut.getService(Greeting.class);
         assertThat(greeting).isNotNull();
     }
 
     @Test
     public void givenTypeAndNameGetServiceShouldReturnService() {
-        Haye greeting = cut.getService(Haye.class, "haye");
+        Haye greeting = sut.getService(Haye.class, "haye");
 
         assertThat(greeting).isNotNull();
     }
 
     @Test
     public void givenApplicationContextGetServiceShouldReturnApplicationContext() {
-        ApplicationContext result = cut.getService(ApplicationContext.class);
+        ApplicationContext result = sut.getService(ApplicationContext.class);
 
         assertThat(result).isEqualTo(context);
     }
@@ -139,7 +139,7 @@ public class SpringServiceInstanceTest {
     @Test
     public void givenApplicationContextGetServiceWithoutNameShouldReturnApplicationContext() {
         String name = "applicationContext";
-        ApplicationContext result = cut.getService(ApplicationContext.class, name);
+        ApplicationContext result = sut.getService(ApplicationContext.class, name);
 
         assertThat(result).isEqualTo(context);
     }
@@ -158,14 +158,14 @@ public class SpringServiceInstanceTest {
             }
         };
 
-        Haye greeting = cut.getService(Haye.class, new Annotation[]{qualifier});
+        Haye greeting = sut.getService(Haye.class, new Annotation[]{qualifier});
         assertThat(greeting).isNotNull();
     }
 
     @Test
     public void givenServiceInstanceAddConstantShouldAddTheService() {
         CreatedService service = new CreatedService("greeting");
-        cut.addConstant(service, null, null);
+        sut.addConstant(service, null, null);
 
         CreatedService result = context.getBean(CreatedService.class);
         assertThat(result).isNotNull();
@@ -176,7 +176,7 @@ public class SpringServiceInstanceTest {
         String name = "newgreeting";
         Hello constant = new Hello();
 
-        cut.replace(constant, name, Greeting.class);
+        sut.replace(constant, name, Greeting.class);
 
         Greeting result = context.getBean(name, Greeting.class);
         assertThat(result).isSameAs(constant);
@@ -188,7 +188,7 @@ public class SpringServiceInstanceTest {
         String name = null;
         Class contract = null;
 
-        cut.replace(constant, name, contract);
+        sut.replace(constant, name, contract);
 
         Greeting result = context.getBean("Hello", Hello.class);
         assertThat(result).isSameAs(constant);
@@ -200,7 +200,7 @@ public class SpringServiceInstanceTest {
         String name = "hello";
         Class contract = null;
 
-        cut.replace(constant, name, contract);
+        sut.replace(constant, name, contract);
 
         Greeting result = context.getBean(name, Hello.class);
         assertThat(result).isSameAs(constant);
@@ -212,7 +212,7 @@ public class SpringServiceInstanceTest {
         String name = null;
         Class contract = Hello.class;
 
-        cut.replace(constant, name, contract);
+        sut.replace(constant, name, contract);
 
         Greeting result = context.getBean("Hello", Hello.class);
         assertThat(result).isSameAs(constant);
@@ -224,7 +224,7 @@ public class SpringServiceInstanceTest {
         String name = "hello";
         Class contract = Greeting.class;
 
-        cut.replace(constant, name, contract);
+        sut.replace(constant, name, contract);
 
         Greeting result = context.getBean(name, Hello.class);
         assertThat(result).isSameAs(constant);
@@ -233,7 +233,7 @@ public class SpringServiceInstanceTest {
     @Test
     public void givenModuleAddModuleShouldAddModule() {
         DefaultModule module = new DefaultModule(TestModule.class);
-        cut.addModules(module);
+        sut.addModules(module);
 
         WiredContract contract = context.getBean(WiredContract.class);
         WiredService service = context.getBean(WiredService.class);
@@ -245,12 +245,12 @@ public class SpringServiceInstanceTest {
     @Test
     public void givenPackageAddResourceShouldAddServices() {
         context = new AnnotationConfigApplicationContext();
-        cut = new SpringServiceInstance(context);
+        sut = new SpringServiceInstance(context);
 
-        cut.addScans(new DefaultScan("org.testifyproject.di.fixture.module"));
+        sut.addScans(new DefaultScan("org.testifyproject.di.fixture.module"));
         context.refresh();
 
-        WiredContract greeting = cut.getService(WiredContract.class);
+        WiredContract greeting = sut.getService(WiredContract.class);
         assertThat(greeting).isNotNull();
     }
 
@@ -258,7 +258,7 @@ public class SpringServiceInstanceTest {
     public void givenProviderGetServiceShouldReturnProvider() {
         TypeToken<Provider<Hello>> type = new TypeToken<Provider<Hello>>() {
         };
-        Provider<Hello> result = cut.getService(type.getType());
+        Provider<Hello> result = sut.getService(type.getType());
 
         assertThat(result).isNotNull();
         assertThat(result.get()).isNotNull();
@@ -268,7 +268,7 @@ public class SpringServiceInstanceTest {
     public void givenOptionalGetServiceShouldReturnOptional() {
         TypeToken<Optional<Hello>> type = new TypeToken<Optional<Hello>>() {
         };
-        Optional<Hello> result = cut.getService(type.getType());
+        Optional<Hello> result = sut.getService(type.getType());
 
         assertThat(result).isNotEmpty();
     }
@@ -277,7 +277,7 @@ public class SpringServiceInstanceTest {
     public void givenListGetServiceShouldReturnList() {
         TypeToken<List<Greeting>> type = new TypeToken<List<Greeting>>() {
         };
-        List<Greeting> result = cut.getService(type.getType());
+        List<Greeting> result = sut.getService(type.getType());
 
         assertThat(result).isNotEmpty();
     }
@@ -286,7 +286,7 @@ public class SpringServiceInstanceTest {
     public void givenSetGetServiceShouldReturnSet() {
         TypeToken<Set<Greeting>> type = new TypeToken<Set<Greeting>>() {
         };
-        Set<Greeting> result = cut.getService(type.getType());
+        Set<Greeting> result = sut.getService(type.getType());
 
         assertThat(result).isNotEmpty();
     }
@@ -295,18 +295,18 @@ public class SpringServiceInstanceTest {
     public void givenMapGetServiceShouldReturnMap() {
         TypeToken<Map<String, Greeting>> type = new TypeToken<Map<String, Greeting>>() {
         };
-        Map<String, Greeting> result = cut.getService(type.getType());
+        Map<String, Greeting> result = sut.getService(type.getType());
         assertThat(result).isNotEmpty();
     }
 
     @Test
     public void callToGetNameQualifersShouldReturnAnnotaitons() {
-        assertThat(cut.getNameQualifers()).hasSize(2);
+        assertThat(sut.getNameQualifers()).hasSize(2);
     }
 
     @Test
     public void callToGetCustomQualifiersShouldReturnAnnotaitons() {
-        assertThat(cut.getCustomQualifiers()).hasSize(2);
+        assertThat(sut.getCustomQualifiers()).hasSize(2);
     }
 
 }

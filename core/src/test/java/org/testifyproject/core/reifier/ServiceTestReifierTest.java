@@ -40,16 +40,16 @@ import org.testifyproject.guava.common.collect.ImmutableSet;
  */
 public class ServiceTestReifierTest {
 
-    ServiceTestReifier cut;
+    ServiceTestReifier sut;
 
     @Before
     public void init() {
-        cut = new ServiceTestReifier();
+        sut = new ServiceTestReifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextReifyShouldThrowException() {
-        cut.reify(null);
+        sut.reify(null);
 
     }
 
@@ -60,7 +60,7 @@ public class ServiceTestReifierTest {
 
         given(testContext.getServiceInstance()).willReturn(foundServiceInstace);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getServiceInstance();
         verifyNoMoreInteractions(testContext);
@@ -85,7 +85,7 @@ public class ServiceTestReifierTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getServiceInstance();
         verify(testContext).getTestInstance();
@@ -127,7 +127,7 @@ public class ServiceTestReifierTest {
         given(fieldDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers)).willReturn(fieldQualifiers);
         given(serviceInstance.getService(fieldType, fieldQualifiers)).willReturn(value);
 
-        cut.reify(testContext);
+        sut.reify(testContext);
 
         verify(testContext).getServiceInstance();
         verify(testContext).getTestInstance();

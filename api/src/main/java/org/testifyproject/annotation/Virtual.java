@@ -40,7 +40,7 @@ public @interface Virtual {
 
     /**
      * <p>
-     * This value represents the field name of the class under test associated
+     * This value represents the field name of the system under test associated
      * with the test field. Please note that name based auto detection only
      * works if your code is compiled with parameter names or debug information
      * (javac -parameters or javac -g:vars).
@@ -48,10 +48,10 @@ public @interface Virtual {
      * <p>
      * By default this value is set to "" to enable auto detection. If you wish
      * to not rely on auto detection you can explicitly specify the name of the
-     * class under test field associated with the test field.
+     * system under test field associated with the test field.
      * </p>
      *
-     * @return the class under test field name.
+     * @return the system under test field name.
      */
     String value() default "";
 }

@@ -31,11 +31,11 @@ import org.testifyproject.core.analyzer.TestDescriptorProperties;
  */
 public class LocalResourcesInspectorTest {
 
-    LocalResourcesInspector cut;
+    LocalResourcesInspector sut;
 
     @Before
     public void init() {
-        cut = new LocalResourcesInspector();
+        sut = new LocalResourcesInspector();
     }
 
     @Test
@@ -47,7 +47,7 @@ public class LocalResourcesInspectorTest {
 
         given(annotation.value()).willReturn(new LocalResource[]{element});
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addListElement(TestDescriptorProperties.LOCAL_RESOURCES, element);
     }

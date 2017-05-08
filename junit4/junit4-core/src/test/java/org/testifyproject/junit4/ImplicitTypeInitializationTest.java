@@ -23,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ImplicitType;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -37,28 +37,28 @@ public class ImplicitTypeInitializationTest {
 
     Hello delegate = new Hello();
 
-    @Cut
-    ImplicitType cut;
+    @Sut
+    ImplicitType sut;
 
     @Fake
     Hello hello = delegate;
 
     @Before
     public void verifyInjections() {
-        System.out.println("Executing test:" + this);
-        assertThat(cut).isNotNull();
+        System.out.println("Exesuting test:" + this);
+        assertThat(sut).isNotNull();
         assertThat(hello).isNotNull();
-        assertThat(Mockito.mockingDetails(cut.getHello()).isMock()).isTrue();
+        assertThat(Mockito.mockingDetails(sut.getHello()).isMock()).isTrue();
         assertThat(Mockito.mockingDetails(hello).isMock()).isTrue();
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
-        System.out.println("Executing test:" + this);
+    public void givenNothingClassToExesuteShouldReturnHello() {
+        System.out.println("Exesuting test:" + this);
         String helloGreeting = "Hello";
         given(hello.greet()).willReturn(helloGreeting);
 
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(helloGreeting);
         assertThat(delegate.isCalled()).isTrue();

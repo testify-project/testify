@@ -32,7 +32,7 @@ import slf4jtest.TestLoggerFactory;
  */
 public class LoggingUtilTest {
 
-    LoggingUtil cut;
+    LoggingUtil sut;
     TestLogger logger;
 
     @Before
@@ -40,7 +40,7 @@ public class LoggingUtilTest {
         TestLoggerFactory loggerFactory = new TestLoggerFactory();
         logger = loggerFactory.getLogger("testify");
 
-        cut = new LoggingUtil(logger);
+        sut = new LoggingUtil(logger);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -48,7 +48,7 @@ public class LoggingUtilTest {
         String key = null;
         String value = "value";
 
-        cut.putMDC(key, value);
+        sut.putMDC(key, value);
     }
 
     @Test
@@ -56,47 +56,47 @@ public class LoggingUtilTest {
         String key = "key";
         String value = "value";
 
-        cut.putMDC(key, value);
+        sut.putMDC(key, value);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void givenNullKeyRemoveMDCShouldThrowException() {
         String key = null;
 
-        cut.removeMDC(key);
+        sut.removeMDC(key);
     }
 
     @Test
     public void givenKeyRemoveMDCShouldRemoveRemoveFromMDC() {
         String key = "key";
 
-        cut.removeMDC(key);
+        sut.removeMDC(key);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void givenNullKeyGetMDCShouldThrowException() {
         String key = null;
 
-        cut.getMDC(key);
+        sut.getMDC(key);
     }
 
     @Test
     public void givenKeyGetMDCShouldGetFromMDC() {
         String key = "key";
 
-        cut.getMDC(key);
+        sut.getMDC(key);
     }
 
     @Test
     public void callToClearMDCShouldClearMDC() {
-        cut.clearMDC();
+        sut.clearMDC();
     }
 
     @Test
     public void callToDebugWithoutArgsShouldLogMessage() {
         String messageFormat = "debugging";
 
-        cut.debug(messageFormat);
+        sut.debug(messageFormat);
 
         assertThat(logger.contains(LogLevel.DebugLevel, messageFormat)).isTrue();
     }
@@ -107,7 +107,7 @@ public class LoggingUtilTest {
         String messageFormat = message + "{}";
         String arg = "message";
 
-        cut.debug(messageFormat, new Object[]{arg});
+        sut.debug(messageFormat, new Object[]{arg});
 
         assertThat(logger.contains(LogLevel.DebugLevel, message + arg)).isTrue();
     }
@@ -116,7 +116,7 @@ public class LoggingUtilTest {
     public void callToInfoWithoutArgsShouldLogMessage() {
         String messageFormat = "informing";
 
-        cut.info(messageFormat);
+        sut.info(messageFormat);
 
         assertThat(logger.contains(LogLevel.InfoLevel, messageFormat)).isTrue();
     }
@@ -127,7 +127,7 @@ public class LoggingUtilTest {
         String messageFormat = message + "{}";
         String arg = "message";
 
-        cut.info(messageFormat, new Object[]{arg});
+        sut.info(messageFormat, new Object[]{arg});
 
         assertThat(logger.contains(LogLevel.InfoLevel, message + arg)).isTrue();
     }
@@ -136,7 +136,7 @@ public class LoggingUtilTest {
     public void callToWarnWithoutArgsShouldLogMessage() {
         String messageFormat = "warning";
 
-        cut.warn(messageFormat);
+        sut.warn(messageFormat);
 
         assertThat(logger.contains(LogLevel.WarnLevel, messageFormat)).isTrue();
     }
@@ -147,7 +147,7 @@ public class LoggingUtilTest {
         String messageFormat = message + "{}";
         String arg = "message";
 
-        cut.warn(messageFormat, new Object[]{arg});
+        sut.warn(messageFormat, new Object[]{arg});
 
         assertThat(logger.contains(LogLevel.WarnLevel, message + arg)).isTrue();
     }
@@ -156,7 +156,7 @@ public class LoggingUtilTest {
     public void callToErrorWithoutArgsShouldLogMessage() {
         String messageFormat = "erroring";
 
-        cut.error(messageFormat);
+        sut.error(messageFormat);
 
         assertThat(logger.contains(LogLevel.ErrorLevel, messageFormat)).isTrue();
     }
@@ -167,7 +167,7 @@ public class LoggingUtilTest {
         String messageFormat = message + "{}";
         String arg = "message";
 
-        cut.error(messageFormat, new Object[]{arg});
+        sut.error(messageFormat, new Object[]{arg});
 
         assertThat(logger.contains(LogLevel.ErrorLevel, message + arg)).isTrue();
     }
@@ -177,7 +177,7 @@ public class LoggingUtilTest {
         String messageFormat = null;
         String arg = "message";
 
-        String result = cut.formatMessage(messageFormat, new Object[]{arg});
+        String result = sut.formatMessage(messageFormat, new Object[]{arg});
 
         assertThat(result).contains("null");
     }
@@ -186,7 +186,7 @@ public class LoggingUtilTest {
     public void givenNoArgsFormatMessageShouldReturnMessage() {
         String message = "testing";
 
-        String result = cut.formatMessage(message);
+        String result = sut.formatMessage(message);
 
         assertThat(result).isEqualTo(message);
     }
@@ -197,7 +197,7 @@ public class LoggingUtilTest {
         String messageFormat = message + "{}";
         String arg = "message";
 
-        String result = cut.formatMessage(messageFormat, new Object[]{arg});
+        String result = sut.formatMessage(messageFormat, new Object[]{arg});
 
         assertThat(result).isEqualTo(message + arg);
     }
@@ -208,7 +208,7 @@ public class LoggingUtilTest {
         String causeMessage = "exceptionArg";
         IllegalStateException arg = new IllegalStateException(causeMessage);
 
-        String result = cut.formatMessage(message, new Object[]{arg});
+        String result = sut.formatMessage(message, new Object[]{arg});
 
         assertThat(result).contains(message, causeMessage);
     }
@@ -221,7 +221,7 @@ public class LoggingUtilTest {
         String arg0 = "message";
         IllegalStateException arg1 = new IllegalStateException(causeMessage);
 
-        String result = cut.formatMessage(messageFormat, new Object[]{arg0, arg1});
+        String result = sut.formatMessage(messageFormat, new Object[]{arg0, arg1});
 
         assertThat(result).contains(message + arg0, causeMessage);
     }
@@ -235,7 +235,7 @@ public class LoggingUtilTest {
         given(testContext.getTestName()).willReturn(testName);
         given(testContext.getMethodName()).willReturn(methodName);
 
-        cut.setTextContext(testContext);
+        sut.setTextContext(testContext);
         
         verify(testContext).getTestName();
         verify(testContext).getMethodName();

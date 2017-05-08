@@ -32,7 +32,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
@@ -47,7 +47,7 @@ import org.testifyproject.guava.common.reflect.TypeToken;
  */
 public class HK2InjectionResolverTest {
 
-    HK2InjectionResolver cut;
+    HK2InjectionResolver sut;
     TestContext testContext;
     private ServiceLocator serviceLocator;
 
@@ -56,51 +56,51 @@ public class HK2InjectionResolverTest {
         testContext = mock(TestContext.class);
         serviceLocator = mock(ServiceLocator.class);
 
-        cut = new HK2InjectionResolver(testContext, serviceLocator);
+        sut = new HK2InjectionResolver(testContext, serviceLocator);
     }
 
     @Test
     public void callToIsConstructorParameterIndicatorShouldReturnFalse() {
-        boolean result = cut.isConstructorParameterIndicator();
+        boolean result = sut.isConstructorParameterIndicator();
 
         assertThat(result).isFalse();
     }
 
     @Test
     public void callToIsMethodParameterIndicatorShouldReturnFalse() {
-        boolean result = cut.isMethodParameterIndicator();
+        boolean result = sut.isMethodParameterIndicator();
 
         assertThat(result).isFalse();
     }
 
     @Test
-    public void givenTestContextWithoutCutDescriptorResolveShouldCallThreeThirtyResolver() {
+    public void givenTestContextWithoutSutDescriptorResolveShouldCallThreeThirtyResolver() {
         Injectee injectee = mock(Injectee.class);
         ServiceHandle root = mock(ServiceHandle.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.empty();
+        Optional<SutDescriptor> foundSutDescriptor = Optional.empty();
         InjectionResolver threeThirtyResolver = mock(InjectionResolver.class);
         Object serviceInstance = new Object();
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME)).willReturn(threeThirtyResolver);
         given(threeThirtyResolver.resolve(injectee, root)).willReturn(serviceInstance);
 
-        Object result = cut.resolve(injectee, root);
+        Object result = sut.resolve(injectee, root);
 
         assertThat(result).isEqualTo(serviceInstance);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(serviceLocator).getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME);
         verify(threeThirtyResolver).resolve(injectee, root);
         verifyNoMoreInteractions(testContext, serviceLocator, threeThirtyResolver);
     }
 
     @Test
-    public void givenTestContextWithCutDescriptorResolveShouldReturnFieldValue() {
+    public void givenTestContextWithSutDescriptorResolveShouldReturnFieldValue() {
         Injectee injectee = mock(Injectee.class);
         ServiceHandle root = mock(ServiceHandle.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = new Object();
@@ -113,7 +113,7 @@ public class HK2InjectionResolverTest {
         Fake fake = mock(Fake.class);
         Optional<Fake> foundFake = Optional.of(fake);
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -123,11 +123,11 @@ public class HK2InjectionResolverTest {
         given(fieldDescriptor.getGenericType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
 
-        Object result = cut.resolve(injectee, root);
+        Object result = sut.resolve(injectee, root);
 
         assertThat(result).isEqualTo(value);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
@@ -138,11 +138,11 @@ public class HK2InjectionResolverTest {
     }
 
     @Test
-    public void givenTestContextWithCutDescriptorResolveShouldReturnFakeInstance() {
+    public void givenTestContextWithSutDescriptorResolveShouldReturnFakeInstance() {
         Injectee injectee = mock(Injectee.class);
         ServiceHandle root = mock(ServiceHandle.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = new Object();
@@ -156,7 +156,7 @@ public class HK2InjectionResolverTest {
         Fake fake = mock(Fake.class);
         Optional<Fake> foundFake = Optional.of(fake);
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -166,11 +166,11 @@ public class HK2InjectionResolverTest {
         given(fieldDescriptor.getGenericType()).willReturn(fieldType);
         given(mockProvider.createFake(Object.class)).willReturn(value);
 
-        Object result = cut.resolve(injectee, root);
+        Object result = sut.resolve(injectee, root);
 
         assertThat(result).isEqualTo(value);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
@@ -181,11 +181,11 @@ public class HK2InjectionResolverTest {
     }
 
     @Test
-    public void givenTestContextWithCutDescriptorAndNoFakeFieldResolveShouldReturnThreeThirtyInstance() {
+    public void givenTestContextWithSutDescriptorAndNoFakeFieldResolveShouldReturnThreeThirtyInstance() {
         Injectee injectee = mock(Injectee.class);
         ServiceHandle root = mock(ServiceHandle.class);
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         InjectionResolver threeThirtyResolver = mock(InjectionResolver.class);
         Object serviceInstance = new Object();
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -196,7 +196,7 @@ public class HK2InjectionResolverTest {
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Optional<Fake> foundFake = Optional.empty();
 
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -206,11 +206,11 @@ public class HK2InjectionResolverTest {
         given(serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME)).willReturn(threeThirtyResolver);
         given(threeThirtyResolver.resolve(injectee, root)).willReturn(serviceInstance);
 
-        Object result = cut.resolve(injectee, root);
+        Object result = sut.resolve(injectee, root);
 
         assertThat(result).isEqualTo(serviceInstance);
 
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
@@ -224,7 +224,7 @@ public class HK2InjectionResolverTest {
     public void givenIterableProviderGetRawTypeTokenShouldReturnRawType() {
         TypeToken<IterableProvider<String>> typeToken = new TypeToken<IterableProvider<String>>() {
         };
-        TypeToken result = cut.getRawTypeToken(typeToken.getType());
+        TypeToken result = sut.getRawTypeToken(typeToken.getType());
 
         assertThat(result.getRawType()).isEqualTo(String.class);
     }
@@ -233,7 +233,7 @@ public class HK2InjectionResolverTest {
     public void givenProviderGetRawTypeTokenShouldReturnRawType() {
         TypeToken<Provider<String>> typeToken = new TypeToken<Provider<String>>() {
         };
-        TypeToken result = cut.getRawTypeToken(typeToken.getType());
+        TypeToken result = sut.getRawTypeToken(typeToken.getType());
 
         assertThat(result.getRawType()).isEqualTo(String.class);
     }

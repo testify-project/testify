@@ -29,11 +29,11 @@ import org.testifyproject.core.analyzer.TestDescriptorProperties;
  */
 public class VirtualResourceInspectorTest {
 
-    VirtualResourceInspector cut;
+    VirtualResourceInspector sut;
 
     @Before
     public void init() {
-        cut = new VirtualResourceInspector();
+        sut = new VirtualResourceInspector();
     }
 
     @Test
@@ -42,7 +42,7 @@ public class VirtualResourceInspectorTest {
         Class<?> annotatedType = Object.class;
         VirtualResource annotation = mock(VirtualResource.class);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addListElement(TestDescriptorProperties.VIRTUAL_RESOURCES, annotation);
     }

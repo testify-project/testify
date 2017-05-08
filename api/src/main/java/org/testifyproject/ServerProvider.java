@@ -35,14 +35,18 @@ public interface ServerProvider<T, S> {
     /**
      * Start the server using the given configuration object.
      *
+     * @param testContext the test context
      * @param configuration server configuration object
      * @return a server instance
      */
-    ServerInstance<S> start(T configuration);
+    ServerInstance<S> start(TestContext testContext, T configuration);
 
     /**
      * Stop the server.
+     *
+     * @param testContext the test context
+     * @param serverInstance the server instance
      */
-    void stop();
+    void stop(TestContext testContext, ServerInstance<S> serverInstance);
 
 }

@@ -34,16 +34,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class ArrayCollaboratorConfigurationVerifierTest {
 
-    ArrayCollaboratorConfigurationVerifier cut;
+    ArrayCollaboratorConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new ArrayCollaboratorConfigurationVerifier();
+        sut = new ArrayCollaboratorConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ArrayCollaboratorConfigurationVerifierTest {
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();
@@ -83,7 +83,7 @@ public class ArrayCollaboratorConfigurationVerifierTest {
         given(fieldDescriptor.getTypeName()).willReturn(fieldTypeName);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getTestClassName();
@@ -113,7 +113,7 @@ public class ArrayCollaboratorConfigurationVerifierTest {
         given(fieldDescriptor.getName()).willReturn(fieldName);
         given(fieldDescriptor.getTypeName()).willReturn(fieldTypeName);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getTestClassName();

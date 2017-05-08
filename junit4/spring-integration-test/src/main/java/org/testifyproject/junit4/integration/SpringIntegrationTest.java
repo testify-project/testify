@@ -24,7 +24,7 @@ import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 /**
  * A JUnit Spring integration test class runner. This class is the main entry
  * point for running Spring integration test using
- * {@link org.junit.runner.RunWith}. It provides means of creating your class
+ * {@link org.junit.runner.RunWith}. It provides means of creating your system
  * under test, faking certain collaborators or using real collaborators in the
  * Spring application context.
  *
@@ -33,7 +33,7 @@ import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 public class SpringIntegrationTest extends TestifyJUnit4TestRunner {
 
     /**
-     * Create a new test runner instance for the class under test.
+     * Create a new test runner instance for the system under test.
      *
      * @param testClass the test class type
      *

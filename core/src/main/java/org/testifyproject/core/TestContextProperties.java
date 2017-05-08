@@ -60,13 +60,13 @@ public class TestContextProperties {
      */
     public static final String BASE_URI = "base.uri";
     /**
-     * The application class under test instance property key.
+     * The application system under test instance property key.
      */
-    public static final String CUT_INSTANCE = "cut.instance";
+    public static final String SUT_INSTANCE = "sut.instance";
     /**
-     * The application class under test descriptor property key.
+     * The application system under test descriptor property key.
      */
-    public static final String CUT_DESCRIPTOR = "cut.descriptor";
+    public static final String SUT_DESCRIPTOR = "sut.descriptor";
 
     private TestContextProperties() {
     }

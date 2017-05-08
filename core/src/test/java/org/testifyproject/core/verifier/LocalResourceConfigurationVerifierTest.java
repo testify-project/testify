@@ -35,16 +35,16 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class LocalResourceConfigurationVerifierTest {
 
-    LocalResourceConfigurationVerifier cut;
+    LocalResourceConfigurationVerifier sut;
 
     @Before
     public void init() {
-        cut = new LocalResourceConfigurationVerifier();
+        sut = new LocalResourceConfigurationVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
-        cut.verify(null);
+        sut.verify(null);
     }
 
     @Test(expected = TestifyException.class)
@@ -60,7 +60,7 @@ public class LocalResourceConfigurationVerifierTest {
         given(localResource.value()).willReturn(provider);
 
         try {
-            cut.verify(testContext);
+            sut.verify(testContext);
         } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getLocalResources();
@@ -81,7 +81,7 @@ public class LocalResourceConfigurationVerifierTest {
         given(testDescriptor.getLocalResources()).willReturn(localResources);
         given(localResource.value()).willReturn(provider);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getLocalResources();

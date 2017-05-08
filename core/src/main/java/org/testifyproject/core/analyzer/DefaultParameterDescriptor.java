@@ -22,7 +22,7 @@ import lombok.ToString;
 import org.testifyproject.ParameterDescriptor;
 
 /**
- * A descriptor class used to access or perform operations on a class under test (CUT) constructor
+ * A descriptor class used to access or perform operations on a system under test (SUT) constructor
  * parameters.
  *
  * @author saden

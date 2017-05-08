@@ -18,7 +18,7 @@ package org.testifyproject.core.verifier;
 import java.util.List;
 import java.util.Optional;
 import static java.util.stream.Collectors.toList;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -30,7 +30,7 @@ import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure that the test class contains a field annotated with
- * {@link org.testifyproject.annotation.Cut} annotation or a field annotated
+ * {@link org.testifyproject.annotation.Sut} annotation or a field annotated
  * with {@link org.testifyproject.annotation.Real}.
  *
  * @author saden
@@ -45,17 +45,17 @@ public class RealConfigurationVerifier implements ConfigurationVerifier {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         String testClassName = testDescriptor.getTestClassName();
 
-        Optional<CutDescriptor> foundCutDescriptor = testContext.getCutDescriptor();
+        Optional<SutDescriptor> foundSutDescriptor = testContext.getSutDescriptor();
         List<FieldDescriptor> fieldDescriptors = testDescriptor.getFieldDescriptors()
                 .parallelStream()
                 .filter(p -> p.getReal().isPresent())
                 .collect(toList());
 
-        ExceptionUtil.INSTANCE.raise(!foundCutDescriptor.isPresent() && fieldDescriptors.isEmpty(),
-                "Test class '{}' does not define a field annotated with @Cut "
+        ExceptionUtil.INSTANCE.raise(!foundSutDescriptor.isPresent() && fieldDescriptors.isEmpty(),
+                "Test class '{}' does not define a field annotated with @Sut "
                 + "nor does it define field(s) annotated with @Real. Please "
                 + "insure the test class defines a single field annotated "
-                + "with @Cut or at least one field annotated with @Real.",
+                + "with @Sut or at least one field annotated with @Real.",
                 testClassName);
     }
 

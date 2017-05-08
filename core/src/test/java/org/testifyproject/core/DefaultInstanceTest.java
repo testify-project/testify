@@ -26,7 +26,7 @@ import org.testifyproject.Instance;
  */
 public class DefaultInstanceTest {
 
-    Instance<String> cut;
+    Instance<String> sut;
 
     String instance;
     String name;
@@ -38,84 +38,84 @@ public class DefaultInstanceTest {
         name = "name";
         contract = String.class;
 
-        cut = DefaultInstance.of(instance, name, contract);
+        sut = DefaultInstance.of(instance, name, contract);
     }
 
     @Test
-    public void validateCutInstance() {
-        assertThat(cut).isNotNull();
-        assertThat(cut.getInstance()).isEqualTo(instance);
-        assertThat(cut.getName()).contains(name);
-        assertThat(cut.getContract()).contains(contract);
+    public void validateSutInstance() {
+        assertThat(sut).isNotNull();
+        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getName()).contains(name);
+        assertThat(sut.getContract()).contains(contract);
     }
 
     @Test
     public void givenInstanceOfShouldReturn() {
-        cut = DefaultInstance.of(instance);
+        sut = DefaultInstance.of(instance);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getInstance()).isEqualTo(instance);
-        assertThat(cut.getName()).isEmpty();
-        assertThat(cut.getContract()).isEmpty();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getName()).isEmpty();
+        assertThat(sut.getContract()).isEmpty();
     }
 
     @Test
     public void givenInstanceAndNameOfShouldReturn() {
-        cut = DefaultInstance.of(instance, name);
+        sut = DefaultInstance.of(instance, name);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getInstance()).isEqualTo(instance);
-        assertThat(cut.getName()).contains(name);
-        assertThat(cut.getContract()).isEmpty();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getName()).contains(name);
+        assertThat(sut.getContract()).isEmpty();
     }
 
     @Test
     public void givenInstanceAndContractOfShouldReturn() {
-        cut = DefaultInstance.of(instance, contract);
+        sut = DefaultInstance.of(instance, contract);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getInstance()).isEqualTo(instance);
-        assertThat(cut.getContract()).contains(contract);
-        assertThat(cut.getName()).isEmpty();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getContract()).contains(contract);
+        assertThat(sut.getName()).isEmpty();
     }
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        assertThat(cut).isNotEqualTo(null);
+        assertThat(sut).isNotEqualTo(null);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         Instance<String> unequal = DefaultInstance.of(instance, contract);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         Instance<String> equal = DefaultInstance.of(instance, name, contract);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultInstance", "instance", "name", "contract");
     }

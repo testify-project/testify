@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ImplicitType;
 import org.testifyproject.junit4.fixture.collaborator.Hello;
@@ -34,25 +34,25 @@ import org.testifyproject.junit4.fixture.collaborator.Hello;
 @RunWith(UnitTest.class)
 public class ImplicitTypeTest {
 
-    @Cut
-    ImplicitType cut;
+    @Sut
+    ImplicitType sut;
 
     @Fake
     Hello collaborator;
 
     @Before
     public void verifyInjections() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(collaborator).isNotNull();
-        assertThat(cut.getHello()).isSameAs(collaborator);
+        assertThat(sut.getHello()).isSameAs(collaborator);
     }
 
     @Test
-    public void givenNothingClassToExecuteShouldReturnHello() {
+    public void givenNothingClassToExesuteShouldReturnHello() {
         String greeting = "Hello!";
         given(collaborator.greet()).willReturn(greeting);
 
-        String result = cut.execute();
+        String result = sut.exesute();
 
         assertThat(result).isEqualTo(greeting);
         verify(collaborator).greet();

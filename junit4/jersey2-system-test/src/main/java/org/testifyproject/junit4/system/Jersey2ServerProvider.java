@@ -24,6 +24,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
@@ -34,7 +35,6 @@ import static org.testifyproject.core.TestContextProperties.APP_NAME;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.TestConfigurer;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.
@@ -79,41 +79,35 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public ServerInstance<HttpServer> start(ResourceConfig configuration) {
-        return TestContextHolder.INSTANCE.execute(testContext -> {
-            URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PATH));
-            // create and start a new instance of grizzly http server
-            HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, configuration, true);
+    public ServerInstance<HttpServer> start(TestContext testContext, ResourceConfig configuration) {
+        URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PATH));
+        // create and start a new instance of grizzly http server
+        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, configuration, true);
 
-            Optional<NetworkListener> foundListener = server.getListeners().stream().findFirst();
-            ServerInstance serverInstance = null;
+        Optional<NetworkListener> foundListener = server.getListeners().stream().findFirst();
+        ServerInstance serverInstance = null;
 
-            if (foundListener.isPresent()) {
-                NetworkListener networkListener = foundListener.get();
-                String host = networkListener.getHost();
-                int port = networkListener.getPort();
+        if (foundListener.isPresent()) {
+            NetworkListener networkListener = foundListener.get();
+            String host = networkListener.getHost();
+            int port = networkListener.getPort();
 
-                URI acutalURI = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, host, port, DEFAULT_PATH));
+            URI asutalURI = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, host, port, DEFAULT_PATH));
 
-                serverInstance = DefaultServerInstance.of(acutalURI, server);
+            serverInstance = DefaultServerInstance.of(asutalURI, server);
 
-                testContext.addProperty(APP_SERVLET_CONTAINER, server);
-                testContext.addProperty(APP, configuration);
-                testContext.addProperty(APP_NAME, testContext.getName());
-            }
+            testContext.addProperty(APP_SERVLET_CONTAINER, server);
+            testContext.addProperty(APP, configuration);
+            testContext.addProperty(APP_NAME, testContext.getName());
+        }
 
-            return serverInstance;
-        });
+        return serverInstance;
     }
 
     @Override
-    public void stop() {
-        TestContextHolder.INSTANCE.execute(testContext -> {
-            Optional<HttpServer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
-            HttpServer httpServer = servletContainer.get();
-            httpServer.shutdownNow();
-            TestContextHolder.INSTANCE.remove();
-        });
+    public void stop(TestContext testContext, ServerInstance<HttpServer> serverInstance) {
+        HttpServer httpServer = serverInstance.getInstance();
+        httpServer.shutdownNow();
     }
 
 }

@@ -25,47 +25,47 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
  * A descriptor class used to access properties of or perform operations on an
- * analyzed class under test (CUT) class.
+ * analyzed system under test (SUT) class.
  *
  * @author saden
  */
 @ToString(doNotUseGetters = true, callSuper = true)
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = true)
-public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutDescriptor {
+public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutDescriptor {
 
     private final Map<String, Object> properties;
 
-    DefaultCutDescriptor(Field field, Map<String, Object> properties) {
+    DefaultSutDescriptor(Field field, Map<String, Object> properties) {
         super(field);
         this.properties = properties;
     }
 
     /**
-     * Create a new cut descriptor instance from the given field.
+     * Create a new sut descriptor instance from the given field.
      *
      * @param field the underlying field
-     * @return a cut descriptor instance
+     * @return a sut descriptor instance
      */
-    public static DefaultCutDescriptor of(Field field) {
-        return new DefaultCutDescriptor(field, new HashMap<>());
+    public static DefaultSutDescriptor of(Field field) {
+        return new DefaultSutDescriptor(field, new HashMap<>());
     }
 
     /**
-     * Create a new cut descriptor instance from the given field and properties.
+     * Create a new sut descriptor instance from the given field and properties.
      *
      * @param field the underlying field
      * @param properties the underlying properties
-     * @return a cut descriptor instance
+     * @return a sut descriptor instance
      */
-    public static DefaultCutDescriptor of(Field field, Map<String, Object> properties) {
-        return new DefaultCutDescriptor(field, properties);
+    public static DefaultSutDescriptor of(Field field, Map<String, Object> properties) {
+        return new DefaultSutDescriptor(field, properties);
     }
 
     @Override
@@ -80,18 +80,18 @@ public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutD
 
     @Override
     public Constructor getConstructor() {
-        return getProperty(CutDescriptorProperties.CONSTRUCTOR);
+        return getProperty(SutDescriptorProperties.CONSTRUCTOR);
     }
 
     @Override
-    public Boolean isCutClass(Type type) {
+    public Boolean isSutClass(Type type) {
         return TypeToken.of(getType()).isSupertypeOf(type);
     }
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
         Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+                = findMap(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
@@ -111,7 +111,7 @@ public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutD
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
         Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(CutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+                = findMap(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
@@ -121,13 +121,13 @@ public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutD
 
     @Override
     public Collection<FieldDescriptor> getFieldDescriptors() {
-        return findList(CutDescriptorProperties.FIELD_DESCRIPTORS);
+        return findList(SutDescriptorProperties.FIELD_DESCRIPTORS);
     }
 
     @Override
     public Optional<ParameterDescriptor> findParameterDescriptor(Type type) {
         Map<DescriptorKey, ParameterDescriptor> paramterDescriptors
-                = findMap(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
+                = findMap(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         ParameterDescriptor parameterDescriptor = paramterDescriptors.get(descriptorKey);
@@ -147,7 +147,7 @@ public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutD
     @Override
     public Optional<ParameterDescriptor> findParameterDescriptor(Type type, String name) {
         Map<DescriptorKey, ParameterDescriptor> paramterDescriptors
-                = findMap(CutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
+                = findMap(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         ParameterDescriptor parameterDescriptor = paramterDescriptors.get(descriptorKey);
@@ -157,7 +157,7 @@ public class DefaultCutDescriptor extends DefaultFieldDescriptor implements CutD
 
     @Override
     public Collection<ParameterDescriptor> getParameterDescriptors() {
-        return findList(CutDescriptorProperties.PARAMETER_DESCRIPTORS);
+        return findList(SutDescriptorProperties.PARAMETER_DESCRIPTORS);
     }
 
 }

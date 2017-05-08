@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.ParameterDescriptor;
@@ -37,18 +37,18 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  */
 public class ConstructorWiringVerifierTest {
 
-    ConstructorWiringVerifier cut;
+    ConstructorWiringVerifier sut;
 
     @Before
     public void init() {
-        cut = new ConstructorWiringVerifier();
+        sut = new ConstructorWiringVerifier();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullTestContextVerifyShouldThrowException() {
         TestContext testContext = null;
 
-        cut.verify(testContext);
+        sut.verify(testContext);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ConstructorWiringVerifierTest {
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
@@ -74,39 +74,39 @@ public class ConstructorWiringVerifierTest {
     }
 
     @Test
-    public void givenTestDescriptorWithoutCollaboratorProviderAndWithoutCutDescriptorVerifyShoulDoNothing() {
+    public void givenTestDescriptorWithoutCollaboratorProviderAndWithoutSutDescriptorVerifyShoulDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         String testClassName = "TestClass";
         Optional<MethodDescriptor> foundCollaboratorProvider = Optional.empty();
-        Optional<CutDescriptor> foundCutDescriptor = Optional.empty();
+        Optional<SutDescriptor> foundSutDescriptor = Optional.empty();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(testDescriptor).getTestClassName();
         verify(testDescriptor).getCollaboratorProvider();
-        verify(testContext).getCutDescriptor();
+        verify(testContext).getSutDescriptor();
     }
 
     @Test
-    public void givenCutWithExpectedFieldsDeclaredVerifyShouldLogNothing() {
+    public void givenSutWithExpectedFieldsDeclaredVerifyShouldLogNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         String testClassName = "TestClass";
         Optional<MethodDescriptor> foundCollaboratorProvider = Optional.empty();
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
-        String cutClassName = "CutClass";
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+        String sutClassName = "SutClass";
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
         Collection<ParameterDescriptor> parameterDescriptors = ImmutableList.of(parameterDescriptor);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
@@ -119,23 +119,23 @@ public class ConstructorWiringVerifierTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
-        given(cutDescriptor.getTypeName()).willReturn(cutClassName);
-        given(cutDescriptor.getParameterDescriptors()).willReturn(parameterDescriptors);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(sutDescriptor.getTypeName()).willReturn(sutClassName);
+        given(sutDescriptor.getParameterDescriptors()).willReturn(parameterDescriptors);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getGenericType()).willReturn(fieldDescriptorType);
         given(parameterDescriptor.isSubtypeOf(fieldDescriptorType)).willReturn(true);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundFieldValue);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(testDescriptor).getTestClassName();
         verify(testDescriptor).getCollaboratorProvider();
-        verify(testContext).getCutDescriptor();
-        verify(cutDescriptor).getTypeName();
-        verify(cutDescriptor).getParameterDescriptors();
+        verify(testContext).getSutDescriptor();
+        verify(sutDescriptor).getTypeName();
+        verify(sutDescriptor).getParameterDescriptors();
         verify(testDescriptor).getFieldDescriptors();
         verify(fieldDescriptor).getGenericType();
         verify(parameterDescriptor).isSubtypeOf(fieldDescriptorType);
@@ -144,15 +144,15 @@ public class ConstructorWiringVerifierTest {
     }
 
     @Test
-    public void givenCutWithExpectedFieldsDeclaredVerifyShouldLogWarning() {
+    public void givenSutWithExpectedFieldsDeclaredVerifyShouldLogWarning() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         String testClassName = "TestClass";
         Optional<MethodDescriptor> foundCollaboratorProvider = Optional.empty();
-        CutDescriptor cutDescriptor = mock(CutDescriptor.class);
-        Optional<CutDescriptor> foundCutDescriptor = Optional.of(cutDescriptor);
-        String cutClassName = "CutClass";
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+        String sutClassName = "SutClass";
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
         Collection<ParameterDescriptor> parameterDescriptors = ImmutableList.of(parameterDescriptor);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
@@ -165,23 +165,23 @@ public class ConstructorWiringVerifierTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
-        given(testContext.getCutDescriptor()).willReturn(foundCutDescriptor);
-        given(cutDescriptor.getTypeName()).willReturn(cutClassName);
-        given(cutDescriptor.getParameterDescriptors()).willReturn(parameterDescriptors);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
+        given(sutDescriptor.getTypeName()).willReturn(sutClassName);
+        given(sutDescriptor.getParameterDescriptors()).willReturn(parameterDescriptors);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getGenericType()).willReturn(fieldDescriptorType);
         given(parameterDescriptor.isSubtypeOf(fieldDescriptorType)).willReturn(false);
         given(parameterDescriptor.getTypeName()).willReturn(paramterTypeName);
 
-        cut.verify(testContext);
+        sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(testDescriptor).getTestClassName();
         verify(testDescriptor).getCollaboratorProvider();
-        verify(testContext).getCutDescriptor();
-        verify(cutDescriptor).getTypeName();
-        verify(cutDescriptor).getParameterDescriptors();
+        verify(testContext).getSutDescriptor();
+        verify(sutDescriptor).getTypeName();
+        verify(sutDescriptor).getParameterDescriptors();
         verify(testDescriptor).getFieldDescriptors();
         verify(fieldDescriptor).getGenericType();
         verify(parameterDescriptor).isSubtypeOf(fieldDescriptorType);
