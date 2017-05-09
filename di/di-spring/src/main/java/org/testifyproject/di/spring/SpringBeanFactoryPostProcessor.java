@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Controller;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
@@ -78,13 +79,17 @@ public class SpringBeanFactoryPostProcessor implements
                 Configuration configuration = beanType.getAnnotation(Configuration.class);
 
                 if (configuration == null) {
-                    processConfiguration(beanFactory, beanDefinition,
-                            beanType,
-                            beanName,
-                            replacedBeanNames);
+                    processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
                 }
 
-                beanDefinition.setScope(SCOPE_PROTOTYPE);
+                //by default spring eagerly initilizes singleton scoped beans
+                //so lets insure that controller entry points are prototype
+                //scoped and thus make them lazy.
+                Controller controller = beanType.getAnnotation(Controller.class);
+
+                if (controller != null) {
+                    beanDefinition.setScope(SCOPE_PROTOTYPE);
+                }
             }
         }
 

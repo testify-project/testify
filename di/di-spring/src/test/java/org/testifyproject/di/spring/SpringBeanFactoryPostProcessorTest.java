@@ -40,6 +40,7 @@ import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
+import org.testifyproject.di.fixture.common.ControllerService;
 import org.testifyproject.di.fixture.module.TestModule;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
@@ -69,7 +70,7 @@ public class SpringBeanFactoryPostProcessorTest {
     }
 
     @Test
-    public void callToPostProcessBeanFactoryShould() {
+    public void givenConfigurationBeanTypePostProcessBeanFactoryShould() {
         DefaultListableBeanFactory beanFactory = mock(DefaultListableBeanFactory.class);
         ConfigurableListableBeanFactory configurableListableBeanFactory = beanFactory;
 
@@ -87,6 +88,28 @@ public class SpringBeanFactoryPostProcessorTest {
                 eq(beanType),
                 eq(beanName),
                 any(Set.class));
+
+        sut.postProcessBeanFactory(configurableListableBeanFactory);
+
+        verify(beanFactory).getBeanDefinitionNames();
+        verify(beanFactory).getBeanDefinition(beanName);
+        verify(beanFactory).getType(beanName);
+        verify(beanFactory).addBeanPostProcessor(any(SpringReifierPostProcessor.class));
+    }
+
+    @Test
+    public void givenControllerBeanTypePostProcessBeanFactoryShould() {
+        DefaultListableBeanFactory beanFactory = mock(DefaultListableBeanFactory.class);
+        ConfigurableListableBeanFactory configurableListableBeanFactory = beanFactory;
+
+        String beanName = "beanName";
+        String[] beanNames = {beanName};
+        BeanDefinition beanDefinition = mock(BeanDefinition.class);
+        Class beanType = ControllerService.class;
+
+        given(beanFactory.getBeanDefinitionNames()).willReturn(beanNames);
+        given(beanFactory.getBeanDefinition(beanName)).willReturn(beanDefinition);
+        given(beanFactory.getType(beanName)).willReturn(beanType);
 
         sut.postProcessBeanFactory(configurableListableBeanFactory);
 
