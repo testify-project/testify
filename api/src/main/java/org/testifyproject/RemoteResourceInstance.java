@@ -15,34 +15,25 @@
  */
 package org.testifyproject;
 
-import java.util.Optional;
 import org.testifyproject.trait.PropertiesReadTrait;
 
 /**
- * A contract that defines methods to get information about a local resource
- * instance. A local resource instance consists of a resource, an optional
- * client that can be used to communicate with the local resource, and
- * properties associated with the local resource instance.
+ * A contract that defines methods to get information about a remote resource
+ * instance. A remote instance consists of a client that can be used to
+ * communicate with the remote and properties associated with the remote
+ * instance.
  *
  * @author saden
- * @param <R> the resource type
  * @param <C> the client type
  * @see ResourceProvider
  */
-public interface LocalResourceInstance<R, C> extends PropertiesReadTrait {
+public interface RemoteResourceInstance<C> extends PropertiesReadTrait {
 
     /**
-     * Get the client instance associated with the resource.
+     * Get the client instance associated with the remote resource.
      *
-     * @return an optional with client, empty optional otherwise
+     * @return a client instance
      */
-    Optional<Instance<C>> getClient();
-
-    /**
-     * Get the underlying resource instance resource.
-     *
-     * @return the underlying resource associated with the resource instance
-     */
-    Instance<R> getResource();
+    Instance<C> getClient();
 
 }

@@ -13,32 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.annotation;
 
-import org.testifyproject.annotation.Application;
-import org.testifyproject.trait.PropertiesReadTrait;
-import org.testifyproject.trait.PropertiesWriteTrait;
+import java.lang.annotation.Documented;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
 
 /**
- * A contract that defines methods for retrieving information about an
- * application.
+ * A repeatable meta-annotation for {@link RemoteResource}.
  *
  * @author saden
  */
-public interface ApplicationInstance extends PropertiesReadTrait, PropertiesWriteTrait {
+@Documented
+@Retention(RUNTIME)
+@Target({ANNOTATION_TYPE, TYPE})
+public @interface RemoteResources {
 
     /**
-     * Get the application annotation.
+     * Specifies a list of {@link RemoteResource} annotations.
      *
-     * @return the application annotation.
+     * @return an array of RemoteResource annotations.
      */
-    Application getApplication();
-
-    /**
-     * Get the test context associated with the application.
-     *
-     * @return the test context instance.
-     */
-    TestContext getTestContext();
+    RemoteResource[] value();
 
 }

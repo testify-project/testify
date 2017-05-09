@@ -48,14 +48,19 @@ public class TestDescriptorProperties {
     public static final String SCANS = "scans";
 
     /**
-     * Test Descriptor Requires Containers property key.
+     * Test Descriptor Local Resources property key.
+     */
+    public static final String LOCAL_RESOURCES = "localResources";
+
+    /**
+     * Test Descriptor Virtual Containers property key.
      */
     public static final String VIRTUAL_RESOURCES = "virtualResources";
 
     /**
-     * Test Descriptor Requires Resources property key.
+     * Test Descriptor Remote Resources property key.
      */
-    public static final String LOCAL_RESOURCES = "localResources";
+    public static final String REMOTE_RESOURCES = "remoteResources";
 
     /**
      * Test Descriptor sut field property key.

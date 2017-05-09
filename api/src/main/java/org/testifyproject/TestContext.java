@@ -17,7 +17,8 @@ package org.testifyproject;
 
 import java.util.Map;
 import java.util.Optional;
-import org.testifyproject.trait.PropertiesTrait;
+import org.testifyproject.trait.PropertiesReadTrait;
+import org.testifyproject.trait.PropertiesWriteTrait;
 
 /**
  * A small context class that contains reference to the test testInstance, the
@@ -25,7 +26,7 @@ import org.testifyproject.trait.PropertiesTrait;
  *
  * @author saden
  */
-public interface TestContext extends PropertiesTrait {
+public interface TestContext extends PropertiesReadTrait, PropertiesWriteTrait {
 
     /**
      * Get a unique name to identify the test context.

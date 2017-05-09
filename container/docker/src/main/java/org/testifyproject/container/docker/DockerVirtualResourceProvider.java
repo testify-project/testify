@@ -32,7 +32,7 @@ import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.container.docker.callback.PullCallback;
 import org.testifyproject.container.docker.callback.WaitCallback;
-import org.testifyproject.core.DefaultVirtualResourceInstance;
+import org.testifyproject.core.VirtualResourceInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.failsafe.Failsafe;
@@ -175,7 +175,11 @@ public class DockerVirtualResourceProvider
             });
 
             String containerName = inspectResponse.getName();
-            virtualResourceInstance = DefaultVirtualResourceInstance.of(containerName, host, mappedPorts);
+            virtualResourceInstance = VirtualResourceInstanceBuilder.builder()
+                    .name(containerName)
+                    .address(host)
+                    .mappedPorts(mappedPorts)
+                    .build();
         }
 
         return virtualResourceInstance;

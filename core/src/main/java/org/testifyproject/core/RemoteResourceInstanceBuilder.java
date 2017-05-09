@@ -19,62 +19,27 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.testifyproject.Instance;
-import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.RemoteResourceInstance;
 
 /**
- * A builder class used to construction LocalResourceInstance instances.
+ * A builder class used to construction RemoteResourceInstance instances.
  *
  * @author saden
- * @param <R> the underlying local resource type
- * @param <C> the local resource client type
- * @see LocalResourceInstance
+ * @param <C> the remote resource client type
+ * @see RemoteResourceInstance
  */
-public class LocalResourceInstanceBuilder<R, C> {
+public class RemoteResourceInstanceBuilder< C> {
 
-    private Instance<R> resource;
     private Instance<C> client;
     private final Map<String, Object> properties = new LinkedHashMap<>();
 
     /**
-     * Create a new resource of LocalResourceInstanceBuilder.
+     * Create a new resource of RemoteResourceInstanceBuilder.
      *
      * @return a new resource
      */
-    public static LocalResourceInstanceBuilder builder() {
-        return new LocalResourceInstanceBuilder<>();
-    }
-
-    /**
-     * Set the underlying resource to the given resource and name. When choosing
-     * a name for the resource it is best to choose a name that reflect the
-     * resource being provided to avoid potential collision with names used by
-     * other resource provider (i.e. "myAwesomeResourceServer").
-     *
-     * @param resource the underlying resource
-     * @param name the underlying resource name
-     * @return this object
-     */
-    public LocalResourceInstanceBuilder<R, C> resource(R resource, String name) {
-        this.resource = new DefaultInstance(resource, name, null);
-
-        return this;
-    }
-
-    /**
-     * Set the underlying resource to the given resource, name, contract. When
-     * choosing a name for the resource it is best to choose a name that reflect
-     * the resource being provided to avoid potential collision with names used
-     * by other resource provider (i.e. "myAwesomeResourceServer").
-     *
-     * @param resource the underlying resource
-     * @param name the underlying resource name
-     * @param contract the underlying resource contract
-     * @return this object
-     */
-    public LocalResourceInstanceBuilder<R, C> resource(R resource, String name, Class<? extends R> contract) {
-        this.resource = new DefaultInstance(resource, name, contract);
-
-        return this;
+    public static RemoteResourceInstanceBuilder builder() {
+        return new RemoteResourceInstanceBuilder<>();
     }
 
     /**
@@ -88,7 +53,7 @@ public class LocalResourceInstanceBuilder<R, C> {
      * @param name the underlying resource client name
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> client(C client, String name) {
+    public RemoteResourceInstanceBuilder<C> client(C client, String name) {
         this.client = new DefaultInstance(client, name, null);
 
         return this;
@@ -106,7 +71,7 @@ public class LocalResourceInstanceBuilder<R, C> {
      * @param contract the underlying resource client contract
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> client(C client, String name, Class<? extends C> contract) {
+    public RemoteResourceInstanceBuilder<C> client(C client, String name, Class<? extends C> contract) {
         this.client = new DefaultInstance(client, name, contract);
 
         return this;
@@ -120,7 +85,7 @@ public class LocalResourceInstanceBuilder<R, C> {
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> property(String name, Object value) {
+    public RemoteResourceInstanceBuilder<C> property(String name, Object value) {
         this.properties.put(name, value);
 
         return this;
@@ -132,19 +97,19 @@ public class LocalResourceInstanceBuilder<R, C> {
      * @param properties a map that contains key value pairs.
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> properties(Map<String, Object> properties) {
+    public RemoteResourceInstanceBuilder<C> properties(Map<String, Object> properties) {
         this.properties.putAll(properties);
 
         return this;
     }
 
     /**
-     * Build and return a local resource instance based on the builder state.
+     * Build and return a remote resource instance based on the builder state.
      *
-     * @return a local resource instance
+     * @return a remote resource instance
      */
-    public LocalResourceInstance<R, C> build() {
-        return DefaultLocalResourceInstance.of(resource, client, Collections.unmodifiableMap(properties));
+    public RemoteResourceInstance<C> build() {
+        return DefaultRemoteResourceInstance.of(client, Collections.unmodifiableMap(properties));
     }
 
 }

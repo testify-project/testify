@@ -24,41 +24,32 @@ import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
-import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.RemoteResourceInstance;
 
 /**
  *
  * @author saden
  */
-public class DefaultLocalResourceInstanceTest {
+public class DefaultRemoteResourceInstanceTest {
 
-    LocalResourceInstance<Object, Object> sut;
+    RemoteResourceInstance<Object> sut;
 
-    Instance<Object> resource;
     Instance<Object> client;
     Map<String, Object> properties;
 
     @Before
     public void init() {
-        resource = mock(Instance.class);
         client = mock(Instance.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        sut = DefaultLocalResourceInstance.of(resource, client, properties);
-    }
-
-    @Test
-    public void callToGetInstanceShouldReturnLocalResourceInstance() {
-        Instance<Object> result = sut.getResource();
-
-        assertThat(result).isEqualTo(resource);
+        sut = DefaultRemoteResourceInstance.of(client, properties);
     }
 
     @Test
     public void callToGetClientShouldReturnOptionalWithClientInstance() {
-        Optional<Instance<Object>> result = sut.getClient();
+        Instance<Object> result = sut.getClient();
 
-        assertThat(result).contains(client);
+        assertThat(result).isEqualTo(client);
     }
 
     @Test
@@ -81,9 +72,9 @@ public class DefaultLocalResourceInstanceTest {
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        LocalResourceInstance<Object, Object> localResourceInstance = null;
+        RemoteResourceInstance<Object> remoteResourceInstance = null;
 
-        assertThat(sut).isNotEqualTo(localResourceInstance);
+        assertThat(sut).isNotEqualTo(remoteResourceInstance);
     }
 
     @Test
@@ -96,8 +87,8 @@ public class DefaultLocalResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        LocalResourceInstance<Object, Object> uneuqual
-                = DefaultLocalResourceInstance.of(resource, null, properties);
+        RemoteResourceInstance<Object> uneuqual
+                = DefaultRemoteResourceInstance.of(null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -110,8 +101,8 @@ public class DefaultLocalResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        LocalResourceInstance<Object, Object> equal
-                = DefaultLocalResourceInstance.of(resource, client, properties);
+        RemoteResourceInstance<Object> equal
+                = DefaultRemoteResourceInstance.of(client, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -121,7 +112,7 @@ public class DefaultLocalResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultLocalResourceInstance", "resource", "client", "properties");
+        assertThat(result).contains("DefaultRemoteResourceInstance", "client", "properties");
     }
 
 }

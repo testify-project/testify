@@ -23,9 +23,11 @@ import java.util.Optional;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.trait.PropertiesTrait;
+import org.testifyproject.trait.PropertiesReadTrait;
+import org.testifyproject.trait.PropertiesWriteTrait;
 
 /**
  * A contract that defines methods used to access or perform operations on a
@@ -33,7 +35,7 @@ import org.testifyproject.trait.PropertiesTrait;
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesTrait {
+public interface TestDescriptor extends PropertiesReadTrait, PropertiesWriteTrait {
 
     /**
      * The name of the test class.
@@ -109,6 +111,13 @@ public interface TestDescriptor extends PropertiesTrait {
     List<Scan> getScans();
 
     /**
+     * Get a list of local resources associated with the test class.
+     *
+     * @return a list with local resources, empty list otherwise
+     */
+    List<LocalResource> getLocalResources();
+
+    /**
      * Get a list of virtual resources associated with the test class.
      *
      * @return a list with virtual resources, empty list otherwise
@@ -116,11 +125,11 @@ public interface TestDescriptor extends PropertiesTrait {
     List<VirtualResource> getVirtualResources();
 
     /**
-     * Get a list of local resources associated with the test class.
+     * Get a list of remote resources associated with the test class.
      *
-     * @return a list with local resources, empty list otherwise
+     * @return a list with remote resources, empty list otherwise
      */
-    List<LocalResource> getLocalResources();
+    List<RemoteResource> getRemoteResources();
 
     /**
      * Find the config handler associated with the test class capable of
