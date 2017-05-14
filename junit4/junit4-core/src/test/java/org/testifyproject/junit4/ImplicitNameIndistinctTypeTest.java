@@ -59,7 +59,7 @@ public class ImplicitNameIndistinctTypeTest {
         given(english.greet()).willReturn(helloGreeting);
         given(spanish.greet()).willReturn(worldGreeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(helloGreeting + " " + worldGreeting);
         verify(english).greet();

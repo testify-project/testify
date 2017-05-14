@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.testifyproject.Instance;
@@ -24,8 +25,8 @@ import org.testifyproject.LocalResourceInstance;
  * A builder class used to construction LocalResourceInstance instances.
  *
  * @author saden
- * @param <R> resource resource resource type
- * @param <C> client resource resource type
+ * @param <R> the underlying local resource type
+ * @param <C> the local resource client type
  * @see LocalResourceInstance
  */
 public class LocalResourceInstanceBuilder<R, C> {
@@ -113,7 +114,7 @@ public class LocalResourceInstanceBuilder<R, C> {
 
     /**
      * Associate the specified value with the specified name in the resource
- resource.
+     * resource.
      *
      * @param name the name with which the specified value is to be associated
      * @param value the value to be associated with the specified key
@@ -138,12 +139,12 @@ public class LocalResourceInstanceBuilder<R, C> {
     }
 
     /**
-     * Build and return a resource resource based on the builder state.
+     * Build and return a local resource instance based on the builder state.
      *
-     * @return a resource resource
+     * @return a local resource instance
      */
     public LocalResourceInstance<R, C> build() {
-        return DefaultLocalResourceInstance.of(resource, client, properties);
+        return DefaultLocalResourceInstance.of(resource, client, Collections.unmodifiableMap(properties));
     }
 
 }

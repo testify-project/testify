@@ -37,7 +37,7 @@ public class MissingFakeDeclarationTest {
 
     @Test(expected = NullPointerException.class)
     public void givenMissingMockShouldThrowException() {
-        sut.exesute();
+        sut.execute();
     }
 
 }

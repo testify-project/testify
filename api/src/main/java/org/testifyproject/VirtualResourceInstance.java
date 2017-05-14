@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
+import org.testifyproject.trait.PropertiesReadTrait;
 
 /**
  * A contract that defines methods for getting information about a virtual
@@ -27,7 +28,7 @@ import java.util.Optional;
  *
  * @author saden
  */
-public interface VirtualResourceInstance {
+public interface VirtualResourceInstance extends PropertiesReadTrait {
 
     /**
      * Get a unique name associated with the virtual resource.

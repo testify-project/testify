@@ -79,14 +79,14 @@ public class TestContextHolderTest {
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
 
-        sut.exesute(consumer);
+        sut.execute(consumer);
     }
 
     @Test
     public void givenValidConsumerAndNoTestContextExesuteShouldDoNothing() {
         Consumer<TestContext> consumer = mock(Consumer.class);
 
-        sut.exesute(consumer);
+        sut.execute(consumer);
 
         verifyZeroInteractions(consumer);
     }
@@ -99,7 +99,7 @@ public class TestContextHolderTest {
 
         willDoNothing().given(consumer).accept(testContext);
 
-        sut.exesute(consumer);
+        sut.execute(consumer);
 
         verify(consumer).accept(testContext);
     }
@@ -110,14 +110,14 @@ public class TestContextHolderTest {
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
 
-        sut.exesute(function);
+        sut.execute(function);
     }
 
     @Test
     public void givenValidFunctionAndNoTestContextExesuteShouldDoNothing() {
         Function<TestContext, Object> function = mock(Function.class);
 
-        Object result = sut.exesute(function);
+        Object result = sut.execute(function);
 
         assertThat(result).isNull();
         verifyZeroInteractions(function);
@@ -133,7 +133,7 @@ public class TestContextHolderTest {
 
         given(function.apply(testContext)).willReturn(answer);
 
-        Object result = sut.exesute(function);
+        Object result = sut.execute(function);
 
         assertThat(result).isEqualTo(answer);
         verify(function).apply(testContext);

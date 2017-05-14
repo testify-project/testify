@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.reifier;
 
+import java.util.Optional;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -43,12 +44,17 @@ public class VirtualFieldReifier implements FieldReifier {
                 .filter(p -> p.getVirtual().isPresent())
                 .forEach(fieldDescriptor -> {
                     Class<?> fieldType = fieldDescriptor.getType();
+                    Object fieldValue = null;
 
-                    Object fieldValue = fieldDescriptor.getValue(testInstance)
-                            .map(p -> p)
-                            .orElseGet(() -> ReflectionUtil.INSTANCE.newInstance(fieldType));
+                    Optional<Object> foundFieldValue = fieldDescriptor.getValue(testInstance);
 
-                    if (!mockProvider.isMock(fieldValue)) {
+                    if (foundFieldValue.isPresent()) {
+                        fieldValue = foundFieldValue.get();
+                    } else if (!fieldType.isInterface()) {
+                        fieldValue = ReflectionUtil.INSTANCE.newInstance(fieldType);
+                    }
+
+                    if (fieldValue != null && !mockProvider.isMock(fieldValue)) {
                         fieldValue = mockProvider.createVirtual(fieldType, fieldValue);
                     }
 

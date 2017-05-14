@@ -16,7 +16,8 @@
 package org.testifyproject;
 
 import org.testifyproject.annotation.Application;
-import org.testifyproject.trait.PropertiesTrait;
+import org.testifyproject.trait.PropertiesReadTrait;
+import org.testifyproject.trait.PropertiesWriteTrait;
 
 /**
  * A contract that defines methods for retrieving information about an
@@ -24,7 +25,7 @@ import org.testifyproject.trait.PropertiesTrait;
  *
  * @author saden
  */
-public interface ApplicationInstance extends PropertiesTrait {
+public interface ApplicationInstance extends PropertiesReadTrait, PropertiesWriteTrait {
 
     /**
      * Get the application annotation.

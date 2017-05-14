@@ -31,6 +31,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
 
@@ -120,6 +121,11 @@ public class DefaultTestDescriptor implements TestDescriptor {
     @Override
     public List<VirtualResource> getVirtualResources() {
         return findList(TestDescriptorProperties.VIRTUAL_RESOURCES);
+    }
+
+    @Override
+    public List<RemoteResource> getRemoteResources() {
+        return findList(TestDescriptorProperties.REMOTE_RESOURCES);
     }
 
     @Override

@@ -34,24 +34,24 @@ public class DefaultLocalResourceInstanceTest {
 
     LocalResourceInstance<Object, Object> sut;
 
-    Instance<Object> instance;
+    Instance<Object> resource;
     Instance<Object> client;
     Map<String, Object> properties;
 
     @Before
     public void init() {
-        instance = mock(Instance.class);
+        resource = mock(Instance.class);
         client = mock(Instance.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        sut = DefaultLocalResourceInstance.of(instance, client, properties);
+        sut = DefaultLocalResourceInstance.of(resource, client, properties);
     }
 
     @Test
     public void callToGetInstanceShouldReturnLocalResourceInstance() {
         Instance<Object> result = sut.getResource();
 
-        assertThat(result).isEqualTo(instance);
+        assertThat(result).isEqualTo(resource);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class DefaultLocalResourceInstanceTest {
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         LocalResourceInstance<Object, Object> uneuqual
-                = DefaultLocalResourceInstance.of(instance, null, null);
+                = DefaultLocalResourceInstance.of(resource, null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -111,7 +111,7 @@ public class DefaultLocalResourceInstanceTest {
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         LocalResourceInstance<Object, Object> equal
-                = DefaultLocalResourceInstance.of(instance, client, properties);
+                = DefaultLocalResourceInstance.of(resource, client, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -121,7 +121,7 @@ public class DefaultLocalResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultLocalResourceInstance", "instance", "client", "properties");
+        assertThat(result).contains("DefaultLocalResourceInstance", "resource", "client", "properties");
     }
 
 }

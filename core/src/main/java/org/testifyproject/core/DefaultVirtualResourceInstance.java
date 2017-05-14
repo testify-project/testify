@@ -22,8 +22,8 @@ import lombok.ToString;
 import org.testifyproject.VirtualResourceInstance;
 
 /**
- * An implementation of {@link VirtualResourceInstance SPI Contract} that provides information about
- * running container.
+ * An implementation of {@link VirtualResourceInstance SPI Contract} that
+ * provides information about running container.
  *
  * @author saden
  */
@@ -34,11 +34,16 @@ public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
     private final String name;
     private final InetAddress address;
     private final Map<Integer, Integer> mappedPorts;
+    private final Map<String, Object> properties;
 
-    DefaultVirtualResourceInstance(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
+    DefaultVirtualResourceInstance(String name,
+            InetAddress address,
+            Map<Integer, Integer> mappedPorts,
+            Map<String, Object> properties) {
         this.name = name;
         this.address = address;
         this.mappedPorts = mappedPorts;
+        this.properties = properties;
     }
 
     /**
@@ -47,10 +52,14 @@ public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
      * @param name the name of the container
      * @param address the address of the container
      * @param mappedPorts the mappedPorts exposed by the container
+     * @param properties properties associated with the instance
      * @return a new container instance.
      */
-    public static VirtualResourceInstance of(String name, InetAddress address, Map<Integer, Integer> mappedPorts) {
-        return new DefaultVirtualResourceInstance(name, address, mappedPorts);
+    public static VirtualResourceInstance of(String name,
+            InetAddress address,
+            Map<Integer, Integer> mappedPorts,
+            Map<String, Object> properties) {
+        return new DefaultVirtualResourceInstance(name, address, mappedPorts, properties);
     }
 
     @Override
@@ -66,6 +75,11 @@ public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
     @Override
     public Map<Integer, Integer> getMappedPorts() {
         return mappedPorts;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
 }

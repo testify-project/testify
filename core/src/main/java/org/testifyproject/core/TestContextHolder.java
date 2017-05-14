@@ -78,7 +78,7 @@ public class TestContextHolder {
      *
      * @param consumer the consumer function
      */
-    public synchronized void exesute(Consumer<TestContext> consumer) {
+    public synchronized void execute(Consumer<TestContext> consumer) {
         TestContext testContext = inheritableThreadLocal.get();
 
         if (testContext != null) {
@@ -93,7 +93,7 @@ public class TestContextHolder {
      * @param function the consumer function
      * @return the function result
      */
-    public synchronized <R> R exesute(Function<TestContext, R> function) {
+    public synchronized <R> R execute(Function<TestContext, R> function) {
         TestContext testContext = inheritableThreadLocal.get();
         R result = null;
 

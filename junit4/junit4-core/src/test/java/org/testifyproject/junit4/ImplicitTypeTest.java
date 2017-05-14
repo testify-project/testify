@@ -52,7 +52,7 @@ public class ImplicitTypeTest {
         String greeting = "Hello!";
         given(collaborator.greet()).willReturn(greeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(greeting);
         verify(collaborator).greet();

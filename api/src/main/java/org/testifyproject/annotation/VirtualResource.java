@@ -52,14 +52,14 @@ public @interface VirtualResource {
     /**
      * The version of the virtual resource. Note that the version of the virtual
      * resource depends on the virtual resource provider implementation (i.e.
-     * for docker the version is the image version).
+     * for docker the version is the image tag).
      *
      * @return the image version.
      */
-    String version() default "latest";
+    String version() default "";
 
     /**
-     * The command used to exesute the virtual resource.
+     * The command used to execute the virtual resource.
      *
      * @return the command.
      */

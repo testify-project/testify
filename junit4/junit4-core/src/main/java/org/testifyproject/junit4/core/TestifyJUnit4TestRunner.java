@@ -132,7 +132,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 notifier.pleaseStop();
             } finally {
                 if (!isIgnored(method)) {
-                    TestContextHolder.INSTANCE.exesute(testContext -> {
+                    TestContextHolder.INSTANCE.execute(testContext -> {
                         LoggingUtil.INSTANCE.debug("performing cleanup of '{}'", testContext.getName());
 
                         TestRunner testRunner = testContext.getTestRunner();

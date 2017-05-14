@@ -16,6 +16,7 @@
 package org.testifyproject.core;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
@@ -35,14 +36,16 @@ public class DefaultVirtualResourceInstanceTest {
     String name;
     InetAddress address;
     Map<Integer, Integer> mappedPorts;
+    Map<String, Object> properties;
 
     @Before
     public void init() {
         name = "name";
         address = mock(InetAddress.class);
         mappedPorts = ImmutableMap.of(1000, 2000);
+        properties = new HashMap<>();
 
-        sut = DefaultVirtualResourceInstance.of(name, address, mappedPorts);
+        sut = DefaultVirtualResourceInstance.of(name, address, mappedPorts, properties);
     }
 
     @Test
@@ -51,6 +54,7 @@ public class DefaultVirtualResourceInstanceTest {
         assertThat(sut.getName()).isEqualTo(name);
         assertThat(sut.getAddress()).isEqualTo(address);
         assertThat(sut.getMappedPorts()).isEqualTo(mappedPorts);
+        assertThat(sut.getProperties()).isEqualTo(properties);
     }
 
     @Test
@@ -63,7 +67,7 @@ public class DefaultVirtualResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null, address, mappedPorts);
+        VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null, address, mappedPorts, properties);
 
         assertThat(sut).isNotEqualTo(unequal);
         assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -76,7 +80,7 @@ public class DefaultVirtualResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, address, mappedPorts);
+        VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, address, mappedPorts, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());

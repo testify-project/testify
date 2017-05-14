@@ -47,7 +47,7 @@ public class ImplicitTypeVirtualTest {
 
     @Test
     public void givenNothingClassToExesuteShouldReturnHello() {
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo("Hiya!");
         verify(collaborator).greet();

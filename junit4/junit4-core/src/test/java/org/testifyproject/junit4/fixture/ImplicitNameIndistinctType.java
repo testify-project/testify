@@ -31,7 +31,7 @@ public class ImplicitNameIndistinctType {
         this.spanish = spanish;
     }
 
-    public String exesute() {
+    public String execute() {
         return english.greet() + " " + spanish.greet();
 
     }

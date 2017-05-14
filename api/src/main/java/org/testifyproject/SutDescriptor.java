@@ -22,7 +22,8 @@ import java.util.Optional;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.trait.FieldTrait;
 import org.testifyproject.trait.MockTrait;
-import org.testifyproject.trait.PropertiesTrait;
+import org.testifyproject.trait.PropertiesReadTrait;
+import org.testifyproject.trait.PropertiesWriteTrait;
 
 /**
  * A contract that defines methods to access properties of or perform operations
@@ -30,7 +31,7 @@ import org.testifyproject.trait.PropertiesTrait;
  *
  * @author saden
  */
-public interface SutDescriptor extends FieldTrait, MockTrait, PropertiesTrait {
+public interface SutDescriptor extends FieldTrait, MockTrait, PropertiesReadTrait, PropertiesWriteTrait {
 
     /**
      * Get {@link Sut} annotation.

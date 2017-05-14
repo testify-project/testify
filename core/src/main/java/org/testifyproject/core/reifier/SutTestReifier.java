@@ -39,17 +39,17 @@ public class SutTestReifier implements TestReifier {
         testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
             Object testInstance = testContext.getTestInstance();
 
-            sutDescriptor.getValue(testInstance).ifPresent(sutInstance -> {
+            sutDescriptor.getValue(testInstance).ifPresent(sutValue -> {
                 //If the sut is a virtual sut then create a virtual instance
                 //of the sut class and set it to the sut field
                 if (sutDescriptor.isVirtualSut()) {
-                    sutInstance = testContext.getMockProvider()
-                            .createVirtual(sutDescriptor.getType(), sutInstance);
+                    sutValue = testContext.getMockProvider()
+                            .createVirtual(sutDescriptor.getType(), sutValue);
+                    sutDescriptor.setValue(testInstance, sutValue);
                 }
 
-                sutDescriptor.setValue(testInstance, sutInstance);
-                sutDescriptor.init(sutInstance);
-                testContext.addProperty(TestContextProperties.SUT_INSTANCE, sutInstance);
+                sutDescriptor.init(testInstance);
+                testContext.addProperty(TestContextProperties.SUT_INSTANCE, sutValue);
             });
         });
     }

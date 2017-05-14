@@ -32,7 +32,7 @@ import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.container.docker.callback.PullCallback;
 import org.testifyproject.container.docker.callback.WaitCallback;
-import org.testifyproject.core.DefaultVirtualResourceInstance;
+import org.testifyproject.core.VirtualResourceInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.failsafe.Failsafe;
@@ -41,6 +41,7 @@ import org.testifyproject.github.dockerjava.api.DockerClient;
 import org.testifyproject.github.dockerjava.api.command.CreateContainerCmd;
 import org.testifyproject.github.dockerjava.api.command.CreateContainerResponse;
 import org.testifyproject.github.dockerjava.api.command.InspectContainerResponse;
+import org.testifyproject.github.dockerjava.api.exception.NotFoundException;
 import org.testifyproject.github.dockerjava.api.model.ContainerNetwork;
 import org.testifyproject.github.dockerjava.api.model.NetworkSettings;
 import org.testifyproject.github.dockerjava.core.DockerClientBuilder;
@@ -60,6 +61,7 @@ public class DockerVirtualResourceProvider
         implements VirtualResourceProvider<VirtualResource, DockerClientConfigBuilder> {
 
     public static final String DEFAULT_DAEMON_URI = "tcp://127.0.0.1:2375";
+    public static final String DEFAULT_VERSION = "latest";
 
     private DockerClient client;
     private CreateContainerResponse containerResponse;
@@ -77,49 +79,19 @@ public class DockerVirtualResourceProvider
         DockerClientConfig clientConfig = configBuilder.build();
         LoggingUtil.INSTANCE.info("Connecting to {}", clientConfig.getDockerHost());
         client = DockerClientBuilder.getInstance(clientConfig).build();
-        String image = virtualResource.value() + ":" + virtualResource.version();
 
-        if (virtualResource.pull()) {
-            RetryPolicy retryPolicy = new RetryPolicy()
-                    .retryOn(Throwable.class)
-                    .withBackoff(virtualResource.delay(), virtualResource.maxDelay(), virtualResource.unit())
-                    .withMaxRetries(virtualResource.maxRetries());
+        String imageName = virtualResource.value();
+        String version = virtualResource.version();
+        String imageTag = getImageTag(version);
 
-            Failsafe.with(retryPolicy)
-                    .onRetry(throwable
-                            -> LoggingUtil.INSTANCE.warn("Retrying pull request of image '{}'",
-                            image, throwable)
-                    )
-                    .onFailure(throwable
-                            -> LoggingUtil.INSTANCE.error("Image image '{}' could not be pulled: ", image, throwable))
-                    .run(() -> {
-                        try {
-                            CountDownLatch latch = new CountDownLatch(1);
-                            client.pullImageCmd(virtualResource.value())
-                                    .withTag(virtualResource.version())
-                                    .exec(new PullCallback(virtualResource, latch));
+        String image = imageName + ":" + imageTag;
+        boolean imagePulled = isImagePulled(image, imageTag);
 
-                            ExceptionUtil.INSTANCE.raise(!latch.await(virtualResource.timeout(), virtualResource.unit()),
-                                    "Could not start virtual resource '{}' for test '{}'",
-                                    virtualResource.value(), testContext.getName()
-                            );
-                        } catch (InterruptedException e) {
-                            LoggingUtil.INSTANCE.warn("Image '{}' pull request interrupted",  image);
-                            Thread.currentThread().interrupt();
-                        }
-                    });
+        if (virtualResource.pull() && !imagePulled) {
+            pullImage(virtualResource, image, imageName, imageTag, testContext);
         }
 
-        CreateContainerCmd cmd = client.createContainerCmd(image);
-        cmd.withPublishAllPorts(true);
-
-        if (!virtualResource.cmd().isEmpty()) {
-            cmd.withCmd(virtualResource.cmd());
-        }
-
-        if (!virtualResource.name().isEmpty()) {
-            cmd.withName(virtualResource.name());
-        }
+        CreateContainerCmd cmd = buildCreateContainerCmd(image, virtualResource);
 
         containerResponse = cmd.exec();
         String containerId = containerResponse.getId();
@@ -148,18 +120,7 @@ public class DockerVirtualResourceProvider
                             v -> Integer.valueOf(v.getValue()[0].getHostPortSpec())), Collections::unmodifiableMap));
 
             if (virtualResource.await()) {
-                RetryPolicy retryPolicy = new RetryPolicy()
-                        .retryOn(IOException.class)
-                        .withBackoff(virtualResource.delay(),
-                                virtualResource.maxDelay(),
-                                virtualResource.unit())
-                        .withMaxRetries(virtualResource.maxRetries())
-                        .withMaxDuration(virtualResource.maxDuration(), virtualResource.unit());
-
-                mappedPorts.entrySet().forEach(entry -> Failsafe.with(retryPolicy).run(() -> {
-                    LoggingUtil.INSTANCE.info("Waiting for '{}:{}' to be reachable", host.getHostAddress(), entry.getKey());
-                    new Socket(host, entry.getKey()).close();
-                }));
+                waitForContainerToStart(virtualResource, mappedPorts, host);
             }
 
             started.compareAndSet(false, true);
@@ -175,10 +136,102 @@ public class DockerVirtualResourceProvider
             });
 
             String containerName = inspectResponse.getName();
-            virtualResourceInstance = DefaultVirtualResourceInstance.of(containerName, host, mappedPorts);
+            virtualResourceInstance = VirtualResourceInstanceBuilder.builder()
+                    .name(containerName)
+                    .address(host)
+                    .mappedPorts(mappedPorts)
+                    .build();
         }
 
         return virtualResourceInstance;
+    }
+
+    String getImageTag(String version) {
+        String imageTag;
+        //if version is not specified then use latest as the image tag
+        if (version.isEmpty()) {
+            imageTag = DEFAULT_VERSION;
+        } else {
+            imageTag = version;
+        }
+
+        return imageTag;
+    }
+
+    boolean isImagePulled(String image, String imageTag) {
+        boolean imagePulled = false;
+        //determine if the image has already been pulled
+        try {
+            client.inspectImageCmd(image).exec();
+
+            //if the tag is not the latest then that means we can look to see if
+            //the image has been pulled. if it is then that means we always go and
+            //pull the latest image by setting leaving imagePulled as false
+            if (!DEFAULT_VERSION.equals(imageTag)) {
+                imagePulled = true;
+            }
+        } catch (NotFoundException e) {
+            LoggingUtil.INSTANCE.info("Image '{}' not found", image);
+        }
+
+        return imagePulled;
+    }
+
+    void pullImage(VirtualResource virtualResource, String image, String imageName, String imageTag, TestContext testContext) {
+        RetryPolicy retryPolicy = new RetryPolicy()
+                .retryOn(Throwable.class)
+                .withBackoff(virtualResource.delay(), virtualResource.maxDelay(), virtualResource.unit())
+                .withMaxRetries(virtualResource.maxRetries());
+
+        Failsafe.with(retryPolicy)
+                .onRetry(throwable
+                        -> LoggingUtil.INSTANCE.warn("Retrying pull request of image '{}'",
+                        image, throwable)
+                )
+                .onFailure(throwable
+                        -> LoggingUtil.INSTANCE.error("Image image '{}' could not be pulled: ", image, throwable))
+                .run(() -> {
+                    try {
+                        CountDownLatch latch = new CountDownLatch(1);
+                        client.pullImageCmd(imageName)
+                                .withTag(imageTag)
+                                .exec(new PullCallback(virtualResource, latch));
+
+                        ExceptionUtil.INSTANCE.raise(!latch.await(virtualResource.timeout(), virtualResource.unit()),
+                                "Could not start virtual resource '{}' for test '{}'", imageName, testContext.getName()
+                        );
+                    } catch (InterruptedException e) {
+                        LoggingUtil.INSTANCE.warn("Image '{}' pull request interrupted", image);
+                        Thread.currentThread().interrupt();
+                    }
+                });
+    }
+
+    CreateContainerCmd buildCreateContainerCmd(String image, VirtualResource virtualResource) {
+        CreateContainerCmd cmd = client.createContainerCmd(image);
+        cmd.withPublishAllPorts(true);
+        if (!virtualResource.cmd().isEmpty()) {
+            cmd.withCmd(virtualResource.cmd());
+        }
+        if (!virtualResource.name().isEmpty()) {
+            cmd.withName(virtualResource.name());
+        }
+        return cmd;
+    }
+
+    void waitForContainerToStart(VirtualResource virtualResource, Map<Integer, Integer> mappedPorts, InetAddress host) {
+        RetryPolicy retryPolicy = new RetryPolicy()
+                .retryOn(IOException.class)
+                .withBackoff(virtualResource.delay(),
+                        virtualResource.maxDelay(),
+                        virtualResource.unit())
+                .withMaxRetries(virtualResource.maxRetries())
+                .withMaxDuration(virtualResource.maxDuration(), virtualResource.unit());
+
+        mappedPorts.entrySet().forEach(entry -> Failsafe.with(retryPolicy).run(() -> {
+            LoggingUtil.INSTANCE.info("Waiting for '{}:{}' to be reachable", host.getHostAddress(), entry.getKey());
+            new Socket(host, entry.getKey()).close();
+        }));
     }
 
     @Override

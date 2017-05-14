@@ -28,7 +28,7 @@ import org.testifyproject.tools.Discoverable;
  */
 @UnitTest
 @Discoverable
-public class TestFieldSutReifier implements SutReifier {
+public class CreateSutReifier implements SutReifier {
 
     @Override
     public void reify(TestContext testContext) {

@@ -69,12 +69,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
         //container resource create a new instance, configure and start a
         //container instance and addConfigHandler it to the service instance.
         virtualResources.parallelStream().forEach(virtualResource -> {
-            String serviceName = virtualResource.name();
             Class<? extends VirtualResourceProvider> virtualResourceProviderType = virtualResource.provider();
-
-            if (serviceName.isEmpty()) {
-                serviceName = virtualResource.value();
-            }
 
             VirtualResourceProvider virtualResourceProvider;
 
@@ -91,10 +86,23 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
             VirtualResourceInstance virtualResourceInstance
                     = virtualResourceProvider.start(testContext, virtualResource, configuration);
 
-            serviceInstance.addConstant(virtualResourceInstance, serviceName, VirtualResourceInstance.class);
+            addResource(virtualResourceInstance, virtualResource, serviceInstance);
 
             virtualResourceProviders.put(virtualResource, virtualResourceProvider);
         });
+    }
+
+    void addResource(VirtualResourceInstance virtualResourceInstance,
+            VirtualResource virtualResource,
+            ServiceInstance serviceInstance) {
+        String resourceName = virtualResource.name();
+        Class<VirtualResourceInstance> resourceContract = VirtualResourceInstance.class;
+
+        if (resourceName.isEmpty()) {
+            resourceName = virtualResource.value();
+        }
+
+        serviceInstance.addConstant(virtualResourceInstance, resourceName, resourceContract);
     }
 
     @Override

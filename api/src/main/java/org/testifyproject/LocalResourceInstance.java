@@ -16,28 +16,20 @@
 package org.testifyproject;
 
 import java.util.Optional;
+import org.testifyproject.trait.PropertiesReadTrait;
 
 /**
- * A contract that defines methods to get information about a resource instance.
- * A resource instance consists of a resource, an optional client that can be used
- * to communicate with the resource, and properties associated with a resource
- * instance.
+ * A contract that defines methods to get information about a local resource
+ * instance. A local resource instance consists of a resource, an optional
+ * client that can be used to communicate with the local resource, and
+ * properties associated with the local resource instance.
  *
  * @author saden
  * @param <R> the resource type
  * @param <C> the client type
  * @see ResourceProvider
  */
-public interface LocalResourceInstance<R, C> {
-
-    /**
-     * Find property associated with the resource with the given name.
-     *
-     * @param <T> the property type
-     * @param name the property name
-     * @return an optional with property value, empty optional otherwise
-     */
-    <T> Optional<T> findProperty(String name);
+public interface LocalResourceInstance<R, C> extends PropertiesReadTrait {
 
     /**
      * Get the client instance associated with the resource.

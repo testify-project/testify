@@ -24,47 +24,48 @@ import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 
 /**
- * A class that contains server and client instances of a local resource.
+ * A class that contains resource, client, and properties of a local resource.
  *
  * @author saden
- * @param <S> server resource instance type
- * @param <C> client resource instance type
+ * @param <R> the underlying resource type
+ * @param <C> the underlying resource client type
  */
 @ToString
 @EqualsAndHashCode
-public class DefaultLocalResourceInstance<S, C> implements LocalResourceInstance<S, C> {
+public class DefaultLocalResourceInstance<R, C> implements LocalResourceInstance<R, C> {
 
-    private final Instance<S> instance;
+    private final Instance<R> resource;
     private final Instance<C> client;
     private final Map<String, Object> properties;
 
-    DefaultLocalResourceInstance(Instance<S> instance,
+    DefaultLocalResourceInstance(Instance<R> resource,
             Instance<C> client,
             Map<String, Object> properties) {
-        this.instance = instance;
+        this.resource = resource;
         this.client = client;
         this.properties = properties;
     }
 
     /**
-     * Create a resource instance based on the given server, client and properties.
+     * Create a local resource instance based on the given resource, client and
+     * properties.
      *
-     * @param <S> server resource instance type
-     * @param <C> client resource instance type
-     * @param instance the underlying resource instance
+     * @param <R> the underlying resource type
+     * @param <C> the underlying resource client type
+     * @param resource the underlying resource instance
      * @param client the client instance
      * @param properties the resource instance properties
      * @return a new resource instance
      */
-    public static <S, C> LocalResourceInstance<S, C> of(Instance<S> instance,
+    public static <R, C> LocalResourceInstance<R, C> of(Instance<R> resource,
             Instance<C> client,
             Map<String, Object> properties) {
-        return new DefaultLocalResourceInstance<>(instance, client, properties);
+        return new DefaultLocalResourceInstance<>(resource, client, properties);
     }
 
     @Override
-    public Instance<S> getResource() {
-        return instance;
+    public Instance<R> getResource() {
+        return resource;
     }
 
     @Override
@@ -73,8 +74,8 @@ public class DefaultLocalResourceInstance<S, C> implements LocalResourceInstance
     }
 
     @Override
-    public <T> Optional<T> findProperty(String name) {
-        return ofNullable((T) properties.get(name));
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
 }

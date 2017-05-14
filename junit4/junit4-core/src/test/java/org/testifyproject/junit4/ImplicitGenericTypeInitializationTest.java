@@ -59,7 +59,7 @@ public class ImplicitGenericTypeInitializationTest {
         given(hello.get()).willReturn(helloInstance);
         given(helloInstance.greet()).willReturn(helloGreeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(helloGreeting);
         verify(hello).get();

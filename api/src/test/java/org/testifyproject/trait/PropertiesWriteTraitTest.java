@@ -18,7 +18,6 @@ package org.testifyproject.trait;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +29,14 @@ import static org.mockito.Mockito.mock;
  *
  * @author saden
  */
-public class PropertiesTraitTest {
+public class PropertiesWriteTraitTest {
 
-    PropertiesTrait sut;
+    PropertiesWriteTrait sut;
     Map properties;
 
     @Before
     public void init() {
-        sut = mock(PropertiesTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(PropertiesWriteTrait.class, Answers.CALLS_REAL_METHODS);
         properties = new HashMap();
 
         given(sut.getProperties()).willReturn(properties);
@@ -51,48 +50,6 @@ public class PropertiesTraitTest {
     }
 
     @Test
-    public void givenNonExistentKeyGetPropertyShouldReturnEmptyResult() {
-        String key = "non";
-
-        Object result = sut.getProperty(key);
-
-        assertThat(result).isNull();
-    }
-
-    @Test
-    public void givenExistentKeyGetPropertyShouldReturnOptionalWithValue() {
-        String key = "key";
-        String value = "value";
-
-        properties.put(key, value);
-
-        String result = sut.getProperty(key);
-
-        assertThat(result).isEqualTo(value);
-    }
-
-    @Test
-    public void givenNonExistentKeyFindPropertyShouldReturnEmptyResult() {
-        String key = "non";
-
-        Optional<Object> result = sut.findProperty(key);
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void givenExistentKeyFindPropertyShouldReturnOptionalWithValue() {
-        String key = "key";
-        String value = "value";
-
-        properties.put(key, value);
-
-        Optional<Object> result = sut.findProperty(key);
-
-        assertThat(result).contains(value);
-    }
-
-    @Test
     public void givenKeyAndValueAddPropertyShouldAddProperty() {
         String key = "key";
         String value = "value";
@@ -100,28 +57,6 @@ public class PropertiesTraitTest {
         sut.addProperty(key, value);
 
         assertThat(properties).containsEntry(key, value);
-    }
-
-    @Test
-    public void givenNonExistingKeyFindListShouldReturnEmptyList() {
-        String key = "key";
-
-        List<Object> result = sut.findList(key);
-
-        assertThat(result).isEmpty();
-
-    }
-
-    @Test
-    public void givenExistingKeyFindListShouldReturnList() {
-        String key = "key";
-        List value = mock(List.class);
-
-        properties.put(key, value);
-
-        List<Object> result = sut.findList(key);
-
-        assertThat(result).isEqualTo(value);
     }
 
     @Test
@@ -134,28 +69,6 @@ public class PropertiesTraitTest {
         List<String> result = (List) properties.get(key);
 
         assertThat(result).containsExactly(element);
-    }
-
-    @Test
-    public void givenNonExistingKeyFindMapShouldReturnEmptyList() {
-        String key = "key";
-
-        Map<Object, Object> result = sut.findMap(key);
-
-        assertThat(result).isEmpty();
-
-    }
-
-    @Test
-    public void givenExistingKeyFindMapShouldReturnMap() {
-        String key = "key";
-        Map value = mock(Map.class);
-
-        properties.put(key, value);
-
-        Map<Object, Object> result = sut.findMap(key);
-
-        assertThat(result).isEqualTo(value);
     }
 
     @Test

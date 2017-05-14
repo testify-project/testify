@@ -67,7 +67,7 @@ public class ImplicitGenericTypeDistinctTest {
         given(helloInstance.greet()).willReturn(helloGreeting);
         given(worldInstance.greet()).willReturn(worldGreeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(helloGreeting + " " + worldGreeting);
         verify(hello).get();
