@@ -13,7 +13,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
-## [0.9.3-SNAPSHOT]
+## [0.9.3] - 2017-05-14
 ### Added
  - Added extention contracts and annotations to the API
   - Added @UnitTest, @IntegrationTest, and @SystemTest which can be used to apply specific services to certain test levels
