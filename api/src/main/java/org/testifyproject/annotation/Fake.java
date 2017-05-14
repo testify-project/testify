@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * An annotation that can be placed on unit, integration and system test class
  * fields to denote the fields as a fake collaborators. Fake collaborators are
  * mock instance of collaborators and allow us to mock functionality and verify
- * interaction between the Class Under Test and the collaborator in isolation.
+ * interaction between the System Under Test and the collaborator in isolation.
  * Note that if the value of the test class field is already initialized with:
  * </p>
  * <ul>

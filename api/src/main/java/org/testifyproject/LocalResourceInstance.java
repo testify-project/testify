@@ -16,7 +16,7 @@
 package org.testifyproject;
 
 import java.util.Optional;
-import org.testifyproject.trait.PropertiesReadTrait;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * A contract that defines methods to get information about a local resource
@@ -29,7 +29,7 @@ import org.testifyproject.trait.PropertiesReadTrait;
  * @param <C> the client type
  * @see ResourceProvider
  */
-public interface LocalResourceInstance<R, C> extends PropertiesReadTrait {
+public interface LocalResourceInstance<R, C> extends PropertiesReader {
 
     /**
      * Get the client instance associated with the resource.

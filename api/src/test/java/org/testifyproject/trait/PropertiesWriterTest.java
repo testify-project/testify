@@ -29,14 +29,14 @@ import static org.mockito.Mockito.mock;
  *
  * @author saden
  */
-public class PropertiesWriteTraitTest {
+public class PropertiesWriterTest {
 
-    PropertiesWriteTrait sut;
+    PropertiesWriter sut;
     Map properties;
 
     @Before
     public void init() {
-        sut = mock(PropertiesWriteTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(PropertiesWriter.class, Answers.CALLS_REAL_METHODS);
         properties = new HashMap();
 
         given(sut.getProperties()).willReturn(properties);

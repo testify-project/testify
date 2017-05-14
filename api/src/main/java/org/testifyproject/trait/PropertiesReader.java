@@ -33,7 +33,20 @@ import static java.util.Optional.ofNullable;
  *
  * @author saden
  */
-public interface PropertiesReadTrait extends PropertiesTrait {
+public interface PropertiesReader extends PropertiesTrait {
+
+    /**
+     * Find a map typed associated with the given mapKey and return an instance
+     * of PropertiesReader that wraps the found map.
+     *
+     * @param mapKey the key key associated with the map
+     * @return an instance that wraps the found map
+     */
+    default PropertiesReader getPropertiesReader(String mapKey) {
+        Map<String, Object> result = findMap(mapKey);
+
+        return DefaultPropertiesReader.of(result);
+    }
 
     /**
      * Get the value the value associated with the given key.
@@ -50,7 +63,7 @@ public interface PropertiesReadTrait extends PropertiesTrait {
      * Find the value associated with the given key.
      *
      * @param <T> the value type
-     * @param key the key
+     * @param key the key associated with the property
      * @return an optional with the value, empty optional otherwise
      */
     default <T> Optional<T> findProperty(String key) {
@@ -58,16 +71,16 @@ public interface PropertiesReadTrait extends PropertiesTrait {
     }
 
     /**
-     * Find a list value associated with the given key. If the list is not found
-     * an {@link Collections#EMPTY_LIST} will be returned.
+     * Find a list value associated with the given listKey. If the list is not
+     * found an {@link Collections#EMPTY_LIST} will be returned.
      *
      * @param <T> the collection element type
-     * @param key the key
-     * @return an optional with the value, empty optional otherwise
+     * @param listKey the key associated with the list
+     * @return the found list, empty list otherwise
      */
-    default <T> List<T> findList(String key) {
+    default <T> List<T> findList(String listKey) {
         Map<String, List<T>> properties = getProperties();
-        List<T> result = properties.get(key);
+        List<T> result = properties.get(listKey);
 
         if (result == null) {
             result = Collections.emptyList();
@@ -77,17 +90,17 @@ public interface PropertiesReadTrait extends PropertiesTrait {
     }
 
     /**
-     * Find a map typed associated with the given key. If the map is not found
-     * an {@link Collections#EMPTY_MAP} is returned.
+     * Find a map typed associated with the given mapKey. If the map is not
+     * found an {@link Collections#EMPTY_MAP} is returned.
      *
      * @param <K> the map key type
      * @param <V> the map value type
-     * @param key the key
+     * @param mapKey the key key associated with the map
      * @return the found map, empty map otherwise
      */
-    default <K, V> Map<K, V> findMap(String key) {
+    default <K, V> Map<K, V> findMap(String mapKey) {
         Map<String, Map<K, V>> properties = getProperties();
-        Map<K, V> result = properties.get(key);
+        Map<K, V> result = properties.get(mapKey);
 
         if (result == null) {
             result = Collections.emptyMap();

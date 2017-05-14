@@ -30,14 +30,14 @@ import static org.mockito.Mockito.mock;
  *
  * @author saden
  */
-public class PropertiesReadTraitTest {
+public class PropertiesReaderTest {
 
-    PropertiesReadTrait sut;
+    PropertiesReader sut;
     Map properties;
 
     @Before
     public void init() {
-        sut = mock(PropertiesReadTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(PropertiesReader.class, Answers.CALLS_REAL_METHODS);
         properties = new HashMap();
 
         given(sut.getProperties()).willReturn(properties);
@@ -134,6 +134,19 @@ public class PropertiesReadTraitTest {
         Map<Object, Object> result = sut.findMap(key);
 
         assertThat(result).isEqualTo(value);
+    }
+
+    @Test
+    public void givenExistingKeyGetPropertiesReaderShouldReturnPropertiesReaderWithMap() {
+        String key = "key";
+        Map value = mock(Map.class);
+
+        properties.put(key, value);
+
+        PropertiesReader result = sut.getPropertiesReader(key);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getProperties()).isEqualTo(value);
     }
 
 }

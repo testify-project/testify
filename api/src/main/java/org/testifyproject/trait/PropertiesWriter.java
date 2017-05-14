@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author saden
  */
-public interface PropertiesWriteTrait extends PropertiesTrait {
+public interface PropertiesWriter extends PropertiesTrait {
 
     /**
      * Add the given key/value pair if it is absent.

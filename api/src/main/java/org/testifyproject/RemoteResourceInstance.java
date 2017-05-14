@@ -15,7 +15,7 @@
  */
 package org.testifyproject;
 
-import org.testifyproject.trait.PropertiesReadTrait;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * A contract that defines methods to get information about a remote resource
@@ -27,7 +27,7 @@ import org.testifyproject.trait.PropertiesReadTrait;
  * @param <C> the client type
  * @see ResourceProvider
  */
-public interface RemoteResourceInstance<C> extends PropertiesReadTrait {
+public interface RemoteResourceInstance<C> extends PropertiesReader {
 
     /**
      * Get the client instance associated with the remote resource.

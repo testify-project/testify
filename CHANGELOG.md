@@ -18,10 +18,11 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Added extention contracts and annotations to the API
   - Added @UnitTest, @IntegrationTest, and @SystemTest which can be used to apply specific services to certain test levels
   - Added TestReifer contract for reifying the test class
-  - Added CutReifier contract for reifying the class under test
+  - Added SutReifier contract for reifying the system under test
   - Added FieldReifier contract for reifying the test class fields
   - Added CollaboratorsReifier contract to reify cut class based on provided collaborators
 - Added support for configuring behavior through ".testify.yml" configuration file
+- Added PropertiesReader and PropertiesWriter to enable reading and writing of configuration properties
 - Added @RemoteResource support
 
 ### Changed

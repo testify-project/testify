@@ -26,8 +26,8 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.trait.PropertiesReadTrait;
-import org.testifyproject.trait.PropertiesWriteTrait;
+import org.testifyproject.trait.PropertiesReader;
+import org.testifyproject.trait.PropertiesWriter;
 
 /**
  * A contract that defines methods used to access or perform operations on a
@@ -35,7 +35,7 @@ import org.testifyproject.trait.PropertiesWriteTrait;
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesReadTrait, PropertiesWriteTrait {
+public interface TestDescriptor extends PropertiesReader, PropertiesWriter {
 
     /**
      * The name of the test class.
