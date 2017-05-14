@@ -18,30 +18,30 @@ major.minor.patch
 ```bash
 RELEASE_VERSION=x.x.x
 DEVELOPMENT_VERSION=x.x.x-SNAPSHOT
-$ git flow release start $RELEASE_VERSION
+git flow release start $RELEASE_VERSION
 ```
 - Update the project version in pom files:
 ```bash
-$ mvn versions:set -DnewVersion=$RELEASE_VERSION
+./mvnw versions:set -DnewVersion=$RELEASE_VERSION
 ```
 - Update CHANGELOG.md:
 - Commit the changes:
 ```bash
-$ git commit -m "Prepare release $RELEASE_VERSION" .
+git commit -m "Prepare release $RELEASE_VERSION" .
 ```
 - Finish the release:
 ```bash
-$ git flow release finish $RELEASE_VERSION
+git flow release finish $RELEASE_VERSION
 ```
 - Update next development project version in pom files:
 ```bash
-$ mvn versions:set -DnewVersion=$DEVELOPMENT_VERSION
+./mvnw versions:set -DnewVersion=$DEVELOPMENT_VERSION
 ```
 - Commit the updated pom files:
 ```bash
-$ git commit -m "Updated next development version to $DEVELOPMENT_VERSION" .
+git commit -m "Updated next development version to $DEVELOPMENT_VERSION" .
 ```
 - Push changes, develop, master branches and tags to remote repository:
 ```bash
-$ git push origin develop master --tags
+git push origin develop master --tags
 ```

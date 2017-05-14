@@ -11,7 +11,7 @@ Testify uses a Maven-based build system. To build from source follow the bellow 
 - [Install GitFlow](http://danielkummer.github.io/git-flow-cheatsheet)
 - Initialize GitFlow:
 ```bash
-$ git flow init
+git flow init
 Branch name for production releases: master
 Branch name for "next release" development: develop
 Feature branch prefix: feature/
@@ -25,40 +25,40 @@ Version tag prefix:
 ### Check out sources
 -- Via SSH (preferred for security reasons):
 ```
-$ git clone git@github.com:testify-project/testify.git
+git clone git@github.com:testify-project/testify.git
 ```
 - Or via HTTPS:
 
 ```
-$ git clone https://github.com/testify-project/testify.git
+git clone https://github.com/testify-project/testify.git
 ```
 
 ### Compile, build, and install Testify JARs into your local Maven Cache
 ```
-$ mvn install -Dmaven.test.skip
+./mvnw install -Dmaven.test.skip
 ```
 
 ### Compile, test, build, and install Testify JARs into your local Maven Cache
 ```
-$ mvn install
+./mvnw install
 ```
 
 ## Adding a Feature
 - Create a feature:
 ```bash
-$ git flow feature start awesome-feature
+git flow feature start awesome-feature
 ```
 - Do some development and commit to awesome-feature branch:
 ```bash
-$ git commit -m "awesome-feature description" .
+git commit -m "awesome-feature description" .
 ```
 - Publish feature:
 ```bash
-$ git flow feature publish awesome-feature
+git flow feature publish awesome-feature
 ```
 - Finish the feature:
 ```bash
-$ git flow feature finish awesome-feature
+git flow feature finish awesome-feature
 ```
 
 ## Issue Pull Request
