@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,27 +36,15 @@ import org.testifyproject.fixture.inspector.TestEmptyCollaboratorProvider;
  */
 public class CollaboratorProviderInspectorTest {
 
-    CollaboratorProviderInspector cut;
+    CollaboratorProviderInspector sut;
 
     @Before
     public void init() {
-        cut = new CollaboratorProviderInspector();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void callToHandlesNullShouldReturThrowExpcetion() {
-        cut.handles(null);
+        sut = new CollaboratorProviderInspector();
     }
 
     @Test
-    public void callToHandlesModuleShouldReturnTrue() {
-        boolean result = cut.handles(CollaboratorProvider.class);
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenParamtersInspectShouldAddProperty() throws Exception {
+    public void givenParamtersInspectShouldAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
         CollaboratorProvider annotation = mock(CollaboratorProvider.class);
@@ -65,13 +52,13 @@ public class CollaboratorProviderInspectorTest {
 
         given(annotation.value()).willReturn(providerType);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addProperty(eq(TestDescriptorProperties.COLLABORATOR_PROVIDER), any(MethodDescriptor.class));
     }
 
     @Test
-    public void givenParamtersInspectShouldNotAddProperty() throws Exception {
+    public void givenParamtersInspectShouldNotAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
         CollaboratorProvider annotation = mock(CollaboratorProvider.class);
@@ -79,7 +66,7 @@ public class CollaboratorProviderInspectorTest {
 
         given(annotation.value()).willReturn(providerType);
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verifyNoMoreInteractions(testDescriptor);
     }

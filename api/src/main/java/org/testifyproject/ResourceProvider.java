@@ -16,49 +16,27 @@
 package org.testifyproject;
 
 /**
- * A contract that defines methods to configure, start an stop a required
- * resource for testing.
+ * An SPI contract for starting and stopping resources required by the system
+ * under test.
  *
  * @author saden
- * @param <T> the configuration type
- * @param <S> the server type
- * @param <C> the client type
  */
-public interface ResourceProvider<T, S, C> {
+public interface ResourceProvider {
 
     /**
-     * <p>
-     * A method to configure a required resource for testing. Configuring a
-     * required resource for testing typically involves creating a configuration
-     * object that can be further configured by a test class method annotated
-     * with {@link org.testifyproject.annotation.ConfigHandler}.
-     * </p>
-     * <p>
-     * Note that implementation of this method should not do any work beyond
-     * returning configuration object. That is to is to say it should be
-     * stateless and should not perform instantiation of the required resource
-     * for testing as that should be handled in
-     * {@link #start(TestContext, java.lang.Object)} method.
-     * </p>
+     * Start all the resources using the given test context and service
+     * instance.
      *
      * @param testContext the test context
-     * @return the required resource for testing configuration object
+     * @param serviceInstance the service instance to use
      */
-    T configure(TestContext testContext);
+    void start(TestContext testContext, ServiceInstance serviceInstance);
 
     /**
-     * Start the required resource for testing with the given testContext and
-     * configuration.
+     * Stop all the resources.
      *
      * @param testContext the test context
-     * @param config the required resource for testing configuration
-     * @return a required resource for testing instance
      */
-    ResourceInstance<S, C> start(TestContext testContext, T config);
-
-    /**
-     * Stop the required resource.
-     */
-    void stop();
+    void stop(TestContext testContext);
 
 }

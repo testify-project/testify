@@ -21,11 +21,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.RequiresContainer;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
-import org.testifyproject.trait.PropertiesTrait;
+import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.trait.PropertiesReader;
+import org.testifyproject.trait.PropertiesWriter;
 
 /**
  * A contract that defines methods used to access or perform operations on a
@@ -33,7 +35,7 @@ import org.testifyproject.trait.PropertiesTrait;
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesTrait {
+public interface TestDescriptor extends PropertiesReader, PropertiesWriter {
 
     /**
      * The name of the test class.
@@ -57,7 +59,7 @@ public interface TestDescriptor extends PropertiesTrait {
     ClassLoader getTestClassLoader();
 
     /**
-     * Get the class under test collaborator provider associated with the test
+     * Get the system under test collaborator provider associated with the test
      * class.
      *
      * @return an optional with method descriptor, empty optional otherwise
@@ -72,11 +74,11 @@ public interface TestDescriptor extends PropertiesTrait {
     Optional<Application> getApplication();
 
     /**
-     * Get the class under test field associated with the test class.
+     * Get the system under test field associated with the test class.
      *
-     * @return an optional with cut class field, empty optional otherwise
+     * @return an optional with sut class field, empty optional otherwise
      */
-    Optional<Field> getCutField();
+    Optional<Field> getSutField();
 
     /**
      * Get a list method handlers for all the config handlers associated with
@@ -109,18 +111,25 @@ public interface TestDescriptor extends PropertiesTrait {
     List<Scan> getScans();
 
     /**
-     * Get a list of required containers associated with the test class.
+     * Get a list of local resources associated with the test class.
      *
-     * @return a list with required containers, empty list otherwise
+     * @return a list with local resources, empty list otherwise
      */
-    List<RequiresContainer> getRequiresContainers();
+    List<LocalResource> getLocalResources();
 
     /**
-     * Get a list of required resources associated with the test class.
+     * Get a list of virtual resources associated with the test class.
      *
-     * @return a list with required resources, empty list otherwise
+     * @return a list with virtual resources, empty list otherwise
      */
-    List<RequiresResource> getRequiresResources();
+    List<VirtualResource> getVirtualResources();
+
+    /**
+     * Get a list of remote resources associated with the test class.
+     *
+     * @return a list with remote resources, empty list otherwise
+     */
+    List<RemoteResource> getRemoteResources();
 
     /**
      * Find the config handler associated with the test class capable of

@@ -16,19 +16,17 @@
 package org.testifyproject.di.spring;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import javax.inject.Provider;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.TestDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
@@ -46,88 +44,80 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
     }
 
     @Override
-    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        MockProvider mockProvider = testContext.getMockProvider();
-        Object testInstance = testContext.getTestInstance();
-        Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
-        Object instance = null;
+    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
+        return testContext.getSutDescriptor().map(sutDescriptor -> {
+            MockProvider mockProvider = testContext.getMockProvider();
 
-        if (cutDescriptor.isPresent()) {
-            for (FieldDescriptor fieldDescriptor : testDescriptor.getFieldDescriptors()) {
+            for (FieldDescriptor fieldDescriptor : testContext.getTestDescriptor().getFieldDescriptors()) {
                 if (!fieldDescriptor.getFake().isPresent()) {
                     continue;
                 }
 
-                Class<?> fieldDescriptorType = fieldDescriptor.getType();
-                TypeToken<?> fieldDescriptorToken = TypeToken.of(fieldDescriptor.getGenericType());
+                Type fieldType = fieldDescriptor.getGenericType();
+                TypeToken fieldTypeToken = TypeToken.of(fieldType);
+                TypeToken rawTypeToken = getRawTypeToken(fieldType);
 
-                Class<?> rawType = getRawType(fieldDescriptorToken, fieldDescriptorType);
-                TypeToken<?> rawTypeToken = TypeToken.of(rawType);
+                if (fieldTypeToken.isSupertypeOf(beanClass)) {
+                    Optional<Object> foundValue = fieldDescriptor.getValue(testContext.getTestInstance());
 
-                if (rawTypeToken.isSupertypeOf(beanClass)) {
-                    Optional<Object> value = fieldDescriptor.getValue(testInstance);
-
-                    if (value.isPresent()) {
-                        instance = value.get();
-
-                        if (!mockProvider.isMock(instance)) {
-                            instance = mockProvider.createVirtual(beanClass, instance);
-                        }
-                    } else {
-                        instance = mockProvider.createFake(beanClass);
+                    if (foundValue.isPresent()) {
+                        return foundValue.get();
                     }
-
-                    return instance;
+                } else if (rawTypeToken.isSupertypeOf(beanClass)) {
+                    return mockProvider.createFake(beanClass);
                 }
             }
 
-        }
+            return null;
+        }).orElse(null);
 
-        return instance;
     }
 
     @Override
-    public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
+    public boolean postProcessAfterInstantiation(Object bean, String beanName) {
         return true;
     }
 
     @Override
-    public PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
+    public PropertyValues postProcessPropertyValues(
+            PropertyValues pvs,
+            PropertyDescriptor[] pds,
+            Object bean,
+            String beanName) {
         return pvs;
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
         Class<? extends Object> beanClass = bean.getClass();
 
         //XXX: DO NOT remove this  method and code as it is required to extract
-        //collaborators before the cut class is proxied down stream. Once the
-        //cut class is proxied we will not be able to access the cut class
+        //collaborators before the sut class is proxied down stream. Once the
+        //sut class is proxied we will not be able to access the sut class
         //fields with ease.
-        Optional<CutDescriptor> descriptor = testContext.getCutDescriptor();
-
-        if (descriptor.isPresent() && descriptor.get().isCutClass(beanClass)) {
-            testContext.getTestReifier().reify(testContext, bean);
-        }
+        testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
+            if (sutDescriptor.isSutClass(beanClass)) {
+                sutDescriptor.setValue(testContext.getTestInstance(), bean);
+            }
+        });
 
         return bean;
     }
 
     /**
-     * GIven a type token and default type determine the raw type of the type
-     * token by spring supported generic classes.
+     * Given a type determine the raw type.
      *
-     * @param typeToken the type token that will be inspected
-     * @return the raw type
+     * @param type the type whose raw type is being determined
+     * @return the raw type token
      */
-    Class<?> getRawType(TypeToken<?> typeToken, Class<?> fieldDescriptorType) {
-        Class<?> rawType = fieldDescriptorType;
+    TypeToken getRawTypeToken(Type type) {
+        TypeToken typeToken = TypeToken.of(type);
+        Class rawType = typeToken.getRawType();
 
         if (typeToken.isSubtypeOf(Provider.class)) {
             TypeVariable<Class<Provider>> paramType = Provider.class.getTypeParameters()[0];
@@ -143,7 +133,7 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
             rawType = typeToken.resolveType(valueType).getRawType();
         }
 
-        return rawType;
+        return TypeToken.of(rawType);
     }
 
 }

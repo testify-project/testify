@@ -23,7 +23,7 @@
 
     <groupId>org.testifyproject</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
     <packaging>pom</packaging>
     
     <name>Testify Project</name>
@@ -58,19 +58,18 @@
         <netbeans.inceptionYear>2016</netbeans.inceptionYear>
 
         <!-- Build Dependency Versions -->
-        <buildtools.version>0.9.3</buildtools.version>
+        <buildtools.version>0.9.5</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.1</plugin.resource>
         <plugin.compiler>3.5.1</plugin.compiler>
         <plugin.jar>3.0.2</plugin.jar>
         <plugin.surefire>2.19.1</plugin.surefire>
-        <plugin.failsafe>2.19.1</plugin.failsafe>
         <plugin.checkstyle>2.17</plugin.checkstyle>
         <plugin.enforcer>1.4.1</plugin.enforcer>
         <plugin.source>3.0.1</plugin.source>
         <plugin.javadoc>2.10.4</plugin.javadoc>
-        <plugin.jacoco>0.7.7.201606060606</plugin.jacoco>
+        <plugin.jacoco>0.7.10-SNAPSHOT</plugin.jacoco>
         <plugin.pit>1.1.10</plugin.pit>
         <plugin.license>3.0</plugin.license>
         <plugin.sonatype>1.6.6</plugin.sonatype>
@@ -79,6 +78,7 @@
         <plugin.site>3.5.1</plugin.site>
         <plugin.projectinfo>2.9</plugin.projectinfo>
         <plugin.jxr>2.5</plugin.jxr>
+        <plugin.sonarqube>3.2</plugin.sonarqube>
 
         <!-- Test Dependencies -->
         <junit.version>4.12</junit.version>
@@ -103,7 +103,10 @@
         <jsoup.version>1.9.2</jsoup.version>
         <javax.transaction.version>1.2</javax.transaction.version>
         <javax.interceptor.version>1.2</javax.interceptor.version>
-        <postgressql.version>9.4.1207</postgressql.version> 
+        <postgressql.version>9.4.1207</postgressql.version>
+
+        <!-- Processor Dependencies -->
+        <lombok.version>1.16.16</lombok.version>
     </properties>
 
     <prerequisites>
@@ -146,8 +149,7 @@
     <scm>
         <connection>scm:git:https://github.com/testify-project/testify.git</connection>
         <developerConnection>scm:git:https://github.com/testify-project/testify.git</developerConnection>
-        <url>https://github.com/testify-project/testify.git/tree/${project.scm.tag}</url>
-        <tag>master</tag>
+        <url>https://github.com/testify-project/testify.git</url>
     </scm>
 
     <distributionManagement>
@@ -193,14 +195,35 @@
             </snapshots>
         </repository>
     </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>oss.sonatype.org snapshot</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>interval:360</updatePolicy>
+            </snapshots> 
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>oss.sonatype.org releases</id>
+            <url>http://oss.sonatype.org/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>interval:360</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-            </plugin>
-        </plugins>
-
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -294,42 +317,59 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${plugin.surefire}</version>
-                    <configuration>
-                        <argLine>${jacocoSurefireArgs} -client -Xms512m -Xmx2048m</argLine>
-                        <failIfNoTests>false</failIfNoTests>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${plugin.failsafe}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>integration-test</goal>
-                                <goal>verify</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <argLine>${jacocoFailesafeArgs} -client -Xms512m -Xmx2048m</argLine>
-                        <failIfNoTests>false</failIfNoTests>
-                        <forkCount>0.75C</forkCount>
-                        <reuseForks>false</reuseForks>
-                        <parallel>classes</parallel>
-                        <useUnlimitedThreads>true</useUnlimitedThreads>
-                        <includes>
-                            <include>**/*IT.java</include>
-                            <include>**/*ST.java</include>
-                        </includes>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>${plugin.site}</version>
                     <configuration>
                         <skipDeploy>true</skipDeploy>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${plugin.surefire}</version>
+                    <executions>
+                        <execution>
+                            <id>integration-test</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <configuration>
+                                <forkCount>1</forkCount>
+                                <reuseForks>true</reuseForks>
+                                <parallel>methods</parallel>
+                                <useUnlimitedThreads>true</useUnlimitedThreads>
+                                <includes>
+                                    <include>**/*IT.java</include>
+                                </includes>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>system-test</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <configuration>
+                                <forkCount>0.75C</forkCount>
+                                <reuseForks>false</reuseForks>
+                                <parallel>classes</parallel>
+                                <useUnlimitedThreads>true</useUnlimitedThreads>
+                                <includes>
+                                    <include>**/*ST.java</include>
+                                </includes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <argLine>${jacocoSurefireArgs} -client -Xms512m -Xmx2048m</argLine>
+                        <failIfNoTests>false</failIfNoTests>
+                        <forkCount>1</forkCount>
+                        <reuseForks>true</reuseForks>
+                        <parallel>methods</parallel>
+                        <useUnlimitedThreads>true</useUnlimitedThreads>
+                        <includes>
+                            <include>**/*Test.java</include>
+                        </includes>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -347,27 +387,17 @@
                             </configuration>
                         </execution>
                         <execution>
-                            <id>jacoco-prepare-agent-integration</id>
-                            <goals>
-                                <goal>prepare-agent-integration</goal>
-                            </goals>
-                            <configuration>
-                                <propertyName>jacocoFailesafeArgs</propertyName>
-                            </configuration>
-                        </execution>
-                        <execution>
                             <id>jacoco-report</id>
                             <goals>
                                 <goal>report</goal>
                             </goals>
                         </execution>
-                        <execution>
-                            <id>jacoco-report-integration</id>
-                            <goals>
-                                <goal>report-integration</goal>
-                            </goals>
-                        </execution>
                     </executions>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/*Properties.java</exclude>
+                        </excludes>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.pitest</groupId>
@@ -409,12 +439,18 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${plugin.sonarqube}</version>
+                </plugin>
+                <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
                     <version>${plugin.license}</version>
                     <executions>
                         <execution>
                             <id>license-check</id>
+                            <phase>process-resources</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -451,6 +487,8 @@
                             <exclude>nbproject/**</exclude>
                             <exclude>secrets/**</exclude>
                             <exclude>archetype.properties</exclude>
+                            <exclude>.mvn/**</exclude>
+                            <exclude>mvnw*</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
@@ -460,6 +498,7 @@
                     <executions>
                         <execution>
                             <id>checkstyle-check</id>
+                            <phase>process-resources</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -548,6 +587,11 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*Properties.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -577,7 +621,6 @@
                     <reportSet>
                         <reports>
                             <report>report-only</report>
-                            <report>failsafe-report-only</report>
                         </reports>
                     </reportSet>
                 </reportSets>
@@ -622,6 +665,11 @@
             <version>${buildtools.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -659,6 +707,12 @@
                 <version>${buildtools.version}</version>
                 <optional>true</optional>
             </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -683,23 +737,16 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <configuration>
-                            <skip>${skipTests}</skip>               
-                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>com.mycila</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                        <configuration>
-                            <skip>${skipTests}</skip>               
-                        </configuration>
                     </plugin>
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <skip>${skipTests}</skip>               
+                            <skip>${skipTests}</skip>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -738,7 +785,6 @@
                         <artifactId>jacoco-maven-plugin</artifactId>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
                     </plugin>
                     <plugin>

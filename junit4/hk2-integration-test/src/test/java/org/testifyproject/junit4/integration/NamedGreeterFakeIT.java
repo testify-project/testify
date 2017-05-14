@@ -21,8 +21,10 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Scan;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.NamedGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
 
@@ -30,19 +32,20 @@ import org.testifyproject.junit4.fixture.common.Greeting;
  *
  * @author saden
  */
+@Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class NamedGreeterFakeIT {
 
-    @Cut
-    NamedGreeter cut;
+    @Sut
+    NamedGreeter sut;
 
     @Fake
     Greeting greeting;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greeting).isNotNull().isSameAs(cut.getGreeting());
+        assertThat(sut).isNotNull();
+        assertThat(greeting).isNotNull().isSameAs(sut.getGreeting());
         assertThat(Mockito.mockingDetails(greeting).isMock()).isTrue();
     }
 
@@ -52,7 +55,7 @@ public class NamedGreeterFakeIT {
 
         given(greeting.phrase()).willReturn(phrase);
 
-        String result = cut.greet();
+        String result = sut.greet();
 
         assertThat(result).isEqualTo(phrase);
         verify(greeting).phrase();

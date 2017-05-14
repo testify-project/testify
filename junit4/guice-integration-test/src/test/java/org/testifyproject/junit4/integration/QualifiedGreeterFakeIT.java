@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.junit4.fixture.GreetingModule;
@@ -34,16 +34,16 @@ import org.testifyproject.junit4.fixture.service.QualifiedGreeter;
 @RunWith(GuiceIntegrationTest.class)
 public class QualifiedGreeterFakeIT {
 
-    @Cut
-    QualifiedGreeter cut;
+    @Sut
+    QualifiedGreeter sut;
 
     @Fake
     Greeting greeting;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greeting).isNotNull().isSameAs(cut.getGreeting());
+        assertThat(sut).isNotNull();
+        assertThat(greeting).isNotNull().isSameAs(sut.getGreeting());
         assertThat(Mockito.mockingDetails(greeting).isMock()).isTrue();
     }
 

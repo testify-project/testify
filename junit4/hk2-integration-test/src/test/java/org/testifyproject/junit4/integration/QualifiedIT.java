@@ -15,10 +15,12 @@
  */
 package org.testifyproject.junit4.integration;
 
-import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.Scan;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
 
@@ -26,10 +28,11 @@ import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
  *
  * @author saden
  */
+@Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class QualifiedIT {
 
-    @Inject
+    @Real
     @CustomQualifier
     Greeting greeting;
 

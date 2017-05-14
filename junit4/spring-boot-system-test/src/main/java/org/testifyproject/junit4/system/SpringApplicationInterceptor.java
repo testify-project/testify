@@ -16,12 +16,14 @@
 package org.testifyproject.junit4.system;
 
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
-import org.testifyproject.TestReifier;
+import org.testifyproject.TestConfigurer;
+import org.testifyproject.TestContext;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
@@ -84,17 +86,18 @@ public class SpringApplicationInterceptor {
         //TODO: should the service provider be set up front and available from the test context?
         ServiceProvider serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
 
-        ServiceInstance serviceInstance = testContextHolder.execute(testContext -> {
-            return serviceProvider.configure(testContext, configurableApplicationContext);
-        });
+        ServiceInstance serviceInstance
+                = testContextHolder.execute((Function<TestContext, ServiceInstance>) testContext
+                        -> serviceProvider.configure(testContext, configurableApplicationContext)
+                );
 
         zuper.call();
 
         testContextHolder.execute(testContext -> {
             serviceProvider.postConfigure(testContext, serviceInstance);
 
-            TestReifier testReifier = testContext.getTestReifier();
-            testReifier.configure(testContext, configurableApplicationContext);
+            TestConfigurer testConfigurer = testContext.getTestConfigurer();
+            testConfigurer.configure(testContext, configurableApplicationContext);
 
             testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
         });

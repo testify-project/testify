@@ -128,5 +128,14 @@
             <goal>-TC1</goal>
         </goals>
     </action>
+    <action>
+            <actionName>CUSTOM-clean verify sonar:sonar</actionName>
+            <displayName>clean verify sonar:sonar</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>verify</goal>
+                <goal>sonar:sonar</goal>
+            </goals>
+        </action>
     
 </actions>

@@ -27,14 +27,14 @@ import org.testifyproject.annotation.Module;
  */
 public class DefaultModuleTest {
 
-    Module cut;
+    Module sut;
     Class<?> value;
 
     @Before
     public void init() {
         value = Object.class;
 
-        cut = new DefaultModule(value);
+        sut = new DefaultModule(value);
     }
 
     @Test
@@ -46,14 +46,14 @@ public class DefaultModuleTest {
 
     @Test
     public void callToGetValueShouldReturnValue() {
-        Class<?> result = cut.value();
+        Class<?> result = sut.value();
 
         assertThat(result).isEqualTo(value);
     }
 
     @Test
     public void callToAnnotationTypeShouldReturnAnnotation() {
-        Class<? extends Annotation> result = cut.annotationType();
+        Class<? extends Annotation> result = sut.annotationType();
 
         assertThat(result).isEqualTo(Module.class);
     }

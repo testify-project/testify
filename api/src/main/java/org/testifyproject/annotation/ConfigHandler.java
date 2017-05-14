@@ -27,8 +27,8 @@ import java.lang.annotation.Target;
  * <p>
  * An annotation that can be placed on a test class or test class method to
  * configure various functions before each integration and system test run (i.e.
- * HK2 ServiceLocator, Spring Application Context, required container, required
- * resources, etc). Note that if the annotation is placed on:
+ * HK2 ServiceLocator, Spring Application Context, resources, etc). Note that if
+ * the annotation is placed on:
  * </p>
  * <ul>
  * <li>

@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.PrimaryTestService;
 import org.testifyproject.fixture.TestContract;
 import org.testifyproject.fixture.TestServiceSubtype;
@@ -34,100 +35,100 @@ import org.testifyproject.fixture.TestServiceSubtype;
  */
 public class TypeTraitTest {
 
-    TypeTrait cut;
+    TypeTrait sut;
 
     @Before
     public void init() {
-        cut = mock(TypeTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(TypeTrait.class, Answers.CALLS_REAL_METHODS);
 
         Class type = PrimaryTestService.class;
-        given(cut.getType()).willReturn(type);
-        given(cut.getGenericType()).willReturn(type);
+        given(sut.getType()).willReturn(type);
+        given(sut.getGenericType()).willReturn(type);
     }
 
     @Test
     public void callToGetTypeShouldReturnTestService() {
-        Class<?> result = cut.getType();
+        Class<?> result = sut.getType();
 
         assertThat(result).isEqualTo(PrimaryTestService.class);
     }
 
     @Test
     public void callToGetGenericTypeShouldReturnTestService() {
-        Type result = cut.getGenericType();
+        Type result = sut.getGenericType();
 
         assertThat(result).isEqualTo(PrimaryTestService.class);
     }
 
     @Test
     public void callToGetTypeNameShouldReturnTestServiceSimpleName() {
-        String result = cut.getTypeName();
+        String result = sut.getTypeName();
 
         assertThat(result).isEqualTo(PrimaryTestService.class.getSimpleName());
     }
 
     @Test
     public void callToGetClassLoaderShouldReturnTestServiceClassLoader() {
-        ClassLoader result = cut.getClassLoader();
+        ClassLoader result = sut.getClassLoader();
 
         assertThat(result).isEqualTo(PrimaryTestService.class.getClassLoader());
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullIsSubtyoeOfShouldThrowException() {
-        cut.isSubtypeOf(null);
+        sut.isSubtypeOf(null);
     }
 
     @Test
     public void givenNonSubTypeIsSubtypeOfShouldReturnFalse() {
-        Boolean result = cut.isSubtypeOf(String.class);
+        Boolean result = sut.isSubtypeOf(String.class);
 
         assertThat(result).isFalse();
     }
 
     @Test
     public void givenContractTypeIsSubtypeOfShouldReturnTrue() {
-        Boolean result = cut.isSubtypeOf(TestContract.class);
+        Boolean result = sut.isSubtypeOf(TestContract.class);
 
         assertThat(result).isTrue();
     }
 
     @Test
     public void givenServiceTypeIsSubtypeOfShouldReturnTrue() {
-        Boolean result = cut.isSubtypeOf(PrimaryTestService.class);
+        Boolean result = sut.isSubtypeOf(PrimaryTestService.class);
 
         assertThat(result).isTrue();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullisSuperTypeOfShouldThrowException() {
-        cut.isSupertypeOf(null);
+        sut.isSupertypeOf(null);
     }
 
     @Test
     public void givenNonSubTypeIsSuperTypeOfShouldReturnFalse() {
-        Boolean result = cut.isSupertypeOf(String.class);
+        Boolean result = sut.isSupertypeOf(String.class);
 
         assertThat(result).isFalse();
     }
 
     @Test
     public void givenContractTypeIsSuperTypeOfShouldReturnFalse() {
-        Boolean result = cut.isSupertypeOf(TestContract.class);
+        Boolean result = sut.isSupertypeOf(TestContract.class);
 
         assertThat(result).isFalse();
     }
 
     @Test
     public void givenServiceTypeIsSuperTypeOfShouldReturnTrue() {
-        Boolean result = cut.isSupertypeOf(PrimaryTestService.class);
+        Boolean result = sut.isSupertypeOf(PrimaryTestService.class);
 
         assertThat(result).isTrue();
     }
 
     @Test
     public void givenTestServiceSubtypeIsSuperTypeOfShouldReturnTrue() {
-        Boolean result = cut.isSupertypeOf(TestServiceSubtype.class);
+        Boolean result = sut.isSupertypeOf(TestServiceSubtype.class);
 
         assertThat(result).isTrue();
     }
@@ -138,33 +139,40 @@ public class TypeTraitTest {
         String methodName = "sayHello";
         Object[] methodArgs = new Object[]{"Marvin"};
 
-        cut.invoke(instance, methodName, methodArgs);
+        sut.invoke(instance, methodName, methodArgs);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNonExistentMethodInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
         String methodName = "saySalam";
         Object[] methodArgs = new Object[]{"Marvin"};
 
-        cut.invoke(instance, methodName, methodArgs);
+        sut.invoke(instance, methodName, methodArgs);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNoArgumentsInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
         String methodName = "sayHello";
 
-        cut.invoke(instance, methodName);
+        sut.invoke(instance, methodName);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void givenWrongArgumentTypesInvokeShouldThrowException() {
+    @Test(expected = TestifyException.class)
+    public void givenWrongArgumentTypesInvokeShouldThrowException() throws Exception {
+        sut = mock(TypeTrait.class);
         Object instance = new PrimaryTestService();
-        String methodName = "saySalam";
+        String methodName = "sayHello";
         Object[] methodArgs = new Object[]{42};
+        Class[] methodArgsTypes = new Class[]{Integer.class};
 
-        cut.invoke(instance, methodName, methodArgs);
+        Method method = PrimaryTestService.class.getDeclaredMethod(methodName, String.class);
+
+        given(sut.invoke(instance, methodName, methodArgs)).willCallRealMethod();
+        given(sut.findMethod(PrimaryTestService.class, methodName, methodArgsTypes)).willReturn(method);
+
+        sut.invoke(instance, methodName, methodArgs);
     }
 
     @Test
@@ -173,7 +181,7 @@ public class TypeTraitTest {
         String methodName = "sayHello";
         Object[] methodArgs = new Object[]{"Marvin"};
 
-        Optional<String> result = cut.invoke(instance, methodName, methodArgs);
+        Optional<String> result = sut.invoke(instance, methodName, methodArgs);
 
         assertThat(result).contains("Hello Marvin!");
     }
@@ -183,7 +191,7 @@ public class TypeTraitTest {
         Object instance = new PrimaryTestService();
         String methodName = "getMessage";
 
-        Optional<String> result = cut.invoke(instance, methodName);
+        Optional<String> result = sut.invoke(instance, methodName);
 
         assertThat(result).contains("Hi!!!");
     }
@@ -194,16 +202,16 @@ public class TypeTraitTest {
         String methodName = "getMessage";
         Class<?>[] methodArgTypes = new Class<?>[]{};
 
-        cut.findMethod(type, methodName, methodArgTypes);
+        sut.findMethod(type, methodName, methodArgTypes);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNonExistentMethodNameFindMethodShouldThrowException() {
         Class<?> type = PrimaryTestService.class;
         String methodName = "notAMethod";
         Class<?>[] methodArgTypes = new Class<?>[]{};
 
-        cut.findMethod(type, methodName, methodArgTypes);
+        sut.findMethod(type, methodName, methodArgTypes);
     }
 
     @Test
@@ -212,7 +220,7 @@ public class TypeTraitTest {
         String methodName = "getMessage";
         Class<?>[] methodArgTypes = new Class<?>[]{};
 
-        Method result = cut.findMethod(type, methodName, methodArgTypes);
+        Method result = sut.findMethod(type, methodName, methodArgTypes);
 
         assertThat(result).isNotNull();
     }
@@ -223,7 +231,7 @@ public class TypeTraitTest {
         String methodName = "getMessage";
         Class<?>[] methodArgTypes = new Class<?>[]{};
 
-        Method result = cut.findMethod(type, methodName, methodArgTypes);
+        Method result = sut.findMethod(type, methodName, methodArgTypes);
 
         assertThat(result).isNotNull();
     }

@@ -15,14 +15,15 @@
  */
 package org.testifyproject.core.util;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
-import static org.testifyproject.guava.common.base.Preconditions.checkState;
 
 /**
  * A utility class that uses {@link ServiceLoader} mechanism to locate service
@@ -45,7 +46,6 @@ public class ServiceLocatorUtil {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
 
         return stream(serviceLoader.spliterator(), true)
-                .distinct()
                 .findFirst();
     }
 
@@ -60,7 +60,23 @@ public class ServiceLocatorUtil {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
 
         return stream(serviceLoader.spliterator(), true)
-                .distinct()
+                .collect(toList());
+    }
+
+    /**
+     * Find all implementations of the given type annotated with the given
+     * annotation.
+     *
+     * @param <T> the SPI type
+     * @param type the SPI contract
+     * @param filter the annotation to filter on implementations on
+     * @return a list that contains all implementations, empty list otherwise
+     */
+    public <T> List<T> findAllWithFilter(Class<T> type, Class<? extends Annotation> filter) {
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
+
+        return stream(serviceLoader.spliterator(), true)
+                .filter(p -> p.getClass().isAnnotationPresent(filter))
                 .collect(toList());
     }
 
@@ -76,20 +92,32 @@ public class ServiceLocatorUtil {
     public <T> T getOne(Class<T> contract) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
-        List<T> result = stream(serviceLoader.spliterator(), true).
-                distinct()
+        List<T> result = stream(serviceLoader.spliterator(), true)
                 .collect(toList());
 
-        String name = contract.getName();
+        insureOne(result, contract.getName());
 
-        checkState(!result.isEmpty(),
-                "Could not find an implementaiton of '%s' contract in the classpath."
-                + "Please insure an implementation of '%s' contract is in the classpath", name, name);
+        return result.get(0);
+    }
 
-        checkState(result.size() == 1,
-                "Found '%d' implementaitons of '%s' contract in the classpath (%s). "
-                + "Please insure only one implementation of '%s' contract is in the classpath",
-                result.size(), Arrays.toString(result.toArray()), name, name);
+    /**
+     * Gets one implementation of the given type using the given annotation
+     * filter. If more than one implementation is found in the classpath an
+     * IllegalStateException will be thrown.
+     *
+     * @param <T> the SPI type
+     * @param contract the SPI contract
+     * @param filter the annotation to filter on implementations on
+     * @return a list that contains all implementations, empty list otherwise
+     */
+    public <T> T getOneWithFilter(Class<T> contract, Class<? extends Annotation> filter) {
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
+
+        List<T> result = stream(serviceLoader.spliterator(), true)
+                .filter(p -> p.getClass().isAnnotationPresent(filter))
+                .collect(toList());
+
+        insureOne(result, contract.getName());
 
         return result.get(0);
     }
@@ -108,16 +136,12 @@ public class ServiceLocatorUtil {
 
         List<T> result = stream(serviceLoader.spliterator(), true)
                 .filter(p -> p.getClass().equals(implementation))
-                .distinct()
                 .collect(toList());
 
         String contractName = contract.getName();
         String implementationName = implementation.getName();
 
-        checkState(!result.isEmpty(),
-                "Could not find '%s' implementaiton of '%s' contract in the classpath. "
-                + "Please insure an implementation is in the",
-                implementationName, contractName);
+        insureNotEmpty(result, contractName, implementationName);
 
         return result.get(0);
     }
@@ -140,8 +164,7 @@ public class ServiceLocatorUtil {
 
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
-        List<T> services = stream(serviceLoader.spliterator(), true)
-                .distinct()
+        List<T> result = stream(serviceLoader.spliterator(), true)
                 .filter(service -> {
                     if (service.getClass().equals(defaultImplementation)) {
                         implementationRef.compareAndSet(null, service);
@@ -153,16 +176,7 @@ public class ServiceLocatorUtil {
                 })
                 .collect(toList());
 
-        checkState(services.size() <= 2,
-                "Found '%d' implementaitons of '%s' contract in the classpath (%s). "
-                + "Please insure two or less implementation of '%s' contract including '%s' "
-                + "are in the classpath",
-                services.size() - 1,
-                contractName,
-                Arrays.toString(services.toArray()),
-                contractName,
-                implementationName
-        );
+        insureAtMostTwo(result, contractName, implementationName);
 
         T instance = null;
 
@@ -172,10 +186,7 @@ public class ServiceLocatorUtil {
             instance = implementationRef.get();
         }
 
-        checkState(instance != null,
-                "Could not find an implementation of '%s' contract in the classpath."
-                + "Please insure that at least 1 implementation is in the classpath",
-                implementationName, contractName);
+        insureOne(instance, contractName, implementationName);
 
         return instance;
     }
@@ -191,16 +202,57 @@ public class ServiceLocatorUtil {
     public <T> List<T> getAll(Class<T> contract) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
-        List<T> result = stream(serviceLoader.spliterator(), true).distinct().collect(toList());
+        List<T> result = stream(serviceLoader.spliterator(), true)
+                .collect(toList());
 
-        checkState(
-                !result.isEmpty(),
-                "Could not find an implementaiton of '%s' contract in the classpath. "
-                + "Please insure at least one implementation of '%s' contract is in the classpath",
-                contract.getName(), contract.getName()
-        );
+        String name = contract.getName();
+
+        insureNotEmpty(result, name);
 
         return result;
     }
 
+    void insureOne(Object instance, String contractName, String implementationName) {
+        ExceptionUtil.INSTANCE.raise(instance == null,
+                "Could not find an implementation of '{}' contract in the classpath."
+                + "Please insure that at least one implementation is in the classpath",
+                implementationName, contractName);
+    }
+
+    void insureNotEmpty(List<?> result, String contractName, String implementationName) {
+        ExceptionUtil.INSTANCE.raise(result.isEmpty(),
+                "Could not find '{}' implementaiton of '{}' contract in the classpath. "
+                + "Please insure an implementation is in the",
+                implementationName, contractName);
+    }
+
+    void insureAtMostTwo(List<?> result, String contractName, String implementationName) {
+        ExceptionUtil.INSTANCE.raise(result.size() > 2,
+                "Found '{}' implementaitons of '{}' contract in the classpath ({}). "
+                + "Please insure two or less implementation of '{}' contract including '{}' "
+                + "are in the classpath",
+                result.size() - 1,
+                contractName,
+                Arrays.toString(result.toArray()),
+                contractName,
+                implementationName
+        );
+    }
+
+    void insureNotEmpty(List<?> result, String name) {
+        ExceptionUtil.INSTANCE.raise(result.isEmpty(),
+                "Could not find an implementaiton of '{}' contract in the classpath. "
+                + "Please insure at least one implementation of '{}' contract is in the classpath", name, name);
+    }
+
+    void insureOne(List<?> result, String name) {
+        String implementations = result.stream()
+                .map(p -> p.getClass().getSimpleName())
+                .collect(joining(", "));
+
+        ExceptionUtil.INSTANCE.raise(result.size() != 1,
+                "Found '{}' implementaitons ({}) of '{}' contract in the classpath. "
+                + "Please insure one implementation of '{}' contract is in the classpath",
+                result.size(), implementations, name, name);
+    }
 }

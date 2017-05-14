@@ -65,7 +65,7 @@ public class FileSystemUtil {
                     .map(IOException::getMessage)
                     .collect(joining("\n", "[", "]"));
 
-            throw new IllegalStateException(msg, e);
+            throw ExceptionUtil.INSTANCE.propagate(msg, e);
         }
     }
 

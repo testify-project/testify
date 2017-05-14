@@ -20,14 +20,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.testifyproject.annotation.Bundle;
-import org.testifyproject.annotation.RequiresContainer;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
  * @author saden
  */
 @Bundle
-@RequiresContainer("postgres")
+@VirtualResource("postgres")
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AnalyzedBundle {

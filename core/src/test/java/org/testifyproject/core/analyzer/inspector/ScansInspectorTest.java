@@ -15,7 +15,6 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.BDDMockito.given;
@@ -32,27 +31,15 @@ import org.testifyproject.core.analyzer.TestDescriptorProperties;
  */
 public class ScansInspectorTest {
 
-    ScansInspector cut;
+    ScansInspector sut;
 
     @Before
     public void init() {
-        cut = new ScansInspector();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void callToHandlesNullShouldReturThrowExpcetion() {
-        cut.handles(null);
+        sut = new ScansInspector();
     }
 
     @Test
-    public void callToHandlesScansShouldReturnTrue() {
-        boolean result = cut.handles(Scans.class);
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenParamtersInspectShouldAddProperty() throws Exception {
+    public void givenParamtersInspectShouldAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
         Scans annotation = mock(Scans.class);
@@ -60,7 +47,7 @@ public class ScansInspectorTest {
 
         given(annotation.value()).willReturn(new Scan[]{element});
 
-        cut.inspect(testDescriptor, annotatedType, annotation);
+        sut.inspect(testDescriptor, annotatedType, annotation);
 
         verify(testDescriptor).addListElement(TestDescriptorProperties.SCANS, element);
     }

@@ -26,14 +26,14 @@ public enum StartStrategy {
      * Indicates resources start strategy is undefined and is up to the
      * implementation.
      */
-    Undefined,
+    UNDEFINED,
     /**
      * Indicates resources should be started eagerly.
      */
-    Eager,
+    EAGER,
     /**
      * Indicates resources should be started lazily.
      */
-    Lazy,
+    LAZY,
 
 }

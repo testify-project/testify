@@ -24,15 +24,15 @@ import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.CutDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
+import org.testifyproject.TestConfigurer;
 
 /**
  *
@@ -40,37 +40,37 @@ import org.testifyproject.TestRunner;
  */
 public class DefaultTestContextTest {
 
-    TestContext cut;
+    TestContext sut;
 
     StartStrategy resourceStartStrategy;
     Object testInstance;
     TestDescriptor testDescriptor;
     MethodDescriptor methodDescriptor;
     TestRunner testRunner;
-    TestReifier testReifier;
+    TestConfigurer testConfigurer;
     MockProvider mockProvider;
     Map<String, Object> properties;
     Map<String, String> dependencies;
 
     @Before
     public void init() {
-        resourceStartStrategy = StartStrategy.Eager;
+        resourceStartStrategy = StartStrategy.EAGER;
         testInstance = new Object();
         testDescriptor = mock(TestDescriptor.class);
         methodDescriptor = mock(MethodDescriptor.class);
-        testReifier = mock(TestReifier.class);
+        testConfigurer = mock(TestConfigurer.class);
         testRunner = mock(TestRunner.class);
         mockProvider = mock(MockProvider.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
         dependencies = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        cut = DefaultTestContextBuilder.builder()
+        sut = DefaultTestContextBuilder.builder()
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
-                .methodDescriptor(methodDescriptor)
+                .testMethodDescriptor(methodDescriptor)
                 .testRunner(testRunner)
-                .testReifier(testReifier)
+                .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
                 .dependencies(dependencies)
@@ -79,106 +79,106 @@ public class DefaultTestContextTest {
 
     @Test
     public void callToGetPropertiesShouldReturnProperties() {
-        Map<String, Object> result = cut.getProperties();
+        Map<String, Object> result = sut.getProperties();
 
         assertThat(result).isEqualTo(properties);
     }
 
     @Test
     public void callToGetTestNameShouldReturnClassName() {
-        cut.getTestName();
+        sut.getTestName();
 
-        verify(methodDescriptor).getDeclaringClassName();
+        verify(testDescriptor).getTestClassName();
     }
 
     @Test
     public void callToGetMethodNameShouldReturnMethodName() {
-        cut.getMethodName();
+        sut.getMethodName();
 
         verify(methodDescriptor).getName();
     }
 
     @Test
     public void callToGetNameShouldReturnName() {
-        cut.getName();
+        sut.getName();
 
         verify(methodDescriptor).getName();
-        verify(methodDescriptor).getDeclaringClassName();
+        verify(testDescriptor).getTestClassName();
     }
 
     @Test
     public void callToGetTestClassShouldReturnReturnTestClass() {
-        cut.getTestClass();
+        sut.getTestClass();
 
-        verify(methodDescriptor).getDeclaringClass();
+        verify(testDescriptor).getTestClass();
     }
 
     @Test
     public void callToGetResourceStartStrategyShouldReturn() {
-        StartStrategy result = cut.getResourceStartStrategy();
+        StartStrategy result = sut.getResourceStartStrategy();
 
         assertThat(result).isEqualTo(resourceStartStrategy);
     }
 
     @Test
     public void callToGetTestInstanceShouldReturn() {
-        Object result = cut.getTestInstance();
+        Object result = sut.getTestInstance();
 
         assertThat(result).isEqualTo(testInstance);
     }
 
     @Test
     public void callToGetTestDescriptorShouldReturn() {
-        TestDescriptor result = cut.getTestDescriptor();
+        TestDescriptor result = sut.getTestDescriptor();
 
         assertThat(result).isEqualTo(testDescriptor);
     }
 
     @Test
     public void callToGetTestRunnerShouldReturn() {
-        TestRunner result = cut.getTestRunner();
+        TestRunner result = sut.getTestRunner();
 
         assertThat(result).isEqualTo(testRunner);
     }
 
     @Test
     public void callToGetTestReifierShouldReturn() {
-        TestReifier result = cut.getTestReifier();
+        TestConfigurer result = sut.getTestConfigurer();
 
-        assertThat(result).isEqualTo(testReifier);
+        assertThat(result).isEqualTo(testConfigurer);
     }
 
     @Test
     public void callToGetMockProviderShouldReturn() {
-        MockProvider result = cut.getMockProvider();
+        MockProvider result = sut.getMockProvider();
 
         assertThat(result).isEqualTo(mockProvider);
     }
 
     @Test
     public void callToGetDependenciesShouldReturn() {
-        Map<String, String> result = cut.getDependencies();
+        Map<String, String> result = sut.getDependencies();
 
         assertThat(result).isEqualTo(dependencies);
     }
 
     @Test
-    public void callToGetCutDescriptorShouldReturn() {
-        Optional<CutDescriptor> result = cut.getCutDescriptor();
+    public void callToGetSutDescriptorShouldReturn() {
+        Optional<SutDescriptor> result = sut.getSutDescriptor();
 
         assertThat(result).isEmpty();
     }
 
     @Test
     public void callToGetServiceInstanceShouldReturn() {
-        Optional<ServiceInstance> result = cut.getServiceInstance();
+        Optional<ServiceInstance> result = sut.getServiceInstance();
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void callToGetCutInstanceShouldReturn() {
-        Optional<Object> result = cut.getCutInstance();
+    public void callToGetSutInstanceShouldReturn() {
+        Optional<Object> result = sut.getSutInstance();
 
         assertThat(result).isEmpty();
     }
@@ -187,15 +187,15 @@ public class DefaultTestContextTest {
     public void givenNullInstancesShouldNotBeEqual() {
         TestContext instance = null;
 
-        assertThat(cut).isNotEqualTo(instance);
+        assertThat(sut).isNotEqualTo(instance);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
@@ -204,19 +204,19 @@ public class DefaultTestContextTest {
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
-                .methodDescriptor(null)
-                .testReifier(testReifier)
+                .testMethodDescriptor(null)
+                .testConfigurer(testConfigurer)
                 .properties(properties)
                 .dependencies(dependencies)
                 .build();
 
-        assertThat(cut).isNotEqualTo(uneuqual);
-        assertThat(cut.hashCode()).isNotEqualTo(uneuqual.hashCode());
+        assertThat(sut).isNotEqualTo(uneuqual);
+        assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
@@ -225,20 +225,21 @@ public class DefaultTestContextTest {
                 .resourceStartStrategy(resourceStartStrategy)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
-                .methodDescriptor(methodDescriptor)
-                .testReifier(testReifier)
+                .testMethodDescriptor(methodDescriptor)
+                .testRunner(testRunner)
+                .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
                 .dependencies(dependencies)
                 .build();
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DefaultTestContext", "resourceStartStrategy", "testDescriptor", "methodDescriptor");
     }

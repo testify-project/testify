@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.testifyproject.TestifyException;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
@@ -114,7 +115,7 @@ public interface TypeTrait {
                     | IllegalAccessException
                     | IllegalArgumentException
                     | InvocationTargetException e) {
-                throw new IllegalStateException(e);
+                throw TestifyException.of(e);
             }
         });
     }
@@ -135,7 +136,7 @@ public interface TypeTrait {
                 Class<?> superType = type.getSuperclass();
 
                 if (superType == null) {
-                    throw new IllegalStateException(e);
+                    throw TestifyException.of(e);
                 } else {
                     return findMethod(superType, methodName, methodArgTypes);
                 }

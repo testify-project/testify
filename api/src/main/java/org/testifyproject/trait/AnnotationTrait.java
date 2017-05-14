@@ -75,24 +75,21 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
      * @return an array of meta annotations
      */
     default Annotation[] getMetaAnnotations(Collection<Class<? extends Annotation>>... metaAnnotationTypes) {
-        T type = getAnnotatedElement();
+        T annotatedElement = getAnnotatedElement();
 
-        return Stream.of(metaAnnotationTypes)
-                .parallel()
-                .flatMap(p -> p.parallelStream())
+        return Stream.of(metaAnnotationTypes).parallel()
+                .flatMap(Collection::parallelStream)
                 .distinct()
-                .map(p -> {
-                    Annotation declaredAnnotation = type.getDeclaredAnnotation(p);
+                .map(annotationType -> {
+                    Annotation declaredAnnotation = annotatedElement.getDeclaredAnnotation(annotationType);
 
                     if (declaredAnnotation == null) {
-                        Annotation[] annotations = type.getDeclaredAnnotations();
+                        Annotation[] annotations = annotatedElement.getDeclaredAnnotations();
                         for (Annotation annotation : annotations) {
-                            if (annotation.annotationType().isAnnotationPresent(p)) {
+                            if (annotation.annotationType().isAnnotationPresent(annotationType)) {
                                 return annotation;
                             }
                         }
-
-                        return null;
                     }
 
                     return declaredAnnotation;
@@ -127,7 +124,7 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
 
         return annotationTypes
                 .stream()
-                .map(p -> type.getDeclaredAnnotation(p))
+                .map(type::getDeclaredAnnotation)
                 .filter(Objects::nonNull)
                 .findAny()
                 .isPresent();

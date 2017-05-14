@@ -26,16 +26,16 @@ import java.lang.annotation.Target;
  * An annotation that can be placed on unit, integration and system test class
  * fields to denote the fields as a fake collaborators. Fake collaborators are
  * mock instance of collaborators and allow us to mock functionality and verify
- * interaction between the Class Under Test and the collaborator in isolation.
+ * interaction between the System Under Test and the collaborator in isolation.
  * Note that if the value of the test class field is already initialized with:
  * </p>
  * <ul>
  * <li>a mock instance of the collaborator then this mock instance will be used
- * and injected into the class under test.
+ * and injected into the system under test.
  * </li>
  * <li>
  * a concrete instance of the collaborator then a mock instances that delegates
- * to the field value will be created and injected into the class under test.
+ * to the field value will be created and injected into the system under test.
  * </li>
  * </ul>
  *
@@ -48,7 +48,7 @@ public @interface Fake {
 
     /**
      * <p>
-     * This value represents the field name of the class under test associated
+     * This value represents the field name of the system under test associated
      * with the test field. Please note that name based auto detection only
      * works if your code is compiled with parameter names or debug information
      * (javac -parameters or javac -g:vars).
@@ -56,10 +56,10 @@ public @interface Fake {
      * <p>
      * By default this value is set to "" to enable auto detection. If you wish
      * to not rely on auto detection you can explicitly specify the name of the
-     * class under test field associated with the test field.
+     * system under test field associated with the test field.
      * </p>
      *
-     * @return the class under test field name.
+     * @return the system under test field name.
      */
     String value() default "";
 

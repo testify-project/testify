@@ -15,6 +15,7 @@
  */
 package org.testifyproject.fixture.locator.impl;
 
+import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.fixture.locator.SingleImplementationContract;
 import org.testifyproject.tools.Discoverable;
 
@@ -22,6 +23,7 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
+@UnitTest
 @Discoverable
 public class SingleImplementationContractImpl implements SingleImplementationContract {
 

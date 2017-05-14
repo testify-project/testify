@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
@@ -35,16 +35,16 @@ import org.testifyproject.junit4.fixture.common.GreetingMap;
 @RunWith(SpringIntegrationTest.class)
 public class GreetingMapFakeIT {
 
-    @Cut
-    GreetingMap cut;
+    @Sut
+    GreetingMap sut;
 
     @Fake
     Map<String, Greeting> greetings;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greetings).isSameAs(cut.getGreetings());
+        assertThat(sut).isNotNull();
+        assertThat(greetings).isSameAs(sut.getGreetings());
         assertThat(Mockito.mockingDetails(greetings).isMock()).isTrue();
     }
 }

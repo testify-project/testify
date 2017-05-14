@@ -18,27 +18,29 @@ package org.testifyproject.junit4.system;
 import java.util.List;
 import java.util.Optional;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
+import static org.glassfish.jersey.server.monitoring.ApplicationEvent.Type.DESTROY_FINISHED;
+import static org.glassfish.jersey.server.monitoring.ApplicationEvent.Type.INITIALIZATION_FINISHED;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
-import org.slf4j.MDC;
-import org.testifyproject.RequiresProvider;
+import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 
 /**
  * A Jersey 2 application event listeners that listens for application events to
- * initialize, start and stop test requires.
+ * initialize, start and stop test resources.
  *
  * @author saden
  */
 public class Jersey2ApplicationListener implements ApplicationEventListener {
 
-    private List<RequiresProvider> requiresProviders;
+    private List<ResourceProvider> resourceProviders;
     private final TestContextHolder testContextHolder;
 
     Jersey2ApplicationListener(TestContextHolder testContextHolder) {
@@ -47,36 +49,38 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
 
     @Override
     public void onEvent(ApplicationEvent event) {
-        TestContext testContext = testContextHolder.get().get();
+        testContextHolder.execute(testContext -> {
+            ApplicationEvent.Type eventType = event.getType();
 
-        switch (event.getType()) {
-            case INITIALIZATION_FINISHED:
-                MDC.put("test", testContext.getTestName());
-                MDC.put("method", testContext.getMethodName());
-
-                Optional<ServiceInstance> optServiceInstance = testContext.findProperty(SERVICE_INSTANCE);
-                ServiceInstance serviceInstance = optServiceInstance.get();
-
-                if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-                    requiresProviders = ServiceLocatorUtil.INSTANCE.findAll(RequiresProvider.class);
-                    requiresProviders.forEach(p -> p.start(testContext, serviceInstance));
-                }
-
-                break;
-            case DESTROY_FINISHED:
-                if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-                    requiresProviders.forEach(RequiresProvider::stop);
-                }
-
-                break;
-            default:
-                break;
-        }
+            if (eventType == INITIALIZATION_FINISHED) {
+                init(testContext);
+            } else if (eventType == DESTROY_FINISHED) {
+                destroy(testContext);
+            }
+        });
     }
 
     @Override
     public RequestEventListener onRequest(RequestEvent requestEvent) {
         return null;
+    }
+
+    void init(TestContext testContext) {
+        LoggingUtil.INSTANCE.setTextContext(testContext);
+
+        Optional<ServiceInstance> foundInstance = testContext.findProperty(SERVICE_INSTANCE);
+        foundInstance.ifPresent(serviceInstance -> {
+            if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
+                resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
+                resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
+            }
+        });
+    }
+
+    void destroy(TestContext testContext) {
+        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
+            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
+        }
     }
 
 }

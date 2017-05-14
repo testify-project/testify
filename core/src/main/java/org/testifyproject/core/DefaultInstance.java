@@ -15,9 +15,10 @@
  */
 package org.testifyproject.core;
 
-import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.Instance;
 
 /**
@@ -26,11 +27,19 @@ import org.testifyproject.Instance;
  * @author saden
  * @param <T> the underlying instance type
  */
+@ToString
+@EqualsAndHashCode
 public class DefaultInstance<T> implements Instance<T> {
 
     private final T instance;
     private final String name;
     private final Class<? extends T> contract;
+
+    DefaultInstance(T instance, String name, Class<? extends T> contract) {
+        this.name = name;
+        this.instance = instance;
+        this.contract = contract;
+    }
 
     /**
      * Create a instance with the given instance object.
@@ -82,12 +91,6 @@ public class DefaultInstance<T> implements Instance<T> {
         return new DefaultInstance(instance, name, contract);
     }
 
-    DefaultInstance(T instance, String name, Class<? extends T> contract) {
-        this.name = name;
-        this.instance = instance;
-        this.contract = contract;
-    }
-
     @Override
     public T getInstance() {
         return instance;
@@ -101,45 +104,6 @@ public class DefaultInstance<T> implements Instance<T> {
     @Override
     public Optional<Class<? extends T>> getContract() {
         return ofNullable(contract);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.instance);
-        hash = 53 * hash + Objects.hashCode(this.name);
-        hash = 53 * hash + Objects.hashCode(this.contract);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultInstance<?> other = (DefaultInstance<?>) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.instance, other.instance)) {
-            return false;
-        }
-        return Objects.equals(this.contract, other.contract);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultInstance{"
-                + "instance=" + instance
-                + ", name=" + name
-                + ", contract=" + contract
-                + '}';
     }
 
 }

@@ -15,19 +15,16 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.runners.model.InitializationError;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
-import org.testifyproject.level.integration.IntegrationTestRunner;
 
 /**
  * A JUnit Spring integration test class runner. This class is the main entry
  * point for running Spring integration test using
- * {@link org.junit.runner.RunWith}. It provides means of creating your class
+ * {@link org.junit.runner.RunWith}. It provides means of creating your system
  * under test, faking certain collaborators or using real collaborators in the
  * Spring application context.
  *
@@ -35,36 +32,20 @@ import org.testifyproject.level.integration.IntegrationTestRunner;
  */
 public class SpringIntegrationTest extends TestifyJUnit4TestRunner {
 
-    public static final Map<String, String> DEPENDENCIES = new HashMap<>();
-
-    static {
-        DEPENDENCIES.put("org.springframework.context.ApplicationContext", "Spring Context");
-    }
-
     /**
-     * Create a new test runner instance for the class under test.
+     * Create a new test runner instance for the system under test.
      *
      * @param testClass the test class type
      *
      * @throws InitializationError thrown if the test class is malformed.
      */
     public SpringIntegrationTest(Class<?> testClass) throws InitializationError {
-        super(testClass, TestCategory.Level.Integration);
-    }
-
-    @Override
-    protected Map<String, String> getDependencies() {
-        return DEPENDENCIES;
-    }
-
-    @Override
-    protected StartStrategy getResourceStartStrategy() {
-        return StartStrategy.Lazy;
-    }
-
-    @Override
-    protected Class<? extends TestRunner> getTestRunnerClass() {
-        return IntegrationTestRunner.class;
+        super(testClass, TestSettingsBuilder.builder()
+                .level(TestCategory.Level.INTEGRATION)
+                .resourceStartStrategy(StartStrategy.LAZY)
+                .dependency("org.springframework.context.ApplicationContext", "Spring Context")
+                .build()
+        );
     }
 
 }

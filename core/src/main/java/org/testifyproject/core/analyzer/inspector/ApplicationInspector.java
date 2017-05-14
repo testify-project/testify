@@ -17,8 +17,9 @@ package org.testifyproject.core.analyzer.inspector;
 
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.core.analyzer.TestAnnotationInspector;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -27,15 +28,11 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class ApplicationInspector implements TestAnnotationInspector<Application> {
+@Handles(Application.class)
+public class ApplicationInspector implements AnnotationInspector<Application> {
 
     @Override
-    public boolean handles(Class<?> annotationType) {
-        return Application.class.isAssignableFrom(annotationType);
-    }
-
-    @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Application application) throws Exception {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Application application) {
         testDescriptor.addProperty(TestDescriptorProperties.APPLICATION, application);
     }
 

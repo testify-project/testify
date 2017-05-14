@@ -16,10 +16,16 @@
 package org.testifyproject.core;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import org.testifyproject.TestContext;
 
 /**
@@ -28,21 +34,21 @@ import org.testifyproject.TestContext;
  */
 public class TestContextHolderTest {
 
-    TestContextHolder cut;
+    TestContextHolder sut;
     InheritableThreadLocal<TestContext> inheritableThreadLocal;
 
     @Before
     public void init() {
         inheritableThreadLocal = new InheritableThreadLocal<>();
 
-        cut = TestContextHolder.of(inheritableThreadLocal);
+        sut = TestContextHolder.of(inheritableThreadLocal);
     }
 
     @Test
     public void givenTestContextSetShouldSetIheritableThreadLocal() {
         TestContext testContext = mock(TestContext.class);
 
-        cut.set(testContext);
+        sut.set(testContext);
 
         assertThat(inheritableThreadLocal.get()).isEqualTo(testContext);
     }
@@ -52,7 +58,7 @@ public class TestContextHolderTest {
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
 
-        Optional<TestContext> result = cut.get();
+        Optional<TestContext> result = sut.get();
 
         assertThat(result).contains(testContext);
     }
@@ -62,9 +68,75 @@ public class TestContextHolderTest {
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
 
-        cut.remove();
+        sut.remove();
 
         assertThat(inheritableThreadLocal.get()).isNull();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void givenNullConsumerExesuteShouldThrowException() {
+        Consumer<TestContext> consumer = null;
+        TestContext testContext = mock(TestContext.class);
+        inheritableThreadLocal.set(testContext);
+
+        sut.execute(consumer);
+    }
+
+    @Test
+    public void givenValidConsumerAndNoTestContextExesuteShouldDoNothing() {
+        Consumer<TestContext> consumer = mock(Consumer.class);
+
+        sut.execute(consumer);
+
+        verifyZeroInteractions(consumer);
+    }
+
+    @Test
+    public void givenValidConsumerExesuteShouldCallConsumer() {
+        Consumer<TestContext> consumer = mock(Consumer.class);
+        TestContext testContext = mock(TestContext.class);
+        inheritableThreadLocal.set(testContext);
+
+        willDoNothing().given(consumer).accept(testContext);
+
+        sut.execute(consumer);
+
+        verify(consumer).accept(testContext);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void givenNullFunctionExesuteShouldThrowException() {
+        Function<TestContext, Object> function = null;
+        TestContext testContext = mock(TestContext.class);
+        inheritableThreadLocal.set(testContext);
+
+        sut.execute(function);
+    }
+
+    @Test
+    public void givenValidFunctionAndNoTestContextExesuteShouldDoNothing() {
+        Function<TestContext, Object> function = mock(Function.class);
+
+        Object result = sut.execute(function);
+
+        assertThat(result).isNull();
+        verifyZeroInteractions(function);
+    }
+
+    @Test
+    public void givenValidFunctionExesuteShouldCallConsumer() {
+        Object answer = mock(Object.class);
+
+        Function<TestContext, Object> function = mock(Function.class);
+        TestContext testContext = mock(TestContext.class);
+        inheritableThreadLocal.set(testContext);
+
+        given(function.apply(testContext)).willReturn(answer);
+
+        Object result = sut.execute(function);
+
+        assertThat(result).isEqualTo(answer);
+        verify(function).apply(testContext);
     }
 
 }

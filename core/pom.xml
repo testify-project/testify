@@ -21,13 +21,18 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.3</version>
     </parent>
     
     <artifactId>core</artifactId>
     <name>Core</name>
     <description>A module that provides core Testify SPI and implementation classes</description>
 
+    <properties>
+        <slf4jtesting.version>1.0.1</slf4jtesting.version>
+        <systemrules.version>1.16.1</systemrules.version>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>
@@ -49,11 +54,39 @@
             <artifactId>external-objenesis</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-bytebuddy</artifactId>
+            <version>${buildtools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-guava</artifactId>
+            <version>${buildtools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-snakeyaml</artifactId>
+            <version>${buildtools.version}</version>
+        </dependency>
 
         <!-- Annotation Processors Dependencies -->
         <dependency>
             <groupId>org.testifyproject.tools</groupId>
             <artifactId>service-generator</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.portingle</groupId>
+            <artifactId>slf4jtesting</artifactId>
+            <version>${slf4jtesting.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>${systemrules.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

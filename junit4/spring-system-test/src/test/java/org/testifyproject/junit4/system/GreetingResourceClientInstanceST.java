@@ -23,19 +23,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
 
 @RunWith(SpringSystemTest.class)
 @Application(GreeterServletApplication.class)
 public class GreetingResourceClientInstanceST {
 
-    @Cut
-    ClientInstance<WebTarget> cut;
+    @Sut
+    ClientInstance<WebTarget> sut;
 
     @Test
     public void verifyInjections() {
-        Response result = cut.getInstance().path("/").request().get();
+        Response result = sut.getInstance().path("/").request().get();
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
         assertThat(result.readEntity(String.class)).isEqualTo("Hello");

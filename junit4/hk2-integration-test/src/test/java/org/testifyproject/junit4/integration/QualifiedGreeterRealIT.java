@@ -19,8 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.Scan;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.QualfiedGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.impl.Salam;
@@ -29,19 +31,20 @@ import org.testifyproject.junit4.fixture.common.impl.Salam;
  *
  * @author saden
  */
+@Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class QualifiedGreeterRealIT {
 
-    @Cut
-    QualfiedGreeter cut;
+    @Sut
+    QualfiedGreeter sut;
 
     @Real
     Greeting greeting;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greeting).isNotNull().isSameAs(cut.getGreeting()).isInstanceOf(Salam.class);
+        assertThat(sut).isNotNull();
+        assertThat(greeting).isNotNull().isSameAs(sut.getGreeting()).isInstanceOf(Salam.class);
         assertThat(Mockito.mockingDetails(greeting).isMock()).isFalse();
     }
 

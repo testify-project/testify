@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.module.BinderGreeterModule;
@@ -35,17 +35,17 @@ import org.testifyproject.junit4.fixture.module.BinderGreetingService;
 @RunWith(HK2IntegrationTest.class)
 public class BinderModuleIT {
 
-    @Cut
-    BinderGreeterService cut;
+    @Sut
+    BinderGreeterService sut;
 
     @Real
     BinderGreetingContract greeting;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
+        assertThat(sut).isNotNull();
         assertThat(greeting).isNotNull();
-        assertThat(cut.getGreeting()).isNotNull()
+        assertThat(sut.getGreeting()).isNotNull()
                 .isSameAs(greeting)
                 .isInstanceOf(BinderGreetingService.class);
 

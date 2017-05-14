@@ -15,20 +15,19 @@
  */
 package org.testifyproject.level.unit;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Optional;
-import org.testifyproject.CutDescriptor;
-import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MethodDescriptor;
-import org.testifyproject.MockProvider;
-import org.testifyproject.ObjenesisHelper;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
-import org.testifyproject.annotation.Cut;
-import org.testifyproject.instantiator.ObjectInstantiator;
+import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.CollaboratorsReifier;
+import org.testifyproject.extension.ConfigurationVerifier;
+import org.testifyproject.extension.SutReifier;
+import org.testifyproject.extension.FieldReifier;
+import org.testifyproject.extension.TestReifier;
+import org.testifyproject.extension.WiringVerifier;
+import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -36,147 +35,66 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
+@UnitTest
 @Discoverable
 public class UnitTestRunner implements TestRunner {
 
-    private TestContext testContext;
+    private final ServiceLocatorUtil serviceLocatorUtil;
+
+    public UnitTestRunner() {
+        this(ServiceLocatorUtil.INSTANCE);
+    }
+
+    UnitTestRunner(ServiceLocatorUtil serviceLocatorUtil) {
+        this.serviceLocatorUtil = serviceLocatorUtil;
+    }
 
     @Override
     public void start(TestContext testContext) {
-        this.testContext = testContext;
-        UnitTestVerifier verifier = new UnitTestVerifier(testContext);
-        verifier.dependency();
-        verifier.configuration();
-
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        TestReifier testReifier = testContext.getTestReifier();
-        CutDescriptor cutDescriptor = testContext.getCutDescriptor().get();
-
-        Object newInstance;
-        Class<?> cutType = cutDescriptor.getType();
-
-        try {
-            testContext.debug("Creating a new instance of class under test {}", cutDescriptor.getTypeName());
-            //lets try to createFake an instance the traditional way
-            newInstance = cutType.newInstance();
-        } catch (IllegalAccessException | InstantiationException e) {
-            //fallback to using Objenesis
-            testContext.debug("Could not create a new instance of class under test {}, using Obenesis to create it.",
-                    cutDescriptor.getTypeName());
-            ObjectInstantiator<?> instantiatorOf = ObjenesisHelper.getInstantiatorOf(cutType);
-            newInstance = instantiatorOf.newInstance();
-        }
-
-        Object cutInstance = newInstance;
         Object testInstance = testContext.getTestInstance();
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        Optional<MethodDescriptor> collaboratorMethod = testDescriptor.getCollaboratorProvider();
-        MockProvider mockProvider = testContext.getMockProvider();
+        serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, UnitTest.class)
+                .forEach(p -> p.verify(testContext));
 
-        if (collaboratorMethod.isPresent()) {
-            MethodDescriptor methodDescriptor = collaboratorMethod.get();
-            Optional<Object> collaboratorMethodResult;
-            Optional<Object> methodInstance = methodDescriptor.getInstance();
+        serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitTest.class)
+                .forEach(p -> p.reify(testContext));
 
-            if (methodInstance.isPresent()) {
-                collaboratorMethodResult = methodDescriptor.invoke(methodInstance.get());
-            } else {
-                collaboratorMethodResult = methodDescriptor.invoke(testInstance);
-            }
-
-            if (collaboratorMethodResult.isPresent()) {
-                Object resultValue = collaboratorMethodResult.get();
-                Object[] collaborators;
-
-                if (resultValue.getClass().isArray()) {
-                    collaborators = (Object[]) resultValue;
-                } else if (resultValue instanceof Collection) {
-                    collaborators = ((Collection) resultValue).stream().toArray();
-                } else {
-                    collaborators = new Object[]{};
-                }
-
-                testReifier.reify(testContext, cutInstance, collaborators);
-            }
-        } else {
-            testDescriptor.getFieldDescriptors().stream().forEach(testFieldDescriptor -> {
-                FieldDescriptor cutFieldDescriptor;
-                String testFieldName = testFieldDescriptor.getDefinedName();
-                Type testFieldType = testFieldDescriptor.getGenericType();
-
-                Optional<FieldDescriptor> match = cutDescriptor.findFieldDescriptor(testFieldType, testFieldName);
-
-                if (!match.isPresent()) {
-                    match = cutDescriptor.findFieldDescriptor(testFieldType);
-                }
-
-                if (match.isPresent() && testFieldDescriptor.isInjectable()) {
-                    cutFieldDescriptor = match.get();
-                    Optional cutValue = cutFieldDescriptor.getValue(cutInstance);
-                    Optional testValue = testFieldDescriptor.getValue(testInstance);
-                    Object value = null;
-                    Class<?> mockType = testFieldDescriptor.getType();
-
-                    if (testValue.isPresent()) {
-                        Object instance = testValue.get();
-                        value = mockProvider.isMock(instance)
-                                ? instance
-                                : mockProvider.createVirtual(mockType, instance);
-                    } else if (!cutValue.isPresent()) {
-                        if (testFieldDescriptor.getFake().isPresent()) {
-                            value = mockProvider.createFake(mockType);
-                        } else if (testFieldDescriptor.getVirtual().isPresent()) {
-                            if (mockType.isInterface()) {
-                                value = mockProvider.createFake(mockType);
-                            } else {
-                                Object instance = ObjenesisHelper.getInstantiatorOf(mockType).newInstance();
-                                value = mockProvider.createVirtual(mockType, instance);
-                            }
-                        }
-                    } else if (testFieldDescriptor.getVirtual().isPresent()) {
-                        value = mockProvider.createVirtual(mockType, cutValue.get());
-                    } else if (testFieldDescriptor.getFake().isPresent()) {
-                        value = mockProvider.createFake(mockType);
-                    }
-
-                    cutFieldDescriptor.setValue(cutInstance, value);
-                    testFieldDescriptor.setValue(testInstance, value);
-                }
-            });
+        if (testDescriptor.getCollaboratorProvider().isPresent()) {
+            serviceLocatorUtil.findAllWithFilter(CollaboratorsReifier.class, UnitTest.class)
+                    .forEach(p -> p.reify(testContext));
         }
 
-        Cut cut = cutDescriptor.getCut();
-        Object testCutInstance = cutInstance;
+        serviceLocatorUtil.findAllWithFilter(FieldReifier.class, UnitTest.class)
+                .forEach(p -> p.reify(testContext));
 
-        //If the cut annotation's value flag is set to true then create a
-        //virtual instance of the cut class
-        if (cut.value()) {
-            testCutInstance = mockProvider.createVirtual(cutType, cutInstance);
-        }
-
-        cutDescriptor.setValue(testInstance, testCutInstance);
+        serviceLocatorUtil.findAllWithFilter(TestReifier.class, UnitTest.class)
+                .forEach(p -> p.reify(testContext));
 
         //invoke init method on test fields annotated with Fixture
         testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.init(testInstance));
 
-        //invoke init method on cut field annotated with Fixture
-        testContext.getCutDescriptor()
+        //invoke init method on sut field annotated with Fixture
+        testContext.getSutDescriptor()
                 .ifPresent(p -> p.init(testInstance));
 
-        verifier.wiring();
+        serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, UnitTest.class)
+                .forEach(p -> p.verify(testContext));
     }
 
     @Override
-    public void stop() {
+    public void stop(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Optional<SutDescriptor> sutDescriptor = testContext.getSutDescriptor();
 
         //invoke destroy method on fields annotated with Fixture
-        testContext.getTestDescriptor().getFieldDescriptors()
+        testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.destroy(testInstance));
 
-        //invoke destroy method on cut field annotated with Fixture
-        testContext.getCutDescriptor()
+        //invoke destroy method on sut field annotated with Fixture
+        sutDescriptor
                 .ifPresent(p -> p.destroy(testInstance));
     }
 

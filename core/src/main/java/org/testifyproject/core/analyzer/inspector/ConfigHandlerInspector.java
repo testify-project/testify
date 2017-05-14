@@ -20,8 +20,10 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
-import org.testifyproject.core.analyzer.TestAnnotationInspector;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.core.util.ReflectionUtil;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
 import static org.testifyproject.guava.common.base.Preconditions.checkState;
 import org.testifyproject.tools.Discoverable;
 
@@ -31,33 +33,30 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class ConfigHandlerInspector implements TestAnnotationInspector<ConfigHandler> {
+@Handles(ConfigHandler.class)
+public class ConfigHandlerInspector implements AnnotationInspector<ConfigHandler> {
 
     @Override
-    public boolean handles(Class<?> annotationType) {
-        return ConfigHandler.class.isAssignableFrom(annotationType);
-    }
-
-    @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, ConfigHandler configHandler) throws Exception {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, ConfigHandler configHandler) {
         Class<?>[] handlerClasses = configHandler.value();
 
         checkState(handlerClasses.length != 0,
-                "@ConfigHandler value attribite on '%s' must be specified.",
+                "@ConfigHandler value attribute on '%s' must be specified.",
                 annotatedType.getName());
 
         for (Class<?> handlerClass : handlerClasses) {
-            Object instance = handlerClass.newInstance();
+            Object instance = ReflectionUtil.INSTANCE.newInstance(handlerClass);
             Method[] methods = handlerClass.getDeclaredMethods();
 
             for (Method method : methods) {
-                method.setAccessible(true);
+                if (!method.isSynthetic()) {
+                    method.setAccessible(true);
 
-                MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
-                testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
+                    testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+                }
             }
         }
-
     }
 
 }

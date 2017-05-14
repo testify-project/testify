@@ -28,44 +28,52 @@ public class TestCategoryTest {
     @Test(expected = NullPointerException.class)
     public void givenNullCategoriesLevelFindShouldThrowException() {
         String[] categories = null;
-        TestCategory.Level.find(categories);
+        TestCategory.find(TestCategory.Level.class, categories);
     }
 
     @Test
     public void givenEmptyCategoriesLevelFindShouldReturnEmptyList() {
         String[] categories = {};
-        List<TestCategory.Level> result = TestCategory.Level.find(categories);
+        List<Enum> result = TestCategory.find(TestCategory.Level.class, categories);
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void givenInvalidCategoriesLevelFindShouldThrowException() {
+    public void givenInvalidCategoriesLevelFindShouldLogAWarning() {
+        String[] categories = {
+            "invalid"
+        };
+
+        TestCategory.find(TestCategory.Level.class, categories);
+    }
+    
+    @Test
+    public void givenValidCategoriesLevelFindShouldReturn() {
         String[] categories = {
             "unit",
             "integration",
             "system"
         };
 
-        List<TestCategory.Level> result = TestCategory.Level.find(categories);
+        List<Enum> result = TestCategory.find(TestCategory.Level.class, categories);
 
-        assertThat(result).contains(
-                TestCategory.Level.Unit,
-                TestCategory.Level.Integration,
-                TestCategory.Level.System
+        assertThat(result).contains(TestCategory.Level.UNIT,
+                TestCategory.Level.INTEGRATION,
+                TestCategory.Level.SYSTEM
         );
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullCategoriesDynamicFindShouldThrowException() {
         String[] categories = null;
-        TestCategory.Dynamic.find(categories);
+        TestCategory.find(TestCategory.Dynamic.class, categories);
     }
 
     @Test
     public void givenEmptyCategoriesDynamicFindShouldReturnEmptyList() {
         String[] categories = {};
-        List<TestCategory.Dynamic> result = TestCategory.Dynamic.find(categories);
+        List<Enum> result = TestCategory.find(TestCategory.Dynamic.class, categories);
 
         assertThat(result).isEmpty();
     }
@@ -73,65 +81,32 @@ public class TestCategoryTest {
     @Test
     public void givenInvalidCategoriesDynamicFindShouldThrowException() {
         String[] categories = {
-            "resource",
-            "container"
+            "local",
+            "virtual"
         };
 
-        List<TestCategory.Dynamic> result = TestCategory.Dynamic.find(categories);
+        List<Enum> result = TestCategory.find(TestCategory.Dynamic.class, categories);
 
-        assertThat(result).contains(
-                TestCategory.Dynamic.Resource,
-                TestCategory.Dynamic.Container
+        assertThat(result).contains(TestCategory.Dynamic.LOCAL,
+                TestCategory.Dynamic.VIRTUAL
         );
     }
 
     @Test
     public void verifyTestCategoryLevelEnums() {
-        assertThat(TestCategory.Level.values()).containsExactly(
-                TestCategory.Level.Unit,
-                TestCategory.Level.Integration,
-                TestCategory.Level.System
-        );
-    }
-
-    @Test
-    public void verifyTestCategoryLevelIntegration() {
-        TestCategory.Level cut = TestCategory.Level.Integration;
-
-        assertThat(cut.contains("int")).isTrue();
-        assertThat(cut.contains("integ")).isTrue();
-        assertThat(cut.contains("integration")).isTrue();
-    }
-
-    @Test
-    public void verifyTestCategoryLevelSystem() {
-        TestCategory.Level cut = TestCategory.Level.System;
-
-        assertThat(cut.contains("sys")).isTrue();
-        assertThat(cut.contains("system")).isTrue();
+        assertThat(TestCategory.Level.values())
+                .containsExactly(TestCategory.Level.UNIT,
+                        TestCategory.Level.INTEGRATION,
+                        TestCategory.Level.SYSTEM
+                );
     }
 
     @Test
     public void verifyTestCategoryDynamicEnums() {
-        assertThat(TestCategory.Dynamic.values()).containsExactly(
-                TestCategory.Dynamic.Resource,
-                TestCategory.Dynamic.Container
-        );
+        assertThat(TestCategory.Dynamic.values())
+                .containsExactly(TestCategory.Dynamic.LOCAL,
+                        TestCategory.Dynamic.VIRTUAL
+                );
     }
 
-    @Test
-    public void verifyTestCategoryDynamicResource() {
-        TestCategory.Dynamic cut = TestCategory.Dynamic.Resource;
-
-        assertThat(cut.contains("res")).isTrue();
-        assertThat(cut.contains("resource")).isTrue();
-    }
-
-    @Test
-    public void verifyTestCategoryDynamicContainer() {
-        TestCategory.Dynamic cut = TestCategory.Dynamic.Container;
-
-        assertThat(cut.contains("con")).isTrue();
-        assertThat(cut.contains("container")).isTrue();
-    }
 }

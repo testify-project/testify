@@ -18,7 +18,6 @@ package org.testifyproject.di.spring;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -30,30 +29,27 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
-import org.testifyproject.RequiresProvider;
+import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.trait.LoggingTrait;
 
 /**
  * A class that is called after the application context is refreshed to
- * initialize all the test requires and destroys the requires after the
- * application context is closed.
+ * initialize the test as well as start and stop test resources.
  *
  * @author saden
  */
 public class SpringBeanFactoryPostProcessor implements
         BeanFactoryPostProcessor,
         ApplicationListener<ContextClosedEvent>,
-        Ordered,
-        LoggingTrait {
+        Ordered {
 
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
-    private List<RequiresProvider> requiresProviders;
+    List<ResourceProvider> resourceProviders;
 
     public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance) {
         this.testContext = testContext;
@@ -66,7 +62,7 @@ public class SpringBeanFactoryPostProcessor implements
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) {
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableListableBeanFactory;
         Set<String> replacedBeanNames = new HashSet<>();
 
@@ -83,50 +79,7 @@ public class SpringBeanFactoryPostProcessor implements
                 Configuration configuration = beanType.getAnnotation(Configuration.class);
 
                 if (configuration == null) {
-                    //if configuration annotation is not defined lets look for
-                    //the factory bean of the bean
-                    String factoryBeanName = beanDefinition.getFactoryBeanName();
-                    Fixture fixture = beanType.getAnnotation(Fixture.class);
-
-                    //if fixture is null but the factory bean is not defined
-                    //then try to get the fixture annotation from the factory
-                    //bean type
-                    if (fixture == null && factoryBeanName != null) {
-                        Class<?> factoryBeanType = beanFactory.getType(factoryBeanName);
-                        fixture = factoryBeanType.isAnnotationPresent(Configuration.class)
-                                ? factoryBeanType.getAnnotation(Fixture.class)
-                                : null;
-                    }
-
-                    //if fixture is defined then lets find all the beans with
-                    //the same type and replace them with the bean definition
-                    //in the bean annotated with fixture and thus replacying
-                    //all production beans with test fixture beans
-                    if (fixture != null) {
-                        String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
-
-                        for (String beanNameForType : beanNamesForType) {
-                            if (beanNameForType.equals(beanName)) {
-                                beanFactory.removeBeanDefinition(beanNameForType);
-                            } else {
-                                beanFactory.removeBeanDefinition(beanNameForType);
-                                GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
-
-                                if (!fixture.init().isEmpty()) {
-                                    replacementBeanDefinition.setInitMethodName(fixture.init());
-                                }
-
-                                if (!fixture.destroy().isEmpty()) {
-                                    replacementBeanDefinition.setDestroyMethodName(fixture.destroy());
-                                }
-
-                                replacementBeanDefinition.setPrimary(false);
-                                replacementBeanDefinition.setLazyInit(true);
-                                beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
-                                replacedBeanNames.add(beanNameForType);
-                            }
-                        }
-                    }
+                    processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
                 }
 
                 //by default spring eagerly initilizes singleton scoped beans
@@ -138,22 +91,79 @@ public class SpringBeanFactoryPostProcessor implements
                     beanDefinition.setScope(SCOPE_PROTOTYPE);
                 }
             }
-
         }
 
         beanFactory.addBeanPostProcessor(new SpringReifierPostProcessor(testContext));
 
         //start all test requires
-        if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-            requiresProviders = ServiceLocatorUtil.INSTANCE.findAll(RequiresProvider.class);
-            requiresProviders.forEach(p -> p.start(testContext, serviceInstance));
+        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
+            resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
+            resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
+        }
+    }
+
+    void processConfiguration(DefaultListableBeanFactory beanFactory,
+            BeanDefinition beanDefinition,
+            Class<?> beanType,
+            String beanName,
+            Set<String> replacedBeanNames) {
+        String factoryBeanName = beanDefinition.getFactoryBeanName();
+        Fixture fixture = beanType.getAnnotation(Fixture.class);
+
+        //if fixture is null but the factory bean is defined then try
+        //to get the fixture annotation from the factory bean type
+        if (fixture == null && factoryBeanName != null) {
+            Class<?> factoryBeanType = beanFactory.getType(factoryBeanName);
+
+            fixture = factoryBeanType.isAnnotationPresent(Configuration.class)
+                    ? factoryBeanType.getAnnotation(Fixture.class)
+                    : null;
+        }
+
+        //if fixture is defined then lets find all the beans with
+        //the same type and replace them with the bean definition
+        //in the bean annotated with fixture and thus replacying
+        //all production beans with test fixture beans
+        if (fixture != null) {
+            processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
+        }
+    }
+
+    void processFixture(DefaultListableBeanFactory beanFactory,
+            BeanDefinition beanDefinition,
+            Class<?> beanType,
+            String beanName,
+            Fixture fixture,
+            Set<String> replacedBeanNames) {
+        String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
+
+        for (String beanNameForType : beanNamesForType) {
+            if (beanNameForType.equals(beanName)) {
+                beanFactory.removeBeanDefinition(beanNameForType);
+            } else {
+                beanFactory.removeBeanDefinition(beanNameForType);
+                GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
+
+                if (!fixture.init().isEmpty()) {
+                    replacementBeanDefinition.setInitMethodName(fixture.init());
+                }
+
+                if (!fixture.destroy().isEmpty()) {
+                    replacementBeanDefinition.setDestroyMethodName(fixture.destroy());
+                }
+
+                replacementBeanDefinition.setPrimary(false);
+                replacementBeanDefinition.setLazyInit(true);
+                beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
+                replacedBeanNames.add(beanNameForType);
+            }
         }
     }
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.Lazy) {
-            requiresProviders.forEach(RequiresProvider::stop);
+        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
+            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
         }
     }
 

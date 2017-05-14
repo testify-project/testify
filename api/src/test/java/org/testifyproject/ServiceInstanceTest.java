@@ -18,9 +18,6 @@ package org.testifyproject;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Qualifier;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,11 +34,11 @@ import org.testifyproject.annotation.Scan;
  */
 public class ServiceInstanceTest {
 
-    ServiceInstance cut;
+    ServiceInstance sut;
 
     @Before
     public void init() {
-        cut = mock(ServiceInstance.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(ServiceInstance.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test(expected = NullPointerException.class)
@@ -50,35 +47,147 @@ public class ServiceInstanceTest {
         String overrideName = "overrideName";
         Class overrideContract = Class.class;
 
-        cut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance, overrideName, overrideContract);
+    }
+
+    @Test
+    public void givenEmptyOverrideNameReplaceShouldReplaceInstance() {
+        Instance<Object> instance = mock(Instance.class);
+        String overrideName = "";
+        Class overrideContract = Object.class;
+
+        Object constant = mock(Object.class);
+
+        String name = "name";
+        Optional<String> foundName = Optional.of(name);
+
+        Class contract = Class.class;
+        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
+
+        given(instance.getInstance()).willReturn(constant);
+        given(instance.getName()).willReturn(foundName);
+        given(instance.getContract()).willReturn(foundContract);
+
+        sut.replace(instance, overrideName, overrideContract);
+
+        verify(instance).getInstance();
+        verify(instance).getName();
+        verify(instance).getContract();
+
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, name, overrideContract);
+    }
+
+    @Test
+    public void givenNullOverrideNameReplaceShouldReplaceInstance() {
+        Instance<Object> instance = mock(Instance.class);
+        String overrideName = null;
+        Class overrideContract = Object.class;
+
+        Object constant = mock(Object.class);
+
+        String name = "name";
+        Optional<String> foundName = Optional.of(name);
+
+        Class contract = Class.class;
+        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
+
+        given(instance.getInstance()).willReturn(constant);
+        given(instance.getName()).willReturn(foundName);
+        given(instance.getContract()).willReturn(foundContract);
+
+        sut.replace(instance, overrideName, overrideContract);
+
+        verify(instance).getInstance();
+        verify(instance).getName();
+        verify(instance).getContract();
+
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, name, overrideContract);
     }
 
     @Test
     public void givenOverrideNameReplaceShouldReplaceInstance() {
         Instance<Object> instance = mock(Instance.class);
         String overrideName = "overrideName";
-        Class overrideContract = Class.class;
+        Class overrideContract = String.class;
 
         Object constant = mock(Object.class);
 
         String name = "name";
-        Optional<String> nameResult = Optional.of(name);
+        Optional<String> foundName = Optional.of(name);
 
-        Class contract = Class.class;
-        Optional<Class<? extends Object>> contractResult = Optional.of(contract);
+        Class contract = String.class;
+        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
         given(instance.getInstance()).willReturn(constant);
-        given(instance.getName()).willReturn(nameResult);
-        given(instance.getContract()).willReturn(contractResult);
+        given(instance.getName()).willReturn(foundName);
+        given(instance.getContract()).willReturn(foundContract);
 
-        cut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance, overrideName, overrideContract);
 
         verify(instance).getInstance();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(cut).replace(instance, overrideName, overrideContract);
-        verify(cut).replace(constant, overrideName, contract);
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, overrideName, contract);
+    }
+
+    @Test
+    public void givenNullOverrideContractReplaceShouldReplaceInstance() {
+        Instance<Object> instance = mock(Instance.class);
+        String overrideName = "";
+        Class overrideContract = null;
+
+        Object constant = mock(Object.class);
+
+        String name = "name";
+        Optional<String> foundName = Optional.of(name);
+
+        Class contract = Class.class;
+        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
+
+        given(instance.getInstance()).willReturn(constant);
+        given(instance.getName()).willReturn(foundName);
+        given(instance.getContract()).willReturn(foundContract);
+
+        sut.replace(instance, overrideName, overrideContract);
+
+        verify(instance).getInstance();
+        verify(instance).getName();
+        verify(instance).getContract();
+
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, name, contract);
+    }
+
+    @Test
+    public void givenVoidOverrideContractReplaceShouldReplaceInstance() {
+        Instance<Object> instance = mock(Instance.class);
+        String overrideName = "";
+        Class overrideContract = void.class;
+
+        Object constant = mock(Object.class);
+
+        String name = "name";
+        Optional<String> foundName = Optional.of(name);
+
+        Class contract = Class.class;
+        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
+
+        given(instance.getInstance()).willReturn(constant);
+        given(instance.getName()).willReturn(foundName);
+        given(instance.getContract()).willReturn(foundContract);
+
+        sut.replace(instance, overrideName, overrideContract);
+
+        verify(instance).getInstance();
+        verify(instance).getName();
+        verify(instance).getContract();
+
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, name, contract);
     }
 
     @Test
@@ -90,54 +199,54 @@ public class ServiceInstanceTest {
         Object constant = mock(Object.class);
 
         String name = "name";
-        Optional<String> nameResult = Optional.of(name);
+        Optional<String> foundName = Optional.of(name);
 
         Class contract = Class.class;
-        Optional<Class<? extends Object>> contractResult = Optional.of(contract);
+        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
         given(instance.getInstance()).willReturn(constant);
-        given(instance.getName()).willReturn(nameResult);
-        given(instance.getContract()).willReturn(contractResult);
+        given(instance.getName()).willReturn(foundName);
+        given(instance.getContract()).willReturn(foundContract);
 
-        cut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance, overrideName, overrideContract);
 
         verify(instance).getInstance();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(cut).replace(instance, overrideName, overrideContract);
-        verify(cut).replace(constant, name, overrideContract);
+        verify(sut).replace(instance, overrideName, overrideContract);
+        verify(sut).replace(constant, name, overrideContract);
     }
 
     @Test
     public void callToIsRunningShouldReturnFalse() {
-        Boolean result = cut.isRunning();
+        Boolean result = sut.isRunning();
 
         assertThat(result).isFalse();
-        verify(cut).isRunning();
+        verify(sut).isRunning();
     }
 
     @Test
     public void callToInitShouldDoNothing() {
-        cut.init();
+        sut.init();
 
-        verify(cut).init();
+        verify(sut).init();
     }
 
     @Test
     public void callToDestroyShouldDoNothing() {
-        cut.destroy();
+        sut.destroy();
 
-        verify(cut).destroy();
+        verify(sut).destroy();
     }
 
     @Test
     public void callToAddScansShouldDoNothing() {
         Scan scan = mock(Scan.class);
 
-        cut.addScans(scan);
+        sut.addScans(scan);
 
-        verify(cut).addScans(scan);
+        verify(sut).addScans(scan);
         verifyZeroInteractions(scan);
     }
 
@@ -145,33 +254,25 @@ public class ServiceInstanceTest {
     public void callToInjectShouldDoNothing() {
         Object instance = mock(Object.class);
 
-        cut.inject(instance);
+        sut.inject(instance);
 
-        verify(cut).inject(instance);
+        verify(sut).inject(instance);
         verifyZeroInteractions(instance);
     }
 
     @Test
-    public void callToGetInjectionAnnotationsShouldReturnAnnotations() {
-        Set<Class<? extends Annotation>> result = cut.getInjectionAnnotations();
-
-        assertThat(result).containsExactly(Inject.class);
-        verify(cut).getInjectionAnnotations();
-    }
-
-    @Test
     public void callToGetNameQualifiersShouldReturnAnnotations() {
-        Set<Class<? extends Annotation>> result = cut.getNameQualifers();
+        Set<Class<? extends Annotation>> result = sut.getNameQualifers();
 
-        assertThat(result).containsExactly(Named.class);
-        verify(cut).getNameQualifers();
+        assertThat(result).isEmpty();
+        verify(sut).getNameQualifers();
     }
 
     @Test
     public void callToGetCustomQualifiersShouldReturnAnnotations() {
-        Set<Class<? extends Annotation>> result = cut.getCustomQualifiers();
+        Set<Class<? extends Annotation>> result = sut.getCustomQualifiers();
 
-        assertThat(result).containsExactly(Qualifier.class);
-        verify(cut).getCustomQualifiers();
+        assertThat(result).isEmpty();
+        verify(sut).getCustomQualifiers();
     }
 }

@@ -23,16 +23,50 @@ package org.testifyproject.core;
  */
 public class TestContextProperties {
 
+    /**
+     * The underlying application instance property key.
+     */
     public static final String APP = "app";
+    /**
+     * The application name property key.
+     */
     public static final String APP_NAME = "app.name";
+    /**
+     * The application arguments property key.
+     */
     public static final String APP_ARGUMENTS = "app.arguments";
+    /**
+     * The application port property key.
+     */
     public static final String APP_PORT = "app.port";
+    /**
+     * The application context path property key.
+     */
     public static final String APP_CONTEXT_PATH = "app.contextPath";
+    /**
+     * The application servlet container property key.
+     */
     public static final String APP_SERVLET_CONTAINER = "app.servlet.container";
+    /**
+     * The application servlet context property key.
+     */
     public static final String APP_SERVLET_CONTEXT = "app.servlet.context";
+    /**
+     * The application service instance property key.
+     */
     public static final String SERVICE_INSTANCE = "service.instance";
-    public static final String CUT_INSTANCE = "cut.instance";
-    public static final String CUT_DESCRIPTOR = "cut.descriptor";
+    /**
+     * The application base URI property key.
+     */
+    public static final String BASE_URI = "base.uri";
+    /**
+     * The application system under test instance property key.
+     */
+    public static final String SUT_INSTANCE = "sut.instance";
+    /**
+     * The application system under test descriptor property key.
+     */
+    public static final String SUT_DESCRIPTOR = "sut.descriptor";
 
     private TestContextProperties() {
     }

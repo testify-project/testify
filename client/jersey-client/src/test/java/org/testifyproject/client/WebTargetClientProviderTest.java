@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.UnitTest;
 
@@ -38,22 +38,22 @@ import org.testifyproject.junit4.UnitTest;
 @RunWith(UnitTest.class)
 public class WebTargetClientProviderTest {
 
-    @Cut
-    WebTargetClientProvider cut;
+    @Sut
+    WebTargetClientProvider sut;
 
     @Fake
     Client client;
 
     @Test
     public void givenNullConfigureShouldReturnClientBuilder() {
-        cut.configure(mock(TestContext.class), null);
+        sut.configure(mock(TestContext.class), null);
     }
 
     @Test
     public void givenServerInstanceConfigureShouldReturn() {
         TestContext testContext = mock(TestContext.class);
         URI baseURI = URI.create("http://test.server");
-        ClientBuilder result = cut.configure(testContext, baseURI);
+        ClientBuilder result = sut.configure(testContext, baseURI);
 
         assertThat(result).isNotNull();
     }
@@ -64,7 +64,7 @@ public class WebTargetClientProviderTest {
         URI baseURI = URI.create("http://test.server");
         ClientBuilder clientBuilder = null;
 
-        cut.create(testContext, baseURI, clientBuilder);
+        sut.create(testContext, baseURI, clientBuilder);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class WebTargetClientProviderTest {
         given(clientBuilder.build()).willReturn(client);
         given(client.target(baseURI)).willReturn(webTarget);
 
-        Instance<WebTarget> result = cut.create(testContext, baseURI, clientBuilder);
+        Instance<WebTarget> result = sut.create(testContext, baseURI, clientBuilder);
 
         assertThat(result).isNotNull();
         assertThat(result.getInstance()).isEqualTo(webTarget);
@@ -89,7 +89,7 @@ public class WebTargetClientProviderTest {
 
     @Test
     public void callToCloseShouldCloseClient() {
-        cut.destroy();
+        sut.destroy();
 
         verify(client).close();
     }

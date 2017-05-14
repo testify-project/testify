@@ -16,16 +16,17 @@
 package org.testifyproject.core;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import org.testifyproject.CutDescriptor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
 
 /**
@@ -34,6 +35,8 @@ import org.testifyproject.TestRunner;
  *
  * @author saden
  */
+@ToString
+@EqualsAndHashCode
 public class DefaultTestContext implements TestContext {
 
     private StartStrategy resourceStartStrategy;
@@ -41,7 +44,7 @@ public class DefaultTestContext implements TestContext {
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
     private TestRunner testRunner;
-    private TestReifier testReifier;
+    private TestConfigurer testConfigurer;
     private MockProvider mockProvider;
     private Map<String, Object> properties;
     private Map<String, String> dependencies;
@@ -53,12 +56,17 @@ public class DefaultTestContext implements TestContext {
 
     @Override
     public String getTestName() {
-        return methodDescriptor.getDeclaringClassName();
+        return testDescriptor.getTestClassName();
     }
 
     @Override
     public String getMethodName() {
         return methodDescriptor.getName();
+    }
+
+    @Override
+    public MethodDescriptor getTestMethodDescriptor() {
+        return methodDescriptor;
     }
 
     @Override
@@ -68,7 +76,7 @@ public class DefaultTestContext implements TestContext {
 
     @Override
     public Class<?> getTestClass() {
-        return methodDescriptor.getDeclaringClass();
+        return testDescriptor.getTestClass();
     }
 
     @Override
@@ -92,8 +100,8 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public TestReifier getTestReifier() {
-        return testReifier;
+    public TestConfigurer getTestConfigurer() {
+        return testConfigurer;
     }
 
     @Override
@@ -112,13 +120,13 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public Optional<CutDescriptor> getCutDescriptor() {
-        return findProperty(TestContextProperties.CUT_DESCRIPTOR);
+    public Optional<SutDescriptor> getSutDescriptor() {
+        return findProperty(TestContextProperties.SUT_DESCRIPTOR);
     }
 
     @Override
-    public <T> Optional<T> getCutInstance() {
-        return findProperty(TestContextProperties.CUT_INSTANCE);
+    public <T> Optional<T> getSutInstance() {
+        return findProperty(TestContextProperties.SUT_INSTANCE);
     }
 
     void setResourceStartStrategy(StartStrategy resourceStartStrategy) {
@@ -133,7 +141,7 @@ public class DefaultTestContext implements TestContext {
         this.testDescriptor = testDescriptor;
     }
 
-    void setMethodDescriptor(MethodDescriptor methodDescriptor) {
+    void setTestMethodDescriptor(MethodDescriptor methodDescriptor) {
         this.methodDescriptor = methodDescriptor;
     }
 
@@ -141,8 +149,8 @@ public class DefaultTestContext implements TestContext {
         this.testRunner = testRunner;
     }
 
-    void setTestReifier(TestReifier testReifier) {
-        this.testReifier = testReifier;
+    void setTestConfigurer(TestConfigurer testConfigurer) {
+        this.testConfigurer = testConfigurer;
     }
 
     void setMockProvider(MockProvider mockProvider) {
@@ -155,42 +163,6 @@ public class DefaultTestContext implements TestContext {
 
     void setDependencies(Map<String, String> dependencies) {
         this.dependencies = dependencies;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.methodDescriptor);
-        hash = 59 * hash + Objects.hashCode(this.testInstance);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultTestContext other = (DefaultTestContext) obj;
-        if (!Objects.equals(this.methodDescriptor, other.methodDescriptor)) {
-            return false;
-        }
-
-        return Objects.equals(this.testInstance, other.testInstance);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultTestContext{"
-                + "resourceStartStrategy=" + resourceStartStrategy
-                + ", testDescriptor=" + testDescriptor
-                + ", methodDescriptor=" + methodDescriptor
-                + '}';
     }
 
 }

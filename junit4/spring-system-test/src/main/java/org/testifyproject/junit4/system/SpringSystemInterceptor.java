@@ -15,14 +15,16 @@
  */
 package org.testifyproject.junit4.system;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
+import org.testifyproject.annotation.Module;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.Argument;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
@@ -64,10 +66,10 @@ public class SpringSystemInterceptor {
             @Argument(0) ConfigurableWebApplicationContext applicationContext) throws Exception {
 
         testContextHolder.execute(testContext -> {
-            TestReifier testReifier = testContext.getTestReifier();
+            TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
             ConfigurableWebApplicationContext configuredApplicationContext
-                    = testReifier.configure(testContext, applicationContext);
+                    = testConfigurer.configure(testContext, applicationContext);
 
             ServiceProvider<ConfigurableApplicationContext> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
             ServiceInstance serviceInstance = serviceProvider.configure(testContext, configuredApplicationContext);
@@ -79,17 +81,20 @@ public class SpringSystemInterceptor {
 
     @RuntimeType
     public Class<?>[] getServletConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
-
         Class<?>[] result = zuper.call();
 
         return testContextHolder.execute(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
-            Stream<Class<?>> acutalModules = Stream.of(result);
-            Stream<Class<?>> testModules = testDescriptor.getModules()
-                    .stream()
-                    .map(p -> p.value());
+            List<Module> modules = testDescriptor.getModules();
 
-            return Stream.concat(testModules, acutalModules).toArray(Class[]::new);
+            Stream<Class<?>> testModules = modules.stream().map(Module::value);
+            Stream<Class<?>> productionModules = Stream.empty();
+
+            if (result != null) {
+                productionModules = Stream.of(result);
+            }
+
+            return Stream.concat(testModules, productionModules).toArray(Class[]::new);
         });
     }
 

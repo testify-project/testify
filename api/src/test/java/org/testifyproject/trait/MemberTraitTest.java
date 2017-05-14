@@ -31,50 +31,50 @@ import org.testifyproject.fixture.PrimaryTestService;
  */
 public class MemberTraitTest {
 
-    MemberTrait cut;
+    MemberTrait sut;
 
     @Before
     public void init() throws NoSuchMethodException {
-        cut = mock(MemberTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(MemberTrait.class, Answers.CALLS_REAL_METHODS);
         String methodName = "sayHello";
         Class<?>[] methodArgs = new Class[]{String.class};
 
         Method method = PrimaryTestService.class.getDeclaredMethod(methodName, methodArgs);
 
-        given(cut.getMember()).willReturn(method);
+        given(sut.getMember()).willReturn(method);
     }
 
     @Test
     public void callToGetMemberShouldReturn() {
-        Member result = cut.getMember();
+        Member result = sut.getMember();
 
         assertThat(result).isNotNull();
     }
 
     @Test
     public void callToGetNameShouldReturnMemberName() {
-        String result = cut.getName();
+        String result = sut.getName();
 
         assertThat(result).isEqualTo("sayHello");
     }
 
     @Test
     public void callToGetDeclaringClassShouldReturn() {
-        Class result = cut.getDeclaringClass();
+        Class result = sut.getDeclaringClass();
 
         assertThat(result).isEqualTo(PrimaryTestService.class);
     }
 
     @Test
     public void callToGetDeclaringClassNameShouldReturn() {
-        String result = cut.getDeclaringClassName();
+        String result = sut.getDeclaringClassName();
 
         assertThat(result).isEqualTo(PrimaryTestService.class.getSimpleName());
     }
 
     @Test
     public void callToGetDeclaringClassLoader() {
-        ClassLoader result = cut.getDeclaringClassLoader();
+        ClassLoader result = sut.getDeclaringClassLoader();
 
         assertThat(result).isEqualTo(PrimaryTestService.class.getClassLoader());
     }

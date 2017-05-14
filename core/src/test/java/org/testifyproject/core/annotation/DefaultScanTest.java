@@ -27,14 +27,14 @@ import org.testifyproject.annotation.Scan;
  */
 public class DefaultScanTest {
 
-    Scan cut;
+    Scan sut;
     String value;
 
     @Before
     public void init() {
         value = "value";
 
-        cut = new DefaultScan(value);
+        sut = new DefaultScan(value);
     }
 
     @Test
@@ -46,14 +46,14 @@ public class DefaultScanTest {
 
     @Test
     public void callToGetValueShouldReturnValue() {
-        String result = cut.value();
+        String result = sut.value();
 
         assertThat(result).isEqualTo(value);
     }
 
     @Test
     public void callToAnnotationTypeShouldReturnAnnotation() {
-        Class<? extends Annotation> result = cut.annotationType();
+        Class<? extends Annotation> result = sut.annotationType();
 
         assertThat(result).isEqualTo(Scan.class);
     }

@@ -24,8 +24,8 @@ import static org.mockito.Mockito.mock;
 import org.testifyproject.core.TestCategory;
 import static org.testifyproject.junit4.core.TestifyJUnit4CategoryFilter.FILTER_DESCRIPTION;
 import org.testifyproject.junit4.fixture.common.TestClass;
-import org.testifyproject.junit4.fixture.filter.RequiresContainerTestClass;
-import org.testifyproject.junit4.fixture.filter.RequiresResourceTestClass;
+import org.testifyproject.junit4.fixture.filter.LocalResourceTestClass;
+import org.testifyproject.junit4.fixture.filter.VirtualResourceTestClass;
 
 /**
  *
@@ -33,75 +33,88 @@ import org.testifyproject.junit4.fixture.filter.RequiresResourceTestClass;
  */
 public class TestifyJUnit4CategoryFilterTest {
 
-    TestifyJUnit4CategoryFilter cut;
+    TestifyJUnit4CategoryFilter sut;
 
     @Before
     public void init() {
-        System.clearProperty("testify.categories");
-        cut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.Integration);
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullDescriptionShouldRunShouldThrowException() {
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
+
         Description description = null;
 
-        cut.shouldRun(description);
+        sut.shouldRun(description);
     }
 
     @Test
     public void givenNoSystemPropertyShouldRunShouldReturnTrue() {
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
+
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isTrue();
     }
 
     @Test
     public void givenUnsupportedTestShouldRunShouldReturnFalse() {
+        String[] categories = new String[]{"unit"};
+
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
+
         Description description = mock(Description.class);
         Class testClass = TestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "unit");
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isFalse();
     }
 
     @Test
-    public void givenTestClassWithRequiredResourceShouldRunShouldReturnTrue() {
+    public void givenTestClassWithLocalResourceShouldRunShouldReturnTrue() {
+        String[] categories = new String[]{"local"};
+
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
+
         Description description = mock(Description.class);
-        Class testClass = RequiresResourceTestClass.class;
+        Class testClass = LocalResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "integ");
+        System.setProperty("testify.categories", "local");
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isTrue();
     }
 
     @Test
-    public void givenTestClassWithRequiredContainerShouldRunShouldReturnTrue() {
+    public void givenTestClassWithVirtualResourceShouldRunShouldReturnTrue() {
+        String[] categories = new String[]{"integration"};
+        sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, categories);
+
         Description description = mock(Description.class);
-        Class testClass = RequiresContainerTestClass.class;
+        Class testClass = VirtualResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "integ");
+        System.setProperty("testify.categories", "integration");
 
-        boolean result = cut.shouldRun(description);
+        boolean result = sut.shouldRun(description);
 
         assertThat(result).isTrue();
     }
 
     @Test
     public void callToDescribeShouldReturnFilterDescription() {
-        String result = cut.describe();
+        String result = sut.describe();
 
         assertThat(result).isEqualTo(FILTER_DESCRIPTION);
     }

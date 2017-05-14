@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.FieldService;
 import org.testifyproject.fixture.TestContract;
 
@@ -33,24 +34,24 @@ import org.testifyproject.fixture.TestContract;
  */
 public class FieldTraitTest {
 
-    FieldTrait cut;
+    FieldTrait sut;
 
     @Before
     public void init() throws NoSuchFieldException {
-        cut = mock(FieldTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(FieldTrait.class, Answers.CALLS_REAL_METHODS);
 
         Field field = FieldService.class.getDeclaredField("primary");
         Class type = field.getType();
         Type genericType = field.getGenericType();
 
-        given(cut.getAnnotatedElement()).willReturn(field);
-        given(cut.getType()).willReturn(type);
-        given(cut.getGenericType()).willReturn(genericType);
+        given(sut.getAnnotatedElement()).willReturn(field);
+        given(sut.getType()).willReturn(type);
+        given(sut.getGenericType()).willReturn(genericType);
     }
 
     @Test
     public void callToGetAnnotatedElementShouldReturnField() {
-        Field result = cut.getAnnotatedElement();
+        Field result = sut.getAnnotatedElement();
 
         assertThat(result).isNotNull();
         assertThat(result.getType()).isAssignableFrom(TestContract.class);
@@ -58,30 +59,30 @@ public class FieldTraitTest {
 
     @Test(expected = NullPointerException.class)
     public void givenNullInstanceSetValueShouldThrowException() {
-        cut.setValue(null, null);
+        sut.setValue(null, null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenInvalidInstanceTypeSetValueShouldThrowException() {
-        cut.setValue("", null);
+        sut.setValue("", null);
     }
 
     @Test
     public void givenInstanceSetValueShouldSetValue() {
         FieldService instance = new FieldService();
 
-        cut.setValue(instance, null);
+        sut.setValue(instance, null);
         assertThat(instance.getPrimary()).isNull();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullInstanceGetValueShouldThrowException() {
-        cut.getValue(null);
+        sut.getValue(null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenInvalidInstanceTypeGetValueShouldThrowException() {
-        cut.getValue("");
+        sut.getValue("");
     }
 
     @Test
@@ -89,13 +90,13 @@ public class FieldTraitTest {
         FieldService instance = new FieldService();
         TestContract value = instance.getPrimary();
 
-        Optional<TestContract> result = cut.getValue(instance);
+        Optional<TestContract> result = sut.getValue(instance);
         assertThat(result).contains(value);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullInitShouldThrowException() {
-        cut.init(null);
+        sut.init(null);
     }
 
     @Test
@@ -104,13 +105,13 @@ public class FieldTraitTest {
         TestContract value = instance.getPrimary();
         assertThat(value.getMessage()).isEqualTo("Hi!!!");
 
-        cut.init(instance);
+        sut.init(instance);
         assertThat(value.getMessage()).contains("init");
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullDestroyShouldThrowException() {
-        cut.destroy(null);
+        sut.destroy(null);
     }
 
     @Test
@@ -119,7 +120,7 @@ public class FieldTraitTest {
         TestContract value = instance.getPrimary();
         assertThat(value.getMessage()).isEqualTo("Hi!!!");
 
-        cut.destroy(instance);
+        sut.destroy(instance);
         assertThat(value.getMessage()).contains("destroy");
     }
 
@@ -129,15 +130,15 @@ public class FieldTraitTest {
         Class type = field.getType();
         Type genericType = field.getGenericType();
 
-        given(cut.getAnnotatedElement()).willReturn(field);
-        given(cut.getType()).willReturn(type);
-        given(cut.getGenericType()).willReturn(genericType);
+        given(sut.getAnnotatedElement()).willReturn(field);
+        given(sut.getType()).willReturn(type);
+        given(sut.getGenericType()).willReturn(genericType);
 
         FieldService instance = new FieldService();
         TestContract value = instance.getSecondary();
         assertThat(value.getMessage()).isEqualTo("Hi!!!");
 
-        cut.destroy(instance);
+        sut.destroy(instance);
 
         assertThat(value.getMessage()).contains("destroy");
     }

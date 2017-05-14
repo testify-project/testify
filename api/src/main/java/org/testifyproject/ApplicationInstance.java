@@ -16,16 +16,16 @@
 package org.testifyproject;
 
 import org.testifyproject.annotation.Application;
-import org.testifyproject.trait.PropertiesTrait;
+import org.testifyproject.trait.PropertiesReader;
+import org.testifyproject.trait.PropertiesWriter;
 
 /**
  * A contract that defines methods for retrieving information about an
  * application.
  *
  * @author saden
- * @param <T> the application initializer type
  */
-public interface ApplicationInstance<T> extends PropertiesTrait {
+public interface ApplicationInstance extends PropertiesReader, PropertiesWriter {
 
     /**
      * Get the application annotation.

@@ -13,6 +13,34 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.3] - 2017-05-14
+### Added
+ - Added extention contracts and annotations to the API
+  - Added @UnitTest, @IntegrationTest, and @SystemTest which can be used to apply specific services to certain test levels
+  - Added TestReifer contract for reifying the test class
+  - Added SutReifier contract for reifying the system under test
+  - Added FieldReifier contract for reifying the test class fields
+  - Added CollaboratorsReifier contract to reify cut class based on provided collaborators
+- Added support for configuring behavior through ".testify.yml" configuration file
+- Added PropertiesReader and PropertiesWriter to enable reading and writing of configuration properties
+- Added @RemoteResource support
+
+### Changed
+- Adopted Semantic Testing
+  - Renamed @Cut to @Sut
+  - Renamed serverName and serverContract attributes in RequiresResource to resourceName and resourceContract
+  - Renamed @RequiresResource annotation to @LocalResource
+  - Renamed @RequiresContainer annotation to @VirtualResource
+  - Renamed ResourceProvder contract to LocalResourceProvider and updated method signatures
+  - Renamed ContainerProvider contract to VirtualResourceProvider and updated method signatures
+  - Renamed ResourceInstance contract to LocalResourceInstance
+  - Renamed ContainerInstance contract to VirtualResourceInstance
+  - Renamed DefaultContainerInstance to DefaultVirtualResourceInstance
+  - Renamed DefaultResourceInstance to DefaultLocalResourceInstance
+  - Renamed ResourceInstanceBuilder to LocalResourceInstanceBuilder
+  - Renamed ReificationProvider to TestResourcesProvider and updated method signatures
+  - Renamed TestReifier to TestConfigurer
+
 ## [0.9.2] - 2017-03-20
 ### Fixed
 - Bug in SpringBootServerProvider when trying to add a new element to an immutable map

@@ -28,19 +28,19 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  */
 public class ApplicationProviderTest {
 
-    ApplicationProvider cut;
+    ApplicationProvider sut;
 
     @Before
     public void init() {
-        cut = mock(ApplicationProvider.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(ApplicationProvider.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test
     public void callToStopShouldDoNothing() {
-        cut.stop();
+        sut.stop();
 
-        verify(cut).stop();
-        verifyNoMoreInteractions(cut);
+        verify(sut).stop();
+        verifyNoMoreInteractions(sut);
     }
 
 }

@@ -26,12 +26,14 @@ import org.testifyproject.core.annotation.DefaultModule;
 import org.testifyproject.di.fixture.common.Greeting;
 import org.testifyproject.di.fixture.common.GreetingModule;
 import org.testifyproject.di.fixture.common.GreetingQualfier;
+import org.testifyproject.di.fixture.common.InjectedGreeter;
 import org.testifyproject.di.fixture.common.impl.Caio;
 import org.testifyproject.di.fixture.common.impl.Haye;
 import org.testifyproject.di.fixture.common.impl.Hello;
 import org.testifyproject.di.fixture.dynamic.DynamicConstant;
 import org.testifyproject.di.fixture.dynamic.DynamicContract;
 import org.testifyproject.di.fixture.dynamic.DynamicModule;
+import org.testifyproject.di.fixture.dynamic.FixtureModule;
 
 /**
  *
@@ -40,37 +42,85 @@ import org.testifyproject.di.fixture.dynamic.DynamicModule;
 public class GuiceServiceInstanceTest {
 
     private Injector injector;
-    private GuiceServiceInstance cut;
+    private GuiceServiceInstance sut;
 
     @Before
     public void init() {
-        cut = new GuiceServiceInstance(injector);
+        sut = new GuiceServiceInstance(injector);
         DefaultModule module = new DefaultModule(GreetingModule.class);
-        cut.addModules(module);
+        sut.addModules(module);
     }
 
     @Test
     public void callToGetContextShouldReturnInjector() {
-        Object result = cut.getContext();
+        Object result = sut.getContext();
         assertThat(result).isSameAs(injector);
     }
 
     @Test
+    public void callToIsRunningShouldReturnTrue() {
+        sut.updateInjector();
+        Boolean result = sut.isRunning();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void givenInjectableInstanceAndNonRunningInjectorInjectShouldDoNothing() {
+        InjectedGreeter injectedGreeter = new InjectedGreeter();
+
+        assertThat(injectedGreeter.getField()).isNull();
+        assertThat(injectedGreeter.getMethod()).isNull();
+
+        sut.inject(injectedGreeter);
+
+        assertThat(injectedGreeter.getField()).isNull();
+        assertThat(injectedGreeter.getMethod()).isNull();
+    }
+
+    @Test
+    public void givenInjectableInstanceInjectShouldInjectInstanceFieldAndMethod() {
+        InjectedGreeter injectedGreeter = new InjectedGreeter();
+
+        assertThat(injectedGreeter.getField()).isNull();
+        assertThat(injectedGreeter.getMethod()).isNull();
+
+        sut.updateInjector();
+        sut.inject(injectedGreeter);
+
+        assertThat(injectedGreeter.getField()).isNotNull();
+        assertThat(injectedGreeter.getMethod()).isNotNull();
+    }
+
+    @Test
     public void givenContractTypeGetServiceShouldReturnService() {
-        Greeting result = cut.getService(Greeting.class);
+        Greeting result = sut.getService(Greeting.class);
         assertThat(result).isNotNull().isInstanceOf(Hello.class);
     }
 
     @Test
     public void givenImplementationTypeGetServiceShouldReturnService() {
-        Hello result = cut.getService(Hello.class);
+        Hello result = sut.getService(Hello.class);
         assertThat(result).isNotNull();
     }
 
     @Test
     public void givenContractTypeAndNameGetServiceShouldReturnService() {
-        Greeting result = cut.getService(Greeting.class, Names.named("Haye"));
+        Greeting result = sut.getService(Greeting.class, "Haye");
         assertThat(result).isNotNull().isInstanceOf(Haye.class);
+    }
+
+    @Test
+    public void givenContractTypeAndNamedAnnotationGetServiceShouldReturnService() {
+        Greeting result = sut.getService(Greeting.class, Names.named("Haye"));
+        assertThat(result).isNotNull().isInstanceOf(Haye.class);
+    }
+
+    @Test
+    public void givenContractTypeAndNoAnnotationGetServiceShouldReturnService() {
+        Annotation[] qualifiers = {};
+        Hello result = sut.getService(Hello.class, qualifiers);
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -81,7 +131,7 @@ public class GuiceServiceInstanceTest {
                 return GreetingQualfier.class;
             }
         };
-        Greeting result = cut.getService(Greeting.class, qualifier);
+        Greeting result = sut.getService(Greeting.class, qualifier);
         assertThat(result).isNotNull().isInstanceOf(Caio.class);
     }
 
@@ -89,9 +139,9 @@ public class GuiceServiceInstanceTest {
     public void givenInstanceAddConstantShouldAddConstant() {
         String value = "test";
         DynamicConstant dynamicConstant = new DynamicConstant(value);
-        cut.addConstant(dynamicConstant, null, null);
+        sut.addConstant(dynamicConstant, null, null);
 
-        DynamicConstant result = cut.getService(DynamicConstant.class);
+        DynamicConstant result = sut.getService(DynamicConstant.class);
 
         assertThat(result).isNotNull();
         assertThat(result.getValue()).isEqualTo(value);
@@ -101,9 +151,9 @@ public class GuiceServiceInstanceTest {
     public void givenInstanceAndNameAddConstantShouldAddConstant() {
         String value = "test";
         DynamicConstant dynamicConstant = new DynamicConstant(value);
-        cut.addConstant(dynamicConstant, "constant", null);
+        sut.addConstant(dynamicConstant, "constant", null);
 
-        DynamicConstant result = cut.getService(DynamicConstant.class, Names.named("constant"));
+        DynamicConstant result = sut.getService(DynamicConstant.class, Names.named("constant"));
 
         assertThat(result).isNotNull();
         assertThat(result.getValue()).isEqualTo(value);
@@ -113,9 +163,9 @@ public class GuiceServiceInstanceTest {
     public void givenInstanceAndNameAndContractAddConstantShouldAddConstant() {
         String value = "test";
         DynamicConstant dynamicConstant = new DynamicConstant(value);
-        cut.addConstant(dynamicConstant, "constant", DynamicContract.class);
+        sut.addConstant(dynamicConstant, "constant", DynamicContract.class);
 
-        DynamicContract result = cut.getService(DynamicContract.class, Names.named("constant"));
+        DynamicContract result = sut.getService(DynamicContract.class, Names.named("constant"));
 
         assertThat(result).isNotNull();
         assertThat(result.getValue()).isEqualTo(value);
@@ -124,9 +174,9 @@ public class GuiceServiceInstanceTest {
     @Test
     public void givenInstanceAndContractShouldRepleaceService() {
         Greeting instance = mock(Greeting.class);
-        cut.replace(instance, null, Greeting.class);
+        sut.replace(instance, null, Greeting.class);
 
-        Greeting result = cut.getService(Greeting.class);
+        Greeting result = sut.getService(Greeting.class);
 
         assertThat(result).isSameAs(instance);
     }
@@ -134,9 +184,9 @@ public class GuiceServiceInstanceTest {
     @Test
     public void givenInstanceAndImplementationShouldRepleaceService() {
         Hello instance = mock(Hello.class);
-        cut.replace(instance, null, Hello.class);
+        sut.replace(instance, null, Hello.class);
 
-        Hello result = cut.getService(Hello.class);
+        Hello result = sut.getService(Hello.class);
 
         assertThat(result).isSameAs(instance);
     }
@@ -145,9 +195,9 @@ public class GuiceServiceInstanceTest {
     public void givenInstanceAndNameAndContranctShouldRepleaceService() {
         String name = "Haye";
         Greeting instance = mock(Greeting.class);
-        cut.replace(instance, name, Greeting.class);
+        sut.replace(instance, name, Greeting.class);
 
-        Greeting result = cut.getService(Greeting.class, Names.named(name));
+        Greeting result = sut.getService(Greeting.class, Names.named(name));
 
         assertThat(result).isSameAs(instance);
     }
@@ -155,27 +205,34 @@ public class GuiceServiceInstanceTest {
     @Test
     public void givenModuleAddModuleShouldAddModule() {
         DefaultModule module = new DefaultModule(DynamicModule.class);
-        cut.addModules(module);
+        sut.addModules(module);
 
-        DynamicContract result = cut.getService(DynamicContract.class);
+        DynamicContract result = sut.getService(DynamicContract.class);
         assertThat(result).isNotNull();
 
-        Greeting greeting = cut.getService(Greeting.class);
+        Greeting greeting = sut.getService(Greeting.class);
         assertThat(greeting).isNotNull().isInstanceOf(Hello.class);
     }
 
     @Test
-    public void callToGetInjectionAnnotationsShouldReturnAnnotaitons() {
-        assertThat(cut.getInjectionAnnotations()).hasSize(3);
+    public void givenFixtureModuleAddModuleShouldAddModule() {
+        DefaultModule module = new DefaultModule(FixtureModule.class);
+        sut.addModules(module);
+
+        DynamicContract result = sut.getService(DynamicContract.class);
+        assertThat(result).isNotNull();
+
+        Greeting greeting = sut.getService(Greeting.class);
+        assertThat(greeting).isNotNull().isInstanceOf(Hello.class);
     }
 
     @Test
     public void callToGetNameQualifersShouldReturnAnnotaitons() {
-        assertThat(cut.getNameQualifers()).hasSize(2);
+        assertThat(sut.getNameQualifers()).hasSize(2);
     }
 
     @Test
     public void callToGetCustomQualifiersShouldReturnAnnotaitons() {
-        assertThat(cut.getCustomQualifiers()).hasSize(2);
+        assertThat(sut.getCustomQualifiers()).hasSize(2);
     }
 }

@@ -30,6 +30,8 @@ import io.undertow.servlet.util.ImmediateInstanceFactory;
 import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,8 +46,11 @@ import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.core.ApplicationInstanceProperties;
+import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER;
+import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_HANDLERS;
 import org.testifyproject.core.DefaultServerInstance;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
 import org.xnio.StreamConnection;
@@ -59,54 +64,56 @@ import org.xnio.channels.AcceptingChannel;
 @Discoverable
 public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Undertow> {
 
-    private Undertow undertow;
-    private URI baseURI;
+    private static final String DEFAULT_SCHEME = "http";
+    private static final String DEFAULT_URI = "http://0.0.0.0:0/";
+    private static final int DEFAULT_PORT = 0;
+
     private ApplicationProvider applicationProvider;
 
     @Override
     public DeploymentInfo configure(TestContext testContext) {
         applicationProvider = ServiceLocatorUtil.INSTANCE.getOne(ApplicationProvider.class);
-        ApplicationInstance<ServletContainerInitializer> applicationInstance = applicationProvider.start(testContext);
+        ApplicationInstance applicationInstance = applicationProvider.start(testContext);
 
         try {
             String name = testContext.getName();
 
-            Optional<Set<Class<?>>> handlersProperties
-                    = applicationInstance.findProperty(ApplicationInstanceProperties.SERVLET_HANDLERS);
+            Optional<Set<Class<?>>> foundHandlers = applicationInstance.findProperty(SERVLET_HANDLERS);
+            Optional<ServletContainerInitializer> foundInitializer = applicationInstance.findProperty(SERVLET_CONTAINER_INITIALIZER);
+            DeploymentInfo deploymentInfo = null;
 
-            Set<Class<?>> handles = handlersProperties.get();
+            if (foundHandlers.isPresent() && foundInitializer.isPresent()) {
+                Set<Class<?>> handles = foundHandlers.get();
+                ServletContainerInitializer initializerInstance = foundInitializer.get();
 
-            Optional<ServletContainerInitializer> initializerProperties
-                    = applicationInstance.findProperty(ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER);
+                ImmediateInstanceFactory<ServletContainerInitializer> factory = new ImmediateInstanceFactory<>(initializerInstance);
+                URI uri = URI.create(DEFAULT_URI);
+                Class<? extends ServletContainerInitializer> initializerClass = initializerInstance.getClass();
+                ServletContainerInitializerInfo initInfo = new ServletContainerInitializerInfo(initializerClass, factory, handles);
 
-            ServletContainerInitializer initializerInstance = initializerProperties.get();
+                ServletInfo servletInfo = Servlets.servlet(name, DefaultServlet.class);
+                TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-            ImmediateInstanceFactory<ServletContainerInitializer> factory = new ImmediateInstanceFactory<>(initializerInstance);
-            URI uri = URI.create("http://0.0.0.0:0/");
-            Class<? extends ServletContainerInitializer> initializerClass = initializerInstance.getClass();
-            ServletContainerInitializerInfo initInfo = new ServletContainerInitializerInfo(initializerClass, factory, handles);
+                ClassLoader classLoader = testDescriptor.getTestClassLoader();
 
-            ServletInfo servletInfo = Servlets.servlet(name, DefaultServlet.class);
-            TestDescriptor testDescriptor = testContext.getTestDescriptor();
-
-            ClassLoader classLoader = testDescriptor.getTestClassLoader();
-
-            DeploymentInfo deploymentInfo = Servlets.deployment()
-                    .addServletContainerInitalizer(initInfo)
-                    .setClassLoader(classLoader)
-                    .setHostName(uri.getHost())
-                    .setContextPath(uri.getPath())
-                    .setDeploymentName(name)
-                    .addServlet(servletInfo);
+                deploymentInfo = Servlets.deployment()
+                        .addServletContainerInitalizer(initInfo)
+                        .setClassLoader(classLoader)
+                        .setHostName(uri.getHost())
+                        .setContextPath(uri.getPath())
+                        .setDeploymentName(name)
+                        .addServlet(servletInfo);
+            }
 
             return deploymentInfo;
-        } catch (Throwable e) {
-            throw new IllegalStateException(e);
+        } catch (Exception e) {
+            throw ExceptionUtil.INSTANCE.propagate(e);
         }
     }
 
     @Override
-    public ServerInstance<Undertow> start(DeploymentInfo deploymentInfo) {
+    @SuppressWarnings("UseSpecificCatch")
+    public ServerInstance<Undertow> start(TestContext testContext, DeploymentInfo deploymentInfo) {
         try {
             DeploymentManager manager = Servlets.defaultContainer()
                     .addDeployment(deploymentInfo);
@@ -114,93 +121,109 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
             manager.deploy();
             HttpHandler httpHandler = manager.start();
 
-            RedirectHandler defaultHandler = Handlers.redirect(deploymentInfo.getContextPath());
-            PathHandler pathHandler = Handlers.path(defaultHandler);
-            pathHandler.addPrefixPath(deploymentInfo.getContextPath(), httpHandler);
+            String host = deploymentInfo.getHostName();
+            String path = deploymentInfo.getContextPath();
 
-            undertow = Undertow.builder()
-                    .addHttpListener(0, deploymentInfo.getHostName(), pathHandler)
+            RedirectHandler defaultHandler = Handlers.redirect(path);
+            PathHandler pathHandler = Handlers.path(defaultHandler);
+            pathHandler.addPrefixPath(path, httpHandler);
+
+            Undertow undertow = Undertow.builder()
+                    .addHttpListener(DEFAULT_PORT, host, pathHandler)
                     .build();
 
             undertow.start();
 
-            baseURI = new URI("http",
-                    null,
-                    deploymentInfo.getHostName(),
-                    getPorts().get(0),
-                    deploymentInfo.getContextPath(),
-                    null,
-                    null);
+            Integer port = getPorts(undertow).get(0);
+
+            URI baseURI = new URI(DEFAULT_SCHEME, null, host, port, path, null, null);
 
             return DefaultServerInstance.of(baseURI, undertow);
-        } catch (Throwable e) {
-            throw new IllegalStateException("Could not start Undertow Server", e);
+        } catch (Exception e) {
+            throw ExceptionUtil.INSTANCE.propagate("Could not start Undertow Server", e);
         }
     }
 
     @Override
-    public void stop() {
-        undertow.stop();
+    public void stop(TestContext testContext, ServerInstance<Undertow> serverInstance) {
+        if (serverInstance != null) {
+            serverInstance.getInstance().stop();
+        }
+
         applicationProvider.stop();
     }
 
-    public List<Integer> getPorts() {
+    List<Integer> getPorts(Undertow undertow) {
         List<Integer> ports = new ArrayList<>();
-        Field channelsField = findField(Undertow.class, "channels").get();
-        channelsField.setAccessible(true);
-        List<AcceptingChannel<? extends StreamConnection>> channels = (List) getFieldValue(channelsField, undertow);
-        channels.stream()
-                .map(p -> getPortFromChannel(p)).
-                filter(Objects::nonNull)
-                .forEach(p -> ports.add(p));
+        Optional<Field> foundField = findField(Undertow.class, "channels");
+
+        if (foundField.isPresent()) {
+
+            Field channelsField = foundField.get();
+            channelsField.setAccessible(true);
+            List<AcceptingChannel<? extends StreamConnection>> channels = (List) getFieldValue(channelsField, undertow);
+
+            channels.stream()
+                    .map(this::getPortFromChannel).
+                    filter(Objects::nonNull)
+                    .forEach(ports::add);
+        }
 
         return ports;
-
     }
 
     Integer getPortFromChannel(Object channel) {
         Object tcpServer = channel;
         Optional<Field> sslContext = findField(channel.getClass(), "sslContext");
+
         if (sslContext.isPresent()) {
             tcpServer = getTcpServer(channel);
         }
 
-        ServerSocket socket = getSocket(tcpServer);
-
-        return socket.getLocalPort();
+        return getSocket(tcpServer).getLocalPort();
 
     }
 
     Object getTcpServer(Object channel) {
-        Field field = findField(channel.getClass(), "tcpServer").get();
-        return getFieldValue(field, channel);
+        Optional<Field> foundField = findField(channel.getClass(), "tcpServer");
+        if (foundField.isPresent()) {
+            return getFieldValue(foundField.get(), channel);
+        }
+
+        return null;
     }
 
     ServerSocket getSocket(Object tcpServer) {
-        Optional<Field> socketField = findField(tcpServer.getClass(), "socket");
-        if (!socketField.isPresent()) {
-            return null;
+        Optional<Field> foundField = findField(tcpServer.getClass(), "socket");
+
+        if (foundField.isPresent()) {
+            return getFieldValue(foundField.get(), tcpServer);
         }
 
-        return getFieldValue(socketField.get(), tcpServer);
+        return null;
     }
 
-    public Optional<Field> findField(Class<?> type, String name) {
+    Optional<Field> findField(Class<?> type, String name) {
         try {
             return of(type.getDeclaredField(name));
-        } catch (Exception e) {
+        } catch (NoSuchFieldException | SecurityException e) {
+            LoggingUtil.INSTANCE.debug("Could not find field '{}' in type '{}'", name, type.getSimpleName(), e);
             return empty();
         }
     }
 
-    public <T> T getFieldValue(Field field, Object instance) {
-        try {
-            field.setAccessible(true);
+    <T> T getFieldValue(Field field, Object instance) {
+        return AccessController.doPrivileged((PrivilegedAction<T>) () -> {
+            try {
+                field.setAccessible(true);
 
-            return (T) field.get(instance);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
+                return (T) field.get(instance);
+            } catch (IllegalAccessException
+                    | IllegalArgumentException
+                    | SecurityException e) {
+                throw ExceptionUtil.INSTANCE.propagate(e);
+            }
+        });
     }
 
 }

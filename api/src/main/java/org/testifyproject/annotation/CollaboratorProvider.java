@@ -26,21 +26,21 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation used to specifying a provider of the class under test's
+ * An annotation used to specifying a provider of the system under test's
  * collaborators. This annotation can be placed on a test class or method. This
- * is useful for configuring a class under test whose collaborator(s) can not be
+ * is useful for configuring a system under test whose collaborator(s) can not be
  * faked or virtualized (i.e. a {@link java.net.URL} collaborator which is a
  * final class). Note that if this annotation is placed on:
  * </p>
  * <ul>
  * <li>
- * a test class method then this method will be called to provide the class
+ * a test class method then this method will be called to provide the system
  * under test's collaborators.
  * </li>
  * <li>
  * the test class and {@link CollaboratorProvider#value() } is specified then a
  * method within {@link CollaboratorProvider#value() } class will be called to
- * provide collaborators for the class under test.
+ * provide collaborators for the system under test.
  * </li>
  * </ul>
  *
@@ -53,7 +53,7 @@ public @interface CollaboratorProvider {
 
     /**
      * Specifies the class that contains methods that provide collaborator for
-     * the class under test.
+     * the system under test.
      *
      * @return the class.
      */

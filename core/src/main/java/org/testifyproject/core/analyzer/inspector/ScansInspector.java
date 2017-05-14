@@ -18,8 +18,9 @@ package org.testifyproject.core.analyzer.inspector;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Scans;
-import org.testifyproject.core.analyzer.TestAnnotationInspector;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -28,15 +29,11 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class ScansInspector implements TestAnnotationInspector<Scans> {
+@Handles(Scans.class)
+public class ScansInspector implements AnnotationInspector<Scans> {
 
     @Override
-    public boolean handles(Class<?> annotationType) {
-        return Scans.class.isAssignableFrom(annotationType);
-    }
-
-    @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Scans annotation) throws Exception {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Scans annotation) {
         for (Scan scan : annotation.value()) {
             testDescriptor.addListElement(TestDescriptorProperties.SCANS, scan);
         }

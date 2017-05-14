@@ -17,25 +17,38 @@ package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Objects;
+import java.util.Optional;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.FieldDescriptor;
+import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.Virtual;
 
 /**
- * A descriptor class used to access properties of or perform operations on an
- * analyzed test class or the class under test fields. getF
+ * A descriptor class used to access properties of or perform operations on an analyzed test class
+ * or the system under test fields. getF
  *
  * @author saden
  */
+@ToString(doNotUseGetters = true)
+@EqualsAndHashCode(doNotUseGetters = true)
 public class DefaultFieldDescriptor implements FieldDescriptor {
 
     private final Field field;
 
-    public static FieldDescriptor of(Field field) {
-        return new DefaultFieldDescriptor(field);
-    }
-
     DefaultFieldDescriptor(Field field) {
         this.field = field;
+    }
+
+    /**
+     * Create a new field descriptor instance from the given field.
+     *
+     * @param field the underlying field
+     * @return a field descriptor instance
+     */
+    public static FieldDescriptor of(Field field) {
+        return new DefaultFieldDescriptor(field);
     }
 
     @Override
@@ -55,47 +68,25 @@ public class DefaultFieldDescriptor implements FieldDescriptor {
 
     @Override
     public String getDefinedName() {
-        String name = null;
+        String name = "";
+        Optional<Fake> foundFake = getFake();
+        Optional<Real> foundReal = getReal();
+        Optional<Virtual> foundVirtual = getVirtual();
 
-        if (getFake().isPresent()) {
-            name = getFake().get().value();
-        } else if (getReal().isPresent()) {
-            name = getReal().get().value();
-        } else if (getVirtual().isPresent()) {
-            name = getVirtual().get().value();
+        if (foundFake.isPresent()) {
+            name = foundFake.get().value();
+        } else if (foundReal.isPresent()) {
+            name = foundReal.get().value();
+        } else if (foundVirtual.isPresent()) {
+            name = foundVirtual.get().value();
         }
 
         //if name has not been spcified then use the field name
-        if (name == null || "".equals(name)) {
+        if ("".equals(name)) {
             name = field.getName();
         }
 
         return name;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.field);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultFieldDescriptor other = (DefaultFieldDescriptor) obj;
-
-        return Objects.equals(this.field, other.field);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultFieldDescriptor{" + "field=" + field + '}';
     }
 
 }

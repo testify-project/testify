@@ -27,34 +27,33 @@ import static com.google.inject.util.Modules.combine;
 import static com.google.inject.util.Modules.override;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.inject.Inject;
 import javax.inject.Qualifier;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.Instance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.annotation.Fixture;
-import org.testifyproject.annotation.Real;
 import org.testifyproject.core.DefaultInstance;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 
 /**
- * A Google Guice DI implementation of the {@link ServiceInstance} spi contract.
- * This class provides the ability to work with Google Guice {@link Injector} to
- * create, locate, and manage services.
+ * A Google Guice DI implementation of the {@link ServiceInstance} spi contract. This class provides the ability to work
+ * with Google Guice {@link Injector} to create, locate, and manage services.
  *
  * @author saden
  */
+@ToString(of = "injector")
+@EqualsAndHashCode(of = "injector")
 public class GuiceServiceInstance implements ServiceInstance {
 
-    public static final Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
-    public static final Set<Class<? extends Annotation>> NAME_ANNOTATIONS;
-    public static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
+    private static final Set<Class<? extends Annotation>> NAME_ANNOTATIONS;
+    private static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
 
     static {
-        INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, com.google.inject.Inject.class, Real.class);
         NAME_ANNOTATIONS = ImmutableSet.of(javax.inject.Named.class, Named.class);
         CUSTOM_QUALIFIER = ImmutableSet.of(Qualifier.class, BindingAnnotation.class);
     }
@@ -63,7 +62,7 @@ public class GuiceServiceInstance implements ServiceInstance {
     private final Queue<Instance> replacements = new ConcurrentLinkedQueue<>();
     private final Queue<Module> modules = new ConcurrentLinkedQueue<>();
     private final Queue<Module> testModules = new ConcurrentLinkedQueue<>();
-    private transient boolean running = false;
+    private boolean running = false;
     private Injector injector;
 
     public GuiceServiceInstance(Injector injector) {
@@ -77,6 +76,7 @@ public class GuiceServiceInstance implements ServiceInstance {
 
     @Override
     public void inject(Object instance) {
+        //XXX: should we throw an exception if the injector is not running?
         if (isRunning()) {
             injector.injectMembers(instance);
         }
@@ -105,7 +105,41 @@ public class GuiceServiceInstance implements ServiceInstance {
         }
     }
 
-    private synchronized void updateInjector() {
+    @Override
+    public void addConstant(Object instance, String name, Class contract) {
+        constants.add(DefaultInstance.of(instance, name, contract));
+    }
+
+    @Override
+    public void replace(Object instance, String name, Class contract) {
+        replacements.add(DefaultInstance.of(instance, name, contract));
+    }
+
+    @Override
+    public void addModules(org.testifyproject.annotation.Module... modules) {
+        for (org.testifyproject.annotation.Module module : modules) {
+            Class<?> value = module.value();
+            Module instance = (Module) ReflectionUtil.INSTANCE.newInstance(value);
+
+            if (value.isAnnotationPresent(Fixture.class)) {
+                testModules.add(instance);
+            } else {
+                this.modules.add(instance);
+            }
+        }
+    }
+
+    @Override
+    public Set<Class<? extends Annotation>> getNameQualifers() {
+        return NAME_ANNOTATIONS;
+    }
+
+    @Override
+    public Set<Class<? extends Annotation>> getCustomQualifiers() {
+        return CUSTOM_QUALIFIER;
+    }
+
+    synchronized void updateInjector() {
         if (!running) {
 
             Module constantModule = GuiceAbstractModule.of(constants);
@@ -123,75 +157,4 @@ public class GuiceServiceInstance implements ServiceInstance {
             running = true;
         }
     }
-
-    @Override
-    public void addConstant(Object instance, String name, Class contract) {
-        constants.add(DefaultInstance.of(instance, name, contract));
-    }
-
-    @Override
-    public void replace(Object instance, String name, Class contract) {
-        replacements.add(DefaultInstance.of(instance, name, contract));
-    }
-
-    @Override
-    public void addModules(org.testifyproject.annotation.Module... modules) {
-        try {
-            for (org.testifyproject.annotation.Module module : modules) {
-                Class<?> value = module.value();
-                Module instance = (Module) value.newInstance();
-                if (value.isAnnotationPresent(Fixture.class)) {
-                    testModules.add(instance);
-                } else {
-                    this.modules.add(instance);
-                }
-            }
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new IllegalStateException("Could not create an instance of the module", e);
-        }
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> getInjectionAnnotations() {
-        return INJECT_ANNOTATIONS;
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> getNameQualifers() {
-        return NAME_ANNOTATIONS;
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> getCustomQualifiers() {
-        return CUSTOM_QUALIFIER;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + Objects.hashCode(this.injector);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final GuiceServiceInstance other = (GuiceServiceInstance) obj;
-
-        return Objects.equals(this.injector, other.injector);
-    }
-
-    @Override
-    public String toString() {
-        return "GuiceServiceInstance{" + "injector=" + injector + '}';
-    }
-
 }

@@ -18,8 +18,9 @@ package org.testifyproject.core.analyzer.inspector;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Modules;
-import org.testifyproject.core.analyzer.TestAnnotationInspector;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.extension.AnnotationInspector;
+import org.testifyproject.extension.annotation.Handles;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -28,15 +29,11 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class ModulesInspector implements TestAnnotationInspector<Modules> {
+@Handles(Modules.class)
+public class ModulesInspector implements AnnotationInspector<Modules> {
 
     @Override
-    public boolean handles(Class<?> annotationType) {
-        return Modules.class.isAssignableFrom(annotationType);
-    }
-
-    @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Modules annotation) throws Exception {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Modules annotation) {
         for (Module module : annotation.value()) {
             testDescriptor.addListElement(TestDescriptorProperties.MODULES, module);
         }

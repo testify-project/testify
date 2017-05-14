@@ -15,15 +15,8 @@
  */
 package org.testifyproject.di.hk2;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
-import static org.glassfish.hk2.api.DescriptorFileFinder.RESOURCE_BASE;
-import org.glassfish.hk2.api.DynamicConfiguration;
-import org.glassfish.hk2.api.DynamicConfigurationService;
-import org.glassfish.hk2.api.MultiException;
-import org.glassfish.hk2.api.Populator;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -32,8 +25,7 @@ import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -54,30 +46,16 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
         ServiceLocatorUtilities.enableInheritableThreadScope(serviceLocator);
         ServiceLocatorUtilities.enableLookupExceptions(serviceLocator);
 
-        enableExtras(testContext, "enableDefaultInterceptorServiceImplementation", serviceLocator);
-        enableExtras(testContext, "enableOperations", serviceLocator);
-        enableExtras(testContext, "enableTopicDistribution", serviceLocator);
-
-        try {
-            DynamicConfigurationService dcs = serviceLocator.getService(DynamicConfigurationService.class);
-            DynamicConfiguration dc = dcs.createDynamicConfiguration();
-            Populator populator = dcs.getPopulator();
-
-            String defaultResource = RESOURCE_BASE + "default";
-            ClassLoader classLoader = testContext.getTestDescriptor().getTestClassLoader();
-            HK2DescriptorPopulator testPopulator = new HK2DescriptorPopulator(classLoader, defaultResource);
-            populator.populate(testPopulator);
-            dc.commit();
-        } catch (MultiException | IOException e) {
-            throw new IllegalStateException("Could not create HK2 Service Locator", e);
-        }
+        enableExtras("enableDefaultInterceptorServiceImplementation", serviceLocator);
+        enableExtras("enableOperations", serviceLocator);
+        enableExtras("enableTopicDistribution", serviceLocator);
 
         return serviceLocator;
     }
 
     @Override
     public ServiceInstance configure(TestContext testContext, ServiceLocator serviceLocator) {
-        HK2ServiceInstance serviceInstance = new HK2ServiceInstance(serviceLocator);
+        HK2ServiceInstance serviceInstance = new HK2ServiceInstance(testContext, serviceLocator);
 
         ServiceLocatorImpl serviceLocatorImpl = (ServiceLocatorImpl) serviceLocator;
         HK2InjectionResolver hK2InjectionResolver = new HK2InjectionResolver(testContext, serviceLocatorImpl);
@@ -86,7 +64,18 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
         return serviceInstance;
     }
 
-    private void enableExtras(TestContext testContext, String methodName, ServiceLocator serviceLocator) {
+    @Override
+    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+
+        testDescriptor.getModules().stream()
+                .forEach(serviceInstance::addModules);
+
+        testDescriptor.getScans().stream()
+                .forEach(serviceInstance::addScans);
+    }
+
+    void enableExtras(String methodName, ServiceLocator serviceLocator) {
         String className = "org.glassfish.hk2.extras.ExtrasUtilities";
 
         try {
@@ -99,24 +88,7 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
                 | IllegalAccessException
                 | IllegalArgumentException
                 | InvocationTargetException e) {
-            testContext.debug("Method '{}' not found in class {}", methodName, className, e);
+            LoggingUtil.INSTANCE.debug("Method '{}' not found in class {}", methodName, className, e);
         }
     }
-
-    @Override
-    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        List<Module> modules = testDescriptor.getModules();
-
-        if (!modules.isEmpty()) {
-            modules.stream().forEach(serviceInstance::addModules);
-        }
-
-        List<Scan> scans = testDescriptor.getScans();
-
-        if (!scans.isEmpty()) {
-            scans.stream().forEach(serviceInstance::addScans);
-        }
-    }
-
 }

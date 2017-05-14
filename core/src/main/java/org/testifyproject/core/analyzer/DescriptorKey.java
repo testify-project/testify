@@ -16,30 +16,45 @@
 package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Type;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * A key object used to find a descriptor in a collection based on its name and
- * type.
+ * A key object used to find a descriptor in a collection based on its name and type.
  *
  * @author saden
  */
+@ToString
+@EqualsAndHashCode
 public class DescriptorKey {
 
     private final Type type;
     private final String name;
 
+    public DescriptorKey(Type type, String name) {
+        this.type = type;
+        this.name = name;
+    }
+
+    /**
+     * Create a new descriptor key instance from the given type.
+     *
+     * @param type the underlying type
+     * @return a descriptor key instance
+     */
     public static DescriptorKey of(Type type) {
         return new DescriptorKey(type, null);
     }
 
+    /**
+     * Create a new descriptor key instance from the given type and name.
+     *
+     * @param type the underlying type
+     * @param name the underlying name
+     * @return a descriptor key instance
+     */
     public static DescriptorKey of(Type type, String name) {
         return new DescriptorKey(type, name);
-    }
-
-    public DescriptorKey(Type type, String name) {
-        this.type = type;
-        this.name = name;
     }
 
     public Type getType() {
@@ -48,37 +63,6 @@ public class DescriptorKey {
 
     public String getName() {
         return name;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + Objects.hashCode(this.type);
-        hash = 29 * hash + Objects.hashCode(this.name);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DescriptorKey other = (DescriptorKey) obj;
-        if (!Objects.equals(this.type, other.type)) {
-            return false;
-        }
-        return Objects.equals(this.name, other.name);
-    }
-
-    @Override
-    public String toString() {
-        return "DescriptorKey{" + "type=" + type + ", name=" + name + '}';
     }
 
 }

@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import org.testifyproject.TestifyException;
 
 /**
  *
@@ -29,22 +30,22 @@ import org.junit.Test;
  */
 public class FileSystemUtilTest {
 
-    FileSystemUtil cut;
+    FileSystemUtil sut;
 
     @Before
     public void init() {
-        cut = new FileSystemUtil();
+        sut = new FileSystemUtil();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullCreatePathShouldThrowException() {
-        cut.createPath(null);
+        sut.createPath(null);
     }
 
     @Test
     public void givenOneParamterCreatePathShouldReturnPath() {
         String first = "first";
-        String result = cut.createPath(first);
+        String result = sut.createPath(first);
 
         assertThat(result).isEqualTo("first");
     }
@@ -54,36 +55,36 @@ public class FileSystemUtilTest {
         String first = "first";
         String second = "second";
 
-        String result = cut.createPath(first, second);
+        String result = sut.createPath(first, second);
 
         assertThat(result).isEqualTo("first/second");
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullDeleteDirecotryShouldThrowException() {
-        cut.deleteDirectory(null);
+        sut.deleteDirectory(null);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNonExistentDirectoryDeleteDirectoryShouldThrowException() throws IOException {
         Path directoryPath = Files.createTempDirectory("FileSystemUtil");
         directoryPath.toFile().delete();
 
-        cut.deleteDirectory(directoryPath.toString());
+        sut.deleteDirectory(directoryPath.toString());
     }
 
     @Test
     public void givenValidPathDeleteDirectoryShouldDeleteDirectory() throws IOException {
         Path directory = Files.createTempDirectory("FileSystemUtil");
 
-        cut.deleteDirectory(directory.toString());
+        sut.deleteDirectory(directory.toString());
 
         assertThat(directory).doesNotExist();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullRecreateDirecotryShouldThrowException() {
-        cut.deleteDirectory(null);
+        sut.deleteDirectory(null);
     }
 
     @Test
@@ -91,7 +92,7 @@ public class FileSystemUtilTest {
         Path directoryPath = Files.createTempDirectory("FileSystemUtil");
         directoryPath.toFile().delete();
 
-        File result = cut.recreateDirectory(directoryPath.toString());
+        File result = sut.recreateDirectory(directoryPath.toString());
 
         assertThat(result).exists();
         assertThat(result.list()).isEmpty();
@@ -107,7 +108,7 @@ public class FileSystemUtilTest {
         File directoryFile = directory.toFile();
 
         assertThat(directoryFile.list()).isNotEmpty();
-        File result = cut.recreateDirectory(directory.toString());
+        File result = sut.recreateDirectory(directory.toString());
 
         assertThat(result).isDirectory();
         assertThat(result.list()).isEmpty();

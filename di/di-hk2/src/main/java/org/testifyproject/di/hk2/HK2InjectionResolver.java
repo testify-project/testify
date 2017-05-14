@@ -21,7 +21,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.glassfish.hk2.api.ActiveDescriptor;
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import static org.glassfish.hk2.api.InjectionResolver.SYSTEM_RESOLVER_NAME;
@@ -29,12 +28,11 @@ import org.glassfish.hk2.api.IterableProvider;
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.api.ServiceHandle;
 import org.glassfish.hk2.api.ServiceLocator;
-import org.testifyproject.CutDescriptor;
 import org.testifyproject.FieldDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
-import org.testifyproject.MockProvider;
 
 /**
  * A custom HK2 injection resolve used to get and createFake service instances
@@ -57,53 +55,36 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
 
     @Override
     public Object resolve(Injectee injectee, ServiceHandle root) {
-        Type requiredType = injectee.getRequiredType();
-        ActiveDescriptor<?> injecteeDescriptor = injectee.getInjecteeDescriptor();
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        MockProvider mockProvider = testContext.getMockProvider();
-        Object testInstance = testContext.getTestInstance();
-        Optional<CutDescriptor> cutDescriptor = testContext.getCutDescriptor();
+        return testContext.getSutDescriptor().map(sutDescriptor -> {
+            TestDescriptor testDescriptor = testContext.getTestDescriptor();
+            MockProvider mockProvider = testContext.getMockProvider();
+            Object testInstance = testContext.getTestInstance();
+            Type requiredType = injectee.getRequiredType();
 
-        if (cutDescriptor.isPresent()) {
             for (FieldDescriptor fieldDescriptor : testDescriptor.getFieldDescriptors()) {
-                if (!fieldDescriptor.getFake().isPresent()) {
-                    continue;
-                }
+                if (fieldDescriptor.getFake().isPresent()) {
+                    Type fieldType = fieldDescriptor.getGenericType();
+                    Optional<Object> foundValue = fieldDescriptor.getValue(testInstance);
 
-                Class<?> fieldDescriptorType = fieldDescriptor.getType();
-                TypeToken<?> fieldDescriptorToken = TypeToken.of(fieldDescriptor.getGenericType());
-
-                Class<?> rawType = getRawType(fieldDescriptorToken, fieldDescriptorType);
-                TypeToken<?> rawTypeToken = TypeToken.of(rawType);
-
-                if (rawTypeToken.isSupertypeOf(requiredType)) {
-                    Optional<Object> value = fieldDescriptor.getValue(testInstance);
-                    Object instance;
-
-                    if (value.isPresent()) {
-                        instance = value.get();
-
-                        if (!mockProvider.isMock(instance)) {
-                            instance = mockProvider.createVirtual(fieldDescriptorType, instance);
-                        }
-                    } else {
-                        instance = mockProvider.createFake(fieldDescriptorType);
+                    if (TypeToken.of(fieldType).isSupertypeOf(requiredType) && foundValue.isPresent()) {
+                        return foundValue.get();
+                    } else if (getRawTypeToken(fieldType).isSupertypeOf(requiredType)) {
+                        return mockProvider.createFake(TypeToken.of(requiredType).getRawType());
                     }
-
-                    return instance;
                 }
             }
 
-        }
+            return null;
+        }).orElseGet(() -> findThreeThirtyService(injectee, root));
 
-        return findThreeThirtyService(injectee, root);
     }
 
     Object findThreeThirtyService(Injectee injectee, ServiceHandle root) {
-        //TODO: we need to be able to get the acutal injectee resolver for types
+        //TODO: we need to be able to get the asutal injectee resolver for types
         //other than @Inject. HK2 no longer provides ability to do that via API
         //will file a bug.
-        InjectionResolver threeThirtyResolver = serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME);
+        InjectionResolver threeThirtyResolver
+                = serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME);
 
         return threeThirtyResolver.resolve(injectee, root);
     }
@@ -119,14 +100,14 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
     }
 
     /**
-     * GIven a type token and default type determine the raw type of the type
-     * token by spring supported generic classes.
+     * Given a type determine the raw type.
      *
-     * @param typeToken the type token that will be inspected
-     * @return the raw type
+     * @param type the type whose raw type is being determined
+     * @return the raw type, or the original type
      */
-    Class<?> getRawType(TypeToken<?> typeToken, Class<?> fieldDescriptorType) {
-        Class<?> rawType = fieldDescriptorType;
+    TypeToken getRawTypeToken(Type type) {
+        TypeToken typeToken = TypeToken.of(type);
+        Class rawType = typeToken.getRawType();
 
         if (typeToken.isSubtypeOf(IterableProvider.class)) {
             TypeVariable<Class<IterableProvider>> paramType = IterableProvider.class.getTypeParameters()[0];
@@ -136,7 +117,7 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
             rawType = typeToken.resolveType(paramType).getRawType();
         }
 
-        return rawType;
+        return TypeToken.of(rawType);
     }
 
 }

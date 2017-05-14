@@ -21,32 +21,18 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.3</version>
     </parent>
 
     <artifactId>unit-test</artifactId>
     <name>Unit Test</name>
-    <description>A module that contains a JUnit test runner for running unit tests</description>
+    <description>A meta module that points to junit4-core module which contains a JUnit test runner for running unit tests</description>
 
     <dependencies>
         <dependency>
             <groupId>org.testifyproject.junit4</groupId>
             <artifactId>junit4-core</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testifyproject</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testifyproject.level</groupId>
-            <artifactId>unit</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
 </project>

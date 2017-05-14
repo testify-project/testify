@@ -21,27 +21,36 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.RequiresContainer;
-import org.testifyproject.annotation.RequiresResource;
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  * A descriptor class used to access or perform operations on a test class.
  *
  * @author saden
  */
+@ToString(doNotUseGetters = true)
+@EqualsAndHashCode(doNotUseGetters = true)
 public class DefaultTestDescriptor implements TestDescriptor {
 
     private final Map<String, Object> properties;
     private final Class<?> testClass;
+
+    DefaultTestDescriptor(Class<?> testClass, Map<String, Object> properties) {
+        this.testClass = testClass;
+        this.properties = properties;
+    }
 
     /**
      * Create a new test descriptors for the given test class.
@@ -53,9 +62,15 @@ public class DefaultTestDescriptor implements TestDescriptor {
         return new DefaultTestDescriptor(testClass, new HashMap<>());
     }
 
-    DefaultTestDescriptor(Class<?> testClass, Map<String, Object> properties) {
-        this.testClass = testClass;
-        this.properties = properties;
+    /**
+     * Create a new test descriptors for the given test class.
+     *
+     * @param testClass the test class the test descriptor describes
+     * @param properties the underlying properties
+     * @return a test descriptor instance
+     */
+    public static TestDescriptor of(Class<?> testClass, Map<String, Object> properties) {
+        return new DefaultTestDescriptor(testClass, properties);
     }
 
     @Override
@@ -84,8 +99,8 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public Optional<Field> getCutField() {
-        return findProperty(TestDescriptorProperties.CUT_FIELD);
+    public Optional<Field> getSutField() {
+        return findProperty(TestDescriptorProperties.SUT_FIELD);
     }
 
     @Override
@@ -99,13 +114,18 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<RequiresResource> getRequiresResources() {
-        return findList(TestDescriptorProperties.REQUIRES_RESOURCES);
+    public List<LocalResource> getLocalResources() {
+        return findList(TestDescriptorProperties.LOCAL_RESOURCES);
     }
 
     @Override
-    public List<RequiresContainer> getRequiresContainers() {
-        return findList(TestDescriptorProperties.REQUIRES_CONTAINERS);
+    public List<VirtualResource> getVirtualResources() {
+        return findList(TestDescriptorProperties.VIRTUAL_RESOURCES);
+    }
+
+    @Override
+    public List<RemoteResource> getRemoteResources() {
+        return findList(TestDescriptorProperties.REMOTE_RESOURCES);
     }
 
     @Override
@@ -125,23 +145,23 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
+                = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
-        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+        FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);
 
-        if (fieldDescriptor == null) {
+        if (foundFieldDescriptor == null) {
             //TODO: Not sure if we should be this lose in the event we don't
             //find a matching field descriptor. Need to evaluate if this code
             //is useful or harmful.
-            fieldDescriptor = fieldDescriptors.values()
-                    .parallelStream()
-                    .filter(p -> p.isSupertypeOf(type))
+            foundFieldDescriptor = fieldDescriptors.values().parallelStream()
+                    .filter(fieldDescriptor -> fieldDescriptor.isSupertypeOf(type))
                     .findFirst()
                     .orElse(null);
         }
 
-        return ofNullable(fieldDescriptor);
+        return ofNullable(foundFieldDescriptor);
     }
 
     @Override
@@ -150,44 +170,17 @@ public class DefaultTestDescriptor implements TestDescriptor {
                 = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
-        FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
+        FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);
 
-        return ofNullable(fieldDescriptor);
+        return ofNullable(foundFieldDescriptor);
     }
 
     @Override
     public Optional<MethodDescriptor> findConfigHandler(Type parameterType) {
         return getConfigHandlers()
                 .parallelStream()
-                .filter(p -> p.hasParameterTypes(parameterType))
+                .filter(methodDescriptor -> methodDescriptor.hasParameterTypes(parameterType))
                 .findFirst();
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.testClass);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultTestDescriptor other = (DefaultTestDescriptor) obj;
-        return Objects.equals(this.testClass, other.testClass);
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultTestDescriptor{" + "testClass=" + testClass + '}';
     }
 
 }

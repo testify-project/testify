@@ -27,7 +27,7 @@ import org.testifyproject.trait.MethodTrait;
 public interface MethodDescriptor extends MethodTrait {
 
     /**
-     * The instance object.
+     * The instance object associated with the method descriptor.
      *
      * @return an optional containing the instance, empty optional otherwise
      */

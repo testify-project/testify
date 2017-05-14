@@ -19,17 +19,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.beans.BeansException;
 import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.support.BeanDefinitionDefaults;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -39,9 +38,8 @@ import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
-import org.testifyproject.core.DefaultServiceProvider;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
@@ -53,14 +51,14 @@ import org.testifyproject.guava.common.reflect.TypeToken;
  *
  * @author saden
  */
+@ToString(of = "context")
+@EqualsAndHashCode(of = "context")
 public class SpringServiceInstance implements ServiceInstance {
 
-    private final static Set<Class<? extends Annotation>> INJECT_ANNOTATIONS;
-    private final static Set<Class<? extends Annotation>> NAME_QUALIFIER;
-    private final static Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
+    private static final Set<Class<? extends Annotation>> NAME_QUALIFIER;
+    private static final Set<Class<? extends Annotation>> CUSTOM_QUALIFIER;
 
     static {
-        INJECT_ANNOTATIONS = ImmutableSet.of(Inject.class, Autowired.class, Real.class);
         NAME_QUALIFIER = ImmutableSet.of(Named.class, Qualifier.class);
         CUSTOM_QUALIFIER = ImmutableSet.of(javax.inject.Qualifier.class, Qualifier.class);
     }
@@ -118,83 +116,89 @@ public class SpringServiceInstance implements ServiceInstance {
 
     @Override
     public <T> T getService(Type type, Annotation... qualifiers) {
-        TypeToken<?> token = TypeToken.of(type);
-        Class rawType = token.getRawType();
+        TypeToken token = TypeToken.of(type);
 
         //if the desired type is the application context itself then return it
         if (token.isSupertypeOf(context.getClass())) {
             return (T) context;
         }
 
-        Object instance = null;
+        Object instance;
 
         if (qualifiers == null || qualifiers.length == 0) {
-            if (token.isSubtypeOf(Provider.class)) {
-                rawType = token.resolveType(Provider.class.getTypeParameters()[0]).getRawType();
-                instance = DefaultServiceProvider.of(this, rawType);
-            } else if (token.isSubtypeOf(Optional.class)) {
-                rawType = token.resolveType(Optional.class.getTypeParameters()[0]).getRawType();
-                instance = Optional.ofNullable(context.getBean(rawType));
-            } else if (token.isSubtypeOf(Map.class)) {
-                rawType = token.resolveType(Map.class.getTypeParameters()[1]).getRawType();
-                instance = context.getBeansOfType(rawType);
-            } else if (token.isSubtypeOf(Set.class)) {
-                rawType = token.resolveType(Set.class.getTypeParameters()[0]).getRawType();
-                instance = context.getBeansOfType(rawType)
-                        .values()
-                        .stream()
-                        .collect(toSet());
-            } else if (token.isSubtypeOf(List.class)) {
-                rawType = token.resolveType(List.class.getTypeParameters()[0]).getRawType();
-                instance = context.getBeansOfType(rawType)
-                        .values()
-                        .stream()
-                        .collect(toList());
-            } else if (rawType.isInterface()) {
-                try {
-                    instance = context.getBean(rawType);
-                } catch (BeansException e) {
-                    //we could find the bean by its raw type. maybe this bean is
-                    //a dynamically created bean so lets try another method to
-                    //find the bean by looking at all possible beans of that type
-                    //and returning the first one.
-                    Optional result = context.getBeansOfType(rawType)
-                            .values()
-                            .stream()
-                            .findFirst();
-
-                    if (result.isPresent()) {
-                        instance = result.get();
-                    }
-
-                    //TODO: maybe we should throw an error here instead of the
-                    //returning null?
-                }
-
-            } else {
-                instance = context.getBean(rawType);
-            }
-
+            instance = getInstance(token);
         } else {
-            Annotation annotation = qualifiers[0];
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-            String[] beanNames = context.getBeanNamesForAnnotation(annotationType);
-
-            for (String beanName : beanNames) {
-                Class<?> beanType = context.getType(beanName);
-                if (token.isSupertypeOf(beanType)) {
-                    instance = context.getBean(beanName, beanType);
-                    break;
-                }
-            }
-
-            if (instance == null) {
-
-            }
-
+            instance = getQualifiedInstance(qualifiers, token);
         }
 
         return (T) instance;
+    }
+
+    Object getQualifiedInstance(Annotation[] qualifiers, TypeToken token) {
+        Object instance = null;
+
+        Annotation annotation = qualifiers[0];
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        String[] beanNames = context.getBeanNamesForAnnotation(annotationType);
+        for (String beanName : beanNames) {
+            Class<?> beanType = context.getType(beanName);
+            if (token.isSupertypeOf(beanType)) {
+                instance = context.getBean(beanName, beanType);
+                break;
+            }
+        }
+        return instance;
+    }
+
+    Object getInstance(TypeToken token) {
+        Object instance = null;
+        Class rawType = token.getRawType();
+
+        if (token.isSubtypeOf(Provider.class)) {
+            rawType = token.resolveType(Provider.class.getTypeParameters()[0]).getRawType();
+            instance = SpringDefaultProvider.of(this, rawType);
+        } else if (token.isSubtypeOf(Optional.class)) {
+            rawType = token.resolveType(Optional.class.getTypeParameters()[0]).getRawType();
+            instance = Optional.ofNullable(context.getBean(rawType));
+        } else if (token.isSubtypeOf(Map.class)) {
+            rawType = token.resolveType(Map.class.getTypeParameters()[1]).getRawType();
+            instance = context.getBeansOfType(rawType);
+        } else if (token.isSubtypeOf(Set.class)) {
+            rawType = token.resolveType(Set.class.getTypeParameters()[0]).getRawType();
+            instance = context.getBeansOfType(rawType)
+                    .values()
+                    .stream()
+                    .collect(toSet());
+        } else if (token.isSubtypeOf(List.class)) {
+            rawType = token.resolveType(List.class.getTypeParameters()[0]).getRawType();
+            instance = context.getBeansOfType(rawType)
+                    .values()
+                    .stream()
+                    .collect(toList());
+        } else if (rawType.isInterface()) {
+            try {
+                instance = context.getBean(rawType);
+            } catch (BeansException e) {
+                LoggingUtil.INSTANCE.debug("Could not find bean", e);
+                //we could find the bean by its raw type. maybe this bean is
+                //a dynamically created bean so lets try another method to
+                //find the bean by looking at all possible beans of that type
+                //and returning the first one.
+                Optional result = context.getBeansOfType(rawType)
+                        .values()
+                        .stream()
+                        .findFirst();
+
+                if (result.isPresent()) {
+                    instance = result.get();
+                }
+            }
+
+        } else {
+            instance = context.getBean(rawType);
+        }
+
+        return instance;
     }
 
     @Override
@@ -212,24 +216,35 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public void replace(Object instance, String name, Class contract) {
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
-        Class instanceType = instance.getClass();
 
-        if (contract != null) {
+        if (name != null && contract != null) {
+            if (beanFactory.containsBean(name)) {
+                beanFactory.removeBeanDefinition(name);
+            }
+
             //XXX: find and remove all the beans that implment the given contract
             String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, contract, true, false);
+
             for (String beanName : contractBeanNames) {
                 beanFactory.removeBeanDefinition(beanName);
             }
-        }
+        } else if (name != null) {
+            if (beanFactory.containsBean(name)) {
+                beanFactory.removeBeanDefinition(name);
+            }
+        } else if (contract != null) {
+            //XXX: find and remove all the beans that implment the given contract
+            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, contract, true, false);
 
-        //XXX: find and remove all the beans of the given instance type
-        String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, instanceType, true, false);
-        for (String beanName : typeBeanNames) {
-            beanFactory.removeBeanDefinition(beanName);
-        }
-
-        if (name != null && beanFactory.containsBean(name)) {
-            beanFactory.removeBeanDefinition(name);
+            for (String beanName : contractBeanNames) {
+                beanFactory.removeBeanDefinition(beanName);
+            }
+        } else {
+            //XXX: find and remove all the beans of the given instance type
+            String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, instance.getClass(), true, false);
+            for (String beanName : typeBeanNames) {
+                beanFactory.removeBeanDefinition(beanName);
+            }
         }
 
         addConstant(instance, name, contract);
@@ -238,13 +253,11 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public void addModules(Module... modules) {
         BeanDefinitionRegistry registry = (BeanDefinitionRegistry) context;
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
         AnnotatedBeanDefinitionReader annotatedBeanDefinitionReader = new AnnotatedBeanDefinitionReader(registry);
 
         for (Module module : modules) {
             annotatedBeanDefinitionReader.registerBean(module.value());
         }
-
     }
 
     @Override
@@ -260,11 +273,6 @@ public class SpringServiceInstance implements ServiceInstance {
     }
 
     @Override
-    public Set<Class<? extends Annotation>> getInjectionAnnotations() {
-        return INJECT_ANNOTATIONS;
-    }
-
-    @Override
     public Set<Class<? extends Annotation>> getNameQualifers() {
         return NAME_QUALIFIER;
     }
@@ -272,34 +280,6 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public Set<Class<? extends Annotation>> getCustomQualifiers() {
         return CUSTOM_QUALIFIER;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.context);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SpringServiceInstance other = (SpringServiceInstance) obj;
-
-        return Objects.equals(this.context, other.context);
-    }
-
-    @Override
-    public String toString() {
-        return "SpringServiceInstance{" + "context=" + context + '}';
     }
 
 }

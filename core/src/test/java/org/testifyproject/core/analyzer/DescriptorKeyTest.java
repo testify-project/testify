@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class DescriptorKeyTest {
 
-    DescriptorKey cut;
+    DescriptorKey sut;
 
     Class type;
     String name;
@@ -35,71 +35,71 @@ public class DescriptorKeyTest {
         type = Object.class;
         name = "name";
 
-        cut = DescriptorKey.of(type, name);
+        sut = DescriptorKey.of(type, name);
     }
 
     @Test
-    public void validateCut() {
-        assertThat(cut).isNotNull();
-        assertThat(cut.getType()).isEqualTo(type);
-        assertThat(cut.getName()).isEqualTo(name);
+    public void validateSut() {
+        assertThat(sut).isNotNull();
+        assertThat(sut.getType()).isEqualTo(type);
+        assertThat(sut.getName()).isEqualTo(name);
     }
 
     @Test
     public void givenDescriptorKeyOfTypeShouldReturn() {
-        cut = DescriptorKey.of(type);
+        sut = DescriptorKey.of(type);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getType()).isEqualTo(type);
-        assertThat(cut.getName()).isNull();
+        assertThat(sut).isNotNull();
+        assertThat(sut.getType()).isEqualTo(type);
+        assertThat(sut.getName()).isNull();
     }
 
     @Test
     public void givenDescriptorKeyOfTypeAndNameShouldReturn() {
-        cut = DescriptorKey.of(type, name);
+        sut = DescriptorKey.of(type, name);
 
-        assertThat(cut).isNotNull();
-        assertThat(cut.getType()).isEqualTo(type);
-        assertThat(cut.getName()).isEqualTo(name);
+        assertThat(sut).isNotNull();
+        assertThat(sut.getType()).isEqualTo(type);
+        assertThat(sut.getName()).isEqualTo(name);
     }
 
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
-        assertThat(cut).isNotEqualTo(null);
+        assertThat(sut).isNotEqualTo(null);
     }
 
     @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 
-        assertThat(cut).isNotEqualTo(differentType);
-        assertThat(cut.hashCode()).isNotEqualTo(differentType.hashCode());
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
     }
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         DescriptorKey unequal = DescriptorKey.of(type, null);
 
-        assertThat(cut).isNotEqualTo(unequal);
-        assertThat(cut.hashCode()).isNotEqualTo(unequal.hashCode());
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
     }
 
     @Test
     public void givenSameInstancesShouldBeEqual() {
-        assertThat(cut).isEqualTo(cut);
+        assertThat(sut).isEqualTo(sut);
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         DescriptorKey equal = DescriptorKey.of(type, name);
 
-        assertThat(cut).isEqualTo(equal);
-        assertThat(cut.hashCode()).isEqualTo(equal.hashCode());
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
-        String result = cut.toString();
+        String result = sut.toString();
 
         assertThat(result).contains("DescriptorKey", "type", "name");
     }

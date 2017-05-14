@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.GreeterApplication;
 import org.testifyproject.junit4.fixture.service.GreetingService;
@@ -34,8 +34,8 @@ import org.testifyproject.junit4.fixture.service.GreetingService;
 @Application(GreeterApplication.class)
 public class GreetingResourceWebTargetST {
 
-    @Cut
-    WebTarget cut;
+    @Sut
+    WebTarget sut;
 
     @Fake
     GreetingService greetingService;
@@ -48,7 +48,7 @@ public class GreetingResourceWebTargetST {
         willDoNothing().given(greetingService).save(phrase);
 
         //Act
-        Response result = cut.path("/")
+        Response result = sut.path("/")
                 .request()
                 .post(Entity.json(phrase));
 

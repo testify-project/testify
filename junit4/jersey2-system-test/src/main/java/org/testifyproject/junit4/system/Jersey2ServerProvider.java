@@ -15,35 +15,25 @@
  */
 package org.testifyproject.junit4.system;
 
+import static java.lang.String.format;
 import java.net.URI;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.bytebuddy.ByteBuddy;
-import org.testifyproject.bytebuddy.description.type.TypeDescription;
-import org.testifyproject.bytebuddy.dynamic.ClassFileLocator;
-import org.testifyproject.bytebuddy.dynamic.DynamicType;
-import org.testifyproject.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import static org.testifyproject.bytebuddy.implementation.MethodDelegation.to;
-import org.testifyproject.bytebuddy.implementation.bind.MethodNameEqualityResolver;
-import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
-import static org.testifyproject.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
-import static org.testifyproject.bytebuddy.matcher.ElementMatchers.not;
-import org.testifyproject.bytebuddy.pool.TypePool;
 import org.testifyproject.core.DefaultServerInstance;
 import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -54,106 +44,70 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, HttpServer> {
 
-    private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
-    private static final Map<String, DynamicType.Loaded<?>> REBASED_CLASSES = new ConcurrentHashMap<>();
-    private static final TestContextHolder TEST_CONTEXT_HOLDER = TestContextHolder.INSTANCE;
+    private static final String DEFAULT_URI_FORMAT = "%s://%s:%d%s";
+    private static final String DEFAULT_SCHEME = "http";
+    private static final String DEFAULT_HOST = "0.0.0.0";
+    private static final int DEFAULT_PORT = 0;
+    private static final String DEFAULT_PATH = "/";
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
     public ResourceConfig configure(TestContext testContext) {
-        try {
-            TEST_CONTEXT_HOLDER.set(testContext);
+        TestContextHolder.INSTANCE.set(testContext);
 
-            Jerset2Interceptor interceptor = new Jerset2Interceptor(TEST_CONTEXT_HOLDER);
+        String className = "org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory";
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Jerset2Interceptor interceptor = new Jerset2Interceptor(TestContextHolder.INSTANCE);
+        ReflectionUtil.INSTANCE.rebase(className, classLoader, interceptor);
 
-            ClassFileLocator locator = ClassFileLocator.ForClassLoader.ofClassPath();
-            TypePool typePool = TypePool.Default.ofClassPath();
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
-            String httpServerClassName = "org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory";
+        Optional<Application> foundApplication = testDescriptor.getApplication();
+        ResourceConfig resourceConfig = null;
 
-            REBASED_CLASSES.computeIfAbsent(httpServerClassName, p -> {
-                TypeDescription typeDescription = typePool.describe(p).resolve();
+        if (foundApplication.isPresent()) {
+            Application application = foundApplication.get();
 
-                return BYTE_BUDDY
-                        .rebase(typeDescription, locator)
-                        .method(not(isDeclaredBy(Object.class)))
-                        .intercept(to(interceptor)
-                                .filter(not(isDeclaredBy(Object.class)))
-                                .defineAmbiguityResolver(
-                                        MethodNameEqualityResolver.INSTANCE,
-                                        BindingPriority.Resolver.INSTANCE)
-                        )
-                        .make()
-                        .load(classLoader, ClassLoadingStrategy.Default.INJECTION);
-            });
-
-            Application app = testContext.getTestDescriptor().getApplication().get();
-
-            ResourceConfig resourceConfig = (ResourceConfig) app.value().newInstance();
-            Jersey2ApplicationListener listener = new Jersey2ApplicationListener(TEST_CONTEXT_HOLDER);
+            resourceConfig = (ResourceConfig) ReflectionUtil.INSTANCE.newInstance(application.value());
+            Jersey2ApplicationListener listener = new Jersey2ApplicationListener(TestContextHolder.INSTANCE);
             resourceConfig.register(listener);
-
-            resourceConfig = testContext.getTestReifier().configure(testContext, resourceConfig);
-
-            return resourceConfig;
-        } catch (Throwable t) {
-            throw new IllegalStateException(t);
         }
+
+        return testConfigurer.configure(testContext, resourceConfig);
     }
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public ServerInstance<HttpServer> start(ResourceConfig configuration) {
-        try {
-            TestContext testContext = TEST_CONTEXT_HOLDER.get().get();
+    public ServerInstance<HttpServer> start(TestContext testContext, ResourceConfig configuration) {
+        URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PATH));
+        // create and start a new instance of grizzly http server
+        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, configuration, true);
 
+        Optional<NetworkListener> foundListener = server.getListeners().stream().findFirst();
+        ServerInstance serverInstance = null;
+
+        if (foundListener.isPresent()) {
+            NetworkListener networkListener = foundListener.get();
+            String host = networkListener.getHost();
+            int port = networkListener.getPort();
+
+            URI asutalURI = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, host, port, DEFAULT_PATH));
+
+            serverInstance = DefaultServerInstance.of(asutalURI, server);
+
+            testContext.addProperty(APP_SERVLET_CONTAINER, server);
             testContext.addProperty(APP, configuration);
             testContext.addProperty(APP_NAME, testContext.getName());
-
-            URI uri = new URI("http",
-                    null,
-                    "0.0.0.0",
-                    0,
-                    "/",
-                    null,
-                    null);
-
-            // create and start a new instance of grizzly http server
-            // exposing the Jersey application at BASE_URI
-            HttpServer container = GrizzlyHttpServerFactory.createHttpServer(uri, configuration);
-            testContext.addProperty(APP_SERVLET_CONTAINER, container);
-            container.start();
-            NetworkListener network = container.getListeners().stream().findFirst().get();
-
-            String host = network.getHost();
-            int port = network.getPort();
-
-            URI baseUri = new URI("http",
-                    null,
-                    host,
-                    port,
-                    "/",
-                    null,
-                    null);
-
-            return DefaultServerInstance.of(baseUri, container);
-        } catch (Throwable e) {
-            throw new IllegalStateException("Could not start Jersey 2 Application", e);
         }
+
+        return serverInstance;
     }
 
     @Override
-    public void stop() {
-        try {
-            TestContext testContext = TEST_CONTEXT_HOLDER.get().get();
-            Optional<HttpServer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
-            HttpServer httpServer = servletContainer.get();
-            httpServer.shutdown().get();
-            TEST_CONTEXT_HOLDER.remove();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
+    public void stop(TestContext testContext, ServerInstance<HttpServer> serverInstance) {
+        HttpServer httpServer = serverInstance.getInstance();
+        httpServer.shutdownNow();
     }
 
 }

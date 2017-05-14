@@ -15,8 +15,7 @@
  */
 package org.testifyproject.junit4.fixture.common;
 
-import org.testifyproject.annotation.Cut;
-import org.testifyproject.junit4.fixture.common.CutClass;
+import org.testifyproject.annotation.Sut;
 
 /**
  *
@@ -24,6 +23,6 @@ import org.testifyproject.junit4.fixture.common.CutClass;
  */
 public class TestClass {
 
-    @Cut
-    CutClass cut;
+    @Sut
+    SutClass sut;
 }

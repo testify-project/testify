@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.PrimaryTestService;
 
 /**
@@ -33,36 +34,36 @@ import org.testifyproject.fixture.PrimaryTestService;
  */
 public class MethodTraitTest {
 
-    MethodTrait cut;
+    MethodTrait sut;
 
     @Before
     public void init() throws NoSuchMethodException {
-        cut = mock(MethodTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(MethodTrait.class, Answers.CALLS_REAL_METHODS);
         String methodName = "sayHello";
         Class<?>[] methodArgs = new Class[]{String.class};
 
         Method method = PrimaryTestService.class.getDeclaredMethod(methodName, methodArgs);
 
-        given(cut.getAnnotatedElement()).willReturn(method);
+        given(sut.getAnnotatedElement()).willReturn(method);
     }
 
     @Test
     public void callToGetAnnotatedElementShouldReturnField() {
-        Method result = cut.getAnnotatedElement();
+        Method result = sut.getAnnotatedElement();
 
         assertThat(result).isNotNull();
     }
 
     @Test
     public void callToGetParameterTypesShouldReturn() {
-        List<Class> result = cut.getParameterTypes();
+        List<Class> result = sut.getParameterTypes();
 
         assertThat(result).containsExactly(String.class);
     }
 
     @Test
     public void callToGetReturnTypeShouldReturn() {
-        Class<?> result = cut.getReturnType();
+        Class<?> result = sut.getReturnType();
 
         assertThat(result).isEqualTo(String.class);
     }
@@ -71,14 +72,14 @@ public class MethodTraitTest {
     public void givenNullHasParameterTypesShouldThrowException() {
         Type[] parameterTypes = null;
 
-        cut.hasParameterTypes(parameterTypes);
+        sut.hasParameterTypes(parameterTypes);
     }
 
     @Test
     public void givenNoParamterTypesHasParamterTypesShouldReturnFalse() {
         Type[] parameterTypes = new Type[]{};
 
-        Boolean result = cut.hasParameterTypes(parameterTypes);
+        Boolean result = sut.hasParameterTypes(parameterTypes);
 
         assertThat(result).isFalse();
     }
@@ -87,7 +88,7 @@ public class MethodTraitTest {
     public void givenInvalidParamterTypeHasParamterTypesShouldReturnFalse() {
         Type[] parameterTypes = new Type[]{Long.class};
 
-        Boolean result = cut.hasParameterTypes(parameterTypes);
+        Boolean result = sut.hasParameterTypes(parameterTypes);
 
         assertThat(result).isFalse();
     }
@@ -96,7 +97,7 @@ public class MethodTraitTest {
     public void givenValidParamterTypeHasParamterTypesShouldReturnTrue() {
         Type[] parameterTypes = new Type[]{String.class};
 
-        Boolean result = cut.hasParameterTypes(parameterTypes);
+        Boolean result = sut.hasParameterTypes(parameterTypes);
 
         assertThat(result).isTrue();
     }
@@ -106,22 +107,22 @@ public class MethodTraitTest {
         Object instance = null;
         Object[] methodArgs = new Object[]{"Marvin"};
 
-        cut.invoke(instance, methodArgs);
+        sut.invoke(instance, methodArgs);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenNoArgumentsInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
 
-        cut.invoke(instance);
+        sut.invoke(instance);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = TestifyException.class)
     public void givenWrongArgumentTypeInvokeShouldThrowException() {
         Object instance = new PrimaryTestService();
         Object[] methodArgs = new Object[]{24};
 
-        cut.invoke(instance, methodArgs);
+        sut.invoke(instance, methodArgs);
     }
 
     @Test
@@ -129,7 +130,7 @@ public class MethodTraitTest {
         Object instance = new PrimaryTestService();
         Object[] methodArgs = new Object[]{"Marvin"};
 
-        Optional<String> result = cut.invoke(instance, methodArgs);
+        Optional<String> result = sut.invoke(instance, methodArgs);
 
         assertThat(result).contains("Hello Marvin!");
     }

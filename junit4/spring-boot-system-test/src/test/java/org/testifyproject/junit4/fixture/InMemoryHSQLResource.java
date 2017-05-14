@@ -17,21 +17,21 @@ package org.testifyproject.junit4.fixture;
 
 import static java.lang.String.format;
 import java.sql.Connection;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.hsqldb.jdbc.JDBCDataSource;
-import org.testifyproject.ResourceInstance;
-import org.testifyproject.ResourceProvider;
+import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.core.ResourceInstanceBuilder;
+import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.core.LocalResourceInstanceBuilder;
 
 /**
- * An implementation of ResourceProvider that provides an in-memory HSQL
+ * An implementation of LocalResourceProvider that provides an in-memory HSQL
  * DataSource and connection.
  *
  * @author saden
  */
-public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, DataSource, Connection> {
+public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSource, DataSource, Connection> {
 
     private JDBCDataSource server;
     private Connection client;
@@ -47,30 +47,26 @@ public class InMemoryHSQLResource implements ResourceProvider<JDBCDataSource, Da
     }
 
     @Override
-    public ResourceInstance<DataSource, Connection> start(TestContext testContext, JDBCDataSource dataSource) {
-        try {
-            server = dataSource;
-            client = dataSource.getConnection();
+    public LocalResourceInstance<DataSource, Connection> start(TestContext testContext,
+            LocalResource localResource,
+            JDBCDataSource dataSource)
+            throws Exception {
+        server = dataSource;
+        client = dataSource.getConnection();
 
-            return ResourceInstanceBuilder.builder()
-                    .server(server, "inmemoryHSQLDataSource", DataSource.class)
-                    .client(client, "inmemoryHSQLConnection", Connection.class)
-                    .build();
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
-        }
+        return LocalResourceInstanceBuilder.builder()
+                .resource(server, "inmemoryHSQLDataSource", DataSource.class)
+                .client(client, "inmemoryHSQLConnection", Connection.class)
+                .build();
+
     }
 
     @Override
-    public void stop() {
-        try {
-            server.getConnection()
-                    .createStatement()
-                    .executeQuery("SHUTDOWN");
-            client.close();
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
-        }
+    public void stop(TestContext testContext, LocalResource localResource)
+            throws Exception {
+        server.getConnection()
+                .createStatement()
+                .executeQuery("SHUTDOWN");
+        client.close();
     }
-
 }

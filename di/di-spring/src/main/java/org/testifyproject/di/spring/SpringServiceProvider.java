@@ -15,15 +15,12 @@
  */
 package org.testifyproject.di.spring;
 
-import java.util.List;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -47,14 +44,14 @@ public class SpringServiceProvider implements ServiceProvider<ConfigurableApplic
     }
 
     @Override
-    public ServiceInstance configure(TestContext testContext, ConfigurableApplicationContext serviceContext) {
-        serviceContext.setId(testContext.getName());
+    public ServiceInstance configure(TestContext testContext, ConfigurableApplicationContext applicationContext) {
+        SpringServiceInstance serviceInstance = new SpringServiceInstance(applicationContext);
+        SpringBeanFactoryPostProcessor postProcessor
+                = new SpringBeanFactoryPostProcessor(testContext, serviceInstance);
 
-        SpringServiceInstance serviceInstance = new SpringServiceInstance(serviceContext);
-
-        SpringBeanFactoryPostProcessor requiresPostProcessor = new SpringBeanFactoryPostProcessor(testContext, serviceInstance);
-        serviceContext.addBeanFactoryPostProcessor(requiresPostProcessor);
-        serviceContext.addApplicationListener(requiresPostProcessor);
+        applicationContext.setId(testContext.getName());
+        applicationContext.addBeanFactoryPostProcessor(postProcessor);
+        applicationContext.addApplicationListener(postProcessor);
 
         return serviceInstance;
     }
@@ -62,17 +59,12 @@ public class SpringServiceProvider implements ServiceProvider<ConfigurableApplic
     @Override
     public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        List<Module> modules = testDescriptor.getModules();
 
-        if (!modules.isEmpty()) {
-            modules.stream().forEach(serviceInstance::addModules);
-        }
+        testDescriptor.getModules().stream()
+                .forEach(serviceInstance::addModules);
 
-        List<Scan> scans = testDescriptor.getScans();
-
-        if (!scans.isEmpty()) {
-            scans.stream().forEach(serviceInstance::addScans);
-        }
+        testDescriptor.getScans().stream()
+                .forEach(serviceInstance::addScans);
     }
 
 }

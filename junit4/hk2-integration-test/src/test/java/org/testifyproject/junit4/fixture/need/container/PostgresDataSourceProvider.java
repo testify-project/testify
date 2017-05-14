@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.Rank;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.testifyproject.ContainerInstance;
+import org.testifyproject.VirtualResourceInstance;
 
 /**
  * A provider of a JDBC Postgres test DataSource. Note that we don't annotate
@@ -34,19 +34,19 @@ import org.testifyproject.ContainerInstance;
 @Rank(Integer.MAX_VALUE)
 public class PostgresDataSourceProvider implements Factory<DataSource> {
 
-    private final ContainerInstance containerInstance;
+    private final VirtualResourceInstance virtualResourceInstance;
 
     @Inject
-    PostgresDataSourceProvider(@Named("postgres") ContainerInstance containerInstance) {
-        this.containerInstance = containerInstance;
+    PostgresDataSourceProvider(@Named("postgres") VirtualResourceInstance virtualResourceInstance) {
+        this.virtualResourceInstance = virtualResourceInstance;
     }
 
     @Singleton
     @Override
     public DataSource provide() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(containerInstance.getAddress().getHostName());
-        dataSource.setPortNumber(containerInstance.findFirstExposedPort().get());
+        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
+        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

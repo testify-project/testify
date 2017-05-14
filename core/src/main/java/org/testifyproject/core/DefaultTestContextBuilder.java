@@ -19,12 +19,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestReifier;
 import org.testifyproject.TestRunner;
-import org.testifyproject.MockProvider;
 
 public class DefaultTestContextBuilder {
 
@@ -32,12 +32,12 @@ public class DefaultTestContextBuilder {
     private Object testInstance;
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
-    private TestReifier testReifier;
+    private TestConfigurer testConfigurer;
     private TestRunner testRunner;
     private MockProvider mockProvider;
 
-    private Map<String, Object> properties = new ConcurrentHashMap<>();
-    private Map<String, String> dependencies = Collections.EMPTY_MAP;
+    private final Map<String, Object> properties = new ConcurrentHashMap<>();
+    private Map<String, String> dependencies = Collections.emptyMap();
 
     /**
      * Create a new instance of DefaultTestContextBuilder.
@@ -63,7 +63,7 @@ public class DefaultTestContextBuilder {
         return this;
     }
 
-    public DefaultTestContextBuilder methodDescriptor(MethodDescriptor methodDescriptor) {
+    public DefaultTestContextBuilder testMethodDescriptor(MethodDescriptor methodDescriptor) {
         this.methodDescriptor = methodDescriptor;
         return this;
     }
@@ -73,8 +73,8 @@ public class DefaultTestContextBuilder {
         return this;
     }
 
-    public DefaultTestContextBuilder testReifier(TestReifier testReifier) {
-        this.testReifier = testReifier;
+    public DefaultTestContextBuilder testConfigurer(TestConfigurer testConfigurer) {
+        this.testConfigurer = testConfigurer;
         return this;
     }
 
@@ -84,7 +84,7 @@ public class DefaultTestContextBuilder {
     }
 
     public DefaultTestContextBuilder properties(Map<String, Object> properties) {
-        this.properties = properties;
+        this.properties.putAll(properties);
         return this;
     }
 
@@ -97,13 +97,13 @@ public class DefaultTestContextBuilder {
         DefaultTestContext testContext = new DefaultTestContext();
 
         testContext.setDependencies(dependencies);
-        testContext.setMethodDescriptor(methodDescriptor);
+        testContext.setTestMethodDescriptor(methodDescriptor);
         testContext.setMockProvider(mockProvider);
         testContext.setProperties(properties);
         testContext.setResourceStartStrategy(resourceStartStrategy);
         testContext.setTestDescriptor(testDescriptor);
         testContext.setTestInstance(testInstance);
-        testContext.setTestReifier(testReifier);
+        testContext.setTestConfigurer(testConfigurer);
         testContext.setTestRunner(testRunner);
 
         return testContext;

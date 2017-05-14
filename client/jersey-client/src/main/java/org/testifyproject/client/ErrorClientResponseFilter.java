@@ -19,11 +19,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Response;
-import org.testifyproject.trait.LoggingTrait;
+import org.testifyproject.core.util.ExceptionUtil;
 
 /**
  * A JAX-RS client response filter that stores server error responses in the
@@ -31,10 +32,11 @@ import org.testifyproject.trait.LoggingTrait;
  *
  * @author saden
  */
-public class ErrorClientResponseFilter implements ClientResponseFilter, LoggingTrait {
+public class ErrorClientResponseFilter implements ClientResponseFilter {
 
     @Override
-    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
+    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
+            throws IOException {
         URI uri = requestContext.getUri();
         Response.StatusType statusInfo = responseContext.getStatusInfo();
 
@@ -52,19 +54,23 @@ public class ErrorClientResponseFilter implements ClientResponseFilter, LoggingT
                     output.write(buffer, 0, length);
                 }
 
-                String resposneBody = output.toString("UTF-8");
-                error("Resource {} request failed due to '{} ({})':\n%s",
+                String resposneBody = output.toString(UTF_8.name());
+
+                ExceptionUtil.INSTANCE.raise(
+                        "Resource {} request failed due to '{} ({})':\n{}",
                         uri.getPath(),
                         statusInfo.getReasonPhrase(),
                         statusInfo.getStatusCode(),
-                        resposneBody);
+                        resposneBody
+                );
             } else {
-                error("Resource '{}' request failed due to '{} ({})'",
+                ExceptionUtil.INSTANCE.raise(
+                        "Resource '{}' request failed due to '{} ({})'",
                         uri.getPath(),
                         statusInfo.getReasonPhrase(),
-                        statusInfo.getStatusCode());
+                        statusInfo.getStatusCode()
+                );
             }
-
         }
     }
 }

@@ -23,8 +23,10 @@ import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.annotation.Cut;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Scan;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.IterableProviderGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.impl.Hello;
@@ -33,19 +35,20 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
  *
  * @author saden
  */
+@Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class IterableProviderGreeterFakeIT {
 
-    @Cut
-    IterableProviderGreeter cut;
+    @Sut
+    IterableProviderGreeter sut;
 
     @Fake
     IterableProvider<Greeting> greetings;
 
     @Test
     public void verifyInjection() {
-        assertThat(cut).isNotNull();
-        assertThat(greetings).isSameAs(cut.getGreetings());
+        assertThat(sut).isNotNull();
+        assertThat(greetings).isSameAs(sut.getGreetings());
         assertThat(Mockito.mockingDetails(greetings).isMock()).isTrue();
     }
 
@@ -57,7 +60,7 @@ public class IterableProviderGreeterFakeIT {
         given(greetings.get()).willReturn(hello);
         given(hello.phrase()).willReturn(phrase);
 
-        String result = cut.greet();
+        String result = sut.greet();
 
         assertThat(result).isEqualTo(phrase);
         verify(greetings).get();
