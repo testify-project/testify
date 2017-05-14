@@ -29,7 +29,7 @@ public class ImplicitType {
         this.hello = hello;
     }
 
-    public String exesute() {
+    public String execute() {
         return hello.greet();
 
     }

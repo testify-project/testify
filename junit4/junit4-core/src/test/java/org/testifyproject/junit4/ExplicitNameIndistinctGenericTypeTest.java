@@ -66,7 +66,7 @@ public class ExplicitNameIndistinctGenericTypeTest {
         given(englishInstance.greet()).willReturn(englishGreeting);
         given(spanishInstance.greet()).willReturn(spanishGreeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(englishGreeting + " " + spanishGreeting);
         verify(english).get();

@@ -81,20 +81,26 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
                 processResource(localResourceInstance, localResource, serviceInstance);
                 processClient(localResourceInstance, localResource, serviceInstance);
 
-                String resourceName = localResource.name();
-                Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
-
-                if (resourceName.isEmpty()) {
-                    serviceInstance.addConstant(localResourceInstance, null, resourceContract);
-                } else {
-                    serviceInstance.addConstant(localResourceInstance, resourceName, resourceContract);
-                }
+                addResource(localResourceInstance, localResource, serviceInstance);
 
                 localResourceProviders.put(localResource, localResourceProvider);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, resourceProviderType);
             }
         });
+    }
+
+    void addResource(LocalResourceInstance<?, ?> localResourceInstance,
+            LocalResource localResource,
+            ServiceInstance serviceInstance) {
+        String resourceName = localResource.name();
+        Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
+
+        if (resourceName.isEmpty()) {
+            serviceInstance.addConstant(localResourceInstance, null, resourceContract);
+        } else {
+            serviceInstance.addConstant(localResourceInstance, resourceName, resourceContract);
+        }
     }
 
     void processClient(LocalResourceInstance localResourceInstance,

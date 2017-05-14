@@ -24,7 +24,7 @@ public class DefaultConstructorType {
     DefaultConstructorType() {
     }
 
-    public String exesute() {
+    public String execute() {
         return "Hello!";
 
     }

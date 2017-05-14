@@ -40,7 +40,7 @@ public class DefaultConstructorTest {
     @Test
     public void givenNothingClassToExesuteShouldReturnHello() {
         String greeting = "Hello!";
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(greeting);
     }

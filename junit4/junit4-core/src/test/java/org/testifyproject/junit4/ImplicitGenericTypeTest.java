@@ -56,7 +56,7 @@ public class ImplicitGenericTypeTest {
         given(collaborator.get()).willReturn(hello);
         given(hello.greet()).willReturn(greeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(greeting);
         verify(collaborator).get();

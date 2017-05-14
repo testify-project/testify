@@ -32,7 +32,7 @@ public class ImplicitTypeDistinctTypes {
         this.world = world;
     }
 
-    public String exesute() {
+    public String execute() {
         return hello.greet() + " " + world.greet();
 
     }

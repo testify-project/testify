@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.reifier;
 
+import java.util.Optional;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ReflectionUtil;
@@ -41,10 +42,15 @@ public class RealFieldReifier implements FieldReifier {
                 .filter(p -> p.getReal().isPresent())
                 .forEach(fieldDescriptor -> {
                     Class<?> fieldType = fieldDescriptor.getType();
+                    Object fieldValue = null;
 
-                    Object fieldValue = fieldDescriptor.getValue(testInstance)
-                            .map(value -> value)
-                            .orElseGet(() -> ReflectionUtil.INSTANCE.newInstance(fieldType));
+                    Optional<Object> foundFieldValue = fieldDescriptor.getValue(testInstance);
+
+                    if (foundFieldValue.isPresent()) {
+                        fieldValue = foundFieldValue.get();
+                    } else if (!fieldType.isInterface()) {
+                        fieldValue = ReflectionUtil.INSTANCE.newInstance(fieldType);
+                    }
 
                     fieldDescriptor.setValue(testInstance, fieldValue);
                 });

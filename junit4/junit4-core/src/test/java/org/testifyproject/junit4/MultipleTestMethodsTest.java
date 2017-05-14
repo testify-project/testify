@@ -40,7 +40,7 @@ public class MultipleTestMethodsTest {
     @Test
     public void callToExesuteShouldReturnString1() {
         String greeting = "Hello!";
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(greeting);
     }
@@ -48,7 +48,7 @@ public class MultipleTestMethodsTest {
     @Test
     public void callToExesuteShouldReturnString2() {
         String greeting = "Hello!";
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(greeting);
     }

@@ -31,13 +31,13 @@ import org.testifyproject.TestContext;
  *
  * @author saden
  */
-public class TestFieldSutReifierTest {
+public class CreateSutReifierTest {
 
-    TestFieldSutReifier sut;
+    CreateSutReifier sut;
 
     @Before
     public void init() {
-        sut = new TestFieldSutReifier();
+        sut = new CreateSutReifier();
     }
 
     @Test(expected = NullPointerException.class)

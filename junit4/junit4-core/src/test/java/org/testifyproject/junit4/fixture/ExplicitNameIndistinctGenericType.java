@@ -32,7 +32,7 @@ public class ExplicitNameIndistinctGenericType {
         this.spanish = spanish;
     }
 
-    public String exesute() {
+    public String execute() {
         return english.get().greet() + " " + spanish.get().greet();
 
     }

@@ -50,7 +50,8 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
         this(ReflectionUtil.INSTANCE, new LinkedHashMap<>());
     }
 
-    DefaultRemoteResourceProvider(ReflectionUtil reflectionUtil, Map<RemoteResource, RemoteResourceProvider> remoteResourceProviders) {
+    DefaultRemoteResourceProvider(ReflectionUtil reflectionUtil,
+            Map<RemoteResource, RemoteResourceProvider> remoteResourceProviders) {
         this.reflectionUtil = reflectionUtil;
         this.remoteResourceProviders = remoteResourceProviders;
     }
@@ -78,21 +79,26 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
                         = remoteResourceProvider.start(testContext, remoteResource, configuration);
 
                 processClient(remoteResourceInstance, remoteResource, serviceInstance);
-
-                String resourceName = remoteResource.name();
-                Class<RemoteResourceInstance> resourceContract = RemoteResourceInstance.class;
-
-                if (resourceName.isEmpty()) {
-                    serviceInstance.addConstant(remoteResourceInstance, null, resourceContract);
-                } else {
-                    serviceInstance.addConstant(remoteResourceInstance, resourceName, resourceContract);
-                }
+                addResource(remoteResourceInstance, remoteResource, serviceInstance);
 
                 remoteResourceProviders.put(remoteResource, remoteResourceProvider);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, resourceProviderType);
             }
         });
+    }
+
+    void addResource(RemoteResourceInstance<?> remoteResourceInstance,
+            RemoteResource remoteResource,
+            ServiceInstance serviceInstance) {
+        String resourceName = remoteResource.name();
+        Class<RemoteResourceInstance> resourceContract = RemoteResourceInstance.class;
+
+        if (resourceName.isEmpty()) {
+            serviceInstance.addConstant(remoteResourceInstance, null, resourceContract);
+        } else {
+            serviceInstance.addConstant(remoteResourceInstance, resourceName, resourceContract);
+        }
     }
 
     void processClient(RemoteResourceInstance remoteResourceInstance,

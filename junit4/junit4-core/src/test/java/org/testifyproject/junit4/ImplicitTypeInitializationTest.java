@@ -58,7 +58,7 @@ public class ImplicitTypeInitializationTest {
         String helloGreeting = "Hello";
         given(hello.greet()).willReturn(helloGreeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(helloGreeting);
         assertThat(delegate.isCalled()).isTrue();

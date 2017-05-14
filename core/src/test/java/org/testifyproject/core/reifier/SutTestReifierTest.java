@@ -21,8 +21,8 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.TestContextProperties;
 
@@ -94,8 +94,7 @@ public class SutTestReifierTest {
         verify(testContext).getSutDescriptor();
         verify(testContext).getTestInstance();
         verify(sutDescriptor).getValue(testInstance);
-        verify(sutDescriptor).setValue(testInstance, sutValue);
-        verify(sutDescriptor).init(sutValue);
+        verify(sutDescriptor).init(testInstance);
         verify(testContext).addProperty(TestContextProperties.SUT_INSTANCE, sutValue);
     }
 
@@ -128,7 +127,7 @@ public class SutTestReifierTest {
         verify(sutDescriptor).getType();
         verify(mockProvider).createVirtual(sutType, sutValue);
         verify(sutDescriptor).setValue(testInstance, sutValue);
-        verify(sutDescriptor).init(sutValue);
+        verify(sutDescriptor).init(testInstance);
         verify(testContext).addProperty(TestContextProperties.SUT_INSTANCE, sutValue);
     }
 }

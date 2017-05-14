@@ -15,6 +15,7 @@
  */
 package org.testifyproject.junit4.system;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -64,7 +65,7 @@ public class SpringSystemInterceptor {
     public void configureAndRefreshWebApplicationContext(@SuperCall Callable<ConfigurableWebApplicationContext> zuper,
             @Argument(0) ConfigurableWebApplicationContext applicationContext) throws Exception {
 
-        testContextHolder.exesute(testContext -> {
+        testContextHolder.execute(testContext -> {
             TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
             ConfigurableWebApplicationContext configuredApplicationContext
@@ -79,21 +80,21 @@ public class SpringSystemInterceptor {
     }
 
     @RuntimeType
-    public Class<?>[] getRootConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
+    public Class<?>[] getServletConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
         Class<?>[] result = zuper.call();
 
-        return testContextHolder.exesute(testContext -> {
+        return testContextHolder.execute(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
-            Stream<Class<?>> modules = Stream.empty();
+            List<Module> modules = testDescriptor.getModules();
+
+            Stream<Class<?>> testModules = modules.stream().map(Module::value);
+            Stream<Class<?>> productionModules = Stream.empty();
 
             if (result != null) {
-                modules = Stream.of(result);
+                productionModules = Stream.of(result);
             }
 
-            Stream<Class<?>> testModules = testDescriptor.getModules().stream()
-                    .map(Module::value);
-
-            return Stream.concat(testModules, modules).toArray(Class[]::new);
+            return Stream.concat(testModules, productionModules).toArray(Class[]::new);
         });
     }
 

@@ -60,7 +60,7 @@ public class ImplicitTypeDistinctTypesTest {
         given(hello.greet()).willReturn(helloGreeting);
         given(world.greet()).willReturn(worldGreeting);
 
-        String result = sut.exesute();
+        String result = sut.execute();
 
         assertThat(result).isEqualTo(helloGreeting + " " + worldGreeting);
         verify(hello).greet();

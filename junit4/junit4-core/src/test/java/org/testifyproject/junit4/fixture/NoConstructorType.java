@@ -21,7 +21,7 @@ package org.testifyproject.junit4.fixture;
  */
 public class NoConstructorType {
 
-    public String exesute() {
+    public String execute() {
         return "Hello!";
 
     }
