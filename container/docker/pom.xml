@@ -57,7 +57,7 @@
         </dependency>
         <dependency>
             <groupId>org.testifyproject.external</groupId>
-            <artifactId>external-docker-java</artifactId>
+            <artifactId>external-docker-client</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
         <dependency>

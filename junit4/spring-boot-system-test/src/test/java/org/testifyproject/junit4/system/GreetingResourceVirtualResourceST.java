@@ -26,9 +26,9 @@ import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.github.dockerjava.core.DockerClientConfig;
 import org.testifyproject.junit4.fixture.common.UserEntity;
 import org.testifyproject.junit4.fixture.need.container.DockerContainerApplication;
+import org.testifyproject.spotify.docker.client.DefaultDockerClient;
 
 /**
  *
@@ -37,13 +37,13 @@ import org.testifyproject.junit4.fixture.need.container.DockerContainerApplicati
 @RunWith(SpringBootSystemTest.class)
 @Application(DockerContainerApplication.class)
 @VirtualResource(value = "postgres", version = "9.4")
-public class GreetingResourceVirtualContainerST {
+public class GreetingResourceVirtualResourceST {
 
     @Real
     SessionFactory factory;
 
     @ConfigHandler
-    public void configure(DockerClientConfig.DockerClientConfigBuilder builder) {
+    public void configure(DefaultDockerClient.Builder builder) {
         assertThat(builder).isNotNull();
     }
 

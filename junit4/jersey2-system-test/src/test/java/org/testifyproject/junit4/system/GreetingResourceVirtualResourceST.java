@@ -19,16 +19,18 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Sut;
+import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.junit4.fixture.GreeterApplication;
 import org.testifyproject.junit4.fixture.need.PostgresModule;
+import org.testifyproject.spotify.docker.client.DefaultDockerClient;
 
 /**
  * Test Greeter Resource inside the container from the client perspective real
@@ -47,6 +49,11 @@ public class GreetingResourceVirtualResourceST {
     @Sut
     ClientInstance<WebTarget> sut;
 
+    @ConfigHandler
+    public void configure(DefaultDockerClient.Builder builder) {
+        assertThat(builder).isNotNull();
+    }
+    
     @Test
     public void givenHelloGetShouldReturnHello() {
         //Arrange

@@ -13,6 +13,11 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.4]
+
+###Changed
+ - Switched to using Spotify Docker Java Client which is actively maintained
+
 ## [0.9.3] - 2017-05-14
 ### Added
  - Added extention contracts and annotations to the API

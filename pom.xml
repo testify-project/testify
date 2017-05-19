@@ -58,7 +58,7 @@
         <netbeans.inceptionYear>2016</netbeans.inceptionYear>
 
         <!-- Build Dependency Versions -->
-        <buildtools.version>0.9.5</buildtools.version>
+        <buildtools.version>0.9.6-SNAPSHOT</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.1</plugin.resource>

@@ -31,11 +31,10 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.VirtualResource;
-import static org.testifyproject.container.docker.DockerVirtualResourceProvider.DEFAULT_DAEMON_URI;
+import static org.testifyproject.container.docker.DockerVirtualResourceProvider.DEFAULT_URI;
 import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.github.dockerjava.core.DockerClientConfig;
-import static org.testifyproject.github.dockerjava.core.DockerClientConfig.createDefaultConfigBuilder;
+import org.testifyproject.spotify.docker.client.DefaultDockerClient;
 
 /**
  *
@@ -63,7 +62,7 @@ public class DockerVirtualResourceProviderTest {
 
     @Test
     public void callToConfigureShouldReturnBuilder() {
-        DockerClientConfig.DockerClientConfigBuilder result = sut.configure(testContext);
+        DefaultDockerClient.Builder result = sut.configure(testContext);
         assertThat(result).isNotNull();
     }
 
@@ -89,13 +88,12 @@ public class DockerVirtualResourceProviderTest {
                 .dependencies(dependencies)
                 .build();
 
-        given(virtualResource.value()).willReturn("busybox");
-        given(virtualResource.version()).willReturn("latest");
+        given(virtualResource.value()).willReturn("postgres");
+        given(virtualResource.version()).willReturn("9.4");
         given(testContext.getTestName()).willReturn("TestClass");
         given(testContext.getMethodName()).willReturn("testMethod");
 
-        DockerClientConfig.DockerClientConfigBuilder builder = createDefaultConfigBuilder()
-                .withDockerHost(DEFAULT_DAEMON_URI);
+        DefaultDockerClient.Builder builder = DefaultDockerClient.builder().uri(DEFAULT_URI);
         VirtualResourceInstance result = sut.start(testContext, virtualResource, builder);
 
         assertThat(result).isNotNull();
