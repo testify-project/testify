@@ -157,7 +157,7 @@ public class DockerVirtualResourceProvider
                         .withMaxRetries(virtualResource.maxRetries())
                         .withMaxDuration(virtualResource.maxDuration(), TimeUnit.MILLISECONDS);
 
-                killContainer(containerId, retryPolicy);
+                stopContainer(containerId, retryPolicy);
             }
         } finally {
             if (client != null) {
@@ -253,20 +253,20 @@ public class DockerVirtualResourceProvider
     }
 
     /**
-     * Kill the given container using the given retry policy.
+     * Stop the given container using the given retry policy.
      *
      * @param retryPolicy the retry policy in the event of failure
      * @param containerId the container id
      */
-    void killContainer(String containerId, RetryPolicy retryPolicy) {
+    void stopContainer(String containerId, RetryPolicy retryPolicy) {
         Failsafe.with(retryPolicy)
-                .onRetry(throwable -> LoggingUtil.INSTANCE.info("Trying to kill Docker Container '{}'", containerId))
+                .onRetry(throwable -> LoggingUtil.INSTANCE.info("Trying to stop Docker Container '{}'", containerId))
                 .onSuccess(result -> {
-                    LoggingUtil.INSTANCE.info("Docker Container '{}' killed", containerId);
+                    LoggingUtil.INSTANCE.info("Docker Container '{}' stop", containerId);
                     removeContainer(containerId, retryPolicy);
                 })
-                .onFailure(throwable -> LoggingUtil.INSTANCE.error("Docker Container '{}' could not be killed", containerId, throwable))
-                .run(() -> client.killContainer(containerId));
+                .onFailure(throwable -> LoggingUtil.INSTANCE.error("Docker Container '{}' could not be stop", containerId, throwable))
+                .run(() -> client.stopContainer(containerId, 8));
     }
 
     /**
