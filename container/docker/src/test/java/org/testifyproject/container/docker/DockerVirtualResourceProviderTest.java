@@ -31,10 +31,10 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.VirtualResource;
-import static org.testifyproject.container.docker.DockerVirtualResourceProvider.DEFAULT_URI;
 import org.testifyproject.core.DefaultTestContextBuilder;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.spotify.docker.client.DefaultDockerClient;
+import org.testifyproject.spotify.docker.client.exceptions.DockerCertificateException;
 
 /**
  *
@@ -67,7 +67,7 @@ public class DockerVirtualResourceProviderTest {
     }
 
     @Test
-    public void givenValidParametersCallToStartAndStopContainerShouldSucceed() {
+    public void givenValidParametersCallToStartAndStopContainerShouldSucceed() throws DockerCertificateException {
         StartStrategy resourceStartStrategy = StartStrategy.EAGER;
         Object testInstance = new Object();
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
@@ -93,7 +93,7 @@ public class DockerVirtualResourceProviderTest {
         given(testContext.getTestName()).willReturn("TestClass");
         given(testContext.getMethodName()).willReturn("testMethod");
 
-        DefaultDockerClient.Builder builder = DefaultDockerClient.builder().uri(DEFAULT_URI);
+        DefaultDockerClient.Builder builder = DefaultDockerClient.fromEnv();
         VirtualResourceInstance result = sut.start(testContext, virtualResource, builder);
 
         assertThat(result).isNotNull();

@@ -21,7 +21,6 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toMap;
@@ -38,6 +37,7 @@ import org.testifyproject.google.common.collect.ImmutableMap;
 import org.testifyproject.guava.common.net.InetAddresses;
 import org.testifyproject.spotify.docker.client.AnsiProgressHandler;
 import org.testifyproject.spotify.docker.client.DefaultDockerClient;
+import org.testifyproject.spotify.docker.client.exceptions.DockerCertificateException;
 import org.testifyproject.spotify.docker.client.exceptions.DockerException;
 import org.testifyproject.spotify.docker.client.messages.ContainerConfig;
 import org.testifyproject.spotify.docker.client.messages.ContainerCreation;
@@ -55,7 +55,6 @@ import org.testifyproject.tools.Discoverable;
 public class DockerVirtualResourceProvider
         implements VirtualResourceProvider<VirtualResource, DefaultDockerClient.Builder> {
 
-    public static final String DEFAULT_URI = "http://127.0.0.1:2375";
     public static final String DEFAULT_VERSION = "latest";
     private DefaultDockerClient client;
     private final AtomicBoolean started = new AtomicBoolean(false);
@@ -63,7 +62,11 @@ public class DockerVirtualResourceProvider
 
     @Override
     public DefaultDockerClient.Builder configure(TestContext testContext) {
-        return DefaultDockerClient.builder().uri(DEFAULT_URI);
+        try {
+            return DefaultDockerClient.fromEnv();
+        } catch (DockerCertificateException e) {
+            throw ExceptionUtil.INSTANCE.propagate(e);
+        }
     }
 
     @Override
@@ -155,7 +158,7 @@ public class DockerVirtualResourceProvider
                         .retryOn(Throwable.class)
                         .withBackoff(virtualResource.delay(), virtualResource.maxDelay(), virtualResource.unit())
                         .withMaxRetries(virtualResource.maxRetries())
-                        .withMaxDuration(virtualResource.maxDuration(), TimeUnit.MILLISECONDS);
+                        .withMaxDuration(virtualResource.maxDuration(), virtualResource.unit());
 
                 stopContainer(containerId, retryPolicy);
             }
