@@ -34,8 +34,6 @@ env:
 
 before_install:
     - ./before_install.sh
-    - sudo apt-get update -y
-    - sudo apt-get install docker-engine=1.11.2-0~trusty -o Dpkg::Options::="--force-confold" --force-yes -y
 
 script: ./script.sh
 
