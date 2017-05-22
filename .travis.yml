@@ -25,6 +25,11 @@ addons:
         packages:
             - gnupg
             - net-tools
+            
+env:
+  global:
+    - DOCKER_TLS_VERIFY=""
+    - DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"
 
 before_install:
     - ./before_install.sh
@@ -36,4 +41,4 @@ script: ./script.sh
 after_success:
     - bash <(curl -s https://codecov.io/bash)
     - ./after_success.sh
-
+    
