@@ -175,7 +175,7 @@
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
-                <updatePolicy>interval:360</updatePolicy>
+                <updatePolicy>interval:60</updatePolicy>
             </snapshots> 
             <releases>
                 <enabled>false</enabled>
@@ -187,7 +187,7 @@
             <url>http://oss.sonatype.org/content/repositories/releases</url>
             <releases>
                 <enabled>true</enabled>
-                <updatePolicy>interval:360</updatePolicy>
+                <updatePolicy>interval:60</updatePolicy>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
@@ -202,7 +202,7 @@
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
-                <updatePolicy>interval:360</updatePolicy>
+                <updatePolicy>interval:60</updatePolicy>
             </snapshots> 
             <releases>
                 <enabled>false</enabled>
@@ -214,7 +214,7 @@
             <url>http://oss.sonatype.org/content/repositories/releases</url>
             <releases>
                 <enabled>true</enabled>
-                <updatePolicy>interval:360</updatePolicy>
+                <updatePolicy>interval:60</updatePolicy>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
