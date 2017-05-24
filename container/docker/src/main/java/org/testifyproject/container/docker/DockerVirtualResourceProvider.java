@@ -54,7 +54,7 @@ import org.testifyproject.tools.Discoverable;
 public class DockerVirtualResourceProvider
         implements VirtualResourceProvider<VirtualResource, DefaultDockerClient.Builder> {
 
-    public static final String DEFAULT_DAEMON_URI = "http://0.0.0.0:2375";
+    public static final String DEFAULT_DAEMON_URI = "http://localhost:2375";
     public static final String DEFAULT_VERSION = "latest";
     private DefaultDockerClient client;
     private final AtomicBoolean started = new AtomicBoolean(false);
