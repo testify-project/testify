@@ -37,7 +37,6 @@ import org.testifyproject.google.common.collect.ImmutableMap;
 import org.testifyproject.guava.common.net.InetAddresses;
 import org.testifyproject.spotify.docker.client.AnsiProgressHandler;
 import org.testifyproject.spotify.docker.client.DefaultDockerClient;
-import org.testifyproject.spotify.docker.client.exceptions.DockerCertificateException;
 import org.testifyproject.spotify.docker.client.exceptions.DockerException;
 import org.testifyproject.spotify.docker.client.messages.ContainerConfig;
 import org.testifyproject.spotify.docker.client.messages.ContainerCreation;
@@ -55,6 +54,7 @@ import org.testifyproject.tools.Discoverable;
 public class DockerVirtualResourceProvider
         implements VirtualResourceProvider<VirtualResource, DefaultDockerClient.Builder> {
 
+    public static final String DEFAULT_DAEMON_URI = "http://0.0.0.0:2375";
     public static final String DEFAULT_VERSION = "latest";
     private DefaultDockerClient client;
     private final AtomicBoolean started = new AtomicBoolean(false);
@@ -62,11 +62,7 @@ public class DockerVirtualResourceProvider
 
     @Override
     public DefaultDockerClient.Builder configure(TestContext testContext) {
-        try {
-            return DefaultDockerClient.fromEnv();
-        } catch (DockerCertificateException e) {
-            throw ExceptionUtil.INSTANCE.propagate(e);
-        }
+        return DefaultDockerClient.builder().uri(DEFAULT_DAEMON_URI);
     }
 
     @Override
@@ -190,6 +186,7 @@ public class DockerVirtualResourceProvider
 
     /**
      * Determine if the image is already pulled.
+     *
      * @param image the image name
      * @param imageTag the image tag
      * @return true if the image is already pulled, false otherwise
