@@ -75,7 +75,7 @@ public class DefaultServerInstance<T> implements ServerInstance<T> {
     }
 
     @Override
-    public T getInstance() {
+    public T getValue() {
         return server;
     }
 

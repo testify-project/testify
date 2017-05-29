@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.container.docker;
 
 /**
- * A contract that defines methods for retrieving information about a client and
- * communicating with web resources running inside of the server.
+ * A class that defines a list keys for properties added by
+ * {@link DockerVirtualResourceProvider}.
  *
  * @author saden
- * @param <T> the target type
  */
-public interface ClientInstance<T> extends Instance<T> {
+public class DockerProperties {
 
     /**
-     * Get a client instance that can be used to communicate with web resources
-     * running inside of the server.
-     *
-     * @return a client instance.
+     * Docker Client property key.
      */
-    @Override
-    T getValue();
+    public static final String DOCKER_CLIENT = "docker/client";
+
+    /**
+     * Docker Started Container property key.
+     */
+    public static final String DOCKER_CONTAINER = "docker/container";
+
+    private DockerProperties() {
+    }
 
 }

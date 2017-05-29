@@ -133,7 +133,7 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     @Override
     public void stop(TestContext testContext, ServerInstance<EmbeddedServletContainer> serverInstance) {
         LoggingUtil.INSTANCE.debug("Stopping spring application");
-        EmbeddedServletContainer container = serverInstance.getInstance();
+        EmbeddedServletContainer container = serverInstance.getValue();
         LoggingUtil.INSTANCE.debug("Stopping spring boot application servlet container");
         container.stop();
     }

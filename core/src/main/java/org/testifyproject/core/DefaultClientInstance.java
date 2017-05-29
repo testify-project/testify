@@ -65,7 +65,7 @@ public class DefaultClientInstance<T> implements ClientInstance<T> {
     }
 
     @Override
-    public T getInstance() {
+    public T getValue() {
         return instance;
     }
 

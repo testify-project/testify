@@ -29,11 +29,11 @@ import static java.util.Optional.empty;
 public interface Instance<T> {
 
     /**
-     * Get the instance object.
+     * Get the instance value.
      *
-     * @return the instance
+     * @return the instance value
      */
-    T getInstance();
+    T getValue();
 
     /**
      * Get the name of instance. If present it represents the service name

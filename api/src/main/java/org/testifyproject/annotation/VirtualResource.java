@@ -74,8 +74,9 @@ public @interface VirtualResource {
 
     /**
      * <p>
-     * The virtual instance name. This useful for giving the virtual instance a
-     * unique name to distinguish it from other virtual instances.
+     * The virtual resource instance name. This useful for giving the virtual
+     * resource instance a unique name to distinguish it from other virtual
+     * resource instances.
      * </p>
      * <p>
      * By default if the name is not specified the {@link #value() image name}
@@ -85,6 +86,35 @@ public @interface VirtualResource {
      * @return the unique name of the virtual instance
      */
     String name() default "";
+
+    /**
+     * <p>
+     * Specifies the virtual resource's name. This useful for giving the
+     * resource instance a unique name that can be used to qualify and
+     * distinguish it from other similar resources.
+     * </p>
+     * <p>
+     * Note that if the name is not specified the name provided by the virtual
+     * resource provider implementation will be used.
+     * </p>
+     *
+     * @return the virtual resource's name.
+     */
+    String resourceName() default "";
+
+    /**
+     * <p>
+     * Specifies the virtual resource's contract. This useful for getting the
+     * virtual resource by its contract.
+     * </p>
+     * <p>
+     * Note that if the contract is not specified the resource instance will be
+     * injectable by its implementation class only.
+     * </p>
+     *
+     * @return the virtual resource's contract type.
+     */
+    Class<?> resourceContract() default void.class;
 
     /**
      * The number of virtual resource nodes to start.

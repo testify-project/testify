@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.annotation;
+package org.testifyproject.extension.annotation;
 
 import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.TYPE;
@@ -23,10 +23,11 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation used to mark source code or byte code that has been generated
- * or altered (sub-classed, redefined, rebased) to differentiate it from user
- * written code. When used, the value element must have the name of the code
- * generator. The recommended convention is to use the fully qualified name of
- * the code generator in the value field (i.e. com.acme.generator.CodeGen).
+ * or altered (sub-classed, redefined, rebased) for testing purpose and to
+ * differentiate it from user written code. When used, the value element must
+ * have the name of the code generator. The recommended convention is to use the
+ * fully qualified name of the code generator in the value field (i.e.
+ * com.acme.generator.CodeGen).
  *
  * @author saden
  */

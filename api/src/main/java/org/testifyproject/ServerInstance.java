@@ -39,6 +39,6 @@ public interface ServerInstance<T> extends Instance<T> {
      * @return the underlying server instance
      */
     @Override
-    T getInstance();
+    T getValue();
 
 }

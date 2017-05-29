@@ -147,7 +147,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     @Override
     public void stop(TestContext testContext, ServerInstance<Undertow> serverInstance) {
         if (serverInstance != null) {
-            serverInstance.getInstance().stop();
+            serverInstance.getValue().stop();
         }
 
         applicationProvider.stop();

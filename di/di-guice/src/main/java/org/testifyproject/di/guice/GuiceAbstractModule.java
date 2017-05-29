@@ -50,7 +50,7 @@ public class GuiceAbstractModule extends AbstractModule {
     protected void configure() {
         while (constants.peek() != null) {
             Instance constant = constants.poll();
-            Object instance = constant.getInstance();
+            Object instance = constant.getValue();
             Class instanceType = instance.getClass();
             Optional<String> name = constant.getName();
             Optional<Class> contract = constant.getContract();

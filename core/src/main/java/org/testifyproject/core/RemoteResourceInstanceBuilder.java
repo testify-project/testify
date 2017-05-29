@@ -15,23 +15,23 @@
  */
 package org.testifyproject.core;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import org.testifyproject.Instance;
 import org.testifyproject.RemoteResourceInstance;
+import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  * A builder class used to construction RemoteResourceInstance instances.
  *
  * @author saden
- * @param <C> the remote resource client type
+ * @param <R> the underlying remote resource type
  * @see RemoteResourceInstance
  */
-public class RemoteResourceInstanceBuilder< C> {
+public class RemoteResourceInstanceBuilder<R> {
 
-    private Instance<C> client;
-    private final Map<String, Object> properties = new LinkedHashMap<>();
+    private String fqn;
+    private Instance<R> resource;
+    private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
      * Create a new resource of RemoteResourceInstanceBuilder.
@@ -43,50 +43,55 @@ public class RemoteResourceInstanceBuilder< C> {
     }
 
     /**
-     * Set the client of the underlying resource to the given client and name.
-     * When choosing a name for the resource client it is best to choose a name
-     * that reflect the resource being provided to avoid potential collision
-     * with names used by other resource provider (i.e.
-     * "myAwesomeResourceClient").
+     * Set the fqn of the remote resource. When choosing a fqn for the resource
+     * it is best to choose a fqn that reflect the resource being provided to
+     * avoid potential collision with names used by other virtual resource
+     * provider implementations.
      *
-     * @param client the underlying resource client resource
-     * @param name the underlying resource client name
+     * @param fqn the fully qualified name of the remote resource
      * @return this object
      */
-    public RemoteResourceInstanceBuilder<C> client(C client, String name) {
-        this.client = new DefaultInstance(client, name, null);
+    public RemoteResourceInstanceBuilder fqn(String fqn) {
+        this.fqn = fqn;
 
         return this;
     }
 
     /**
-     * Set the client of the underlying resource to the given client, name,
-     * contract. When choosing a name for the resource client it is best to
-     * choose a name that reflect the resource being provided to avoid potential
-     * collision with names used by other resource provider (i.e.
-     * "myAwesomeResourceClient").
+     * Set the underlying resource to the given resource.
      *
-     * @param client the underlying resource client resource
-     * @param name the underlying resource client name
-     * @param contract the underlying resource client contract
+     * @param resource the underlying resource
      * @return this object
      */
-    public RemoteResourceInstanceBuilder<C> client(C client, String name, Class<? extends C> contract) {
-        this.client = new DefaultInstance(client, name, contract);
+    public RemoteResourceInstanceBuilder<R> resource(R resource) {
+        this.resource = DefaultInstance.of(resource);
 
         return this;
     }
 
     /**
-     * Associate the specified value with the specified name in the resource
+     * Set the underlying resource to the given resource and contract.
+     *
+     * @param resource the underlying resource
+     * @param contract the underlying resource resource contract
+     * @return this object
+     */
+    public RemoteResourceInstanceBuilder<R> resource(R resource, Class<? extends R> contract) {
+        this.resource = DefaultInstance.of(resource, contract);
+
+        return this;
+    }
+
+    /**
+     * Associate the specified value with the specified key in the resource
      * resource.
      *
-     * @param name the name with which the specified value is to be associated
+     * @param key the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public RemoteResourceInstanceBuilder<C> property(String name, Object value) {
-        this.properties.put(name, value);
+    public RemoteResourceInstanceBuilder<R> property(String key, Object value) {
+        this.properties.put(key, value);
 
         return this;
     }
@@ -97,7 +102,7 @@ public class RemoteResourceInstanceBuilder< C> {
      * @param properties a map that contains key value pairs.
      * @return this object
      */
-    public RemoteResourceInstanceBuilder<C> properties(Map<String, Object> properties) {
+    public RemoteResourceInstanceBuilder<R> properties(Map<String, Object> properties) {
         this.properties.putAll(properties);
 
         return this;
@@ -108,8 +113,11 @@ public class RemoteResourceInstanceBuilder< C> {
      *
      * @return a remote resource instance
      */
-    public RemoteResourceInstance<C> build() {
-        return DefaultRemoteResourceInstance.of(client, Collections.unmodifiableMap(properties));
+    public RemoteResourceInstance<R> build() {
+        //TODO: if fqn is not spcified then determine it from the caller class.
+        //Once Java 9 is rleased use with JEP-259 StackWalker API.
+
+        return DefaultRemoteResourceInstance.of(fqn, resource, properties.build());
     }
 
 }

@@ -25,17 +25,19 @@ import org.testifyproject.RemoteResourceInstance;
  * A class that contains client instance and properties of a remote resource.
  *
  * @author saden
- * @param <C> the remote resource client type
+ * @param <R> the underlying remote resource type
  */
 @ToString
 @EqualsAndHashCode
-public class DefaultRemoteResourceInstance<C> implements RemoteResourceInstance< C> {
+public class DefaultRemoteResourceInstance<R> implements RemoteResourceInstance< R> {
 
-    private final Instance<C> client;
+    private final String fqn;
+    private final Instance<R> resource;
     private final Map<String, Object> properties;
 
-    DefaultRemoteResourceInstance(Instance<C> client, Map<String, Object> properties) {
-        this.client = client;
+    DefaultRemoteResourceInstance(String fqn, Instance<R> resource, Map<String, Object> properties) {
+        this.fqn = fqn;
+        this.resource = resource;
         this.properties = properties;
     }
 
@@ -43,18 +45,24 @@ public class DefaultRemoteResourceInstance<C> implements RemoteResourceInstance<
      * Create a remote resource instance based on the given client and
      * properties.
      *
-     * @param <C> client the remote resource client type
-     * @param client the client instance
+     * @param <R> the underlying remote resource type
+     * @param fqn the remote resource's fully qualified name
+     * @param resource the underlying remote resource instance
      * @param properties the resource instance properties
      * @return a new resource instance
      */
-    public static < C> RemoteResourceInstance< C> of(Instance<C> client, Map<String, Object> properties) {
-        return new DefaultRemoteResourceInstance<>(client, properties);
+    public static <R> RemoteResourceInstance<R> of(String fqn, Instance<R> resource, Map<String, Object> properties) {
+        return new DefaultRemoteResourceInstance<>(fqn, resource, properties);
     }
 
     @Override
-    public Instance<C> getClient() {
-        return client;
+    public String getFqn() {
+        return fqn;
+    }
+
+    @Override
+    public Instance<R> getResource() {
+        return resource;
     }
 
     @Override

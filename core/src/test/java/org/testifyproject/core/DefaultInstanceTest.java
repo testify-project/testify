@@ -44,7 +44,7 @@ public class DefaultInstanceTest {
     @Test
     public void validateSutInstance() {
         assertThat(sut).isNotNull();
-        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getValue()).isEqualTo(instance);
         assertThat(sut.getName()).contains(name);
         assertThat(sut.getContract()).contains(contract);
     }
@@ -54,7 +54,7 @@ public class DefaultInstanceTest {
         sut = DefaultInstance.of(instance);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getValue()).isEqualTo(instance);
         assertThat(sut.getName()).isEmpty();
         assertThat(sut.getContract()).isEmpty();
     }
@@ -64,7 +64,7 @@ public class DefaultInstanceTest {
         sut = DefaultInstance.of(instance, name);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getValue()).isEqualTo(instance);
         assertThat(sut.getName()).contains(name);
         assertThat(sut.getContract()).isEmpty();
     }
@@ -74,7 +74,7 @@ public class DefaultInstanceTest {
         sut = DefaultInstance.of(instance, contract);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getInstance()).isEqualTo(instance);
+        assertThat(sut.getValue()).isEqualTo(instance);
         assertThat(sut.getContract()).contains(contract);
         assertThat(sut.getName()).isEmpty();
     }

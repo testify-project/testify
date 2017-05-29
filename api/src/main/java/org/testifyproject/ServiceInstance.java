@@ -101,7 +101,7 @@ public interface ServiceInstance {
      * @param overrideContract the override contract
      */
     default <T> void replace(Instance<T> instance, String overrideName, Class overrideContract) {
-        T constant = instance.getInstance();
+        T constant = instance.getValue();
         Optional<String> foundName = instance.getName();
         Optional<Class<? extends T>> foundContract = instance.getContract();
 

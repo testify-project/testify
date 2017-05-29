@@ -15,10 +15,10 @@
  */
 package org.testifyproject.core;
 
-import java.net.InetAddress;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
 
 /**
@@ -26,55 +26,43 @@ import org.testifyproject.VirtualResourceInstance;
  * provides information about running container.
  *
  * @author saden
+ * @param <R> the underlying virtual resource type
  */
 @ToString
 @EqualsAndHashCode
-public class DefaultVirtualResourceInstance implements VirtualResourceInstance {
+public class DefaultVirtualResourceInstance<R> implements VirtualResourceInstance<R> {
 
-    private final String name;
-    private final InetAddress address;
-    private final Map<Integer, Integer> mappedPorts;
+    private final String fqn;
+    private final Instance<R> resource;
     private final Map<String, Object> properties;
 
-    DefaultVirtualResourceInstance(String name,
-            InetAddress address,
-            Map<Integer, Integer> mappedPorts,
-            Map<String, Object> properties) {
-        this.name = name;
-        this.address = address;
-        this.mappedPorts = mappedPorts;
+    DefaultVirtualResourceInstance(String fqn, Instance<R> resource, Map<String, Object> properties) {
+        this.fqn = fqn;
+        this.resource = resource;
         this.properties = properties;
     }
 
     /**
      * Create a new container instance with the given parameters.
      *
-     * @param name the name of the container
-     * @param address the address of the container
-     * @param mappedPorts the mappedPorts exposed by the container
+     * @param <R> the underlying virtual resource type
+     * @param fqn the virtual resource's fully qualified name
+     * @param resource the underlying virtual resource instance
      * @param properties properties associated with the instance
      * @return a new container instance.
      */
-    public static VirtualResourceInstance of(String name,
-            InetAddress address,
-            Map<Integer, Integer> mappedPorts,
-            Map<String, Object> properties) {
-        return new DefaultVirtualResourceInstance(name, address, mappedPorts, properties);
+    public static <R> VirtualResourceInstance of(String fqn, Instance<R> resource, Map<String, Object> properties) {
+        return new DefaultVirtualResourceInstance(fqn, resource, properties);
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getFqn() {
+        return fqn;
     }
 
     @Override
-    public InetAddress getAddress() {
-        return address;
-    }
-
-    @Override
-    public Map<Integer, Integer> getMappedPorts() {
-        return mappedPorts;
+    public Instance<R> getResource() {
+        return resource;
     }
 
     @Override
