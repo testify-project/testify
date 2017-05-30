@@ -27,4 +27,13 @@ fi
 
 echo "MAVEN_OPTS='-client -Xms512m -Xmx2048m'" > ~/.mavenrc
 
+echo "Installing Docker version $DOCKER_VERSION"
+- dpkg -l | grep docker
+# install the version of docker in the DOCKER_VERSION env var
+./docker.sh install_docker
+# double-check that the version/config is correct
+./docker.sh dump_docker_config
+docker version
+docker info
+
 echo "Before Install Operations All Done!"
