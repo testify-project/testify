@@ -41,6 +41,23 @@ case "$1" in
       sudo mount -t mqueue none /dev/mqueue
     fi
 
+    echo "Creating Docker '/etc/docker/daemon.json' configuration file"
+    sudo -s -- <<EOC
+    mkdir -p /etc/docker
+    mv /etc/docker/daemon.json "/etc/docker/daemon.json.$(date -d "today" +"%Y%m%d%H%M")" 2>/dev/null
+    tee -a /etc/docker/daemon.json >/dev/null <<'EOF'
+    {
+      "hosts": [
+        "unix:///var/run/docker.sock",
+        "tcp://127.0.0.1:2375"
+      ]
+    }
+    EOF
+    EOC
+
+    echo "Removing host configuration from Docker Service ExecStart Command"
+    sudo sed -i 's/ExecStart=.*/ExecStart=\/usr\/bin\/dockerd/g' /lib/systemd/system/docker.service
+
     # restart the service for the /etc/default/docker change we made after
     # installing the package
     sudo restart docker
@@ -56,6 +73,9 @@ case "$1" in
     sleep 60
 
     ;;
+
+    echo "Testing Docker HTTP Endpoint"
+    docker -H tcp://127.0.0.1:2375 ps
 
   dump_docker_config)
     # output the upstart config and default config in case they are needed for
