@@ -44,14 +44,14 @@ case "$1" in
     echo "Creating Docker '/etc/docker/daemon.json' configuration file"
     sudo mkdir -p /etc/docker
     sudo mv /etc/docker/daemon.json "/etc/docker/daemon.json.$(date -d "today" +"%Y%m%d%H%M")" 2>/dev/null
-    sudo tee -a /etc/docker/daemon.json >/dev/null <<'EOF'
+    sudo tee /etc/docker/daemon.json &>/dev/null <<EOC
     {
       "hosts": [
         "unix:///var/run/docker.sock",
         "tcp://127.0.0.1:2375"
       ]
     }
-    EOF
+    EOC
 
     echo "Removing host configuration from Docker Service ExecStart Command"
     sudo sed -i 's/ExecStart=.*/ExecStart=\/usr\/bin\/dockerd/g' /lib/systemd/system/docker.service
