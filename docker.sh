@@ -42,9 +42,11 @@ case "$1" in
     fi
   
     echo "Creating Docker '/etc/docker/daemon.json' configuration file"
+    sudo cat /etc/docker/daemon.json
     echo '{"hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2375"]}' | sudo tee -a /etc/docker/daemon.json
 
     echo "Removing host configuration from Docker Service ExecStart Command"
+    sudo cat /lib/systemd/system/docker.service
     sudo sed -i 's/ExecStart=.*/ExecStart=\/usr\/bin\/dockerd/g' /lib/systemd/system/docker.service
 
     # restart the service for the /etc/default/docker change we made after
