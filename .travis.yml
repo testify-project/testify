@@ -1,24 +1,21 @@
-sudo: false
+sudo: required
+dist: trusty
 
 language: java
 
-jdk:
-    - oraclejdk8
+jdk: oraclejdk8
 
-services:
-    - docker
+services: docker
 
 notifications:
-    email:
-        - builds@fitbur.com
+    email: builds@fitbur.com
     on-success: change
     on-failure: always
 
 cache:
     apt: true
     pip: true
-    directories:
-        - $HOME/.m2
+    directories: $HOME/.m2
 
 addons:
     apt:
@@ -40,8 +37,7 @@ env:
 #    - DOCKER_VERSION=17.03.0~ce ENABLE_SWARM=1
     - DOCKER_VERSION=17.04.0~ce ENABLE_SWARM=1
 
-before_install:
-    - ./before_install.sh
+before_install: ./before_install.sh
 
 script: ./script.sh
 
