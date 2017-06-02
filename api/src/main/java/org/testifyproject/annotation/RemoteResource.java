@@ -68,35 +68,35 @@ public @interface RemoteResource {
      *
      * @return the resource instance name.
      */
-    String name() default "";
+    String name() default "remote";
 
     /**
      * <p>
-     * Specifies the remote resource's client name. This useful for giving the
-     * client resource instance a unique name that can be used to qualify and
-     * distinguish it from other similar services.
+     * Specifies the remote resource's name. This useful for giving the resource
+     * instance a unique name that can be used to qualify and distinguish it
+     * from other similar resources.
      * </p>
      * <p>
-     * Note that if the name is not specified the name provided by the required
-     * resource implementation will be used.
+     * Note that if the name is not specified the name provided by the remote
+     * resource provider implementation will be used.
      * </p>
      *
-     * @return the resource's client name.
+     * @return the remote resource's name.
      */
-    String clientName() default "";
+    String resourceName() default "";
 
     /**
      * <p>
-     * Specifies the contract implemented by the resource client. This useful
-     * for getting the client resource by its contract.
+     * Specifies the virtual resource's contract. This useful for getting the
+     * resource by its contract.
      * </p>
      * <p>
-     * Note that if the client contract is not specified the client resource
-     * instance will be injectable by its implementation class only.
+     * Note that if the contract is not specified the resource instance will be
+     * injectable by its implementation class only.
      * </p>
      *
-     * @return the resource's client contract class.
+     * @return the remote resource's contract type.
      */
-    Class<?> clientContract() default void.class;
+    Class<?> resourceContract() default void.class;
 
 }

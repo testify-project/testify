@@ -106,7 +106,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
 
     @Override
     public void stop(TestContext testContext, ServerInstance<HttpServer> serverInstance) {
-        HttpServer httpServer = serverInstance.getInstance();
+        HttpServer httpServer = serverInstance.getValue();
         httpServer.shutdownNow();
     }
 

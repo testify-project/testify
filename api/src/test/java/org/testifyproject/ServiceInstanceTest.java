@@ -64,13 +64,13 @@ public class ServiceInstanceTest {
         Class contract = Class.class;
         Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
-        given(instance.getInstance()).willReturn(constant);
+        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
 
         sut.replace(instance, overrideName, overrideContract);
 
-        verify(instance).getInstance();
+        verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
@@ -92,13 +92,13 @@ public class ServiceInstanceTest {
         Class contract = Class.class;
         Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
-        given(instance.getInstance()).willReturn(constant);
+        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
 
         sut.replace(instance, overrideName, overrideContract);
 
-        verify(instance).getInstance();
+        verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
@@ -120,13 +120,13 @@ public class ServiceInstanceTest {
         Class contract = String.class;
         Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
-        given(instance.getInstance()).willReturn(constant);
+        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
 
         sut.replace(instance, overrideName, overrideContract);
 
-        verify(instance).getInstance();
+        verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
@@ -148,13 +148,13 @@ public class ServiceInstanceTest {
         Class contract = Class.class;
         Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
-        given(instance.getInstance()).willReturn(constant);
+        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
 
         sut.replace(instance, overrideName, overrideContract);
 
-        verify(instance).getInstance();
+        verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
@@ -176,13 +176,13 @@ public class ServiceInstanceTest {
         Class contract = Class.class;
         Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
-        given(instance.getInstance()).willReturn(constant);
+        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
 
         sut.replace(instance, overrideName, overrideContract);
 
-        verify(instance).getInstance();
+        verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
@@ -204,13 +204,13 @@ public class ServiceInstanceTest {
         Class contract = Class.class;
         Optional<Class<? extends Object>> foundContract = Optional.of(contract);
 
-        given(instance.getInstance()).willReturn(constant);
+        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
 
         sut.replace(instance, overrideName, overrideContract);
 
-        verify(instance).getInstance();
+        verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 

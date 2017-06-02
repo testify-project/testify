@@ -37,7 +37,7 @@ public class DefaultClientInstanceTest {
 
         sut = DefaultClientInstance.of(client, contract);
 
-        assertThat(sut.getInstance()).isEqualTo(client);
+        assertThat(sut.getValue()).isEqualTo(client);
         assertThat(sut.getContract()).contains(contract);
     }
 
@@ -46,13 +46,13 @@ public class DefaultClientInstanceTest {
         sut = DefaultClientInstance.of(client);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getInstance()).isEqualTo(client);
+        assertThat(sut.getValue()).isEqualTo(client);
         assertThat(sut.getContract()).isEmpty();
     }
 
     @Test
     public void callToGetClientShouldReturnClient() {
-        Object result = sut.getInstance();
+        Object result = sut.getValue();
 
         assertThat(result).isEqualTo(client);
     }

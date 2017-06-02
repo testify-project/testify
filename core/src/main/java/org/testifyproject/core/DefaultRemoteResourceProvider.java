@@ -67,48 +67,62 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
         //remote resource create a new instance, configure and start a
         //resource instance and addConfigHandler it to the service instance.
         remoteResources.parallelStream().forEach(remoteResource -> {
-            Class<? extends RemoteResourceProvider> resourceProviderType = remoteResource.value();
+            Class<? extends RemoteResourceProvider> value = remoteResource.value();
 
-            RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(resourceProviderType);
+            RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(value);
             serviceInstance.inject(remoteResourceProvider);
             Object configuration = remoteResourceProvider.configure(testContext);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
-                RemoteResourceInstance<?> remoteResourceInstance
+                RemoteResourceInstance<Object> remoteResourceInstance
                         = remoteResourceProvider.start(testContext, remoteResource, configuration);
 
-                processClient(remoteResourceInstance, remoteResource, serviceInstance);
-                addResource(remoteResourceInstance, remoteResource, serviceInstance);
+                processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
                 remoteResourceProviders.put(remoteResource, remoteResourceProvider);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, resourceProviderType);
+                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, value);
             }
         });
     }
 
-    void addResource(RemoteResourceInstance<?> remoteResourceInstance,
-            RemoteResource remoteResource,
+    void processInstance(RemoteResource remoteResource,
+            RemoteResourceInstance<Object> remoteResourceInstance,
+            Class<? extends RemoteResourceProvider> value,
             ServiceInstance serviceInstance) {
-        String resourceName = remoteResource.name();
-        Class<RemoteResourceInstance> resourceContract = RemoteResourceInstance.class;
 
-        if (resourceName.isEmpty()) {
-            serviceInstance.addConstant(remoteResourceInstance, null, resourceContract);
+        String name = remoteResource.name();
+        String resourceInstanceName;
+        Class<RemoteResourceInstance> resourceInstanceContract = RemoteResourceInstance.class;
+
+        if (name.isEmpty()) {
+            resourceInstanceName = "resource://" + value.getSimpleName();
         } else {
-            serviceInstance.addConstant(remoteResourceInstance, resourceName, resourceContract);
+            resourceInstanceName = "resource://" + name;
         }
+
+        serviceInstance.addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
+
+        processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
     }
 
-    void processClient(RemoteResourceInstance remoteResourceInstance,
+    void processResource(String resourceInstanceName,
             RemoteResource remoteResource,
+            RemoteResourceInstance<Object> remoteResourceInstance,
             ServiceInstance serviceInstance) {
-        Instance clientInstance = remoteResourceInstance.getClient();
 
-        serviceInstance.replace(clientInstance,
-                remoteResource.clientName(),
-                remoteResource.clientContract());
+        String resourceName = remoteResource.resourceName();
+        Class<?> resourceContract = remoteResource.resourceContract();
+        Instance resourceInstance = remoteResourceInstance.getResource();
+
+        if (resourceName.isEmpty()) {
+            resourceName = resourceInstanceName + "/resource";
+        } else {
+            resourceName = resourceInstanceName + "/" + resourceName;
+        }
+
+        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
     }
 
     @Override

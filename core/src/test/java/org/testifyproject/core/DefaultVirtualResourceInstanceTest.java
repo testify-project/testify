@@ -22,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
-import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  *
@@ -34,27 +34,31 @@ public class DefaultVirtualResourceInstanceTest {
     VirtualResourceInstance sut;
 
     String name;
-    InetAddress address;
+    Instance<InetAddress> resource;
     Map<Integer, Integer> mappedPorts;
     Map<String, Object> properties;
 
     @Before
     public void init() {
         name = "name";
-        address = mock(InetAddress.class);
-        mappedPorts = ImmutableMap.of(1000, 2000);
+        resource = mock(Instance.class);
         properties = new HashMap<>();
 
-        sut = DefaultVirtualResourceInstance.of(name, address, mappedPorts, properties);
+        sut = DefaultVirtualResourceInstance.of(name, resource, properties);
     }
 
     @Test
-    public void validateSutInstance() {
-        assertThat(sut).isNotNull();
-        assertThat(sut.getName()).isEqualTo(name);
-        assertThat(sut.getAddress()).isEqualTo(address);
-        assertThat(sut.getMappedPorts()).isEqualTo(mappedPorts);
-        assertThat(sut.getProperties()).isEqualTo(properties);
+    public void callToGetNameShouldReturnName() {
+        String result = sut.getFqn();
+
+        assertThat(result).isEqualTo(name);
+    }
+
+    @Test
+    public void callToGetResourceShouldReturnResource() {
+        Instance<Object> result = sut.getResource();
+
+        assertThat(result).isEqualTo(resource);
     }
 
     @Test
@@ -67,7 +71,7 @@ public class DefaultVirtualResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null, address, mappedPorts, properties);
+        VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null, resource, properties);
 
         assertThat(sut).isNotEqualTo(unequal);
         assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -80,7 +84,7 @@ public class DefaultVirtualResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, address, mappedPorts, properties);
+        VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, resource, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -90,7 +94,7 @@ public class DefaultVirtualResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultVirtualResourceInstance", "name", "address", "mappedPorts");
+        assertThat(result).contains("DefaultVirtualResourceInstance", "name", "resource", "properties");
     }
 
 }

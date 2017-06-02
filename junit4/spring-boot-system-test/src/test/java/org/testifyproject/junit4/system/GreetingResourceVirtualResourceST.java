@@ -20,6 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Application;
@@ -34,6 +35,7 @@ import org.testifyproject.spotify.docker.client.DefaultDockerClient;
  *
  * @author saden
  */
+@Ignore
 @RunWith(SpringBootSystemTest.class)
 @Application(DockerContainerApplication.class)
 @VirtualResource(value = "postgres", version = "9.4")

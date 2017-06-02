@@ -1,24 +1,21 @@
-sudo: false
+sudo: required
+dist: trusty
 
 language: java
 
-jdk:
-    - oraclejdk8
+jdk: oraclejdk8
 
-services:
-    - docker
+services: docker
 
 notifications:
-    email:
-        - builds@fitbur.com
+    email: builds@fitbur.com
     on-success: change
     on-failure: always
 
 cache:
     apt: true
     pip: true
-    directories:
-        - $HOME/.m2
+    directories: $HOME/.m2
 
 addons:
     apt:
@@ -28,12 +25,19 @@ addons:
             
 env:
   global:
-    - DOCKER_TLS_VERIFY=""
-    - DOCKER_HOST="http://127.0.0.1:2375"
-    - DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"
+#    - DOCKER_TLS_VERIFY=""
+#    - DOCKER_HOST="http://127.0.0.1:2375"
+#    - DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"
+  matrix:
+#    - DOCKER_VERSION=1.9.1
+#    - DOCKER_VERSION=1.10.3
+#    - DOCKER_VERSION=1.11.2
+#    - DOCKER_VERSION=1.12.6 ENABLE_SWARM=1
+#    - DOCKER_VERSION=1.13.1 ENABLE_SWARM=1 UPLOAD_SONATYPE=1
+#    - DOCKER_VERSION=17.03.0~ce ENABLE_SWARM=1
+    - DOCKER_VERSION=17.04.0~ce ENABLE_SWARM=1
 
-before_install:
-    - ./before_install.sh
+before_install: ./before_install.sh
 
 script: ./script.sh
 

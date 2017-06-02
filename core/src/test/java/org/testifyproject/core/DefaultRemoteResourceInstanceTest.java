@@ -17,7 +17,6 @@ package org.testifyproject.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,40 +33,31 @@ public class DefaultRemoteResourceInstanceTest {
 
     RemoteResourceInstance<Object> sut;
 
-    Instance<Object> client;
+    String name;
+    Instance<Object> resource;
     Map<String, Object> properties;
 
     @Before
     public void init() {
-        client = mock(Instance.class);
+        name = "name";
+        resource = mock(Instance.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        sut = DefaultRemoteResourceInstance.of(client, properties);
+        sut = DefaultRemoteResourceInstance.of(name, resource, properties);
     }
 
     @Test
-    public void callToGetClientShouldReturnOptionalWithClientInstance() {
-        Instance<Object> result = sut.getClient();
+    public void callToGetNameShouldReturnName() {
+        String result = sut.getFqn();
 
-        assertThat(result).isEqualTo(client);
+        assertThat(result).isEqualTo(name);
     }
 
     @Test
-    public void givenNonExistentProperty() {
-        Optional<Object> result = sut.findProperty("non");
+    public void callToGetResourceShouldReturnResource() {
+        Instance<Object> result = sut.getResource();
 
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void givenExistentProperty() {
-        String name = "name";
-        String value = "value";
-        properties.put(name, value);
-
-        Optional<Object> result = sut.findProperty(name);
-
-        assertThat(result).contains(value);
+        assertThat(result).isEqualTo(resource);
     }
 
     @Test
@@ -88,7 +78,7 @@ public class DefaultRemoteResourceInstanceTest {
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         RemoteResourceInstance<Object> uneuqual
-                = DefaultRemoteResourceInstance.of(null, properties);
+                = DefaultRemoteResourceInstance.of(name, null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -102,7 +92,7 @@ public class DefaultRemoteResourceInstanceTest {
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         RemoteResourceInstance<Object> equal
-                = DefaultRemoteResourceInstance.of(client, properties);
+                = DefaultRemoteResourceInstance.of(name, resource, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -112,7 +102,7 @@ public class DefaultRemoteResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultRemoteResourceInstance", "client", "properties");
+        assertThat(result).contains("DefaultRemoteResourceInstance", "name", "resource", "properties");
     }
 
 }

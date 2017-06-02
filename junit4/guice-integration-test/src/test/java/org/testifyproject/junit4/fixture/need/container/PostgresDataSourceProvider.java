@@ -15,13 +15,13 @@
  */
 package org.testifyproject.junit4.fixture.need.container;
 
+import java.net.InetAddress;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.testifyproject.VirtualResourceInstance;
 
 /**
  * A provider of a JDBC Postgres test DataSource. Note that we don't annotate
@@ -32,19 +32,19 @@ import org.testifyproject.VirtualResourceInstance;
  */
 public class PostgresDataSourceProvider implements Provider<DataSource> {
 
-    private final VirtualResourceInstance virtualResourceInstance;
+    private final InetAddress containerAddress;
 
     @Inject
-    PostgresDataSourceProvider(@Named("postgres") VirtualResourceInstance virtualResourceInstance) {
-        this.virtualResourceInstance = virtualResourceInstance;
+    PostgresDataSourceProvider(@Named("resource://postgres/resource") InetAddress containerAddress) {
+        this.containerAddress = containerAddress;
     }
 
     @Singleton
     @Override
     public DataSource get() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
-        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
+        dataSource.setServerName(containerAddress.getHostName());
+        dataSource.setPortNumber(5432);
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

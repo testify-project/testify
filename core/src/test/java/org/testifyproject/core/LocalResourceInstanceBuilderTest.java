@@ -39,100 +39,92 @@ public class LocalResourceInstanceBuilderTest {
     }
 
     @Test
-    public void givenInstanceInstanceAndNameBuildShouldReturn() {
-        Object server = mock(Object.class);
-        String name = "server";
+    public void givenResourceBuildShouldSetResource() {
+        Object resource = mock(Object.class);
 
-        LocalResourceInstance result = sut.resource(server, name).build();
+        LocalResourceInstance result = sut.resource(resource).build();
 
         assertThat(result).isNotNull();
 
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
-        assertThat(instance.getInstance()).isEqualTo(server);
-        assertThat(instance.getName()).contains(name);
+        assertThat(instance.getValue()).isEqualTo(resource);
         assertThat(instance.getContract()).isEmpty();
     }
 
     @Test
-    public void givenInstanceInstanceAndNameAndContractBuildShouldReturn() {
-        Object server = mock(Object.class);
-        String name = "server";
+    public void givenResourceWithContractBuildShouldSetResource() {
+        Object resource = mock(Object.class);
         Class contract = Object.class;
 
-        LocalResourceInstance result = sut.resource(server, name, contract).build();
+        LocalResourceInstance result = sut.resource(resource, contract).build();
 
         assertThat(result).isNotNull();
 
-        Instance resource = result.getResource();
-        assertThat(resource).isNotNull();
-        assertThat(resource.getInstance()).isEqualTo(server);
-        assertThat(resource.getName()).contains(name);
-        assertThat(resource.getContract()).contains(contract);
+        Instance instance = result.getResource();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getValue()).isEqualTo(resource);
+        assertThat(instance.getContract()).contains(contract);
     }
 
     @Test
-    public void givenClientInstanceAndNameBuildShouldReturn() {
+    public void givenClientBuildShouldSetClient() {
         Object client = mock(Object.class);
-        String name = "client";
 
-        LocalResourceInstance result = sut.client(client, name).build();
+        LocalResourceInstance result = sut.client(client).build();
 
         assertThat(result).isNotNull();
 
-        Optional<Instance<Object>> clientInstanceResult = result.getClient();
-        assertThat(clientInstanceResult).isPresent();
+        Optional<Instance<Object>> foundClient = result.getClient();
+        assertThat(foundClient).isPresent();
 
-        Instance<Object> clientInstance = clientInstanceResult.get();
+        Instance<Object> instance = foundClient.get();
 
-        assertThat(clientInstance).isNotNull();
-        assertThat(clientInstance.getInstance()).isEqualTo(client);
-        assertThat(clientInstance.getName()).contains(name);
-        assertThat(clientInstance.getContract()).isEmpty();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getValue()).isEqualTo(client);
+        assertThat(instance.getContract()).isEmpty();
     }
 
     @Test
-    public void givenClientInstanceAndNameAndContractBuildShouldReturn() {
+    public void givenClientWithContractBuildShouldSetClient() {
         Object client = mock(Object.class);
-        String name = "client";
         Class contract = Object.class;
 
-        LocalResourceInstance result = sut.client(client, name, contract).build();
+        LocalResourceInstance result = sut.client(client, contract).build();
 
         assertThat(result).isNotNull();
 
-        Optional<Instance<Object>> clientInstanceResult = result.getClient();
-        assertThat(clientInstanceResult).isPresent();
+        Optional<Instance<Object>> foundClient = result.getClient();
+        assertThat(foundClient).isPresent();
 
-        Instance<Object> clientInstance = clientInstanceResult.get();
+        Instance<Object> clientInstance = foundClient.get();
 
         assertThat(clientInstance).isNotNull();
-        assertThat(clientInstance.getInstance()).isEqualTo(client);
-        assertThat(clientInstance.getName()).contains(name);
+        assertThat(clientInstance.getValue()).isEqualTo(client);
         assertThat(clientInstance.getContract()).contains(contract);
     }
 
     @Test
-    public void givenNameAndValuePropertyShouldAddProperty() {
-        String name = "name";
+    public void givenPropertyBuildShouldAddProperty() {
+        String key = "key";
         String value = "value";
 
-        LocalResourceInstance result = sut.property(name, value).build();
+        LocalResourceInstance result = sut.property(key, value).build();
 
         assertThat(result).isNotNull();
-        assertThat(result.findProperty(name)).contains(value);
+        assertThat(result.findProperty(key)).contains(value);
     }
 
     @Test
-    public void givenPropertiesPropertyShouldAddProperty() {
-        String name = "name";
+    public void givenPropertiesBuildShouldAddProperties() {
+        String key = "name";
         String value = "value";
-        Map<String, Object> properties = ImmutableMap.of(name, value);
+        Map<String, Object> properties = ImmutableMap.of(key, value);
 
         LocalResourceInstance result = sut.properties(properties).build();
 
         assertThat(result).isNotNull();
-        assertThat(result.findProperty(name)).contains(value);
+        assertThat(result.findProperty(key)).contains(value);
     }
 
 }

@@ -80,7 +80,7 @@ public class WebTargetClientProviderTest {
         Instance<WebTarget> result = sut.create(testContext, baseURI, clientBuilder);
 
         assertThat(result).isNotNull();
-        assertThat(result.getInstance()).isEqualTo(webTarget);
+        assertThat(result.getValue()).isEqualTo(webTarget);
         assertThat(result.getContract()).contains(WebTarget.class);
 
         verify(clientBuilder).build();

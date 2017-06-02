@@ -19,6 +19,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.BDDMockito.given;
@@ -41,6 +42,7 @@ import org.testifyproject.spotify.docker.client.exceptions.DockerCertificateExce
  *
  * @author saden
  */
+@Ignore
 public class DockerVirtualResourceProviderTest {
 
     DockerVirtualResourceProvider sut;

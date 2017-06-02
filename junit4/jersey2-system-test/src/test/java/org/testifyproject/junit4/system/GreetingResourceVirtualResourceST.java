@@ -20,6 +20,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
@@ -40,6 +41,7 @@ import org.testifyproject.spotify.docker.client.DefaultDockerClient;
  *
  * @author saden
  */
+@Ignore
 @Application(GreeterApplication.class)
 @Module(PostgresModule.class)
 @VirtualResource(value = "postgres", version = "9.4")
@@ -60,7 +62,7 @@ public class GreetingResourceVirtualResourceST {
         String phrase = "Hello";
 
         //Act
-        Response result = sut.getInstance()
+        Response result = sut.getValue()
                 .path("/")
                 .request()
                 .post(Entity.json(phrase));

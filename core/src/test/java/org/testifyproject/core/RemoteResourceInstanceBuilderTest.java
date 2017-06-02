@@ -38,53 +38,59 @@ public class RemoteResourceInstanceBuilderTest {
     }
 
     @Test
-    public void givenClientInstanceAndNameBuildShouldReturn() {
-        Object client = mock(Object.class);
-        String name = "client";
+    public void givenNameBuildShouldSetName() {
+        String name = "name";
 
-        RemoteResourceInstance result = sut.client(client, name).build();
+        RemoteResourceInstance result = sut.fqn(name).build();
 
         assertThat(result).isNotNull();
-
-        Instance<Object> clientInstance = result.getClient();
-
-        assertThat(clientInstance).isNotNull();
-        assertThat(clientInstance.getInstance()).isEqualTo(client);
-        assertThat(clientInstance.getName()).contains(name);
-        assertThat(clientInstance.getContract()).isEmpty();
+        assertThat(result.getFqn()).isEqualTo(name);
     }
 
     @Test
-    public void givenClientInstanceAndNameAndContractBuildShouldReturn() {
-        Object client = mock(Object.class);
-        String name = "client";
+    public void givenResourceBuildShouldSetResource() {
+        Object resource = mock(Object.class);
+
+        RemoteResourceInstance result = sut.resource(resource).build();
+
+        assertThat(result).isNotNull();
+
+        Instance<Object> resourceInstance = result.getResource();
+
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
+        assertThat(resourceInstance.getContract()).isEmpty();
+    }
+
+    @Test
+    public void givenResourceWithContractBuildShouldSetResource() {
+        Object resource = mock(Object.class);
         Class contract = Object.class;
 
-        RemoteResourceInstance result = sut.client(client, name, contract).build();
+        RemoteResourceInstance result = sut.resource(resource, contract).build();
 
         assertThat(result).isNotNull();
 
-        Instance<Object> clientInstance = result.getClient();
+        Instance<Object> resourceInstance = result.getResource();
 
-        assertThat(clientInstance).isNotNull();
-        assertThat(clientInstance.getInstance()).isEqualTo(client);
-        assertThat(clientInstance.getName()).contains(name);
-        assertThat(clientInstance.getContract()).contains(contract);
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
+        assertThat(resourceInstance.getContract()).contains(contract);
     }
 
     @Test
-    public void givenNameAndValuePropertyShouldAddProperty() {
-        String name = "name";
+    public void givenPropertyBuildShouldAddProperty() {
+        String key = "key";
         String value = "value";
 
-        RemoteResourceInstance result = sut.property(name, value).build();
+        RemoteResourceInstance result = sut.property(key, value).build();
 
         assertThat(result).isNotNull();
-        assertThat(result.findProperty(name)).contains(value);
+        assertThat(result.findProperty(key)).contains(value);
     }
 
     @Test
-    public void givenPropertiesPropertyShouldAddProperty() {
+    public void givenPropertiesBuildShouldAddProperties() {
         String name = "name";
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(name, value);

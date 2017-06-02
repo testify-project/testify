@@ -15,15 +15,16 @@
  */
 package org.testifyproject.junit4.fixture.need.container;
 
+import java.net.InetAddress;
 import javax.sql.DataSource;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.junit4.fixture.common.DatabaseConfig;
 import org.testifyproject.junit4.fixture.common.SessionFactoryFactoryBean;
 
@@ -36,10 +37,10 @@ import org.testifyproject.junit4.fixture.common.SessionFactoryFactoryBean;
 public class DockerContainerConfig {
 
     @Bean
-    DataSource dataSourceProvider(VirtualResourceInstance virtualResourceInstance) {
+    DataSource dataSourceProvider(@Qualifier("resource://postgres/resource") InetAddress containerAddress) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
-        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
+        dataSource.setServerName(containerAddress.getHostName());
+        dataSource.setPortNumber(5432);
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

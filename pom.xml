@@ -247,6 +247,13 @@
                                         <property>project.build.sourceEncoding</property>
                                         <regex>${project.build.sourceEncoding}</regex>
                                     </requireProperty>
+                                    <bannedDependencies>
+                                        <!-- Insure selenium added by Netbeans doesn't posion classpath -->
+                                        <excludes>
+                                            <exclude>org.seleniumhq.selenium:selenium-java</exclude>
+                                            <exclude>com.opera:operadriver</exclude>
+                                        </excludes>
+                                    </bannedDependencies>
                                 </rules>
                             </configuration>
                         </execution>

@@ -15,6 +15,7 @@
  */
 package org.testifyproject.junit4.fixture.need;
 
+import java.net.InetAddress;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -30,7 +31,6 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
-import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.junit4.fixture.need.common.DatabaseConfig;
 
 /**
@@ -49,10 +49,10 @@ public class VirtualResourceConfig {
 
     @Bean
     @Primary
-    DataSource dataSourceProvider(VirtualResourceInstance virtualResourceInstance) {
+    DataSource dataSourceProvider(@Qualifier("resource://postgres/resource") InetAddress containerAddress) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
-        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
+        dataSource.setServerName(containerAddress.getHostName());
+        dataSource.setPortNumber(5432);
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

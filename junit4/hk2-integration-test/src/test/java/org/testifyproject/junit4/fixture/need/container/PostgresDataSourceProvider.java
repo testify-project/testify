@@ -15,6 +15,7 @@
  */
 package org.testifyproject.junit4.fixture.need.container;
 
+import java.net.InetAddress;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -22,7 +23,6 @@ import javax.sql.DataSource;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.Rank;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.testifyproject.VirtualResourceInstance;
 
 /**
  * A provider of a JDBC Postgres test DataSource. Note that we don't annotate
@@ -34,19 +34,19 @@ import org.testifyproject.VirtualResourceInstance;
 @Rank(Integer.MAX_VALUE)
 public class PostgresDataSourceProvider implements Factory<DataSource> {
 
-    private final VirtualResourceInstance virtualResourceInstance;
+    private final InetAddress containerAddress;
 
     @Inject
-    PostgresDataSourceProvider(@Named("postgres") VirtualResourceInstance virtualResourceInstance) {
-        this.virtualResourceInstance = virtualResourceInstance;
+    PostgresDataSourceProvider(@Named("resource://postgres/resource") InetAddress containerAddress) {
+        this.containerAddress = containerAddress;
     }
 
     @Singleton
     @Override
     public DataSource provide() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setServerName(virtualResourceInstance.getAddress().getHostName());
-        dataSource.setPortNumber(virtualResourceInstance.findFirstExposedPort().get());
+        dataSource.setServerName(containerAddress.getHostName());
+        dataSource.setPortNumber(5432);
         //Default postgres image database name, user and postword
         dataSource.setDatabaseName("postgres");
         dataSource.setUser("postgres");

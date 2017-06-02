@@ -15,12 +15,12 @@
  */
 package org.testifyproject.core;
 
-import java.net.InetAddress;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
@@ -38,61 +38,59 @@ public class VirtualResourceInstanceBuilderTest {
     }
 
     @Test
-    public void givenNameCallToNameShouldSetName() {
-        String name = "containerName";
-
-        VirtualResourceInstance result = sut.name(name).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getName()).isEqualTo(name);
-    }
-
-    @Test
-    public void givenAddressCallToNameShouldSetName() {
-        InetAddress address = mock(InetAddress.class);
-
-        VirtualResourceInstance result = sut.address(address).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getAddress()).isEqualTo(address);
-    }
-
-    @Test
-    public void givenHostPortAndLocalPortCallToMappedPortShouldAddPortMapping() {
-        Integer hostPort = 1;
-        Integer localPort = 1;
-
-        VirtualResourceInstance result = sut.mappedPort(hostPort, localPort).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getMappedPorts()).containsEntry(hostPort, localPort);
-    }
-
-    @Test
-    public void givenMappedPortsCallToMappedPortsShouldAddPortMappings() {
-        Integer hostPort = 1;
-        Integer localPort = 1;
-        Map<Integer, Integer> mappedPorts = ImmutableMap.of(hostPort, localPort);
-
-        VirtualResourceInstance result = sut.mappedPorts(mappedPorts).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getMappedPorts()).containsEntry(hostPort, localPort);
-    }
-
-    @Test
-    public void givenNameAndValueCallToPropertyShouldAddProperty() {
+    public void givenNameBuildShouldSetName() {
         String name = "name";
+
+        VirtualResourceInstance result = sut.fqn(name).build();
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFqn()).isEqualTo(name);
+    }
+
+    @Test
+    public void givenResourceBuildShouldSetResource() {
+        Object resource = mock(Object.class);
+
+        VirtualResourceInstance result = sut.resource(resource).build();
+
+        assertThat(result).isNotNull();
+
+        Instance<Object> resourceInstance = result.getResource();
+
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
+        assertThat(resourceInstance.getContract()).isEmpty();
+    }
+
+    @Test
+    public void givenResourceWithContractBuildShouldSetResource() {
+        Object resource = mock(Object.class);
+        Class contract = Object.class;
+
+        VirtualResourceInstance result = sut.resource(resource, contract).build();
+
+        assertThat(result).isNotNull();
+
+        Instance<Object> resourceInstance = result.getResource();
+
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
+        assertThat(resourceInstance.getContract()).contains(contract);
+    }
+
+    @Test
+    public void givenPropertyBuildShouldAddProperty() {
+        String key = "key";
         String value = "value";
 
-        VirtualResourceInstance result = sut.property(name, value).build();
+        VirtualResourceInstance result = sut.property(key, value).build();
 
         assertThat(result).isNotNull();
-        assertThat(result.findProperty(name)).contains(value);
+        assertThat(result.findProperty(key)).contains(value);
     }
 
     @Test
-    public void givenPropertiesCallToPropertiesShouldAddProperties() {
+    public void givenPropertiesBuildShouldAddProperties() {
         String name = "name";
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(name, value);

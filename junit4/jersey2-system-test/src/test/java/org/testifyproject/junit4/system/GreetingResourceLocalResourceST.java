@@ -58,7 +58,7 @@ public class GreetingResourceLocalResourceST {
         String phrase = "Hello";
 
         //Act
-        Response result = sut.getInstance()
+        Response result = sut.getValue()
                 .path("/")
                 .request()
                 .post(Entity.json(phrase));

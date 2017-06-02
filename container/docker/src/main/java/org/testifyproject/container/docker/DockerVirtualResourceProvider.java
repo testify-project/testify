@@ -54,7 +54,7 @@ import org.testifyproject.tools.Discoverable;
 public class DockerVirtualResourceProvider
         implements VirtualResourceProvider<VirtualResource, DefaultDockerClient.Builder> {
 
-    public static final String DEFAULT_DAEMON_URI = "http://localhost:2375";
+    public static final String DEFAULT_DAEMON_URI = "http://127.0.0.1:2375";
     public static final String DEFAULT_VERSION = "latest";
     private DefaultDockerClient client;
     private final AtomicBoolean started = new AtomicBoolean(false);
@@ -72,8 +72,7 @@ public class DockerVirtualResourceProvider
             client = clientBuilder.build();
 
             String imageName = virtualResource.value();
-            String version = virtualResource.version();
-            String imageTag = getImageTag(version);
+            String imageTag = getImageTag(virtualResource.version());
 
             String image = imageName + ":" + imageTag;
             boolean imagePulled = isImagePulled(image, imageTag);
@@ -105,28 +104,30 @@ public class DockerVirtualResourceProvider
             started.compareAndSet(false, true);
 
             containerInfo = client.inspectContainer(containerId);
-            InetAddress host = InetAddresses.forString(containerInfo.networkSettings().ipAddress());
+            InetAddress containerAddress = InetAddresses.forString(containerInfo.networkSettings().ipAddress());
+            ImmutableMap<String, List<PortBinding>> containerPorts = containerInfo.networkSettings().ports();
 
-            VirtualResourceInstanceBuilder instanceBuilder = VirtualResourceInstanceBuilder.builder()
-                    .name(containerName)
-                    .address(host);
-
-            ImmutableMap<String, List<PortBinding>> ports = containerInfo.networkSettings().ports();
-
-            if (ports != null) {
-                Map<Integer, Integer> mappedPorts = ports.entrySet().stream()
+            if (containerPorts != null) {
+                Map<Integer, Integer> mappedPorts = containerPorts.entrySet().stream()
                         .collect(collectingAndThen(toMap(
                                 k -> Integer.valueOf(k.getKey().split("/")[0]),
                                 v -> Integer.valueOf(v.getValue().get(0).hostPort())),
                                 Collections::unmodifiableMap));
 
-                instanceBuilder.mappedPorts(mappedPorts);
-
                 if (virtualResource.await()) {
-                    await(virtualResource, mappedPorts, host);
+                    waitForPorts(virtualResource, mappedPorts, containerAddress);
                 }
             }
 
+            return VirtualResourceInstanceBuilder.builder()
+                    .fqn(imageName)
+                    .resource(containerAddress, InetAddress.class)
+                    .property(DockerProperties.DOCKER_CLIENT, client)
+                    .property(DockerProperties.DOCKER_CONTAINER, containerInfo)
+                    .build();
+        } catch (InterruptedException | DockerException e) {
+            throw ExceptionUtil.INSTANCE.propagate(e);
+        } finally {
             //Last ditch effort to stop the container
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
@@ -136,10 +137,6 @@ public class DockerVirtualResourceProvider
                     }
                 }
             });
-
-            return instanceBuilder.build();
-        } catch (InterruptedException | DockerException e) {
-            throw ExceptionUtil.INSTANCE.propagate(e);
         }
     }
 
@@ -237,7 +234,7 @@ public class DockerVirtualResourceProvider
      * @param mappedPorts the container mapped ports
      * @param host the container address
      */
-    void await(VirtualResource virtualResource, Map<Integer, Integer> mappedPorts, InetAddress host) {
+    void waitForPorts(VirtualResource virtualResource, Map<Integer, Integer> mappedPorts, InetAddress host) {
         RetryPolicy retryPolicy = new RetryPolicy()
                 .retryOn(IOException.class)
                 .withBackoff(virtualResource.delay(),

@@ -20,20 +20,26 @@ import org.testifyproject.trait.PropertiesReader;
 /**
  * A contract that defines methods to get information about a remote resource
  * instance. A remote instance consists of a client that can be used to
- * communicate with the remote and properties associated with the remote
- * instance.
+ * communicate with the remote resource and properties associated with the
+ * remote resource instance.
  *
  * @author saden
- * @param <C> the client type
- * @see ResourceProvider
+ * @param <R> the underlying remote resource type
  */
-public interface RemoteResourceInstance<C> extends PropertiesReader {
+public interface RemoteResourceInstance<R> extends PropertiesReader {
 
     /**
-     * Get the client instance associated with the remote resource.
+     * Get a unique fully qualified name associated with the remote resource.
      *
-     * @return a client instance
+     * @return the remote resource's fully qualified name
      */
-    Instance<C> getClient();
+    String getFqn();
+
+    /**
+     * Get the resource instance associated with the remote resource.
+     *
+     * @return a remote resource instance
+     */
+    Instance<R> getResource();
 
 }
