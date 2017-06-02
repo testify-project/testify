@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Module;
@@ -33,6 +34,7 @@ import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
  *
  * @author saden
  */
+@Ignore
 @Module(VirtualResourceConfig.class)
 @VirtualResource(value = "postgres", version = "9.4")
 @RunWith(SpringIntegrationTest.class)
