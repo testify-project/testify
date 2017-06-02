@@ -33,7 +33,7 @@ case "$1" in
     sudo apt-get -q -y install docker-engine=$DOCKER_VERSION* "linux-image-extra-$(uname -r)"
 
     # set DOCKER_OPTS to make sure docker listens on the ports we intend
-    echo 'DOCKER_OPTS="-D=true -H=unix:///var/run/docker.sock -H=tcp://127.0.0.1:2375"' | sudo tee -a /etc/default/docker
+    #echo 'DOCKER_OPTS="-D=true -H=unix:///var/run/docker.sock -H=tcp://127.0.0.1:2375"' | sudo tee -a /etc/default/docker
 
     if [[ "$DOCKER_VERSION" =~ ^1\.9\..* && ! $(mount | grep /dev/mqueue) ]]; then
       # docker-engine 1.9.x doesn't mount /dev/mqueue which is necessary to test `--ipc=host`
