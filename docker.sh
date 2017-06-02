@@ -40,14 +40,7 @@ case "$1" in
       sudo mkdir -p /dev/mqueue
       sudo mount -t mqueue none /dev/mqueue
     fi
-
   
-    echo "Making /etc/docker directory"
-    sudo mkdir -p /etc/docker
-
-    echo "Backing-up '/etc/docker/daemon.json' configuration file"
-    sudo mv /etc/docker/daemon.json "/etc/docker/daemon.json.$(date -d 'today' +'%Y%m%d%H%M')" 2>/dev/null
-
     echo "Creating Docker '/etc/docker/daemon.json' configuration file"
     echo '{"hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2375"]}' | sudo tee -a /etc/docker/daemon.json
 
