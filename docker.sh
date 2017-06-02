@@ -42,10 +42,9 @@ case "$1" in
     fi
 
     echo "Creating Docker '/etc/docker/daemon.json' configuration file"
-    sudo -s -- <<EOC
-    mkdir -p /etc/docker
-    mv /etc/docker/daemon.json "/etc/docker/daemon.json.$(date -d "today" +"%Y%m%d%H%M")" 2>/dev/null
-    tee -a /etc/docker/daemon.json >/dev/null <<'EOF'
+    sudo mkdir -p /etc/docker
+    sudo mv /etc/docker/daemon.json "/etc/docker/daemon.json.$(date -d "today" +"%Y%m%d%H%M")" 2>/dev/null
+    sudo tee -a /etc/docker/daemon.json >/dev/null <<'EOF'
     {
       "hosts": [
         "unix:///var/run/docker.sock",
@@ -53,7 +52,6 @@ case "$1" in
       ]
     }
     EOF
-    EOC
 
     echo "Removing host configuration from Docker Service ExecStart Command"
     sudo sed -i 's/ExecStart=.*/ExecStart=\/usr\/bin\/dockerd/g' /lib/systemd/system/docker.service
