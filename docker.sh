@@ -63,10 +63,10 @@ case "$1" in
     # Wait a minute so we can see more docker logs in case something goes wrong
     sleep 60
 
-    ;;
-
     echo "Testing Docker HTTP Endpoint"
     docker -H tcp://127.0.0.1:2375 ps
+
+    ;;
 
   dump_docker_config)
     # output the upstart config and default config in case they are needed for
