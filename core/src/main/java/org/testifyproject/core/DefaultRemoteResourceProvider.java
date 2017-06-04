@@ -71,7 +71,7 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
 
             RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(value);
             serviceInstance.inject(remoteResourceProvider);
-            Object configuration = remoteResourceProvider.configure(testContext);
+            Object configuration = remoteResourceProvider.configure(testContext, remoteResource);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {

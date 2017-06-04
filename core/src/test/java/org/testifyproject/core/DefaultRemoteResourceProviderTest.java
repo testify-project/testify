@@ -111,7 +111,7 @@ public class DefaultRemoteResourceProviderTest {
         given(testDescriptor.getRemoteResources()).willReturn(virtualResources);
         given(remoteResource.value()).willReturn(value);
         given(reflectionUtil.newInstance(value)).willReturn(remoteResourceProvider);
-        given(remoteResourceProvider.configure(testContext)).willReturn(configuration);
+        given(remoteResourceProvider.configure(testContext, remoteResource)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(remoteResourceProvider.start(testContext, remoteResource, configuration)).willReturn(remoteResourceInstance);
         willDoNothing().given(sut).processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
@@ -124,7 +124,7 @@ public class DefaultRemoteResourceProviderTest {
         verify(remoteResource).value();
         verify(reflectionUtil).newInstance(value);
         verify(serviceInstance).inject(remoteResourceProvider);
-        verify(remoteResourceProvider).configure(testContext);
+        verify(remoteResourceProvider).configure(testContext, remoteResource);
         verify(testConfigurer).configure(testContext, configuration);
         verify(remoteResourceProvider).start(testContext, remoteResource, configuration);
         verify(resourceProviders).put(remoteResource, remoteResourceProvider);

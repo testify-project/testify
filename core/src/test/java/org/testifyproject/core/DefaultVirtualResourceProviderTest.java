@@ -116,7 +116,7 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResource.provider()).willReturn(provider);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
         given(serviceLocatorUtil.getOne(provider)).willReturn(virtualResourceProvider);
-        given(virtualResourceProvider.configure(testContext)).willReturn(configuration);
+        given(virtualResourceProvider.configure(testContext, virtualResource)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
@@ -129,7 +129,7 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResource).provider();
         verify(serviceLocatorUtil).getOne(provider);
         verify(serviceInstance).inject(virtualResourceProvider);
-        verify(virtualResourceProvider).configure(testContext);
+        verify(virtualResourceProvider).configure(testContext, virtualResource);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
         verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
@@ -158,7 +158,7 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResource.provider()).willReturn(provider);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
         given(reflectionUtil.newInstance(provider)).willReturn(virtualResourceProvider);
-        given(virtualResourceProvider.configure(testContext)).willReturn(configuration);
+        given(virtualResourceProvider.configure(testContext, virtualResource)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
@@ -171,7 +171,7 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResource).provider();
         verify(reflectionUtil).newInstance(provider);
         verify(serviceInstance).inject(virtualResourceProvider);
-        verify(virtualResourceProvider).configure(testContext);
+        verify(virtualResourceProvider).configure(testContext, virtualResource);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
         verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);

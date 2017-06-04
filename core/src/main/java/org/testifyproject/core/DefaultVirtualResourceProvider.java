@@ -81,7 +81,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
             }
 
             serviceInstance.inject(virtualResourceProvider);
-            Object configuration = virtualResourceProvider.configure(testContext);
+            Object configuration = virtualResourceProvider.configure(testContext, virtualResource);
             configuration = testConfigurer.configure(testContext, configuration);
 
             VirtualResourceInstance<Object> virtualResourceInstance

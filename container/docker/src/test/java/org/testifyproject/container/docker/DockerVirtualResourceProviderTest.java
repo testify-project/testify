@@ -65,7 +65,7 @@ public class DockerVirtualResourceProviderTest {
 
     @Test
     public void callToConfigureShouldReturnBuilder() {
-        DefaultDockerClient.Builder result = sut.configure(testContext);
+        DefaultDockerClient.Builder result = sut.configure(testContext, virtualResource);
         assertThat(result).isNotNull();
     }
 

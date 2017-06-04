@@ -27,10 +27,10 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class ValidVirtualResourceProvider implements VirtualResourceProvider<VirtualResource, Void> {
+public class ValidVirtualResourceProvider implements VirtualResourceProvider<Void> {
 
     @Override
-    public Void configure(TestContext testContext) {
+    public Void configure(TestContext testContext, VirtualResource virtualResource) {
         return null;
     }
 

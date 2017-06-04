@@ -112,7 +112,7 @@ public class DefaultLocalResourceProviderTest {
         given(testDescriptor.getLocalResources()).willReturn(virtualResources);
         given(localResource.value()).willReturn(value);
         given(reflectionUtil.newInstance(value)).willReturn(localResourceProvider);
-        given(localResourceProvider.configure(testContext)).willReturn(configuration);
+        given(localResourceProvider.configure(testContext, localResource)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(localResourceProvider.start(testContext, localResource, configuration)).willReturn(localResourceInstance);
         willDoNothing().given(sut).processInstance(localResource, localResourceInstance, value, serviceInstance);
@@ -125,7 +125,7 @@ public class DefaultLocalResourceProviderTest {
         verify(localResource).value();
         verify(reflectionUtil).newInstance(value);
         verify(serviceInstance).inject(localResourceProvider);
-        verify(localResourceProvider).configure(testContext);
+        verify(localResourceProvider).configure(testContext, localResource);
         verify(testConfigurer).configure(testContext, configuration);
         verify(localResourceProvider).start(testContext, localResource, configuration);
         verify(resourceProviders).put(localResource, localResourceProvider);

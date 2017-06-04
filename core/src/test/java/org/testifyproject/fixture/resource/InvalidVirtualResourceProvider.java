@@ -26,7 +26,7 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class InvalidVirtualResourceProvider implements VirtualResourceProvider<VirtualResource, Void> {
+public class InvalidVirtualResourceProvider implements VirtualResourceProvider<Void> {
 
     /**
      * Private constructor is invalid.
@@ -35,7 +35,7 @@ public class InvalidVirtualResourceProvider implements VirtualResourceProvider<V
     }
 
     @Override
-    public Void configure(TestContext testContext) {
+    public Void configure(TestContext testContext, VirtualResource virtualResource) {
         return null;
     }
 

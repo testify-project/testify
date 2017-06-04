@@ -51,8 +51,7 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class DockerVirtualResourceProvider
-        implements VirtualResourceProvider<VirtualResource, DefaultDockerClient.Builder> {
+public class DockerVirtualResourceProvider implements VirtualResourceProvider<DefaultDockerClient.Builder> {
 
     public static final String DEFAULT_DAEMON_URI = "http://127.0.0.1:2375";
     public static final String DEFAULT_VERSION = "latest";
@@ -61,7 +60,7 @@ public class DockerVirtualResourceProvider
     private ContainerInfo containerInfo;
 
     @Override
-    public DefaultDockerClient.Builder configure(TestContext testContext) {
+    public DefaultDockerClient.Builder configure(TestContext testContext, VirtualResource virtualResource) {
         return DefaultDockerClient.builder().uri(DEFAULT_DAEMON_URI);
     }
 

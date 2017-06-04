@@ -44,9 +44,10 @@ public interface LocalResourceProvider<T, S, C> {
      * </p>
      *
      * @param testContext the test context
+     * @param localResource test class local resource annotation
      * @return the local resource configuration object
      */
-    T configure(TestContext testContext);
+    T configure(TestContext testContext, LocalResource localResource);
 
     /**
      * Start the local resource with the given testContext and configuration.

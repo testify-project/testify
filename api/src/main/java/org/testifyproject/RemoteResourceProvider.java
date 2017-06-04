@@ -44,9 +44,10 @@ public interface RemoteResourceProvider<T, C> {
      * </p>
      *
      * @param testContext the test context
+     * @param remoteResource test class remote resource annotation
      * @return the remote resource configuration object
      */
-    T configure(TestContext testContext);
+    T configure(TestContext testContext, RemoteResource remoteResource);
 
     /**
      * Start the remote resource with the given testContext and configuration.

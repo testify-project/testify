@@ -37,7 +37,7 @@ public class InMemoryHSQLResource implements LocalResourceProvider<JDBCDataSourc
     private Connection client;
 
     @Override
-    public JDBCDataSource configure(TestContext testContext) {
+    public JDBCDataSource configure(TestContext testContext, LocalResource localResource) {
         JDBCDataSource dataSource = new JDBCDataSource();
         dataSource.setUrl(format("jdbc:hsqldb:mem:%s?default_schema=public", testContext.getName()));
         dataSource.setUser("sa");

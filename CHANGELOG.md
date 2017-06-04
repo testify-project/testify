@@ -17,6 +17,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ###Changed
  - Switched to using Spotify Docker Java Client which is actively maintained
+ - Added LocalResource parameter to LocalResourceProvider configure method
+ - Added VirtualResource parameter to VirtualResoruceProvider configure method
+ - Added RemoteResource parameter to RemoteResourceProvider configure method
+ - Added isEmpty method to PropertiesTraite
 
 ## [0.9.3] - 2017-05-14
 ### Added

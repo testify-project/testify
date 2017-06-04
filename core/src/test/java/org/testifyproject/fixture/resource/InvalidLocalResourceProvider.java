@@ -35,7 +35,7 @@ public class InvalidLocalResourceProvider implements LocalResourceProvider {
     }
 
     @Override
-    public Object configure(TestContext testContext) {
+    public Object configure(TestContext testContext, LocalResource localResource) {
         return null;
     }
 

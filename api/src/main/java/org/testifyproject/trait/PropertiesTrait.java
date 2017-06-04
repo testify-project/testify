@@ -42,4 +42,14 @@ public interface PropertiesTrait {
      */
     <V> Map<String, V> getProperties();
 
+    /**
+     * Determine if the map returned by {@link #getProperties() }
+     * contains key-value mappings.
+     *
+     * @return true if properties contains no key-value mapping, false otherwise
+     */
+    default Boolean isEmpty() {
+        return getProperties().isEmpty();
+    }
+
 }

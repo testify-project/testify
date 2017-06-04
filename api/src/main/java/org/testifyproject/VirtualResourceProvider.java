@@ -15,15 +15,16 @@
  */
 package org.testifyproject;
 
+import org.testifyproject.annotation.VirtualResource;
+
 /**
  * A contract that defines methods to configure, start an stop a virtual
  * resource.
  *
  * @author saden
- * @param <S> the type of the virtual resource
  * @param <T> the type virtual resource configuration object
  */
-public interface VirtualResourceProvider<S, T> {
+public interface VirtualResourceProvider<T> {
 
     /**
      * <p>
@@ -42,9 +43,10 @@ public interface VirtualResourceProvider<S, T> {
      * </p>
      *
      * @param testContext the test context
+     * @param virtualResource test class virtual resource annotation
      * @return the virtual resource configuration object
      */
-    T configure(TestContext testContext);
+    T configure(TestContext testContext, VirtualResource virtualResource);
 
     /**
      * Start the virtual resource with the given testContext and configuration.
@@ -54,7 +56,7 @@ public interface VirtualResourceProvider<S, T> {
      * @param configuration the virtual resource configuration object
      * @return a virtual resource instance
      */
-    VirtualResourceInstance start(TestContext testContext, S virtualResource, T configuration);
+    VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, T configuration);
 
     /**
      * Stop the virtual resource.
@@ -62,6 +64,6 @@ public interface VirtualResourceProvider<S, T> {
      * @param testContext the test context
      * @param virtualResource test class virtual resource annotation
      */
-    void stop(TestContext testContext, S virtualResource);
+    void stop(TestContext testContext, VirtualResource virtualResource);
 
 }

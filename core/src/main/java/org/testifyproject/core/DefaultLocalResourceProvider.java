@@ -70,7 +70,7 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
             LocalResourceProvider localResourceProvider = reflectionUtil.newInstance(value);
             serviceInstance.inject(localResourceProvider);
-            Object configuration = localResourceProvider.configure(testContext);
+            Object configuration = localResourceProvider.configure(testContext, localResource);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {

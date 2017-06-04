@@ -29,7 +29,7 @@ import org.testifyproject.tools.Discoverable;
 public class ValidLocalResourceProvider implements LocalResourceProvider {
 
     @Override
-    public Object configure(TestContext testContext) {
+    public Object configure(TestContext testContext, LocalResource localResource) {
         return null;
     }
 
