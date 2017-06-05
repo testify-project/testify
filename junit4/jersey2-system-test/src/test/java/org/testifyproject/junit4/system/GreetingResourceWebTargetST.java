@@ -15,23 +15,26 @@
  */
 package org.testifyproject.junit4.system;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
-import org.testifyproject.junit4.fixture.GreeterApplication;
-import org.testifyproject.junit4.fixture.service.GreetingService;
+import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.fixture.web.GreetingApplication;
+import org.testifyproject.junit4.fixture.web.service.GreetingService;
 
+/**
+ *
+ * @author saden
+ */
+@Application(GreetingApplication.class)
 @RunWith(Jersey2SystemTest.class)
-@Application(GreeterApplication.class)
 public class GreetingResourceWebTargetST {
 
     @Sut
@@ -43,20 +46,23 @@ public class GreetingResourceWebTargetST {
     @Test
     public void verifyInjections() {
         //Arrange
-        String phrase = "Hello";
+        String phrase = "Hi!";
 
-        willDoNothing().given(greetingService).save(phrase);
+        given(greetingService.getGreeting()).willReturn(phrase);
 
         //Act
         Response result = sut.path("/")
                 .request()
-                .post(Entity.json(phrase));
+                .get();
 
         //Assert
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
-        assertThat(result.hasEntity()).isFalse();
+        assertThat(result.hasEntity()).isTrue();
 
-        verify(greetingService).save(phrase);
+        String entity = result.readEntity(String.class);
+        assertThat(entity).isEqualTo(phrase);
+
+        verify(greetingService).getGreeting();
     }
 }

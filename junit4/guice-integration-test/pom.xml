@@ -51,12 +51,6 @@
             <artifactId>integration</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.testifyproject.container</groupId>
-            <artifactId>docker</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
         
         <!-- Guice Deps -->
         <dependency>
@@ -70,44 +64,6 @@
             <artifactId>guice-multibindings</artifactId>
             <version>${guice.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- Test Deps -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        
-        <!-- Database Test Deps -->
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>javax.transaction-api</artifactId>
-            <version>${javax.transaction.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- XXX: need for javadoc generation -->
-            <groupId>javax.interceptor</groupId>
-            <artifactId>javax.interceptor-api</artifactId>
-            <version>${javax.interceptor.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgressql.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>${reflections.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

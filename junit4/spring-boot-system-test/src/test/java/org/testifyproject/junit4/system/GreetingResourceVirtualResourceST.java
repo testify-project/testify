@@ -15,66 +15,40 @@
  */
 package org.testifyproject.junit4.system;
 
-import java.io.Serializable;
+import java.net.InetAddress;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.Instance;
+import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.junit4.fixture.common.UserEntity;
-import org.testifyproject.junit4.fixture.need.container.DockerContainerApplication;
-import org.testifyproject.spotify.docker.client.DefaultDockerClient;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 
 /**
  *
  * @author saden
  */
-@Ignore
+@VirtualResource("test")
+@Application(GreetingServletApplication.class)
 @RunWith(SpringBootSystemTest.class)
-@Application(DockerContainerApplication.class)
-@VirtualResource(value = "postgres", version = "9.4")
 public class GreetingResourceVirtualResourceST {
 
     @Real
-    SessionFactory factory;
+    VirtualResourceInstance<InetAddress> instance;
 
-    @ConfigHandler
-    public void configure(DefaultDockerClient.Builder builder) {
-        assertThat(builder).isNotNull();
-    }
+    @Real
+    InetAddress resource;
 
     @Test
-    public void givenUserEntitySaveShouldPerisistEntityToPostgres() {
-        try (Session session = factory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            UserEntity entity = new UserEntity(null, "saden", "test1", "test1");
-            Serializable id = session.save(entity);
-            tx.commit();
-            assertThat(id).isNotNull();
+    public void verifyInjections() {
+        assertThat(instance).isNotNull();
+        assertThat(resource).isNotNull();
+        assertThat(instance.getFqn()).isEqualTo("test");
 
-            entity = session.get(UserEntity.class, id);
-            assertThat(entity).isNotNull();
-            javax.transaction.SystemException s;
-        }
-    }
-
-    @Test
-    public void givenAnotherUserEntitySaveShouldPerisistEntityToPostgres() {
-        try (Session session = factory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            UserEntity entity = new UserEntity(null, "saden", "test2", "test2");
-            Serializable id = session.save(entity);
-            tx.commit();
-            assertThat(id).isNotNull();
-
-            entity = session.get(UserEntity.class, id);
-            assertThat(entity).isNotNull();
-        }
+        Instance<InetAddress> resourceInstance = instance.getResource();
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
     }
 }

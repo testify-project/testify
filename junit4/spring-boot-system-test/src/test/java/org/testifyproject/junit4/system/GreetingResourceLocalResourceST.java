@@ -15,64 +15,53 @@
  */
 package org.testifyproject.junit4.system;
 
-import java.io.Serializable;
+import java.sql.Connection;
+import java.util.Optional;
+import javax.sql.DataSource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hsqldb.jdbc.JDBCDataSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Real;
-import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
-import org.testifyproject.junit4.fixture.common.UserEntity;
-import org.testifyproject.junit4.fixture.need.resource.InMemoryHSQLApplication;
+import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 
 /**
  *
  * @author saden
  */
-@Application(InMemoryHSQLApplication.class)
-@LocalResource(InMemoryHSQLResource.class)
+@LocalResource(TestLocalResourceProvider.class)
+@Application(GreetingServletApplication.class)
 @RunWith(SpringBootSystemTest.class)
 public class GreetingResourceLocalResourceST {
 
     @Real
-    SessionFactory factory;
+    LocalResourceInstance<DataSource, Connection> instance;
 
-    @ConfigHandler
-    void configure(JDBCDataSource dataSource) {
-        assertThat(dataSource).isNotNull();
-    }
+    @Real
+    DataSource resource;
 
-    @Test
-    public void givenUserEntitySaveShouldPerisistEntityToInMemoryHSQLResource() {
-        try (Session session = factory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            UserEntity entity = new UserEntity(null, "saden", "test", "test");
-            Serializable id = session.save(entity);
-            tx.commit();
-            assertThat(id).isNotNull();
-
-            entity = session.get(UserEntity.class, id);
-            assertThat(entity).isNotNull();
-        }
-    }
+    @Real
+    Connection client;
 
     @Test
-    public void givenAnotherUserEntitySaveShouldPerisistEntityToInMemoryHSQLResource() {
-        try (Session session = factory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            UserEntity entity = new UserEntity(null, "saden", "test", "test");
-            Serializable id = session.save(entity);
-            tx.commit();
-            assertThat(id).isNotNull();
+    public void givenLocalResourceVerifyInjectionOfLocalResourceAndClient() {
+        assertThat(instance).isNotNull();
+        assertThat(instance.getFqn()).isEqualTo("test");
+        assertThat(resource).isNotNull();
+        assertThat(client).isNotNull();
 
-            entity = session.get(UserEntity.class, id);
-            assertThat(entity).isNotNull();
-        }
+        Instance<DataSource> resourceInstance = instance.getResource();
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);;
+
+        Optional<Instance<Connection>> foundClient = instance.getClient();
+        assertThat(foundClient).isNotEmpty();
+
+        Instance<Connection> clientInstance = foundClient.get();
+        assertThat(clientInstance.getValue()).isEqualTo(client);
     }
 }

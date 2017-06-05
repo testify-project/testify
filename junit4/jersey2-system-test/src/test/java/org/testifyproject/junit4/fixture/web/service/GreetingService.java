@@ -13,30 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.system;
+package org.testifyproject.junit4.fixture.web.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.testifyproject.ServerInstance;
-import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Real;
-import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  *
  * @author saden
  */
-@Application(GreetingServletApplication.class)
-@RunWith(SpringBootSystemTest.class)
-public class ServerInstanceInjectionST {
+@Service
+public class GreetingService {
 
-    @Real
-    ServerInstance instance;
-
-    @Test
-    public void verifyInjections() {
-        assertThat(instance).isNotNull();
+    public String getGreeting() {
+        return "Hello";
     }
 
 }

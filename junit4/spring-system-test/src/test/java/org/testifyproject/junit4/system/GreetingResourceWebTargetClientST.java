@@ -24,13 +24,13 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
-import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
+import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 import org.testifyproject.junit4.fixture.web.service.GreetingService;
 
+@Application(GreetingServletApplication.class)
 @RunWith(SpringSystemTest.class)
-@Application(GreeterServletApplication.class)
 public class GreetingResourceWebTargetClientST {
 
     @Sut

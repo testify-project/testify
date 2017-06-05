@@ -39,10 +39,6 @@
             <artifactId>unit</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
         
         <!-- Annotation Processors Dependencies -->
         <dependency>
