@@ -15,58 +15,53 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.sql.Connection;
+import java.util.Optional;
+import javax.sql.DataSource;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
-import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
-import org.testifyproject.junit4.fixture.need.LocalResourceConfig;
-import org.testifyproject.junit4.fixture.need.common.GreetingService;
-import org.testifyproject.junit4.fixture.need.common.entity.GreetingEntity;
+import org.testifyproject.junit4.fixture.common.GreeterConfig;
+import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 
 /**
  *
  * @author saden
  */
-@Module(LocalResourceConfig.class)
-@LocalResource(InMemoryHSQLResource.class)
+@LocalResource(TestLocalResourceProvider.class)
+@Module(GreeterConfig.class)
 @RunWith(SpringIntegrationTest.class)
 public class LocalResourceIT {
 
     @Real
-    EntityManagerFactory sut;
+    LocalResourceInstance<DataSource, Connection> instance;
 
     @Real
-    GreetingService greetingService;
+    DataSource resource;
+
+    @Real
+    Connection client;
 
     @Test
-    public void givenHelloGreetShouldSaveHello() {
-        //Arrange
-        String phrase = "Hello";
-        GreetingEntity entity = new GreetingEntity(phrase);
+    public void givenLocalResourceVerifyInjectionOfLocalResourceAndClient() {
+        assertThat(instance).isNotNull();
+        assertThat(instance.getFqn()).isEqualTo("test");
+        assertThat(resource).isNotNull();
+        assertThat(client).isNotNull();
 
-        //Act
-        EntityManager em = sut.createEntityManager();
-        em.getTransaction().begin();
-        em.persist(entity);
-        em.getTransaction().commit();
+        Instance<DataSource> resourceInstance = instance.getResource();
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);;
 
-        //Assert
-        em = sut.createEntityManager();
-        Query query = em.createQuery("SELECT e FROM GreetingEntity e");
-        assertThat(query).isNotNull();
-        List<GreetingEntity> entities = query.getResultList();
-        assertThat(entities).hasSize(1);
+        Optional<Instance<Connection>> foundClient = instance.getClient();
+        assertThat(foundClient).isNotEmpty();
 
-        entity = entities.get(0);
-        assertThat(entity.getId()).isNotNull();
-        assertThat(entity.getPhrase()).isEqualTo(phrase);
-        em.close();
+        Instance<Connection> clientInstance = foundClient.get();
+        assertThat(clientInstance.getValue()).isEqualTo(client);
     }
 }

@@ -36,7 +36,6 @@
         <module>api</module>
         <module>mock</module>
         <module>core</module>
-        <module>container</module>
         <module>di</module>
         <module>level</module>
         <module>junit4</module>
@@ -341,10 +340,6 @@
                                 <goal>test</goal>
                             </goals>
                             <configuration>
-                                <forkCount>1</forkCount>
-                                <reuseForks>true</reuseForks>
-                                <parallel>methods</parallel>
-                                <useUnlimitedThreads>true</useUnlimitedThreads>
                                 <includes>
                                     <include>**/*IT.java</include>
                                 </includes>
@@ -357,10 +352,6 @@
                                 <goal>test</goal>
                             </goals>
                             <configuration>
-                                <forkCount>0.75C</forkCount>
-                                <reuseForks>false</reuseForks>
-                                <parallel>classes</parallel>
-                                <useUnlimitedThreads>true</useUnlimitedThreads>
                                 <includes>
                                     <include>**/*ST.java</include>
                                 </includes>
@@ -372,8 +363,6 @@
                         <failIfNoTests>false</failIfNoTests>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
-                        <parallel>methods</parallel>
-                        <useUnlimitedThreads>true</useUnlimitedThreads>
                         <includes>
                             <include>**/*Test.java</include>
                         </includes>

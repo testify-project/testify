@@ -24,10 +24,10 @@ import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 
+@Application(GreetingServletApplication.class)
 @RunWith(SpringSystemTest.class)
-@Application(GreeterServletApplication.class)
 public class GreetingResourceClientInstanceST {
 
     @Sut

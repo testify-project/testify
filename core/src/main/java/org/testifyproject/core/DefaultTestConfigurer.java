@@ -30,6 +30,10 @@ public class DefaultTestConfigurer implements TestConfigurer {
 
     @Override
     public <T> T configure(TestContext testContext, T configuration) {
+        if (configuration == null) {
+            return null;
+        }
+
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Class<? extends Object> configurableType = configuration.getClass();
 

@@ -15,55 +15,54 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.sql.Connection;
+import java.util.Optional;
+import javax.sql.DataSource;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
-import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
-import org.testifyproject.junit4.fixture.need.common.GreetingEntity;
+import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 
 /**
  *
  * @author saden
  */
-@LocalResource(InMemoryHSQLResource.class)
+@LocalResource(TestLocalResourceProvider.class)
 @Scan(DEFAULT_DESCRIPTOR)
 @RunWith(HK2IntegrationTest.class)
 public class LocalResourceIT {
 
     @Real
-    EntityManagerFactory sut;
+    LocalResourceInstance<DataSource, Connection> instance;
+
+    @Real
+    DataSource resource;
+
+    @Real
+    Connection client;
 
     @Test
-    public void givenHelloGreetShouldSaveHello() {
-        //Arrange
-        String phrase = "Hello";
-        GreetingEntity entity = new GreetingEntity(phrase);
+    public void givenLocalResourceVerifyInjectionOfLocalResourceAndClient() {
+        assertThat(instance).isNotNull();
+        assertThat(instance.getFqn()).isEqualTo("test");
+        assertThat(resource).isNotNull();
+        assertThat(client).isNotNull();
 
-        //Act
-        EntityManager entityManager = sut.createEntityManager();
-        entityManager.getTransaction().begin();
-        entityManager.persist(entity);
-        entityManager.getTransaction().commit();
+        Instance<DataSource> resourceInstance = instance.getResource();
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);;
 
-        //Assert
-        EntityManager em = sut.createEntityManager();
-        Query query = em.createQuery("SELECT e FROM GreetingEntity e");
-        assertThat(query).isNotNull();
-        List<GreetingEntity> entities = query.getResultList();
-        assertThat(entities).hasSize(1);
+        Optional<Instance<Connection>> foundClient = instance.getClient();
+        assertThat(foundClient).isNotEmpty();
 
-        entity = entities.get(0);
-        assertThat(entity.getId()).isNotNull();
-        assertThat(entity.getPhrase()).isEqualTo(phrase);
-        em.close();
+        Instance<Connection> clientInstance = foundClient.get();
+        assertThat(clientInstance.getValue()).isEqualTo(client);
     }
 
 }

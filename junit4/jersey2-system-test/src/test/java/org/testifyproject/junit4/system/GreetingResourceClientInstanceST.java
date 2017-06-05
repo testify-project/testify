@@ -15,7 +15,6 @@
  */
 package org.testifyproject.junit4.system;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -25,10 +24,14 @@ import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.GreeterApplication;
+import org.testifyproject.junit4.fixture.web.GreetingApplication;
 
+/**
+ *
+ * @author saden
+ */
+@Application(GreetingApplication.class)
 @RunWith(Jersey2SystemTest.class)
-@Application(GreeterApplication.class)
 public class GreetingResourceClientInstanceST {
 
     @Sut
@@ -43,12 +46,15 @@ public class GreetingResourceClientInstanceST {
         Response result = sut.getValue()
                 .path("/")
                 .request()
-                .post(Entity.json(phrase));
+                .get();
 
         //Assert
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
-        assertThat(result.hasEntity()).isFalse();
+        assertThat(result.hasEntity()).isTrue();
+
+        Object entity = result.readEntity(String.class);
+        assertThat(entity).isEqualTo(phrase);
     }
 
 }

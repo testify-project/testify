@@ -15,56 +15,41 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Ignore;
+import java.net.InetAddress;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.Instance;
+import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.junit4.fixture.need.container.PostgresModule;
-import org.testifyproject.junit4.fixture.need.database.GreetingEntity;
+import org.testifyproject.junit4.fixture.GreetingModule;
 
 /**
  *
  * @author saden
  */
-@Ignore
-@VirtualResource(value = "postgres", version = "9.4")
-@Module(PostgresModule.class)
+@VirtualResource("test")
+@Module(GreetingModule.class)
 @RunWith(GuiceIntegrationTest.class)
 public class VirtualResourceIT {
 
     @Real
-    EntityManagerFactory sut;
+    VirtualResourceInstance<InetAddress> instance;
+
+    @Real
+    InetAddress resource;
 
     @Test
-    public void givenHelloGreetShouldSaveHello() {
-        //Arrange
-        String phrase = "Hello";
-        GreetingEntity entity = new GreetingEntity(phrase);
+    public void verifyInjections() {
+        assertThat(instance).isNotNull();
+        assertThat(resource).isNotNull();
+        assertThat(instance.getFqn()).isEqualTo("test");
 
-        //Act
-        EntityManager entityManager = sut.createEntityManager();
-        entityManager.getTransaction().begin();
-        entityManager.persist(entity);
-        entityManager.getTransaction().commit();
-
-        //Assert
-        EntityManager em = sut.createEntityManager();
-        Query query = em.createQuery("SELECT e FROM GreetingEntity e");
-        assertThat(query).isNotNull();
-        List<GreetingEntity> entities = query.getResultList();
-        assertThat(entities).hasSize(1);
-
-        entity = entities.get(0);
-        assertThat(entity.getId()).isNotNull();
-        assertThat(entity.getPhrase()).isEqualTo(phrase);
-        em.close();
+        Instance<InetAddress> resourceInstance = instance.getResource();
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
     }
 
 }

@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.system;
+package org.testifyproject.junit4.fixture.web;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.testifyproject.ServerInstance;
-import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Real;
-import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
+import javax.ws.rs.ApplicationPath;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.testifyproject.junit4.fixture.web.feature.ServiceLocatorConfigFeature;
 
 /**
  *
  * @author saden
  */
-@Application(GreetingServletApplication.class)
-@RunWith(SpringBootSystemTest.class)
-public class ServerInstanceInjectionST {
+@ApplicationPath("/")
+public class GreetingApplication extends ResourceConfig {
 
-    @Real
-    ServerInstance instance;
-
-    @Test
-    public void verifyInjections() {
-        assertThat(instance).isNotNull();
+    public GreetingApplication() {
+        packages(true, "org.testifyproject.junit4.fixture.web");
+        register(ServiceLocatorConfigFeature.class);
     }
 
 }
