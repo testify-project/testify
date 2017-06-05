@@ -93,16 +93,6 @@
         <hk2.version>2.4.0</hk2.version>
         <jersey.version>2.25.1</jersey.version>
         <guice.version>4.1.0</guice.version>
-        <reflections.version>0.9.10</reflections.version>
-
-        <!-- Database Dependencies -->
-        <javax.el.version>3.0.0</javax.el.version>
-        <hibernate.version>5.1.0.Final</hibernate.version>
-        <hibernate.validator.version>5.2.2.Final</hibernate.validator.version>
-        <jsoup.version>1.9.2</jsoup.version>
-        <javax.transaction.version>1.2</javax.transaction.version>
-        <javax.interceptor.version>1.2</javax.interceptor.version>
-        <postgressql.version>9.4.1207</postgressql.version>
 
         <!-- Processor Dependencies -->
         <lombok.version>1.16.16</lombok.version>
