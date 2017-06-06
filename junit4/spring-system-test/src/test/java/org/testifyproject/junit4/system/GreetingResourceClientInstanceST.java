@@ -24,10 +24,10 @@ import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 
+@Application(GreetingServletApplication.class)
 @RunWith(SpringSystemTest.class)
-@Application(GreeterServletApplication.class)
 public class GreetingResourceClientInstanceST {
 
     @Sut
@@ -35,7 +35,7 @@ public class GreetingResourceClientInstanceST {
 
     @Test
     public void verifyInjections() {
-        Response result = sut.getInstance().path("/").request().get();
+        Response result = sut.getValue().path("/").request().get();
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
         assertThat(result.readEntity(String.class)).isEqualTo("Hello");

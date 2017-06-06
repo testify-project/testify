@@ -31,6 +31,6 @@ public interface ClientInstance<T> extends Instance<T> {
      * @return a client instance.
      */
     @Override
-    T getInstance();
+    T getValue();
 
 }

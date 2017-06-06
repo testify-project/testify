@@ -24,14 +24,14 @@ import org.junit.runner.RunWith;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 
 /**
  *
  * @author saden
  */
 @RunWith(SpringBootSystemTest.class)
-@Application(GreeterServletApplication.class)
+@Application(GreetingServletApplication.class)
 public class GreetingResourceClientInstanceClientST {
 
     @Sut
@@ -39,7 +39,7 @@ public class GreetingResourceClientInstanceClientST {
 
     @Test
     public void givenClientInstanceGetGreetingResourceShouldReturn() {
-        Response result = sut.getInstance().path("/").request().get();
+        Response result = sut.getValue().path("/").request().get();
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
         assertThat(result.readEntity(String.class)).isEqualTo("Hello");

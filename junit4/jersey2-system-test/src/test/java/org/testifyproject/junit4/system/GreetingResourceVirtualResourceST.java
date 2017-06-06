@@ -15,53 +15,40 @@
  */
 package org.testifyproject.junit4.system;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.net.InetAddress;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.ClientInstance;
+import org.testifyproject.Instance;
+import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Sut;
-import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.junit4.fixture.GreeterApplication;
-import org.testifyproject.junit4.fixture.need.PostgresModule;
+import org.testifyproject.junit4.fixture.web.GreetingApplication;
 
 /**
- * Test Greeter Resource inside the container from the client perspective real
- * instance of the Greeting Service and Postgres database running inside of
- * Docker container. This ability comes in handy when you want to test against
- * real production environment.
  *
  * @author saden
  */
-@Application(GreeterApplication.class)
-@Module(PostgresModule.class)
-@VirtualResource(value = "postgres", version = "9.4")
+@VirtualResource("test")
+@Application(GreetingApplication.class)
 @RunWith(Jersey2SystemTest.class)
 public class GreetingResourceVirtualResourceST {
 
-    @Sut
-    ClientInstance<WebTarget> sut;
+    @Real
+    VirtualResourceInstance<InetAddress> instance;
+
+    @Real
+    InetAddress resource;
 
     @Test
-    public void givenHelloGetShouldReturnHello() {
-        //Arrange
-        String phrase = "Hello";
+    public void verifyInjections() {
+        assertThat(instance).isNotNull();
+        assertThat(resource).isNotNull();
+        assertThat(instance.getFqn()).isEqualTo("test");
 
-        //Act
-        Response result = sut.getInstance()
-                .path("/")
-                .request()
-                .post(Entity.json(phrase));
-
-        //Assert
-        assertThat(result).isNotNull();
-        assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
-        assertThat(result.hasEntity()).isFalse();
+        Instance<InetAddress> resourceInstance = instance.getResource();
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
     }
-
 }

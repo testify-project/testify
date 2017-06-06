@@ -56,8 +56,9 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the name of the {@link org.testifyproject.LocalResourceInstance}
-     * provided by {@link #value() }.
+     * Specifies the name of the
+     * {@link org.testifyproject.LocalResourceInstance} provided by {@link #value()
+     * }.
      * </p>
      * <p>
      * Note that if a test class requires multiple resources that provide
@@ -70,14 +71,22 @@ public @interface LocalResource {
     String name() default "";
 
     /**
+     * The configuration section key in <i>.testify.yml</i> associated with the
+     * local resource.
+     *
+     * @return the configKey section key.
+     */
+    String configKey() default "";
+
+    /**
      * <p>
-     * Specifies the underlying resource name. This useful for giving the
+     * Specifies the underlying local resource name. This useful for giving the
      * underlying resource a unique name that can be used to qualify and
      * distinguish it from other similar services.
      * </p>
      * <p>
      * Note that if the name is not specified the name provided by the local
-     * resource implementation will be used.
+     * resource provider implementation will be used.
      * </p>
      *
      * @return the underlying local resource name.
@@ -86,7 +95,7 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the contract implemented by the underlying resource. This
+     * Specifies the contract implemented by the underlying local resource. This
      * useful for getting the underlying resource by its contract.
      * </p>
      * <p>
@@ -94,7 +103,7 @@ public @interface LocalResource {
      * underlying resource will be injectable by its implementation class only.
      * </p>
      *
-     * @return the contract implemented by the underlying resource.
+     * @return the contract implemented by the underlying local resource.
      */
     Class<?> resourceContract() default void.class;
 

@@ -13,6 +13,17 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.4] - 2017-06-06
+###Changed
+ - Added configKey attribute to LocalResource, VirtualResource, RemoteResource to enable the association with configurations section in `.testify.yml` to a resource
+ - Added LocalResource and PropertiesReader parameters to LocalResourceProvider configure method
+ - Added VirtualResource and PropertiesReader parameters to VirtualResoruceProvider configure method
+ - Added RemoteResource and PropertiesReader parameters to RemoteResourceProvider configure method
+ - Added isEmpty method to PropertiesTraite
+
+###Removed
+ - Moved container module to its own [repository](https://github.com/testify-project/virtual-resources)
+
 ## [0.9.3] - 2017-05-14
 ### Added
  - Added extention contracts and annotations to the API

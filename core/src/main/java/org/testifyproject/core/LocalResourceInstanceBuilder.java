@@ -15,11 +15,10 @@
  */
 package org.testifyproject.core;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  * A builder class used to construction LocalResourceInstance instances.
@@ -33,7 +32,7 @@ public class LocalResourceInstanceBuilder<R, C> {
 
     private Instance<R> resource;
     private Instance<C> client;
-    private final Map<String, Object> properties = new LinkedHashMap<>();
+    private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
      * Create a new resource of LocalResourceInstanceBuilder.
@@ -45,83 +44,66 @@ public class LocalResourceInstanceBuilder<R, C> {
     }
 
     /**
-     * Set the underlying resource to the given resource and name. When choosing
-     * a name for the resource it is best to choose a name that reflect the
-     * resource being provided to avoid potential collision with names used by
-     * other resource provider (i.e. "myAwesomeResourceServer").
+     * Set the underlying resource to the given resource.
      *
      * @param resource the underlying resource
-     * @param name the underlying resource name
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> resource(R resource, String name) {
-        this.resource = new DefaultInstance(resource, name, null);
+    public LocalResourceInstanceBuilder<R, C> resource(R resource) {
+        this.resource = DefaultInstance.of(resource);
 
         return this;
     }
 
     /**
-     * Set the underlying resource to the given resource, name, contract. When
-     * choosing a name for the resource it is best to choose a name that reflect
-     * the resource being provided to avoid potential collision with names used
-     * by other resource provider (i.e. "myAwesomeResourceServer").
+     * Set the underlying resource to the given resource and contract.
      *
      * @param resource the underlying resource
-     * @param name the underlying resource name
      * @param contract the underlying resource contract
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> resource(R resource, String name, Class<? extends R> contract) {
-        this.resource = new DefaultInstance(resource, name, contract);
+    public LocalResourceInstanceBuilder<R, C> resource(R resource, Class<? extends R> contract) {
+        this.resource = DefaultInstance.of(resource, contract);
 
         return this;
     }
 
     /**
-     * Set the client of the underlying resource to the given client and name.
-     * When choosing a name for the resource client it is best to choose a name
-     * that reflect the resource being provided to avoid potential collision
-     * with names used by other resource provider (i.e.
-     * "myAwesomeResourceClient").
+     * Set the client of the underlying resource to the given client.
      *
-     * @param client the underlying resource client resource
-     * @param name the underlying resource client name
+     * @param client the underlying resource client
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> client(C client, String name) {
-        this.client = new DefaultInstance(client, name, null);
+    public LocalResourceInstanceBuilder<R, C> client(C client) {
+        this.client = DefaultInstance.of(client);
 
         return this;
     }
 
     /**
-     * Set the client of the underlying resource to the given client, name,
-     * contract. When choosing a name for the resource client it is best to
-     * choose a name that reflect the resource being provided to avoid potential
-     * collision with names used by other resource provider (i.e.
-     * "myAwesomeResourceClient").
+     * Set the client of the underlying resource to the given client and
+     * contract.
      *
      * @param client the underlying resource client resource
-     * @param name the underlying resource client name
      * @param contract the underlying resource client contract
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> client(C client, String name, Class<? extends C> contract) {
-        this.client = new DefaultInstance(client, name, contract);
+    public LocalResourceInstanceBuilder<R, C> client(C client, Class<? extends C> contract) {
+        this.client = DefaultInstance.of(client, contract);
 
         return this;
     }
 
     /**
-     * Associate the specified value with the specified name in the resource
+     * Associate the specified value with the specified key in the resource
      * resource.
      *
-     * @param name the name with which the specified value is to be associated
+     * @param ket the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public LocalResourceInstanceBuilder<R, C> property(String name, Object value) {
-        this.properties.put(name, value);
+    public LocalResourceInstanceBuilder<R, C> property(String ket, Object value) {
+        this.properties.put(ket, value);
 
         return this;
     }
@@ -139,12 +121,17 @@ public class LocalResourceInstanceBuilder<R, C> {
     }
 
     /**
-     * Build and return a local resource instance based on the builder state.
+     * Build and return a local resource instance based on the builder state and
+     * the given fqn (fully qualified name). When choosing a fqn for the
+     * resource it is best to choose a fqn that reflect the resource being
+     * provided to avoid potential collision with names used by other virtual
+     * resource provider implementations.
      *
+     * @param fqn the fully qualified name of the local resource
      * @return a local resource instance
      */
-    public LocalResourceInstance<R, C> build() {
-        return DefaultLocalResourceInstance.of(resource, client, Collections.unmodifiableMap(properties));
+    public LocalResourceInstance<R, C> build(String fqn) {
+        return DefaultLocalResourceInstance.of(fqn, resource, client, properties.build());
     }
 
 }

@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
     </parent>
 
     <groupId>org.testifyproject.junit4</groupId>
@@ -44,7 +44,6 @@
     
     <properties>
         <junit.version>4.12</junit.version>
-        <hsqldb.version>2.3.4</hsqldb.version>
     </properties>
 
     <dependencies>
@@ -52,12 +51,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -49,12 +49,13 @@ public class DefaultTestConfigurerTest {
 
     }
 
-    @Test(expected = NullPointerException.class)
-    public void givenNullConfigurationConfigureShouldThrowException() {
+    @Test
+    public void givenNullConfigurationConfigureShouldReturnNull() {
         TestContext testContext = mock(TestContext.class);
         Object configuration = null;
 
-        sut.configure(testContext, configuration);
+        Object result = sut.configure(testContext, configuration);
+        assertThat(result).isNull();
     }
 
     @Test

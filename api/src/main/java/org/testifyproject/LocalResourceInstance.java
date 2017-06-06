@@ -25,23 +25,30 @@ import org.testifyproject.trait.PropertiesReader;
  * properties associated with the local resource instance.
  *
  * @author saden
- * @param <R> the resource type
- * @param <C> the client type
+ * @param <R> the underlying local resource type
+ * @param <C> the underlying local resource client type
  * @see ResourceProvider
  */
 public interface LocalResourceInstance<R, C> extends PropertiesReader {
 
     /**
-     * Get the client instance associated with the resource.
+     * Get a unique fully qualified name associated with the local resource.
+     *
+     * @return the local resource's fully qualified name
+     */
+    String getFqn();
+
+    /**
+     * Get the client instance associated with the local resource.
      *
      * @return an optional with client, empty optional otherwise
      */
     Optional<Instance<C>> getClient();
 
     /**
-     * Get the underlying resource instance resource.
+     * Get the underlying local resource instance.
      *
-     * @return the underlying resource associated with the resource instance
+     * @return the underlying local resource
      */
     Instance<R> getResource();
 

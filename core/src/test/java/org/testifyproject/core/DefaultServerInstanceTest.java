@@ -41,7 +41,7 @@ public class DefaultServerInstanceTest {
         sut = DefaultServerInstance.of(baseURI, server, contract);
 
         assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getValue()).isEqualTo(server);
         assertThat(sut.getContract()).contains(contract);
     }
 
@@ -51,7 +51,7 @@ public class DefaultServerInstanceTest {
 
         assertThat(sut).isNotNull();
         assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getValue()).isEqualTo(server);
         assertThat(sut.getContract()).isEmpty();
     }
 
@@ -61,7 +61,7 @@ public class DefaultServerInstanceTest {
 
         assertThat(sut).isNotNull();
         assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getValue()).isEqualTo(server);
         assertThat(sut.getContract()).isEmpty();
     }
 
@@ -71,7 +71,7 @@ public class DefaultServerInstanceTest {
 
         assertThat(sut).isNotNull();
         assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getInstance()).isEqualTo(server);
+        assertThat(sut.getValue()).isEqualTo(server);
         assertThat(sut.getContract()).contains(contract);
     }
 
@@ -84,7 +84,7 @@ public class DefaultServerInstanceTest {
 
     @Test
     public void callToGetInstanceShouldReturnServer() {
-        Object result = sut.getInstance();
+        Object result = sut.getValue();
 
         assertThat(result).isEqualTo(server);
     }

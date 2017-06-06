@@ -92,7 +92,7 @@ public class DefaultInstance<T> implements Instance<T> {
     }
 
     @Override
-    public T getInstance() {
+    public T getValue() {
         return instance;
     }
 

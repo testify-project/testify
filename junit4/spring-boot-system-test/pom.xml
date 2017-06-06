@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
     </parent>
     
     <artifactId>spring-boot-system-test</artifactId>
@@ -124,42 +124,9 @@
 
         <!-- Test Deps -->
         <dependency>
-            <groupId>org.testifyproject.container</groupId>
-            <artifactId>docker</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.testifyproject.client</groupId>
             <artifactId>jersey-client</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgressql.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>javax.transaction-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>${reflections.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

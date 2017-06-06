@@ -18,6 +18,7 @@ package org.testifyproject.core;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.testifyproject.Instance;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
@@ -29,6 +30,7 @@ import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -69,40 +71,66 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
         //container resource create a new instance, configure and start a
         //container instance and addConfigHandler it to the service instance.
         virtualResources.parallelStream().forEach(virtualResource -> {
-            Class<? extends VirtualResourceProvider> virtualResourceProviderType = virtualResource.provider();
+            Class<? extends VirtualResourceProvider> provider = virtualResource.provider();
 
             VirtualResourceProvider virtualResourceProvider;
 
-            if (VirtualResourceProvider.class.equals(virtualResourceProviderType)) {
+            if (VirtualResourceProvider.class.equals(provider)) {
                 virtualResourceProvider = serviceLocatorUtil.getOne(VirtualResourceProvider.class);
             } else {
-                virtualResourceProvider = reflectionUtil.newInstance(virtualResourceProviderType);
+                virtualResourceProvider = reflectionUtil.newInstance(provider);
             }
 
             serviceInstance.inject(virtualResourceProvider);
-            Object configuration = virtualResourceProvider.configure(testContext);
+            String configKey = virtualResource.configKey();
+            PropertiesReader configReader = testContext.getPropertiesReader(configKey);
+            Object configuration = virtualResourceProvider.configure(testContext, virtualResource, configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
-            VirtualResourceInstance virtualResourceInstance
+            VirtualResourceInstance<Object> virtualResourceInstance
                     = virtualResourceProvider.start(testContext, virtualResource, configuration);
 
-            addResource(virtualResourceInstance, virtualResource, serviceInstance);
+            processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
             virtualResourceProviders.put(virtualResource, virtualResourceProvider);
         });
     }
 
-    void addResource(VirtualResourceInstance virtualResourceInstance,
-            VirtualResource virtualResource,
+    void processInstance(VirtualResource virtualResource,
+            VirtualResourceInstance<Object> virtualResourceInstance,
             ServiceInstance serviceInstance) {
-        String resourceName = virtualResource.name();
-        Class<VirtualResourceInstance> resourceContract = VirtualResourceInstance.class;
+        String value = virtualResource.value();
+        String name = virtualResource.name();
 
-        if (resourceName.isEmpty()) {
-            resourceName = virtualResource.value();
+        String resourceInstanceName;
+        Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
+
+        if (name.isEmpty()) {
+            resourceInstanceName = "resource://" + value;
+        } else {
+            resourceInstanceName = "resource://" + name;
         }
 
-        serviceInstance.addConstant(virtualResourceInstance, resourceName, resourceContract);
+        serviceInstance.addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
+
+        processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
+    }
+
+    void processResource(String resourceInstanceName,
+            VirtualResource virtualResource,
+            VirtualResourceInstance<Object> virtualResourceInstance,
+            ServiceInstance serviceInstance) {
+        String resourceName = virtualResource.resourceName();
+        Class<?> resourceContract = virtualResource.resourceContract();
+        Instance resourceInstance = virtualResourceInstance.getResource();
+
+        if (resourceName.isEmpty()) {
+            resourceName = resourceInstanceName + "/resource";
+        } else {
+            resourceName = resourceInstanceName + "/" + resourceName;
+        }
+
+        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
     }
 
     @Override

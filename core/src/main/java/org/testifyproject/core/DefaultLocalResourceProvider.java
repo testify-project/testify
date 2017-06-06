@@ -18,7 +18,6 @@ package org.testifyproject.core;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
@@ -31,6 +30,7 @@ import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -67,64 +67,81 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
         //local resource create a new instance, configure and start a
         //resource instance and addConfigHandler it to the service instance.
         localResources.parallelStream().forEach(localResource -> {
-            Class<? extends LocalResourceProvider> resourceProviderType = localResource.value();
+            Class<? extends LocalResourceProvider> value = localResource.value();
 
-            LocalResourceProvider localResourceProvider = reflectionUtil.newInstance(resourceProviderType);
+            LocalResourceProvider localResourceProvider = reflectionUtil.newInstance(value);
             serviceInstance.inject(localResourceProvider);
-            Object configuration = localResourceProvider.configure(testContext);
+            String configKey = localResource.configKey();
+            PropertiesReader configReader = testContext.getPropertiesReader(configKey);
+            Object configuration = localResourceProvider.configure(testContext, localResource, configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
-                LocalResourceInstance<?, ?> localResourceInstance
+                LocalResourceInstance<Object, Object> localResourceInstance
                         = localResourceProvider.start(testContext, localResource, configuration);
 
-                processResource(localResourceInstance, localResource, serviceInstance);
-                processClient(localResourceInstance, localResource, serviceInstance);
-
-                addResource(localResourceInstance, localResource, serviceInstance);
-
                 localResourceProviders.put(localResource, localResourceProvider);
+                processInstance(localResource, localResourceInstance, value, serviceInstance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, resourceProviderType);
+                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, value);
             }
         });
     }
 
-    void addResource(LocalResourceInstance<?, ?> localResourceInstance,
-            LocalResource localResource,
+    void processInstance(LocalResource localResource,
+            LocalResourceInstance<Object, Object> localResourceInstance,
+            Class<? extends LocalResourceProvider> value,
             ServiceInstance serviceInstance) {
-        String resourceName = localResource.name();
-        Class<LocalResourceInstance> resourceContract = LocalResourceInstance.class;
+        String name = localResource.name();
+
+        String resourceInstanceName;
+        Class<LocalResourceInstance> resourceInstanceContract = LocalResourceInstance.class;
+
+        if (name.isEmpty()) {
+            resourceInstanceName = "resource://" + value.getSimpleName();
+        } else {
+            resourceInstanceName = "resource://" + name;
+        }
+
+        serviceInstance.addConstant(localResourceInstance, resourceInstanceName, resourceInstanceContract);
+
+        processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
+        processClient(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
+    }
+
+    void processResource(String resourceInstanceName,
+            LocalResource localResource,
+            LocalResourceInstance<Object, Object> localResourceInstance,
+            ServiceInstance serviceInstance) {
+        String resourceName = localResource.resourceName();
+        Class<?> resourceContract = localResource.resourceContract();
 
         if (resourceName.isEmpty()) {
-            serviceInstance.addConstant(localResourceInstance, null, resourceContract);
+            resourceName = resourceInstanceName + "/resource";
         } else {
-            serviceInstance.addConstant(localResourceInstance, resourceName, resourceContract);
+            resourceName = resourceInstanceName + "/" + resourceName;
         }
+
+        Instance resourceInstance = localResourceInstance.getResource();
+        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
     }
 
-    void processClient(LocalResourceInstance localResourceInstance,
+    void processClient(String resourceInstanceName,
             LocalResource localResource,
+            LocalResourceInstance<Object, Object> localResourceInstance,
             ServiceInstance serviceInstance) {
-        Optional<? extends Instance<?>> clientInstanceResult = localResourceInstance.getClient();
+        localResourceInstance.getClient().ifPresent(clientInstance -> {
+            String clientName = localResource.clientName();
+            Class<?> clientContract = localResource.clientContract();
 
-        if (clientInstanceResult.isPresent()) {
-            Instance<?> clientInstance = clientInstanceResult.get();
+            if (clientName.isEmpty()) {
+                clientName = resourceInstanceName + "/client";
+            } else {
+                clientName = resourceInstanceName + "/" + clientName;
+            }
 
-            serviceInstance.replace(clientInstance,
-                    localResource.clientName(),
-                    localResource.clientContract());
-        }
-    }
-
-    void processResource(LocalResourceInstance localResourceInstance,
-            LocalResource localResource,
-            ServiceInstance serviceInstance) {
-        Instance<?> resource = localResourceInstance.getResource();
-
-        serviceInstance.replace(resource,
-                localResource.resourceName(),
-                localResource.resourceContract());
+            serviceInstance.replace(clientInstance, clientName, clientContract);
+        });
     }
 
     @Override

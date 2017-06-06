@@ -34,13 +34,15 @@ import org.testifyproject.LocalResourceInstance;
 @EqualsAndHashCode
 public class DefaultLocalResourceInstance<R, C> implements LocalResourceInstance<R, C> {
 
+    private final String fqn;
     private final Instance<R> resource;
     private final Instance<C> client;
     private final Map<String, Object> properties;
 
-    DefaultLocalResourceInstance(Instance<R> resource,
+    DefaultLocalResourceInstance(String fqn, Instance<R> resource,
             Instance<C> client,
             Map<String, Object> properties) {
+        this.fqn = fqn;
         this.resource = resource;
         this.client = client;
         this.properties = properties;
@@ -52,15 +54,21 @@ public class DefaultLocalResourceInstance<R, C> implements LocalResourceInstance
      *
      * @param <R> the underlying resource type
      * @param <C> the underlying resource client type
-     * @param resource the underlying resource instance
+     * @param fqn the local resource's fully qualified name
+     * @param resource the underlying local resource instance
      * @param client the client instance
      * @param properties the resource instance properties
      * @return a new resource instance
      */
-    public static <R, C> LocalResourceInstance<R, C> of(Instance<R> resource,
+    public static <R, C> LocalResourceInstance<R, C> of(String fqn, Instance<R> resource,
             Instance<C> client,
             Map<String, Object> properties) {
-        return new DefaultLocalResourceInstance<>(resource, client, properties);
+        return new DefaultLocalResourceInstance<>(fqn, resource, client, properties);
+    }
+
+    @Override
+    public String getFqn() {
+        return fqn;
     }
 
     @Override

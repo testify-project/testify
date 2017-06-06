@@ -21,16 +21,12 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
     </parent>
 
     <artifactId>spring-integration-test</artifactId>
     <name>Spring Integration Test</name>
     <description>A module that contains a JUnit test runner for running Spring integration tests</description>
-    
-    <properties>
-        <spring.data.version>1.10.2.RELEASE</spring.data.version>
-    </properties>
    
     <dependencies>
         <dependency>
@@ -54,62 +50,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.testifyproject.container</groupId>
-            <artifactId>docker</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>javax.transaction-api</artifactId>
-            <version>${javax.transaction.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.4.1207</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>${reflections.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>${spring.data.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

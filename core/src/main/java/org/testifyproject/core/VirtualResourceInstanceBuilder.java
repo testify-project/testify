@@ -15,8 +15,8 @@
  */
 package org.testifyproject.core;
 
-import java.net.InetAddress;
 import java.util.Map;
+import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
@@ -24,13 +24,13 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  * A builder class used to construction VirtualResourceInstance instances.
  *
  * @author saden
+ * @param <R> the underlying virtual resource type
  * @see VirtualResourceInstance
  */
-public class VirtualResourceInstanceBuilder {
+public class VirtualResourceInstanceBuilder<R> {
 
-    private String name;
-    private InetAddress address;
-    private final ImmutableMap.Builder<Integer, Integer> mappedPorts = ImmutableMap.builder();
+    private String fqn;
+    private Instance<R> resource;
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
@@ -43,65 +43,40 @@ public class VirtualResourceInstanceBuilder {
     }
 
     /**
-     * Set the name of the virtual resource.
+     * Set the underlying resource to the given resource.
      *
-     * @param name the name of the virtual resource
+     * @param resource the underlying resource
      * @return this object
      */
-    public VirtualResourceInstanceBuilder name(String name) {
-        this.name = name;
+    public VirtualResourceInstanceBuilder<R> resource(R resource) {
+        this.resource = DefaultInstance.of(resource);
 
         return this;
     }
 
     /**
-     * Set the address of the virtual resource.
+     * Set the underlying resource to the given resource and contract.
      *
-     * @param address the name of the virtual resource
+     * @param resource the underlying resource
+     * @param contract the underlying resource contract
      * @return this object
      */
-    public VirtualResourceInstanceBuilder address(InetAddress address) {
-        this.address = address;
+    public VirtualResourceInstanceBuilder<R> resource(R resource, Class<? extends R> contract) {
+        this.resource = DefaultInstance.of(resource, contract);
 
         return this;
     }
 
     /**
-     * Associate the specified value with the specified name in the resource
+     * Associate the specified value with the specified key in the resource
      * resource.
      *
-     * @param hostPort the virtual resource host port
-     * @param localPort the localhost port
-     * @return this object
-     */
-    public VirtualResourceInstanceBuilder mappedPort(Integer hostPort, Integer localPort) {
-        this.mappedPorts.put(hostPort, localPort);
-
-        return this;
-    }
-
-    /**
-     * Associate the given properties with the resource resource.
-     *
-     * @param mappedPorts a map that contains mapped ports
-     * @return this object
-     */
-    public VirtualResourceInstanceBuilder mappedPorts(Map<Integer, Integer> mappedPorts) {
-        this.mappedPorts.putAll(mappedPorts);
-
-        return this;
-    }
-
-    /**
-     * Associate the specified value with the specified name in the resource
-     * resource.
-     *
-     * @param name the name with which the specified value is to be associated
+     * @param key the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public VirtualResourceInstanceBuilder property(String name, Object value) {
-        this.properties.put(name, value);
+    public VirtualResourceInstanceBuilder property(String key, Object value) {
+        this.properties.put(key, value);
 
         return this;
     }
@@ -119,15 +94,16 @@ public class VirtualResourceInstanceBuilder {
     }
 
     /**
-     * Build and return a virtual resource instance based on the builder state.
+     * Build and return a virtual resource instance based on the builder state
+     * and the given fqn (fully qualified name). When choosing a fqn for the
+     * resource it is best to choose a fqn that reflect the resource being
+     * provided to avoid potential collision with names used by other virtual
+     * resource provider implementations.
      *
+     * @param fqn the fully qualified name of the virtual resource
      * @return a virtual resource instance
      */
-    public VirtualResourceInstance build() {
-        return DefaultVirtualResourceInstance.of(name,
-                address,
-                mappedPorts.build(),
-                properties.build());
+    public VirtualResourceInstance build(String fqn) {
+        return DefaultVirtualResourceInstance.of(fqn, resource, properties.build());
     }
-
 }

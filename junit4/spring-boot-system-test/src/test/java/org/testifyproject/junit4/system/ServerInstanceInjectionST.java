@@ -21,14 +21,14 @@ import org.junit.runner.RunWith;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Real;
-import org.testifyproject.junit4.fixture.servlet.GreeterServletApplication;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 
 /**
  *
  * @author saden
  */
+@Application(GreetingServletApplication.class)
 @RunWith(SpringBootSystemTest.class)
-@Application(GreeterServletApplication.class)
 public class ServerInstanceInjectionST {
 
     @Real

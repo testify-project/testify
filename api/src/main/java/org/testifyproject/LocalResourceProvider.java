@@ -16,6 +16,7 @@
 package org.testifyproject;
 
 import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * A contract that defines methods to configure, start an stop a local resource.
@@ -44,9 +45,11 @@ public interface LocalResourceProvider<T, S, C> {
      * </p>
      *
      * @param testContext the test context
-     * @return the local resource configuration object
+     * @param localResource test class local resource annotation
+     * @param configReader the value of configReader
+     * @return the T
      */
-    T configure(TestContext testContext);
+    T configure(TestContext testContext, LocalResource localResource, PropertiesReader configReader);
 
     /**
      * Start the local resource with the given testContext and configuration.

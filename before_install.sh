@@ -18,13 +18,11 @@ set -e
 
 if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     echo "Decrypting Secrets"
-    openssl aes-256-cbc -K $encrypted_1b2bc6d866cb_key -iv $encrypted_1b2bc6d866cb_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
+    openssl aes-256-cbc -K $encrypted_6a225b5562f2_key -iv $encrypted_6a225b5562f2_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
     tar --strip-components 1 -xzf secrets.tar.gz
     gpg --fast-import testifybot.asc
     eval "$(ssh-agent -s)"
     ssh-add testifybot_rsa
 fi
-
-echo "MAVEN_OPTS='-client -Xms512m -Xmx2048m'" > ~/.mavenrc
 
 echo "Before Install Operations All Done!"

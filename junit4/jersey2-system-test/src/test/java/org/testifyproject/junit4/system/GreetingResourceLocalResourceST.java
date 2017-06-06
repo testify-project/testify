@@ -15,58 +15,53 @@
  */
 package org.testifyproject.junit4.system;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import static javax.ws.rs.core.Response.Status.OK;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.sql.Connection;
+import java.util.Optional;
+import javax.sql.DataSource;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.ClientInstance;
+import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.LocalResource;
-import org.testifyproject.junit4.fixture.GreeterApplication;
-import org.testifyproject.junit4.fixture.InMemoryHSQLResource;
+import org.testifyproject.annotation.Real;
+import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
+import org.testifyproject.junit4.fixture.web.GreetingApplication;
 
 /**
- * <p>
- * Test Greeter Resource inside the container from the client perspective using
- * real instance of the Greeting Service and an in-memory HSQL database. This
- * ability comes in handy when you want to test against simple or custom
- * resources quickly.
- * </p>
- * <p>
- * NOTE: This example is demo fodder. If you are writing system tests you should
- * use container based resources and test against production environment. See
- * {@link GreeterResourceRequiresContainerTest}
- * </p>
  *
  * @author saden
  */
-@Application(GreeterApplication.class)
-@LocalResource(InMemoryHSQLResource.class)
+@LocalResource(TestLocalResourceProvider.class)
+@Application(GreetingApplication.class)
 @RunWith(Jersey2SystemTest.class)
 public class GreetingResourceLocalResourceST {
 
-    @Sut
-    ClientInstance<WebTarget> sut;
+    @Real
+    LocalResourceInstance<DataSource, Connection> instance;
+
+    @Real
+    DataSource resource;
+
+    @Real
+    Connection client;
 
     @Test
-    public void givenHelloGetShouldReturnHello() {
-        //Arrange
-        String phrase = "Hello";
+    public void givenLocalResourceVerifyInjectionOfLocalResourceAndClient() {
+        assertThat(instance).isNotNull();
+        assertThat(instance.getFqn()).isEqualTo("test");
+        assertThat(resource).isNotNull();
+        assertThat(client).isNotNull();
 
-        //Act
-        Response result = sut.getInstance()
-                .path("/")
-                .request()
-                .post(Entity.json(phrase));
+        Instance<DataSource> resourceInstance = instance.getResource();
+        assertThat(resourceInstance).isNotNull();
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);;
 
-        //Assert
-        assertThat(result).isNotNull();
-        assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
-        assertThat(result.hasEntity()).isFalse();
+        Optional<Instance<Connection>> foundClient = instance.getClient();
+        assertThat(foundClient).isNotEmpty();
+
+        Instance<Connection> clientInstance = foundClient.get();
+        assertThat(clientInstance.getValue()).isEqualTo(client);
     }
-
 }

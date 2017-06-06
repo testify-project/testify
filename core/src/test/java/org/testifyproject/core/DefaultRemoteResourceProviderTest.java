@@ -25,6 +25,7 @@ import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
@@ -37,6 +38,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  *
@@ -53,7 +55,7 @@ public class DefaultRemoteResourceProviderTest {
         reflectionUtil = mock(ReflectionUtil.class);
         resourceProviders = mock(Map.class, delegatesTo(new LinkedHashMap<>()));
 
-        sut = new DefaultRemoteResourceProvider(reflectionUtil, resourceProviders);
+        sut = spy(new DefaultRemoteResourceProvider(reflectionUtil, resourceProviders));
     }
 
     @Test
@@ -91,38 +93,33 @@ public class DefaultRemoteResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithNoConfigurationShouldStart() throws Exception {
+    public void callToStartWithRemoteResourcesShouldStartResources() throws Exception {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         RemoteResource remoteResource = mock(RemoteResource.class);
         List<RemoteResource> virtualResources = ImmutableList.of(remoteResource);
-        Class resourceProviderType = RemoteResourceProvider.class;
         RemoteResourceProvider remoteResourceProvider = mock(RemoteResourceProvider.class);
         Object configuration = mock(Object.class);
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
-        RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
-        Instance<Object> clientInstance = mock(Instance.class);
-        String clientName = "";
-        Class clientContract = Class.class;
-        String name = "";
-        Class<RemoteResourceInstance> remoteResourceInstanceType = RemoteResourceInstance.class;
+        RemoteResourceInstance<Object> remoteResourceInstance = mock(RemoteResourceInstance.class);
+
+        Class value = RemoteResourceProvider.class;
+        String configKey = "test";
+        PropertiesReader configReader = mock(PropertiesReader.class);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testDescriptor.getRemoteResources()).willReturn(virtualResources);
-        given(remoteResource.value()).willReturn(resourceProviderType);
-        given(reflectionUtil.newInstance(resourceProviderType)).willReturn(remoteResourceProvider);
-        given(remoteResourceProvider.configure(testContext)).willReturn(configuration);
+        given(remoteResource.value()).willReturn(value);
+        given(reflectionUtil.newInstance(value)).willReturn(remoteResourceProvider);
+        given(remoteResource.configKey()).willReturn(configKey);
+        given(testContext.getPropertiesReader(configKey)).willReturn(configReader);
+        given(remoteResourceProvider.configure(testContext, remoteResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(remoteResourceProvider.start(testContext, remoteResource, configuration)).willReturn(remoteResourceInstance);
-        given(remoteResourceInstance.getClient()).willReturn(clientInstance);
-        given(remoteResource.clientName()).willReturn(clientName);
-        given(remoteResource.clientContract()).willReturn(clientContract);
-        willDoNothing().given(serviceInstance).replace(clientInstance, clientName, clientContract);
-        willDoNothing().given(serviceInstance).addConstant(remoteResourceInstance, null, remoteResourceInstanceType);
-        given(remoteResource.name()).willReturn(name);
+        willDoNothing().given(sut).processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
         sut.start(testContext, serviceInstance);
 
@@ -130,76 +127,119 @@ public class DefaultRemoteResourceProviderTest {
         verify(testContext).getTestConfigurer();
         verify(testDescriptor).getRemoteResources();
         verify(remoteResource).value();
-        verify(reflectionUtil).newInstance(resourceProviderType);
+        verify(reflectionUtil).newInstance(value);
         verify(serviceInstance).inject(remoteResourceProvider);
-        verify(remoteResourceProvider).configure(testContext);
+        verify(remoteResource).configKey();
+        verify(testContext).getPropertiesReader(configKey);
+        verify(remoteResourceProvider).configure(testContext, remoteResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(remoteResourceProvider).start(testContext, remoteResource, configuration);
-        verify(remoteResourceInstance).getClient();
-        verify(remoteResource).clientName();
-        verify(remoteResource).clientContract();
-        verify(serviceInstance).replace(clientInstance, clientName, clientContract);
-        verify(remoteResource).name();
-        verify(serviceInstance).addConstant(remoteResourceInstance, null, remoteResourceInstanceType);
         verify(resourceProviders).put(remoteResource, remoteResourceProvider);
+        verify(sut).processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
     }
 
     @Test
-    public void callToStartWithConfigurationShouldStart() throws Exception {
-        TestContext testContext = mock(TestContext.class);
+    public void callToProcessIntanceWithNoConfigurationShouldStart() throws Exception {
+        RemoteResource remoteResource = mock(RemoteResource.class);
+        RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
+        Class value = RemoteResourceProvider.class;
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        RemoteResource remoteResource = mock(RemoteResource.class);
-        List<RemoteResource> virtualResources = ImmutableList.of(remoteResource);
-        Class resourceProviderType = RemoteResourceProvider.class;
-        RemoteResourceProvider remoteResourceProvider = mock(RemoteResourceProvider.class);
-        Object configuration = mock(Object.class);
-        TestConfigurer testConfigurer = mock(TestConfigurer.class);
-        RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
-        Instance<Object> clientInstance = mock(Instance.class);
-        String clientName = "clientName";
-        Class clientContract = Object.class;
-        String name = "resourceName";
-        Class<RemoteResourceInstance> remoteResourceInstanceType = RemoteResourceInstance.class;
+        String name = "";
+        Class<RemoteResourceInstance> resourceInstanceContract = RemoteResourceInstance.class;
+        String resourceInstanceName = "resource://" + value.getSimpleName();
 
-        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testContext.getTestConfigurer()).willReturn(testConfigurer);
-        given(testDescriptor.getRemoteResources()).willReturn(virtualResources);
-        given(remoteResource.value()).willReturn(resourceProviderType);
-        given(reflectionUtil.newInstance(resourceProviderType)).willReturn(remoteResourceProvider);
-        given(remoteResourceProvider.configure(testContext)).willReturn(configuration);
-        given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
-        given(remoteResourceProvider.start(testContext, remoteResource, configuration)).willReturn(remoteResourceInstance);
-        given(remoteResourceInstance.getClient()).willReturn(clientInstance);
-        given(remoteResource.clientName()).willReturn(clientName);
-        given(remoteResource.clientContract()).willReturn(clientContract);
-        willDoNothing().given(serviceInstance).replace(clientInstance, clientName, clientContract);
-        willDoNothing().given(serviceInstance).addConstant(remoteResourceInstance, name, remoteResourceInstanceType);
         given(remoteResource.name()).willReturn(name);
+        willDoNothing().given(serviceInstance).addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
+        willDoNothing().given(sut).processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
 
-        sut.start(testContext, serviceInstance);
+        sut.processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
-        verify(testContext).getTestDescriptor();
-        verify(testContext).getTestConfigurer();
-        verify(testDescriptor).getRemoteResources();
-        verify(remoteResource).value();
-        verify(reflectionUtil).newInstance(resourceProviderType);
-        verify(serviceInstance).inject(remoteResourceProvider);
-        verify(remoteResourceProvider).configure(testContext);
-        verify(testConfigurer).configure(testContext, configuration);
-        verify(remoteResourceProvider).start(testContext, remoteResource, configuration);
-        verify(remoteResourceInstance).getClient();
-        verify(remoteResource).clientName();
-        verify(remoteResource).clientContract();
-        verify(serviceInstance).replace(clientInstance, clientName, clientContract);
         verify(remoteResource).name();
-        verify(serviceInstance).addConstant(remoteResourceInstance, name, remoteResourceInstanceType);
-        verify(resourceProviders).put(remoteResource, remoteResourceProvider);
+        verify(serviceInstance).addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
+        verify(sut).processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
 
-        verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
+        verifyNoMoreInteractions(remoteResource, remoteResourceInstance, serviceInstance);
+    }
+
+    @Test
+    public void callToProcessInstanceWithConfigurationShouldStart() throws Exception {
+        RemoteResource remoteResource = mock(RemoteResource.class);
+        RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
+        Class value = RemoteResourceProvider.class;
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
+
+        String name = "name";
+        Class<RemoteResourceInstance> resourceInstanceContract = RemoteResourceInstance.class;
+        String resourceInstanceName = "resource://" + name;
+
+        given(remoteResource.name()).willReturn(name);
+        willDoNothing().given(serviceInstance).addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
+        willDoNothing().given(sut).processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
+
+        sut.processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
+
+        verify(remoteResource).name();
+        verify(serviceInstance).addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
+        verify(sut).processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
+
+        verifyNoMoreInteractions(remoteResource, remoteResourceInstance, serviceInstance);
+    }
+
+    @Test
+    public void callToProcessResourceWithNoConfigurationShouldStart() throws Exception {
+        String resourceInstanceName = "resource://test";
+        RemoteResource remoteResource = mock(RemoteResource.class);
+        RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
+
+        String remoteResourceName = "";
+        String resourceName = resourceInstanceName + "/resource";
+        Class resourceContract = Class.class;
+        Instance<Object> resourceInstance = mock(Instance.class);
+
+        given(remoteResource.resourceName()).willReturn(remoteResourceName);
+        given(remoteResource.resourceContract()).willReturn(resourceContract);
+        given(remoteResourceInstance.getResource()).willReturn(resourceInstance);
+        willDoNothing().given(serviceInstance).replace(resourceInstance, resourceName, resourceContract);
+
+        sut.processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
+
+        verify(remoteResourceInstance).getResource();
+        verify(remoteResource).resourceName();
+        verify(remoteResource).resourceContract();
+        verify(serviceInstance).replace(resourceInstance, resourceName, resourceContract);
+
+        verifyNoMoreInteractions(remoteResource, remoteResourceInstance, serviceInstance);
+    }
+
+    @Test
+    public void callToProcessResourceWithConfigurationShouldStart() throws Exception {
+        String resourceInstanceName = "resource://test";
+        RemoteResource remoteResource = mock(RemoteResource.class);
+        RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
+
+        String remoteResourceName = "remoteResource";
+        String resourceName = resourceInstanceName + "/" + remoteResourceName;
+        Class resourceContract = Class.class;
+        Instance<Object> resourceInstance = mock(Instance.class);
+
+        given(remoteResource.resourceName()).willReturn(remoteResourceName);
+        given(remoteResource.resourceContract()).willReturn(resourceContract);
+        given(remoteResourceInstance.getResource()).willReturn(resourceInstance);
+        willDoNothing().given(serviceInstance).replace(resourceInstance, resourceName, resourceContract);
+
+        sut.processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
+
+        verify(remoteResourceInstance).getResource();
+        verify(remoteResource).resourceName();
+        verify(remoteResource).resourceContract();
+        verify(serviceInstance).replace(resourceInstance, resourceName, resourceContract);
+
+        verifyNoMoreInteractions(remoteResource, remoteResourceInstance, serviceInstance);
     }
 
     @Test

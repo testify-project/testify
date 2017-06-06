@@ -99,7 +99,7 @@ public class TestifyJUnit4RunNotifier extends RunNotifier {
 
     public void addFailedAssumption(AssumptionViolatedException e) {
         Failure failure = new Failure(testDescription, e);
-        runNotifier.fireTestAssumptionFailed(failure);
+        fireTestAssumptionFailed(failure);
     }
 
     public void addFailure(Throwable throwable) {
@@ -109,7 +109,7 @@ public class TestifyJUnit4RunNotifier extends RunNotifier {
                     .forEach(this::addFailure);
         } else {
             Failure failure = new Failure(testDescription, throwable);
-            runNotifier.fireTestFailure(failure);
+            fireTestFailure(failure);
         }
     }
 }

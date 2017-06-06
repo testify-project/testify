@@ -20,6 +20,7 @@ import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  *
@@ -35,7 +36,7 @@ public class InvalidLocalResourceProvider implements LocalResourceProvider {
     }
 
     @Override
-    public Object configure(TestContext testContext) {
+    public Object configure(TestContext testContext, LocalResource localResource, PropertiesReader configReader) {
         return null;
     }
 
