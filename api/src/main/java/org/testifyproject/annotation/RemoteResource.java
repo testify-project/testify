@@ -68,7 +68,15 @@ public @interface RemoteResource {
      *
      * @return the resource instance name.
      */
-    String name() default "remote";
+    String name() default "";
+
+    /**
+     * The configuration section key in <i>.testify.yml</i> associated with the
+     * remote resource.
+     *
+     * @return the configKey section key.
+     */
+    String configKey() default "";
 
     /**
      * <p>

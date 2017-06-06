@@ -38,6 +38,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  *
@@ -105,13 +106,17 @@ public class DefaultRemoteResourceProviderTest {
         RemoteResourceInstance<Object> remoteResourceInstance = mock(RemoteResourceInstance.class);
 
         Class value = RemoteResourceProvider.class;
+        String configKey = "test";
+        PropertiesReader configReader = mock(PropertiesReader.class);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testDescriptor.getRemoteResources()).willReturn(virtualResources);
         given(remoteResource.value()).willReturn(value);
         given(reflectionUtil.newInstance(value)).willReturn(remoteResourceProvider);
-        given(remoteResourceProvider.configure(testContext, remoteResource)).willReturn(configuration);
+        given(remoteResource.configKey()).willReturn(configKey);
+        given(testContext.getPropertiesReader(configKey)).willReturn(configReader);
+        given(remoteResourceProvider.configure(testContext, remoteResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(remoteResourceProvider.start(testContext, remoteResource, configuration)).willReturn(remoteResourceInstance);
         willDoNothing().given(sut).processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
@@ -124,7 +129,9 @@ public class DefaultRemoteResourceProviderTest {
         verify(remoteResource).value();
         verify(reflectionUtil).newInstance(value);
         verify(serviceInstance).inject(remoteResourceProvider);
-        verify(remoteResourceProvider).configure(testContext, remoteResource);
+        verify(remoteResource).configKey();
+        verify(testContext).getPropertiesReader(configKey);
+        verify(remoteResourceProvider).configure(testContext, remoteResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(remoteResourceProvider).start(testContext, remoteResource, configuration);
         verify(resourceProviders).put(remoteResource, remoteResourceProvider);

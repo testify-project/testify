@@ -30,6 +30,7 @@ import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -71,7 +72,9 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
 
             RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(value);
             serviceInstance.inject(remoteResourceProvider);
-            Object configuration = remoteResourceProvider.configure(testContext, remoteResource);
+            String configKey = remoteResource.configKey();
+            PropertiesReader configReader = testContext.getPropertiesReader(configKey);
+            Object configuration = remoteResourceProvider.configure(testContext, remoteResource, configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {

@@ -21,6 +21,7 @@ import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  *
@@ -30,7 +31,7 @@ import org.testifyproject.tools.Discoverable;
 public class ValidVirtualResourceProvider implements VirtualResourceProvider<Void> {
 
     @Override
-    public Void configure(TestContext testContext, VirtualResource virtualResource) {
+    public Void configure(TestContext testContext, VirtualResource virtualResource, PropertiesReader configReader) {
         return null;
     }
 

@@ -16,11 +16,14 @@ was added, changed, deprecated, removed, fix and security fixes.
 ## [0.9.4]
 
 ###Changed
- - Switched to using Spotify Docker Java Client which is actively maintained
- - Added LocalResource parameter to LocalResourceProvider configure method
- - Added VirtualResource parameter to VirtualResoruceProvider configure method
- - Added RemoteResource parameter to RemoteResourceProvider configure method
+ - Added configKey attribute to LocalResource, VirtualResource, RemoteResource to enable the association with configurations section in .testify.yml to a resource
+ - Added LocalResource and PropertiesReader parameters to LocalResourceProvider configure method
+ - Added VirtualResource and PropertiesReader parameters to VirtualResoruceProvider configure method
+ - Added RemoteResource and PropertiesReader parameters to RemoteResourceProvider configure method
  - Added isEmpty method to PropertiesTraite
+
+###Removed
+ - Moved container module to its own [repository](https://github.com/testify-project/virtual-resources)
 
 ## [0.9.3] - 2017-05-14
 ### Added

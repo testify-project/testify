@@ -30,6 +30,7 @@ import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -81,7 +82,9 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
             }
 
             serviceInstance.inject(virtualResourceProvider);
-            Object configuration = virtualResourceProvider.configure(testContext, virtualResource);
+            String configKey = virtualResource.configKey();
+            PropertiesReader configReader = testContext.getPropertiesReader(configKey);
+            Object configuration = virtualResourceProvider.configure(testContext, virtualResource, configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             VirtualResourceInstance<Object> virtualResourceInstance

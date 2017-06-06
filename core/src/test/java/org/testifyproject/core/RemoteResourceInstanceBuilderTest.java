@@ -31,27 +31,27 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
 public class RemoteResourceInstanceBuilderTest {
 
     RemoteResourceInstanceBuilder sut;
+    String fqn;
 
     @Before
     public void init() {
+        fqn = "test";
         sut = RemoteResourceInstanceBuilder.builder();
     }
 
     @Test
-    public void givenNameBuildShouldSetName() {
-        String name = "name";
-
-        RemoteResourceInstance result = sut.fqn(name).build();
+    public void givenFqnBuildShouldSetName() {
+        RemoteResourceInstance result = sut.build(fqn);
 
         assertThat(result).isNotNull();
-        assertThat(result.getFqn()).isEqualTo(name);
+        assertThat(result.getFqn()).isEqualTo(fqn);
     }
 
     @Test
     public void givenResourceBuildShouldSetResource() {
         Object resource = mock(Object.class);
 
-        RemoteResourceInstance result = sut.resource(resource).build();
+        RemoteResourceInstance result = sut.resource(resource).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -67,7 +67,7 @@ public class RemoteResourceInstanceBuilderTest {
         Object resource = mock(Object.class);
         Class contract = Object.class;
 
-        RemoteResourceInstance result = sut.resource(resource, contract).build();
+        RemoteResourceInstance result = sut.resource(resource, contract).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -83,7 +83,7 @@ public class RemoteResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        RemoteResourceInstance result = sut.property(key, value).build();
+        RemoteResourceInstance result = sut.property(key, value).build(fqn);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -95,7 +95,7 @@ public class RemoteResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(name, value);
 
-        RemoteResourceInstance result = sut.properties(properties).build();
+        RemoteResourceInstance result = sut.properties(properties).build(fqn);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(name)).contains(value);

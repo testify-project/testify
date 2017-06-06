@@ -16,6 +16,7 @@
 package org.testifyproject;
 
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * A contract that defines methods to configure, start an stop a virtual
@@ -44,9 +45,10 @@ public interface VirtualResourceProvider<T> {
      *
      * @param testContext the test context
      * @param virtualResource test class virtual resource annotation
+     * @param configReader the value of configReader
      * @return the virtual resource configuration object
      */
-    T configure(TestContext testContext, VirtualResource virtualResource);
+    T configure(TestContext testContext, VirtualResource virtualResource, PropertiesReader configReader);
 
     /**
      * Start the virtual resource with the given testContext and configuration.

@@ -32,9 +32,11 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
 public class LocalResourceInstanceBuilderTest {
 
     LocalResourceInstanceBuilder sut;
+    String fqn;
 
     @Before
     public void init() {
+        fqn = "test";
         sut = LocalResourceInstanceBuilder.builder();
     }
 
@@ -42,7 +44,7 @@ public class LocalResourceInstanceBuilderTest {
     public void givenResourceBuildShouldSetResource() {
         Object resource = mock(Object.class);
 
-        LocalResourceInstance result = sut.resource(resource).build();
+        LocalResourceInstance result = sut.resource(resource).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -57,7 +59,7 @@ public class LocalResourceInstanceBuilderTest {
         Object resource = mock(Object.class);
         Class contract = Object.class;
 
-        LocalResourceInstance result = sut.resource(resource, contract).build();
+        LocalResourceInstance result = sut.resource(resource, contract).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -71,7 +73,7 @@ public class LocalResourceInstanceBuilderTest {
     public void givenClientBuildShouldSetClient() {
         Object client = mock(Object.class);
 
-        LocalResourceInstance result = sut.client(client).build();
+        LocalResourceInstance result = sut.client(client).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -90,7 +92,7 @@ public class LocalResourceInstanceBuilderTest {
         Object client = mock(Object.class);
         Class contract = Object.class;
 
-        LocalResourceInstance result = sut.client(client, contract).build();
+        LocalResourceInstance result = sut.client(client, contract).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -109,7 +111,7 @@ public class LocalResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        LocalResourceInstance result = sut.property(key, value).build();
+        LocalResourceInstance result = sut.property(key, value).build(fqn);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -121,7 +123,7 @@ public class LocalResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(key, value);
 
-        LocalResourceInstance result = sut.properties(properties).build();
+        LocalResourceInstance result = sut.properties(properties).build(fqn);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);

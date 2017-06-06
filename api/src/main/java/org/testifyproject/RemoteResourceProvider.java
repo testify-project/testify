@@ -16,6 +16,7 @@
 package org.testifyproject;
 
 import org.testifyproject.annotation.RemoteResource;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * A contract that defines methods to configure, start an stop a remote
@@ -45,9 +46,10 @@ public interface RemoteResourceProvider<T, C> {
      *
      * @param testContext the test context
      * @param remoteResource test class remote resource annotation
+     * @param configReader a configuration properties reader
      * @return the remote resource configuration object
      */
-    T configure(TestContext testContext, RemoteResource remoteResource);
+    T configure(TestContext testContext, RemoteResource remoteResource, PropertiesReader configReader);
 
     /**
      * Start the remote resource with the given testContext and configuration.

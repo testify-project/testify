@@ -23,6 +23,7 @@ import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.LocalResourceInstanceBuilder;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * An implementation of LocalResourceProvider that provides test local resource.
@@ -32,7 +33,7 @@ import org.testifyproject.core.LocalResourceInstanceBuilder;
 public class TestLocalResourceProvider implements LocalResourceProvider<Void, DataSource, Connection> {
 
     @Override
-    public Void configure(TestContext testContext, LocalResource localResource) {
+    public Void configure(TestContext testContext, LocalResource localResource, PropertiesReader configReader) {
         return null;
     }
 
@@ -42,10 +43,9 @@ public class TestLocalResourceProvider implements LocalResourceProvider<Void, Da
             Void configuration)
             throws Exception {
         return LocalResourceInstanceBuilder.builder()
-                .fqn("test")
                 .resource(mock(DataSource.class), DataSource.class)
                 .client(mock(Connection.class), Connection.class)
-                .build();
+                .build("test");
     }
 
     @Override

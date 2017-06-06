@@ -30,6 +30,7 @@ import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * An implementation of {@link ResourceProvider} that manages the starting and
@@ -70,7 +71,9 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
             LocalResourceProvider localResourceProvider = reflectionUtil.newInstance(value);
             serviceInstance.inject(localResourceProvider);
-            Object configuration = localResourceProvider.configure(testContext, localResource);
+            String configKey = localResource.configKey();
+            PropertiesReader configReader = testContext.getPropertiesReader(configKey);
+            Object configuration = localResourceProvider.configure(testContext, localResource, configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {

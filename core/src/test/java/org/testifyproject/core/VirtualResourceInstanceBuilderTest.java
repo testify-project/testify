@@ -31,27 +31,27 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
 public class VirtualResourceInstanceBuilderTest {
 
     VirtualResourceInstanceBuilder sut;
+    String fqn;
 
     @Before
     public void init() {
+        fqn = "test";
         sut = VirtualResourceInstanceBuilder.builder();
     }
 
     @Test
-    public void givenNameBuildShouldSetName() {
-        String name = "name";
-
-        VirtualResourceInstance result = sut.fqn(name).build();
+    public void givenFqnBuildShouldSetName() {
+        VirtualResourceInstance result = sut.build(fqn);
 
         assertThat(result).isNotNull();
-        assertThat(result.getFqn()).isEqualTo(name);
+        assertThat(result.getFqn()).isEqualTo(fqn);
     }
 
     @Test
     public void givenResourceBuildShouldSetResource() {
         Object resource = mock(Object.class);
 
-        VirtualResourceInstance result = sut.resource(resource).build();
+        VirtualResourceInstance result = sut.resource(resource).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -67,7 +67,7 @@ public class VirtualResourceInstanceBuilderTest {
         Object resource = mock(Object.class);
         Class contract = Object.class;
 
-        VirtualResourceInstance result = sut.resource(resource, contract).build();
+        VirtualResourceInstance result = sut.resource(resource, contract).build(fqn);
 
         assertThat(result).isNotNull();
 
@@ -83,7 +83,7 @@ public class VirtualResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        VirtualResourceInstance result = sut.property(key, value).build();
+        VirtualResourceInstance result = sut.property(key, value).build(fqn);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -95,7 +95,7 @@ public class VirtualResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(name, value);
 
-        VirtualResourceInstance result = sut.properties(properties).build();
+        VirtualResourceInstance result = sut.properties(properties).build(fqn);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(name)).contains(value);

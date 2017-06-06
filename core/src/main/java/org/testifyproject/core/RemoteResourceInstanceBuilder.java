@@ -29,7 +29,6 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class RemoteResourceInstanceBuilder<R> {
 
-    private String fqn;
     private Instance<R> resource;
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
@@ -40,21 +39,6 @@ public class RemoteResourceInstanceBuilder<R> {
      */
     public static RemoteResourceInstanceBuilder builder() {
         return new RemoteResourceInstanceBuilder<>();
-    }
-
-    /**
-     * Set the fqn of the remote resource. When choosing a fqn for the resource
-     * it is best to choose a fqn that reflect the resource being provided to
-     * avoid potential collision with names used by other virtual resource
-     * provider implementations.
-     *
-     * @param fqn the fully qualified name of the remote resource
-     * @return this object
-     */
-    public RemoteResourceInstanceBuilder fqn(String fqn) {
-        this.fqn = fqn;
-
-        return this;
     }
 
     /**
@@ -109,14 +93,16 @@ public class RemoteResourceInstanceBuilder<R> {
     }
 
     /**
-     * Build and return a remote resource instance based on the builder state.
+     * Build and return a remote resource instance based on the builder state
+     * and the given fqn (fully qualified name). When choosing a fqn for the
+     * resource it is best to choose a fqn that reflect the resource being
+     * provided to avoid potential collision with names used by other virtual
+     * resource provider implementations.
      *
+     * @param fqn the fully qualified name of the remote resource
      * @return a remote resource instance
      */
-    public RemoteResourceInstance<R> build() {
-        //TODO: if fqn is not spcified then determine it from the caller class.
-        //Once Java 9 is rleased use with JEP-259 StackWalker API.
-
+    public RemoteResourceInstance<R> build(String fqn) {
         return DefaultRemoteResourceInstance.of(fqn, resource, properties.build());
     }
 

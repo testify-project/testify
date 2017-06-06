@@ -39,6 +39,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  *
@@ -106,13 +107,17 @@ public class DefaultLocalResourceProviderTest {
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
 
         Class value = LocalResourceProvider.class;
+        String configKey = "test";
+        PropertiesReader configReader = mock(PropertiesReader.class);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testDescriptor.getLocalResources()).willReturn(virtualResources);
         given(localResource.value()).willReturn(value);
         given(reflectionUtil.newInstance(value)).willReturn(localResourceProvider);
-        given(localResourceProvider.configure(testContext, localResource)).willReturn(configuration);
+        given(localResource.configKey()).willReturn(configKey);
+        given(testContext.getPropertiesReader(configKey)).willReturn(configReader);
+        given(localResourceProvider.configure(testContext, localResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(localResourceProvider.start(testContext, localResource, configuration)).willReturn(localResourceInstance);
         willDoNothing().given(sut).processInstance(localResource, localResourceInstance, value, serviceInstance);
@@ -125,7 +130,9 @@ public class DefaultLocalResourceProviderTest {
         verify(localResource).value();
         verify(reflectionUtil).newInstance(value);
         verify(serviceInstance).inject(localResourceProvider);
-        verify(localResourceProvider).configure(testContext, localResource);
+        verify(localResource).configKey();
+        verify(testContext).getPropertiesReader(configKey);
+        verify(localResourceProvider).configure(testContext, localResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(localResourceProvider).start(testContext, localResource, configuration);
         verify(resourceProviders).put(localResource, localResourceProvider);

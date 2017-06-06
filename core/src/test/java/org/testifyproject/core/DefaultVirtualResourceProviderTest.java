@@ -40,6 +40,7 @@ import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.fixture.resource.ValidVirtualResourceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  *
@@ -110,13 +111,17 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = mock(Object.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
+        String configKey = "test";
+        PropertiesReader configReader = mock(PropertiesReader.class);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(virtualResource.provider()).willReturn(provider);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
         given(serviceLocatorUtil.getOne(provider)).willReturn(virtualResourceProvider);
-        given(virtualResourceProvider.configure(testContext, virtualResource)).willReturn(configuration);
+        given(virtualResource.configKey()).willReturn(configKey);
+        given(testContext.getPropertiesReader(configKey)).willReturn(configReader);
+        given(virtualResourceProvider.configure(testContext, virtualResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
@@ -129,14 +134,16 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResource).provider();
         verify(serviceLocatorUtil).getOne(provider);
         verify(serviceInstance).inject(virtualResourceProvider);
-        verify(virtualResourceProvider).configure(testContext, virtualResource);
+        verify(virtualResource).configKey();
+        verify(testContext).getPropertiesReader(configKey);
+        verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
         verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor, serviceInstance);
     }
-    
+
     @Test
     public void callToStartWithCustomProviderShouldStartResources() {
         TestContext testContext = mock(TestContext.class);
@@ -153,12 +160,17 @@ public class DefaultVirtualResourceProviderTest {
         Object configuration = mock(Object.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
 
+        String configKey = "test";
+        PropertiesReader configReader = mock(PropertiesReader.class);
+
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(virtualResource.provider()).willReturn(provider);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
         given(reflectionUtil.newInstance(provider)).willReturn(virtualResourceProvider);
-        given(virtualResourceProvider.configure(testContext, virtualResource)).willReturn(configuration);
+        given(virtualResource.configKey()).willReturn(configKey);
+        given(testContext.getPropertiesReader(configKey)).willReturn(configReader);
+        given(virtualResourceProvider.configure(testContext, virtualResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
@@ -171,7 +183,9 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResource).provider();
         verify(reflectionUtil).newInstance(provider);
         verify(serviceInstance).inject(virtualResourceProvider);
-        verify(virtualResourceProvider).configure(testContext, virtualResource);
+        verify(virtualResource).configKey();
+        verify(testContext).getPropertiesReader(configKey);
+        verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
         verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);

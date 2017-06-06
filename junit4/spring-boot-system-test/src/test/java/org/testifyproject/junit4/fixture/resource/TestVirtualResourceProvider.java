@@ -23,6 +23,7 @@ import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.VirtualResourceInstanceBuilder;
 import org.testifyproject.guava.common.net.InetAddresses;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * An implementation of VirtualResourceProvider that provides a test virtual
@@ -34,16 +35,15 @@ import org.testifyproject.tools.Discoverable;
 public class TestVirtualResourceProvider implements VirtualResourceProvider<Void> {
 
     @Override
-    public Void configure(TestContext testContext, VirtualResource virtualResource) {
+    public Void configure(TestContext testContext, VirtualResource virtualResource, PropertiesReader configReader) {
         return null;
     }
 
     @Override
     public VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, Void configuration) {
         return VirtualResourceInstanceBuilder.builder()
-                .fqn("test")
                 .resource(InetAddresses.forString("127.0.0.1"), InetAddress.class)
-                .build();
+                .build("test");
     }
 
     @Override

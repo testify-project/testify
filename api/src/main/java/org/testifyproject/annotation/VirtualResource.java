@@ -88,6 +88,14 @@ public @interface VirtualResource {
     String name() default "";
 
     /**
+     * The configuration section key in <i>.testify.yml</i> associated with the
+     * virtual resource.
+     *
+     * @return the configKey section key.
+     */
+    String configKey() default "";
+
+    /**
      * <p>
      * Specifies the virtual resource's name. This useful for giving the
      * resource instance a unique name that can be used to qualify and

@@ -33,6 +33,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
@@ -142,6 +143,16 @@ public class DefaultTestDescriptorTest {
         properties.put(TestDescriptorProperties.VIRTUAL_RESOURCES, ImmutableList.of(value));
 
         List<VirtualResource> result = sut.getVirtualResources();
+
+        assertThat(result).containsExactly(value);
+    }
+
+    @Test
+    public void callToGetRemoteResourcesShouldReturn() {
+        RemoteResource value = mock(RemoteResource.class);
+        properties.put(TestDescriptorProperties.REMOTE_RESOURCES, ImmutableList.of(value));
+
+        List<RemoteResource> result = sut.getRemoteResources();
 
         assertThat(result).containsExactly(value);
     }

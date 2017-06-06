@@ -43,24 +43,7 @@ public class VirtualResourceInstanceBuilder<R> {
     }
 
     /**
-     * Set the fully qualified name of the virtual resource. When choosing a fqn
-     * for the resource it is best to choose a fqn that reflect the resource
-     * being provided to avoid potential collision with names used by other
-     * virtual resource provider implementations.
-     *
-     * @param fqn the fully qualified name of the virtual resource
-     * @return this object
-     */
-    public VirtualResourceInstanceBuilder fqn(String fqn) {
-        this.fqn = fqn;
-
-        return this;
-    }
-
-    /**
-     * Set the underlying resource to the given resource. Note that the fqn of
-     * the resource will be based on the fqn specified in {@link #fqn(java.lang.String)
-     * }
+     * Set the underlying resource to the given resource.
      *
      * @param resource the underlying resource
      * @return this object
@@ -72,9 +55,7 @@ public class VirtualResourceInstanceBuilder<R> {
     }
 
     /**
-     * Set the underlying resource to the given resource and contract. Note that
-     * the fqn of the resource will be based on the fqn specified in {@link #fqn(java.lang.String)
-     * }
+     * Set the underlying resource to the given resource and contract.
      *
      * @param resource the underlying resource
      * @param contract the underlying resource contract
@@ -113,15 +94,16 @@ public class VirtualResourceInstanceBuilder<R> {
     }
 
     /**
-     * Build and return a virtual resource instance based on the builder state.
+     * Build and return a virtual resource instance based on the builder state
+     * and the given fqn (fully qualified name). When choosing a fqn for the
+     * resource it is best to choose a fqn that reflect the resource being
+     * provided to avoid potential collision with names used by other virtual
+     * resource provider implementations.
      *
+     * @param fqn the fully qualified name of the virtual resource
      * @return a virtual resource instance
      */
-    public VirtualResourceInstance build() {
-        //TODO: if fqn is not spcified then determine it from the caller class.
-        //Once Java 9 is rleased use with JEP-259 StackWalker API.
-
+    public VirtualResourceInstance build(String fqn) {
         return DefaultVirtualResourceInstance.of(fqn, resource, properties.build());
     }
-
 }

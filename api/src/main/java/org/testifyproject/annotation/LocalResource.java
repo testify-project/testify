@@ -68,7 +68,15 @@ public @interface LocalResource {
      *
      * @return the resource instance name.
      */
-    String name() default "local";
+    String name() default "";
+
+    /**
+     * The configuration section key in <i>.testify.yml</i> associated with the
+     * local resource.
+     *
+     * @return the configKey section key.
+     */
+    String configKey() default "";
 
     /**
      * <p>

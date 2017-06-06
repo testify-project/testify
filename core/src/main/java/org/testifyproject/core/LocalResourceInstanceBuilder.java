@@ -30,7 +30,6 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class LocalResourceInstanceBuilder<R, C> {
 
-    private String fqn;
     private Instance<R> resource;
     private Instance<C> client;
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
@@ -42,21 +41,6 @@ public class LocalResourceInstanceBuilder<R, C> {
      */
     public static LocalResourceInstanceBuilder builder() {
         return new LocalResourceInstanceBuilder<>();
-    }
-
-    /**
-     * Set the fully qualified name of the local resource. When choosing a fqn
-     * for the resource it is best to choose a fqn that reflect the resource
-     * being provided to avoid potential collision with names used by other
-     * virtual resource provider implementations.
-     *
-     * @param fqn the fully qualified name of the local resource
-     * @return this object
-     */
-    public LocalResourceInstanceBuilder fqn(String fqn) {
-        this.fqn = fqn;
-
-        return this;
     }
 
     /**
@@ -137,14 +121,16 @@ public class LocalResourceInstanceBuilder<R, C> {
     }
 
     /**
-     * Build and return a local resource instance based on the builder state.
+     * Build and return a local resource instance based on the builder state and
+     * the given fqn (fully qualified name). When choosing a fqn for the
+     * resource it is best to choose a fqn that reflect the resource being
+     * provided to avoid potential collision with names used by other virtual
+     * resource provider implementations.
      *
+     * @param fqn the fully qualified name of the local resource
      * @return a local resource instance
      */
-    public LocalResourceInstance<R, C> build() {
-        //TODO: if fqn is not spcified then determine it from the caller class.
-        //Once Java 9 is rleased use with JEP-259 StackWalker API.
-
+    public LocalResourceInstance<R, C> build(String fqn) {
         return DefaultLocalResourceInstance.of(fqn, resource, client, properties.build());
     }
 
