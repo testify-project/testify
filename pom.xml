@@ -23,7 +23,7 @@
 
     <groupId>org.testifyproject</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9.4</version>
+    <version>0.9.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>Testify Project</name>
