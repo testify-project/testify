@@ -16,32 +16,31 @@
 package org.testifyproject.core.reifier;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Virtual;
+import org.testifyproject.annotation.Property;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  *
  * @author saden
  */
-public class VirtualFieldReifierTest {
+public class PropertyTestReifierTest {
 
-    VirtualFieldReifier sut;
+    PropertyTestReifier sut;
 
     @Before
     public void init() {
-        sut = new VirtualFieldReifier();
+        sut = new PropertyTestReifier();
     }
 
     @Test(expected = NullPointerException.class)
@@ -53,95 +52,106 @@ public class VirtualFieldReifierTest {
     public void givenTestDescriptorWithoutFieldsReifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of();
 
-        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getMockProvider()).willReturn(mockProvider);
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
-        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
     }
 
     @Test
-    public void givenTestDescriptorWithVirtualFieldAndMockValueReifyShouldSetVirtualField() {
+    public void givenTestDescriptorWithoutPropertyFieldReifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        Virtual virtual = mock(Virtual.class);
-        Optional<Virtual> foundVirtual = Optional.of(virtual);
-        Class fieldType = Object.class;
-        Object fieldValue = mock(Object.class);
-        Optional<Object> foundValue = Optional.of(fieldValue);
+        Optional<Property> foundProperty = Optional.empty();
 
-        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getMockProvider()).willReturn(mockProvider);
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(fieldDescriptor.getVirtual()).willReturn(foundVirtual);
-        given(fieldDescriptor.getType()).willReturn(fieldType);
-        given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
-        given(mockProvider.isMock(fieldValue)).willReturn(true);
+        given(fieldDescriptor.getProperty()).willReturn(foundProperty);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
-        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
-        verify(fieldDescriptor).getVirtual();
-        verify(fieldDescriptor).getType();
-        verify(fieldDescriptor).getValue(testInstance);
-        verify(mockProvider).isMock(fieldValue);
-        verify(fieldDescriptor).setValue(testInstance, fieldValue);
+        verify(fieldDescriptor).getProperty();
     }
 
     @Test
-    public void givenTestDescriptorWithVirtualFieldAndNoValueReifyShouldSetVirtualField() {
+    public void givenTestDescriptorWithPropertyFieldAndPropertyReifyShouldSetField() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
+        Map<String, Object> properties = ImmutableMap.of();
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        Virtual virtual = mock(Virtual.class);
-        Optional<Virtual> foundVirtual = Optional.of(virtual);
-        Class fieldType = Object.class;
-        Optional<Object> foundValue = Optional.empty();
-        Object fieldValue = new Object();
+        Property property = mock(Property.class);
+        Optional<Property> foundProperty = Optional.of(property);
+        String propertyValue = "property";
+        Object value = new Object();
 
-        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getMockProvider()).willReturn(mockProvider);
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testContext.getProperties()).willReturn(properties);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(fieldDescriptor.getVirtual()).willReturn(foundVirtual);
-        given(fieldDescriptor.getType()).willReturn(fieldType);
-        given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
-        given(mockProvider.isMock(any(fieldType))).willReturn(false);
-        given(mockProvider.createVirtual(eq(fieldType), any(fieldType))).willReturn(fieldValue);
+        given(fieldDescriptor.getProperty()).willReturn(foundProperty);
+        given(property.value()).willReturn(propertyValue);
+        given(testContext.getProperty(propertyValue)).willReturn(value);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
-        verify(testContext).getMockProvider();
+        verify(testContext).getProperties();
         verify(testDescriptor).getFieldDescriptors();
-        verify(fieldDescriptor).getVirtual();
-        verify(fieldDescriptor).getType();
-        verify(fieldDescriptor).getValue(testInstance);
-        verify(mockProvider).isMock(any(fieldType));
-        verify(mockProvider).createVirtual(eq(fieldType), any(fieldType));
-        verify(fieldDescriptor).setValue(testInstance, fieldValue);
+        verify(property).value();
+        verify(fieldDescriptor).getProperty();
+        verify(fieldDescriptor).setValue(testInstance, value);
+    }
+
+    @Test
+    public void givenTestDescriptorWithPropertyFieldAndExpressionReifyShouldSetField() {
+        TestContext testContext = mock(TestContext.class);
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        Object testInstance = mock(Object.class);
+        FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
+        Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
+        Property property = mock(Property.class);
+        Optional<Property> foundProperty = Optional.of(property);
+        String propertyValue = "property";
+        String value = "value";
+        Map<String, Object> properties = ImmutableMap.of(propertyValue, value);
+
+        given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testContext.getProperties()).willReturn(properties);
+        given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
+        given(fieldDescriptor.getProperty()).willReturn(foundProperty);
+        given(property.value()).willReturn(propertyValue);
+        given(testContext.getProperty(propertyValue)).willReturn(null);
+        given(property.expression()).willReturn(true);
+
+        sut.reify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testContext).getTestInstance();
+        verify(testContext).getProperties();
+        verify(testDescriptor).getFieldDescriptors();
+        verify(property).value();
+        verify(fieldDescriptor).getProperty();
+        verify(property).expression();
+        verify(fieldDescriptor).setValue(testInstance, value);
     }
 
 }

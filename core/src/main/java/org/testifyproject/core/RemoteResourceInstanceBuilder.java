@@ -35,7 +35,7 @@ public class RemoteResourceInstanceBuilder<R> {
     /**
      * Create a new resource of RemoteResourceInstanceBuilder.
      *
-     * @return a new resource
+     * @return a new resource builder
      */
     public static RemoteResourceInstanceBuilder builder() {
         return new RemoteResourceInstanceBuilder<>();

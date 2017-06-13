@@ -28,6 +28,7 @@ public class GreetingApplication extends ResourceConfig {
 
     public GreetingApplication() {
         packages(true, "org.testifyproject.junit4.fixture.web");
+        setApplicationName("Greeting Application");
         register(ServiceLocatorConfigFeature.class);
     }
 

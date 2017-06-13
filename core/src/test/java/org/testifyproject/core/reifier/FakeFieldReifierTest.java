@@ -45,7 +45,7 @@ public class FakeFieldReifierTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullTestContextVerifyShouldThrowException() {
+    public void givenNullTestContextReifyShouldThrowException() {
         sut.reify(null);
     }
 

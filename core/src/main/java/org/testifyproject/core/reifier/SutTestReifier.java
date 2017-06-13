@@ -44,7 +44,7 @@ public class SutTestReifier implements TestReifier {
                 //of the sut class and set it to the sut field
                 if (sutDescriptor.isVirtualSut()) {
                     sutValue = testContext.getMockProvider()
-                            .createVirtual(sutDescriptor.getType(), sutValue);
+                            .createVirtualSut(sutDescriptor.getType(), sutValue);
                     sutDescriptor.setValue(testInstance, sutValue);
                 }
 

@@ -16,6 +16,7 @@
 package org.testifyproject;
 
 import java.net.URI;
+import org.testifyproject.trait.PropertiesReader;
 
 /**
  * A contract that defines methods for retrieving information about the running
@@ -24,7 +25,14 @@ import java.net.URI;
  * @author saden
  * @param <T> the underlying server instance type.
  */
-public interface ServerInstance<T> extends Instance<T> {
+public interface ServerInstance<T> extends PropertiesReader {
+
+    /**
+     * Get a unique fully qualified name associated with the server instance.
+     *
+     * @return the server instance's fully qualified name
+     */
+    String getFqn();
 
     /**
      * The server base URI.
@@ -38,7 +46,6 @@ public interface ServerInstance<T> extends Instance<T> {
      *
      * @return the underlying server instance
      */
-    @Override
-    T getValue();
+    Instance<T> getServer();
 
 }

@@ -28,7 +28,7 @@
     <artifactId>level</artifactId>
     <packaging>pom</packaging>
 
-    <name>Level</name>
+    <name>[Level]</name>
     <description>Parent module of testing level TestRunner and TestVerifier SPI contract implementations</description>
     
     <modules>

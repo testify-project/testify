@@ -28,7 +28,7 @@
     <artifactId>client</artifactId>
     <packaging>pom</packaging>
 
-    <name>Client</name>
+    <name>[Client]</name>
     <description>Parent module of Testify's ClientInstance SPI Contract implementations</description>
 
     <modules>

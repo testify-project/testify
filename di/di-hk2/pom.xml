@@ -51,12 +51,6 @@
             <version>${hk2.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Annotation Processors Dependencies -->
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
-        </dependency>
     </dependencies>
    
 </project>

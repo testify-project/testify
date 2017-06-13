@@ -28,11 +28,12 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.core.DefaultServerInstance;
+import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
 
@@ -72,6 +73,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
             resourceConfig = (ResourceConfig) ReflectionUtil.INSTANCE.newInstance(application.value());
             Jersey2ApplicationListener listener = new Jersey2ApplicationListener(TestContextHolder.INSTANCE);
             resourceConfig.register(listener);
+            resourceConfig.setApplicationName(testContext.getName());
         }
 
         return testConfigurer.configure(testContext, resourceConfig);
@@ -79,10 +81,10 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public ServerInstance<HttpServer> start(TestContext testContext, ResourceConfig configuration) {
+    public ServerInstance<HttpServer> start(TestContext testContext, ResourceConfig resourceConfig) {
         URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PATH));
         // create and start a new instance of grizzly http server
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, configuration, true);
+        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig, true);
 
         Optional<NetworkListener> foundListener = server.getListeners().stream().findFirst();
         ServerInstance serverInstance = null;
@@ -92,13 +94,15 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
             String host = networkListener.getHost();
             int port = networkListener.getPort();
 
-            URI asutalURI = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, host, port, DEFAULT_PATH));
+            URI baseURI = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, host, port, DEFAULT_PATH));
 
-            serverInstance = DefaultServerInstance.of(asutalURI, server);
-
-            testContext.addProperty(APP_SERVLET_CONTAINER, server);
-            testContext.addProperty(APP, configuration);
-            testContext.addProperty(APP_NAME, testContext.getName());
+            serverInstance = ServerInstanceBuilder.builder()
+                    .baseURI(baseURI)
+                    .server(server)
+                    .property(APP, resourceConfig)
+                    .property(APP_NAME, testContext.getName())
+                    .property(APP_SERVLET_CONTAINER, server)
+                    .build("jersey");
         }
 
         return serverInstance;
@@ -106,8 +110,10 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
 
     @Override
     public void stop(TestContext testContext, ServerInstance<HttpServer> serverInstance) {
-        HttpServer httpServer = serverInstance.getValue();
-        httpServer.shutdownNow();
+        if (serverInstance != null) {
+            LoggingUtil.INSTANCE.debug("Stopping Jersey server");
+            serverInstance.getServer().getValue().stop();
+        }
     }
 
 }

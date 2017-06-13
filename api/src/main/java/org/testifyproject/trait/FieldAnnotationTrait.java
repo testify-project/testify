@@ -19,6 +19,7 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Fixture;
+import org.testifyproject.annotation.Property;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Virtual;
 
@@ -27,7 +28,7 @@ import org.testifyproject.annotation.Virtual;
  *
  * @author saden
  */
-public interface MockTrait extends FieldTrait {
+public interface FieldAnnotationTrait extends FieldTrait {
 
     /**
      * Get {@link Fake} annotation.
@@ -63,6 +64,15 @@ public interface MockTrait extends FieldTrait {
      */
     default Optional<Fixture> getFixture() {
         return ofNullable(getMember().getDeclaredAnnotation(Fixture.class));
+    }
+
+    /**
+     * Get {@link Property} annotation.
+     *
+     * @return optional with property annotation, empty optional otherwise
+     */
+    default Optional<Property> getProperty() {
+        return ofNullable(getMember().getDeclaredAnnotation(Property.class));
     }
 
     /**

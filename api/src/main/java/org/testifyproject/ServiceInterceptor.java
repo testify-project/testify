@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.fixture;
-
-import org.testifyproject.TestContext;
-import org.testifyproject.TestRunner;
-import org.testifyproject.tools.Discoverable;
+package org.testifyproject;
 
 /**
+ * An SPI contract to intercept service instance life-cycle events.
  *
  * @author saden
  */
-@Discoverable
-public class FunctionalTestRunner implements TestRunner {
+public interface ServiceInterceptor {
 
-    @Override
-    public void start(TestContext testContext) {
-    }
-
-    @Override
-    public void stop(TestContext testContext) {
-    }
+    /**
+     * Create a service interceptor with the given test context.
+     *
+     * @param testContext the test context
+     */
+    void intercept(TestContext testContext);
 
 }

@@ -40,7 +40,7 @@ public class SutTestReifierTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullTestContextVerifyShouldThrowException() {
+    public void givenNullTestContextReifyShouldThrowException() {
         sut.reify(null);
     }
 
@@ -115,7 +115,7 @@ public class SutTestReifierTest {
         given(sutDescriptor.isVirtualSut()).willReturn(true);
         given(testContext.getMockProvider()).willReturn(mockProvider);
         given(sutDescriptor.getType()).willReturn(sutType);
-        given(mockProvider.createVirtual(sutType, sutValue)).willReturn(sutValue);
+        given(mockProvider.createVirtualSut(sutType, sutValue)).willReturn(sutValue);
 
         sut.reify(testContext);
 
@@ -125,7 +125,7 @@ public class SutTestReifierTest {
         verify(sutDescriptor).isVirtualSut();
         verify(testContext).getMockProvider();
         verify(sutDescriptor).getType();
-        verify(mockProvider).createVirtual(sutType, sutValue);
+        verify(mockProvider).createVirtualSut(sutType, sutValue);
         verify(sutDescriptor).setValue(testInstance, sutValue);
         verify(sutDescriptor).init(testInstance);
         verify(testContext).addProperty(TestContextProperties.SUT_INSTANCE, sutValue);

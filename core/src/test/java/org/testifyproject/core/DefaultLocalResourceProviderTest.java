@@ -105,6 +105,8 @@ public class DefaultLocalResourceProviderTest {
         Object configuration = mock(Object.class);
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
+        String fqn = "fqn";
+        Map<String, Object> properties = mock(Map.class);
 
         Class value = LocalResourceProvider.class;
         String configKey = "test";
@@ -120,6 +122,8 @@ public class DefaultLocalResourceProviderTest {
         given(localResourceProvider.configure(testContext, localResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(localResourceProvider.start(testContext, localResource, configuration)).willReturn(localResourceInstance);
+        given(localResourceInstance.getFqn()).willReturn(fqn);
+        given(localResourceInstance.getProperties()).willReturn(properties);
         willDoNothing().given(sut).processInstance(localResource, localResourceInstance, value, serviceInstance);
 
         sut.start(testContext, serviceInstance);
@@ -135,6 +139,9 @@ public class DefaultLocalResourceProviderTest {
         verify(localResourceProvider).configure(testContext, localResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(localResourceProvider).start(testContext, localResource, configuration);
+        verify(localResourceInstance).getFqn();
+        verify(localResourceInstance).getProperties();
+        verify(testContext).addProperty(fqn, properties);
         verify(resourceProviders).put(localResource, localResourceProvider);
         verify(sut).processInstance(localResource, localResourceInstance, value, serviceInstance);
 

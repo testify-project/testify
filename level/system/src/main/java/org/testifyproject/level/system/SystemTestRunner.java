@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
+import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
@@ -106,7 +107,8 @@ public class SystemTestRunner implements TestRunner {
 
                 addServer(serviceInstance, application, serverInstance);
                 addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
-
+                //add server instance properties to the test context
+                testContext.addProperty(serverInstance.getFqn(), serverInstance.getProperties());
                 //reifiy the test class
                 testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
                 testResourcesProvider.start(testContext, serviceInstance);
@@ -182,10 +184,11 @@ public class SystemTestRunner implements TestRunner {
         //add the client instance itself to the dependency injection service
         String serverInstanceName = serverProvider.getClass().getSimpleName();
         Class serverInstanceContract = ServerInstance.class;
+        Instance server = serverInstance.getServer();
 
         //add the underlying server instance to the dependency injection service
         serviceInstance.addConstant(serverInstance, serverInstanceName, serverInstanceContract);
-        serviceInstance.replace(serverInstance, application.serverName(), application.serverContract());
+        serviceInstance.replace(server, application.serverName(), application.serverContract());
     }
 
     void addClient(ServiceInstance serviceInstance,

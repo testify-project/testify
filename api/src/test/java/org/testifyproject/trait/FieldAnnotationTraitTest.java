@@ -25,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Fixture;
+import org.testifyproject.annotation.Property;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.fixture.InjectableFieldService;
@@ -33,13 +34,13 @@ import org.testifyproject.fixture.InjectableFieldService;
  *
  * @author saden
  */
-public class MockTraitTest {
+public class FieldAnnotationTraitTest {
 
-    MockTrait sut;
+    FieldAnnotationTrait sut;
 
     @Before
     public void init() {
-        sut = mock(MockTrait.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(FieldAnnotationTrait.class, Answers.CALLS_REAL_METHODS);
     }
 
     @Test
@@ -104,6 +105,28 @@ public class MockTraitTest {
         given(sut.getMember()).willReturn(field);
 
         Optional<Virtual> result = sut.getVirtual();
+
+        assertThat(result).isPresent();
+    }
+
+    @Test
+    public void givenNonPropertyFieldGetPropertyShouldReturnEmptyOptional() throws NoSuchFieldException {
+        Field field = InjectableFieldService.class.getDeclaredField("non");
+
+        given(sut.getMember()).willReturn(field);
+
+        Optional<Property> result = sut.getProperty();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void givenPropertyFieldGetPropertyShouldReturnEmptyOptional() throws NoSuchFieldException {
+        Field field = InjectableFieldService.class.getDeclaredField("property");
+
+        given(sut.getMember()).willReturn(field);
+
+        Optional<Property> result = sut.getProperty();
 
         assertThat(result).isPresent();
     }

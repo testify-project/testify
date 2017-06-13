@@ -37,7 +37,7 @@ public class LocalResourceInstanceBuilder<R, C> {
     /**
      * Create a new resource of LocalResourceInstanceBuilder.
      *
-     * @return a new resource
+     * @return a new resource builder
      */
     public static LocalResourceInstanceBuilder builder() {
         return new LocalResourceInstanceBuilder<>();

@@ -28,7 +28,7 @@
     <artifactId>mock</artifactId>
     <packaging>pom</packaging>
     
-    <name>Mock</name>
+    <name>[Mock]</name>
     <description>Parent module of MockProvider SPI contract implementations</description>
 
     <modules>

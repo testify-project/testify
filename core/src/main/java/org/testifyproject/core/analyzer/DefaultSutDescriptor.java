@@ -19,15 +19,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
@@ -54,7 +54,7 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
      * @return a sut descriptor instance
      */
     public static DefaultSutDescriptor of(Field field) {
-        return new DefaultSutDescriptor(field, new HashMap<>());
+        return new DefaultSutDescriptor(field, new LinkedHashMap<>());
     }
 
     /**

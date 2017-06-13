@@ -69,11 +69,10 @@
             <artifactId>external-snakeyaml</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
-
-        <!-- Annotation Processors Dependencies -->
         <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-jexl3</artifactId>
+            <version>${buildtools.version}</version>
         </dependency>
         
         <dependency>

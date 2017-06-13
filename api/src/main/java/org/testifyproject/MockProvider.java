@@ -23,24 +23,37 @@ package org.testifyproject;
 public interface MockProvider {
 
     /**
-     * Create a mock instance of the given type.
+     * Create a fake instance of the given type.
      *
-     * @param <T> the type of the object being mocked
-     * @param type the class of the object being mocked
-     * @return a mock instance
+     * @param <T> the type of the object being faked
+     * @param type the class of the object being faked
+     * @return a faked instance
      */
     <T> T createFake(Class<? extends T> type);
 
     /**
-     * Create a mock instance of the given type that delegates to the given
+     * Create a virtual instance of the given type that delegates to the given
      * instance.
      *
-     * @param <T> the type of the object being mocked
-     * @param type the class of the type being mocked
+     * @param <T> the type of the object being virtualized
+     * @param type the class of the type being virtualized
      * @param delegate the instance calls are delegated to
-     * @return a delegated mock instance
+     * @return a virtual instance
      */
     <T> T createVirtual(Class<? extends T> type, T delegate);
+
+    /**
+     * Create a virtual instance of the given type that delegates to the given
+     * instance.
+     *
+     * @param <T> the type of the object being virtualized
+     * @param type the class of the type being virtualized
+     * @param delegate the instance calls are delegated to
+     * @return a virtual instance
+     */
+    default <T> T createVirtualSut(Class<? extends T> type, T delegate) {
+        return createVirtual(type, delegate);
+    }
 
     /**
      * Determine if the given instance is a mock instance.

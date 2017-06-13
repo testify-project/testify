@@ -90,8 +90,13 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
             VirtualResourceInstance<Object> virtualResourceInstance
                     = virtualResourceProvider.start(testContext, virtualResource, configuration);
 
+            //add resource properties to the test context with its fqn as its key
+            testContext.addProperty(virtualResourceInstance.getFqn(), virtualResourceInstance.getProperties());
+
+            //process the the resource instance
             processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
+            //track the resource so it can be stopped later
             virtualResourceProviders.put(virtualResource, virtualResourceProvider);
         });
     }

@@ -45,7 +45,7 @@ public class ConstructorWiringVerifierTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullTestContextVerifyShouldThrowException() {
+    public void givenNullTestContextReifyShouldThrowException() {
         TestContext testContext = null;
 
         sut.verify(testContext);

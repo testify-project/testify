@@ -66,11 +66,6 @@
             <artifactId>external-bytebuddy</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
-        <!-- Annotation Processors Dependencies -->
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
-        </dependency>
         
         <!-- Test Deps -->
         <dependency>

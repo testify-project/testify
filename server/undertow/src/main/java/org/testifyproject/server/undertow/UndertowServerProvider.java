@@ -46,9 +46,10 @@ import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import static org.testifyproject.core.ApplicationInstanceProperties.APPLICATION_INSTANCE;
 import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER;
 import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_HANDLERS;
-import org.testifyproject.core.DefaultServerInstance;
+import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
@@ -74,6 +75,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     public DeploymentInfo configure(TestContext testContext) {
         applicationProvider = ServiceLocatorUtil.INSTANCE.getOne(ApplicationProvider.class);
         ApplicationInstance applicationInstance = applicationProvider.start(testContext);
+        testContext.addProperty(APPLICATION_INSTANCE, applicationInstance);
 
         try {
             String name = testContext.getName();
@@ -115,11 +117,11 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     @SuppressWarnings("UseSpecificCatch")
     public ServerInstance<Undertow> start(TestContext testContext, DeploymentInfo deploymentInfo) {
         try {
-            DeploymentManager manager = Servlets.defaultContainer()
+            DeploymentManager deploymentManager = Servlets.defaultContainer()
                     .addDeployment(deploymentInfo);
 
-            manager.deploy();
-            HttpHandler httpHandler = manager.start();
+            deploymentManager.deploy();
+            HttpHandler httpHandler = deploymentManager.start();
 
             String host = deploymentInfo.getHostName();
             String path = deploymentInfo.getContextPath();
@@ -128,17 +130,23 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
             PathHandler pathHandler = Handlers.path(defaultHandler);
             pathHandler.addPrefixPath(path, httpHandler);
 
-            Undertow undertow = Undertow.builder()
+            Undertow server = Undertow.builder()
                     .addHttpListener(DEFAULT_PORT, host, pathHandler)
                     .build();
 
-            undertow.start();
+            server.start();
 
-            Integer port = getPorts(undertow).get(0);
+            Integer port = getPorts(server).get(0);
 
             URI baseURI = new URI(DEFAULT_SCHEME, null, host, port, path, null, null);
 
-            return DefaultServerInstance.of(baseURI, undertow);
+            return ServerInstanceBuilder.builder()
+                    .baseURI(baseURI)
+                    .server(server)
+                    .property("deploymentInfo", deploymentInfo)
+                    .property("deploymentManager", deploymentManager)
+                    .property("httpHandler", httpHandler)
+                    .build("undertow");
         } catch (Exception e) {
             throw ExceptionUtil.INSTANCE.propagate("Could not start Undertow Server", e);
         }
@@ -147,7 +155,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
     @Override
     public void stop(TestContext testContext, ServerInstance<Undertow> serverInstance) {
         if (serverInstance != null) {
-            serverInstance.getValue().stop();
+            LoggingUtil.INSTANCE.debug("Stopping Undertow server");
+            serverInstance.getServer().getValue().stop();
         }
 
         applicationProvider.stop();

@@ -57,11 +57,6 @@
             <artifactId>api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- Annotation Processors Dependencies -->
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>

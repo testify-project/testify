@@ -28,7 +28,7 @@
     <groupId>org.testifyproject.di</groupId>
     <artifactId>di</artifactId>
 
-    <name>DI</name>
+    <name>[DI]</name>
     <description>A module that contains Dependency Injection Framework ServiceInstance SPI Contract Implementations.</description>
 
     <modules>

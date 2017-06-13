@@ -42,7 +42,7 @@ public class ArrayCollaboratorConfigurationVerifierTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullTestContextVerifyShouldThrowException() {
+    public void givenNullTestContextReifyShouldThrowException() {
         sut.verify(null);
     }
 

@@ -15,12 +15,11 @@
  */
 package org.testifyproject;
 
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -29,33 +28,29 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  *
  * @author saden
  */
-public class ServerInstanceTest {
-
-    ServerInstance<String> sut;
+public class MockProviderTest {
+    
+    MockProvider sut;
 
     @Before
     public void init() {
-        sut = mock(ServerInstance.class, Answers.CALLS_REAL_METHODS);
+        sut = mock(MockProvider.class, Answers.CALLS_REAL_METHODS);
     }
 
-    @After
-    public void destroy() {
+    @Test
+    public void callToCreateVirtualSutShouldCallCreateVirtual() {
+        Class type = Object.class;
+        Object delegate = new Object();
+        Object virtualInstance = new Object();
+        
+        given(sut.createVirtual(type, delegate)).willReturn(virtualInstance);
+        
+        Object result = sut.createVirtualSut(type, delegate);
+
+        assertThat(result).isEqualTo(virtualInstance);
+        verify(sut).createVirtualSut(type, delegate);
+        verify(sut).createVirtual(type, delegate);
         verifyNoMoreInteractions(sut);
     }
-
-    @Test
-    public void callToGetNameShouldReturnEmptyOptional() {
-        Optional<String> result = sut.getName();
-
-        assertThat(result).isEmpty();
-        verify(sut).getName();
-    }
-
-    @Test
-    public void callToGetContractShouldReturnEmptyOptional() {
-        Optional<Class<? extends String>> result = sut.getContract();
-
-        assertThat(result).isEmpty();
-        verify(sut).getContract();
-    }
+    
 }

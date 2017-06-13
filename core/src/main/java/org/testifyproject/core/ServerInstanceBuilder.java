@@ -15,54 +15,67 @@
  */
 package org.testifyproject.core;
 
+import java.net.URI;
 import java.util.Map;
 import org.testifyproject.Instance;
-import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.ServerInstance;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
- * A builder class used to construction VirtualResourceInstance instances.
+ * A builder class used to construction a ServerInstance instances.
  *
  * @author saden
- * @param <R> the underlying virtual resource type
- * @see VirtualResourceInstance
+ * @param <T> the underlying server type
+ * @see ServerInstance
  */
-public class VirtualResourceInstanceBuilder<R> {
+public class ServerInstanceBuilder<T> {
 
-    private String fqn;
-    private Instance<R> resource;
+    private URI baseURI;
+    private Instance<T> server;
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
-     * Create a new resource of VirtualResourceInstanceBuilder.
+     * Create a new resource of ServerInstanceBuilder.
      *
-     * @return a new resource builder
+     * @return a new server instance builder
      */
-    public static VirtualResourceInstanceBuilder builder() {
-        return new VirtualResourceInstanceBuilder();
+    public static ServerInstanceBuilder builder() {
+        return new ServerInstanceBuilder();
     }
 
     /**
-     * Set the underlying resource to the given resource.
+     * Set the server base URI.
      *
-     * @param resource the underlying resource
+     * @param baseURI server base URI.
      * @return this object
      */
-    public VirtualResourceInstanceBuilder<R> resource(R resource) {
-        this.resource = DefaultInstance.of(resource);
+    public ServerInstanceBuilder<T> baseURI(URI baseURI) {
+        this.baseURI = baseURI;
 
         return this;
     }
 
     /**
-     * Set the underlying resource to the given resource and contract.
+     * Set the underlying server of the given instance.
      *
-     * @param resource the underlying resource
-     * @param contract the underlying resource contract
+     * @param server the underlying server
      * @return this object
      */
-    public VirtualResourceInstanceBuilder<R> resource(R resource, Class<? extends R> contract) {
-        this.resource = DefaultInstance.of(resource, contract);
+    public ServerInstanceBuilder<T> server(T server) {
+        this.server = DefaultInstance.of(server);
+
+        return this;
+    }
+
+    /**
+     * Set the underlying server instance and contract.
+     *
+     * @param server the underlying server
+     * @param contract the underlying server's contract
+     * @return this object
+     */
+    public ServerInstanceBuilder<T> server(T server, Class<? extends T> contract) {
+        this.server = DefaultInstance.of(server, contract);
 
         return this;
     }
@@ -75,7 +88,7 @@ public class VirtualResourceInstanceBuilder<R> {
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public VirtualResourceInstanceBuilder property(String key, Object value) {
+    public ServerInstanceBuilder property(String key, Object value) {
         this.properties.put(key, value);
 
         return this;
@@ -87,7 +100,7 @@ public class VirtualResourceInstanceBuilder<R> {
      * @param properties a map that contains key value pairs.
      * @return this object
      */
-    public VirtualResourceInstanceBuilder properties(Map<String, Object> properties) {
+    public ServerInstanceBuilder properties(Map<String, Object> properties) {
         this.properties.putAll(properties);
 
         return this;
@@ -103,7 +116,7 @@ public class VirtualResourceInstanceBuilder<R> {
      * @param fqn the fully qualified name of the virtual resource
      * @return a virtual resource instance
      */
-    public VirtualResourceInstance build(String fqn) {
-        return DefaultVirtualResourceInstance.of(fqn, resource, properties.build());
+    public ServerInstance<T> build(String fqn) {
+        return DefaultServerInstance.of(fqn, baseURI, server, properties.build());
     }
 }
