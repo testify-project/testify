@@ -111,6 +111,9 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = mock(Object.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
+        String fqn = "fqn";
+        Map<String, Object> properties = mock(Map.class);
+
         String configKey = "test";
         PropertiesReader configReader = mock(PropertiesReader.class);
 
@@ -124,6 +127,8 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResourceProvider.configure(testContext, virtualResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
+        given(virtualResourceInstance.getFqn()).willReturn(fqn);
+        given(virtualResourceInstance.getProperties()).willReturn(properties);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
         sut.start(testContext, serviceInstance);
@@ -139,6 +144,9 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
+        verify(virtualResourceInstance).getFqn();
+        verify(virtualResourceInstance).getProperties();
+        verify(testContext).addProperty(fqn, properties);
         verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor, serviceInstance);
@@ -159,6 +167,8 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = mock(Object.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
+        String fqn = "fqn";
+        Map<String, Object> properties = mock(Map.class);
 
         String configKey = "test";
         PropertiesReader configReader = mock(PropertiesReader.class);
@@ -173,6 +183,8 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResourceProvider.configure(testContext, virtualResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
+        given(virtualResourceInstance.getFqn()).willReturn(fqn);
+        given(virtualResourceInstance.getProperties()).willReturn(properties);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
         sut.start(testContext, serviceInstance);
@@ -188,6 +200,9 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
+        verify(virtualResourceInstance).getFqn();
+        verify(virtualResourceInstance).getProperties();
+        verify(testContext).addProperty(fqn, properties);
         verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor, serviceInstance);

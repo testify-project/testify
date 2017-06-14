@@ -16,8 +16,8 @@
 package org.testifyproject.core;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;
@@ -36,7 +36,7 @@ public class DefaultTestContextBuilder {
     private TestRunner testRunner;
     private MockProvider mockProvider;
 
-    private final Map<String, Object> properties = new ConcurrentHashMap<>();
+    private final Map<String, Object> properties = new LinkedHashMap<>();
     private Map<String, String> dependencies = Collections.emptyMap();
 
     /**

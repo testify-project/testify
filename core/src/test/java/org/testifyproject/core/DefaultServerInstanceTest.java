@@ -16,9 +16,12 @@
 package org.testifyproject.core;
 
 import java.net.URI;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
 
 /**
@@ -28,65 +31,28 @@ import org.testifyproject.ServerInstance;
 public class DefaultServerInstanceTest {
 
     ServerInstance<Object> sut;
+    String fqn;
     URI baseURI;
-    Object server;
+    Instance<Object> server;
     Class<Object> contract;
+    Map<String, Object> properties;
 
     @Before
     public void init() {
+        fqn = "fqn";
         baseURI = URI.create("uri://test.server");
-        server = new Object();
-        contract = Object.class;
+        server = mock(Instance.class);
+        properties = mock(Map.class);
 
-        sut = DefaultServerInstance.of(baseURI, server, contract);
+        sut = DefaultServerInstance.of(fqn, baseURI, server, properties);
+    }
 
+    @Test
+    public void validateSutInstance() {
+        assertThat(sut.getFqn()).isEqualTo(fqn);
         assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getValue()).isEqualTo(server);
-        assertThat(sut.getContract()).contains(contract);
-    }
-
-    @Test
-    public void givenBaseURIAndServerOfShouldReturn() {
-        sut = DefaultServerInstance.of(baseURI, server);
-
-        assertThat(sut).isNotNull();
-        assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getValue()).isEqualTo(server);
-        assertThat(sut.getContract()).isEmpty();
-    }
-
-    @Test
-    public void givenNameOfShouldReturn() {
-        sut = DefaultServerInstance.of(baseURI, server);
-
-        assertThat(sut).isNotNull();
-        assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getValue()).isEqualTo(server);
-        assertThat(sut.getContract()).isEmpty();
-    }
-
-    @Test
-    public void givenContractOfShouldReturn() {
-        sut = DefaultServerInstance.of(baseURI, server, contract);
-
-        assertThat(sut).isNotNull();
-        assertThat(sut.getBaseURI()).isEqualTo(baseURI);
-        assertThat(sut.getValue()).isEqualTo(server);
-        assertThat(sut.getContract()).contains(contract);
-    }
-
-    @Test
-    public void callToGetBaseURIShouldReturnURI() {
-        URI result = sut.getBaseURI();
-
-        assertThat(result).isEqualTo(baseURI);
-    }
-
-    @Test
-    public void callToGetInstanceShouldReturnServer() {
-        Object result = sut.getValue();
-
-        assertThat(result).isEqualTo(server);
+        assertThat(sut.getServer()).isEqualTo(server);
+        assertThat(sut.getProperties()).isEqualTo(properties);
     }
 
     @Test
@@ -106,7 +72,7 @@ public class DefaultServerInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ServerInstance<Object> uneuqual = DefaultServerInstance.of(baseURI, new Object());
+        ServerInstance<Object> uneuqual = DefaultServerInstance.of(fqn, null, null, null);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -120,8 +86,7 @@ public class DefaultServerInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ServerInstance<Object> equal
-                = DefaultServerInstance.of(baseURI, server, contract);
+        ServerInstance<Object> equal = DefaultServerInstance.of(fqn, baseURI, server, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -133,9 +98,10 @@ public class DefaultServerInstanceTest {
 
         assertThat(result).contains(
                 "DefaultServerInstance",
+                "fqn",
                 "baseURI",
                 "server",
-                "contract"
+                "properties"
         );
     }
 

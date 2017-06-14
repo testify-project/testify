@@ -30,43 +30,43 @@ public class TestContextProperties {
     /**
      * The application name property key.
      */
-    public static final String APP_NAME = "app.name";
+    public static final String APP_NAME = "appName";
     /**
      * The application arguments property key.
      */
-    public static final String APP_ARGUMENTS = "app.arguments";
+    public static final String APP_ARGUMENTS = "appArguments";
     /**
      * The application port property key.
      */
-    public static final String APP_PORT = "app.port";
+    public static final String APP_PORT = "appPort";
     /**
      * The application context path property key.
      */
-    public static final String APP_CONTEXT_PATH = "app.contextPath";
+    public static final String APP_CONTEXT_PATH = "appContextPath";
     /**
      * The application servlet container property key.
      */
-    public static final String APP_SERVLET_CONTAINER = "app.servlet.container";
+    public static final String APP_SERVLET_CONTAINER = "appServletContainer";
     /**
      * The application servlet context property key.
      */
-    public static final String APP_SERVLET_CONTEXT = "app.servlet.context";
+    public static final String APP_SERVLET_CONTEXT = "appServletContext";
     /**
      * The application service instance property key.
      */
-    public static final String SERVICE_INSTANCE = "service.instance";
+    public static final String SERVICE_INSTANCE = "serviceInstance";
     /**
      * The application base URI property key.
      */
-    public static final String BASE_URI = "base.uri";
+    public static final String BASE_URI = "baseURI";
     /**
      * The application system under test instance property key.
      */
-    public static final String SUT_INSTANCE = "sut.instance";
+    public static final String SUT_INSTANCE = "sutInstance";
     /**
      * The application system under test descriptor property key.
      */
-    public static final String SUT_DESCRIPTOR = "sut.descriptor";
+    public static final String SUT_DESCRIPTOR = "sutDescriptor";
 
     private TestContextProperties() {
     }

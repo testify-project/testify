@@ -78,11 +78,17 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
+                //start the resource
                 RemoteResourceInstance<Object> remoteResourceInstance
                         = remoteResourceProvider.start(testContext, remoteResource, configuration);
 
+                //add resource properties to the test context with its fqn as its key
+                testContext.addProperty(remoteResourceInstance.getFqn(), remoteResourceInstance.getProperties());
+
+                //process the resource instance
                 processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
+                //track the resource so it can be stopped later
                 remoteResourceProviders.put(remoteResource, remoteResourceProvider);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, value);

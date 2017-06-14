@@ -16,8 +16,11 @@
 package org.testifyproject.mock;
 
 import org.mockito.AdditionalAnswers;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockingDetails;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.withSettings;
 import org.testifyproject.MockProvider;
 import org.testifyproject.tools.Discoverable;
 
@@ -37,6 +40,18 @@ public class MockitoMockProvider implements MockProvider {
     @Override
     public <T> T createVirtual(Class<? extends T> type, T delegate) {
         return mock(type, AdditionalAnswers.delegatesTo(delegate));
+    }
+
+    @Override
+    public <T> T createVirtualSut(Class<? extends T> type, T delegate) {
+        return mock(type, withSettings()
+                .spiedInstance(delegate)
+                .defaultAnswer(CALLS_REAL_METHODS));
+    }
+
+    @Override
+    public void verifyAllInteraction(Object... collaborators) {
+        verifyNoMoreInteractions(collaborators);
     }
 
     @Override

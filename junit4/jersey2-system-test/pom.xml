@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
     </parent>
     
     <artifactId>jersey2-system-test</artifactId>
@@ -66,12 +66,6 @@
             <groupId>org.testifyproject.external</groupId>
             <artifactId>external-bytebuddy</artifactId>
             <version>${buildtools.version}</version>
-        </dependency>
-
-        <!-- Annotation Processors Dependencies -->
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
         </dependency>
 
         <!-- Jersey 2 Deps -->

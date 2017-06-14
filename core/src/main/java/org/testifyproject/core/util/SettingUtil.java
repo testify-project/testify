@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.testifyproject.snakeyaml.Yaml;
@@ -42,7 +42,7 @@ public class SettingUtil {
      * @return the .testify.yml file as a Map, empty map otherwise
      */
     public Map<String, Object> getSettings() {
-        Map<String, Object> settings = new HashMap<>();
+        Map<String, Object> settings = new LinkedHashMap<>();
 
         Path currentDir = Paths.get(System.getProperty("user.dir"));
         Path userDir = Paths.get(System.getProperty("user.home"));

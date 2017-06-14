@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.di</groupId>
         <artifactId>di</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
     </parent>
 
     <artifactId>di-guice</artifactId>
@@ -44,12 +44,6 @@
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>${javax.inject.version}</version>
-        </dependency>
-
-        <!-- Annotation Processors Dependencies -->
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
         </dependency>
     </dependencies>
     

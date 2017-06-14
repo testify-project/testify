@@ -77,11 +77,18 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
+                //start the resource
                 LocalResourceInstance<Object, Object> localResourceInstance
                         = localResourceProvider.start(testContext, localResource, configuration);
 
-                localResourceProviders.put(localResource, localResourceProvider);
+                //add resource properties to the test context with its fqn as its key
+                testContext.addProperty(localResourceInstance.getFqn(), localResourceInstance.getProperties());
+
+                //process the resource instance
                 processInstance(localResource, localResourceInstance, value, serviceInstance);
+
+                //track the resource so it can be stopped later
+                localResourceProviders.put(localResource, localResourceProvider);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, value);
             }

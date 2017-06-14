@@ -28,11 +28,12 @@ import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.CollaboratorsReifier;
-import org.testifyproject.extension.ConfigurationVerifier;
 import org.testifyproject.extension.FieldReifier;
-import org.testifyproject.extension.TestReifier;
-import org.testifyproject.extension.WiringVerifier;
+import org.testifyproject.extension.FinalReifier;
+import org.testifyproject.extension.InitialReifier;
+import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreVerifier;
+import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.tools.Discoverable;
 
@@ -67,7 +68,7 @@ public class IntegrationTestRunner implements TestRunner {
         serviceLocatorUtil.findAllWithFilter(FieldReifier.class, IntegrationTest.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, IntegrationTest.class)
                 .forEach(p -> p.verify(testContext));
 
         ServiceProvider serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class);
@@ -104,14 +105,14 @@ public class IntegrationTestRunner implements TestRunner {
         });
 
         if (testDescriptor.getCollaboratorProvider().isPresent()) {
-            serviceLocatorUtil.findAllWithFilter(CollaboratorsReifier.class, IntegrationTest.class)
+            serviceLocatorUtil.findAllWithFilter(InitialReifier.class, IntegrationTest.class)
                     .forEach(p -> p.reify(testContext));
         }
 
-        serviceLocatorUtil.findAllWithFilter(TestReifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(FinalReifier.class, IntegrationTest.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, IntegrationTest.class)
                 .forEach(p -> p.verify(testContext));
 
     }
@@ -120,6 +121,9 @@ public class IntegrationTestRunner implements TestRunner {
     public void stop(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
+
+        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, IntegrationTest.class)
+                .forEach(p -> p.verify(testContext));
 
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()

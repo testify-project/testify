@@ -19,14 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.FunctionalJUnit4TestRunner;
+import org.testifyproject.junit4.UnitTest;
 import org.testifyproject.junit4.fixture.common.SutClass;
 
 /**
  *
  * @author saden
  */
-@RunWith(FunctionalJUnit4TestRunner.class)
+@RunWith(UnitTest.class)
 public class TestifyJUnit4TestRunnerTest {
 
     @Sut
@@ -34,7 +34,7 @@ public class TestifyJUnit4TestRunnerTest {
 
     @Test
     public void runWithFunctionalTest() {
-        assertThat(true).isTrue();
+        assertThat(sut).isNotNull();
     }
 
 }

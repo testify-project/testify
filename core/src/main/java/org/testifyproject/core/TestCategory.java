@@ -37,11 +37,14 @@ public interface TestCategory {
         ImmutableList.Builder<Enum> builder = ImmutableList.builder();
 
         for (String category : categories) {
+            String categoryName = category.toUpperCase();
+
             try {
-                Enum result = Enum.valueOf(enumType, category.toUpperCase());
+                Enum result = Enum.valueOf(enumType, categoryName);
                 builder.add(result);
             } catch (Exception e) {
-                LoggingUtil.INSTANCE.warn("Could not find enum '{}'", e, category);
+                LoggingUtil.INSTANCE.debug("Could not find category '{}' in enum '{}'",
+                        categoryName, enumType.getSimpleName(), e);
             }
         }
 
@@ -75,15 +78,20 @@ public interface TestCategory {
     enum Dynamic {
 
         /**
-         * LOCAL test category. Note that classes that require resources belong
-         * in this category.
+         * LOCAL test category. Note that classes that require local resources
+         * belong in this category.
          */
         LOCAL,
         /**
-         * VIRTUAL test category. Note that classes that require container
+         * VIRTUAL test category. Note that classes that require virtual
+         * resources belong in this category.
+         */
+        VIRTUAL,
+        /**
+         * REMOTE test category. Note that classes that require remote resources
          * belong in this category.
          */
-        VIRTUAL;
+        REMOTE;
 
     }
 }

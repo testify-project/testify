@@ -23,10 +23,10 @@
 
     <groupId>org.testifyproject</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9.4</version>
+    <version>0.9.5</version>
     <packaging>pom</packaging>
     
-    <name>Testify Project</name>
+    <name>[Testify Project]</name>
     <description>
         A Java Testing Framework faithful to testing principles and best practices
     </description>
@@ -57,7 +57,7 @@
         <netbeans.inceptionYear>2016</netbeans.inceptionYear>
 
         <!-- Build Dependency Versions -->
-        <buildtools.version>0.9.6</buildtools.version>
+        <buildtools.version>0.9.7</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.1</plugin.resource>
@@ -651,10 +651,15 @@
             <version>${buildtools.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Annotation Processors Dependencies -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.tools</groupId>
+            <artifactId>service-generator</artifactId>
         </dependency>
     </dependencies>
 
@@ -685,13 +690,11 @@
                 <version>${assertj.version}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <!-- Annotation Processors Dependencies -->
             <dependency>
                 <groupId>org.testifyproject.tools</groupId>
                 <artifactId>service-generator</artifactId>
                 <version>${buildtools.version}</version>
-                <optional>true</optional>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>

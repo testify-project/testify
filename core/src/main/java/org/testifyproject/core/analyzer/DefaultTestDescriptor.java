@@ -18,7 +18,7 @@ package org.testifyproject.core.analyzer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,7 +59,7 @@ public class DefaultTestDescriptor implements TestDescriptor {
      * @return a test descriptor instance
      */
     public static TestDescriptor of(Class<?> testClass) {
-        return new DefaultTestDescriptor(testClass, new HashMap<>());
+        return new DefaultTestDescriptor(testClass, new LinkedHashMap<>());
     }
 
     /**

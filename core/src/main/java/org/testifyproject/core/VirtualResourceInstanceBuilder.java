@@ -36,7 +36,7 @@ public class VirtualResourceInstanceBuilder<R> {
     /**
      * Create a new resource of VirtualResourceInstanceBuilder.
      *
-     * @return a new resource
+     * @return a new resource builder
      */
     public static VirtualResourceInstanceBuilder builder() {
         return new VirtualResourceInstanceBuilder();

@@ -21,14 +21,14 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
     </parent>
 
     <groupId>org.testifyproject.level</groupId>
     <artifactId>level</artifactId>
     <packaging>pom</packaging>
 
-    <name>Level</name>
+    <name>[Level]</name>
     <description>Parent module of testing level TestRunner and TestVerifier SPI contract implementations</description>
     
     <modules>

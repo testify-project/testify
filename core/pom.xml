@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
     </parent>
     
     <artifactId>core</artifactId>
@@ -69,11 +69,10 @@
             <artifactId>external-snakeyaml</artifactId>
             <version>${buildtools.version}</version>
         </dependency>
-
-        <!-- Annotation Processors Dependencies -->
         <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
+            <groupId>org.testifyproject.external</groupId>
+            <artifactId>external-jexl3</artifactId>
+            <version>${buildtools.version}</version>
         </dependency>
         
         <dependency>

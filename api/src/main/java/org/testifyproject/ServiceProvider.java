@@ -16,9 +16,7 @@
 package org.testifyproject;
 
 /**
- * An SPI contract to create and configure a service instance. Please note that
- * for integration tests all three methods will be called in the order they are
- * defined (create, configure, initialize).
+ * An SPI contract to create and configure a service instance.
  *
  * @author saden
  * @param <T> the underlying context object used by the service instance.

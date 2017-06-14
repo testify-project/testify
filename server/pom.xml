@@ -21,14 +21,14 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
     </parent>
     
     <groupId>org.testifyproject.server</groupId>
     <artifactId>server</artifactId>
     <packaging>pom</packaging>
 
-    <name>Server</name>
+    <name>[Server]</name>
     <description>Parent module of ServerProvider SPI Contract implementations</description>
 
     <modules>

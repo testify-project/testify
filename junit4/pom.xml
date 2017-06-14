@@ -21,14 +21,14 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
     </parent>
 
     <groupId>org.testifyproject.junit4</groupId>
     <artifactId>junit4</artifactId>
     <packaging>pom</packaging>
 
-    <name>JUnit 4</name>
+    <name>[JUnit 4]</name>
     <description>Parent module of Testify's custom JUnit test runners implementations</description>
     
     <modules>

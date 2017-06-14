@@ -104,6 +104,8 @@ public class DefaultRemoteResourceProviderTest {
         Object configuration = mock(Object.class);
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
         RemoteResourceInstance<Object> remoteResourceInstance = mock(RemoteResourceInstance.class);
+        String fqn = "fqn";
+        Map<String, Object> properties = mock(Map.class);
 
         Class value = RemoteResourceProvider.class;
         String configKey = "test";
@@ -119,6 +121,8 @@ public class DefaultRemoteResourceProviderTest {
         given(remoteResourceProvider.configure(testContext, remoteResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(remoteResourceProvider.start(testContext, remoteResource, configuration)).willReturn(remoteResourceInstance);
+        given(remoteResourceInstance.getFqn()).willReturn(fqn);
+        given(remoteResourceInstance.getProperties()).willReturn(properties);
         willDoNothing().given(sut).processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
         sut.start(testContext, serviceInstance);
@@ -134,6 +138,9 @@ public class DefaultRemoteResourceProviderTest {
         verify(remoteResourceProvider).configure(testContext, remoteResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(remoteResourceProvider).start(testContext, remoteResource, configuration);
+        verify(remoteResourceInstance).getFqn();
+        verify(remoteResourceInstance).getProperties();
+        verify(testContext).addProperty(fqn, properties);
         verify(resourceProviders).put(remoteResource, remoteResourceProvider);
         verify(sut).processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 

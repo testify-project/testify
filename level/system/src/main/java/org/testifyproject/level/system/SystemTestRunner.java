@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
+import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
@@ -32,10 +33,11 @@ import org.testifyproject.annotation.Application;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.ConfigurationVerifier;
 import org.testifyproject.extension.FieldReifier;
-import org.testifyproject.extension.TestReifier;
-import org.testifyproject.extension.WiringVerifier;
+import org.testifyproject.extension.FinalReifier;
+import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreVerifier;
+import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.tools.Discoverable;
 
@@ -82,7 +84,7 @@ public class SystemTestRunner implements TestRunner {
             serviceLocatorUtil.findAllWithFilter(FieldReifier.class, SystemTest.class)
                     .forEach(p -> p.reify(testContext));
 
-            serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, SystemTest.class)
+            serviceLocatorUtil.findAllWithFilter(PreVerifier.class, SystemTest.class)
                     .forEach(p -> p.verify(testContext));
 
             //create server provider instance
@@ -106,7 +108,8 @@ public class SystemTestRunner implements TestRunner {
 
                 addServer(serviceInstance, application, serverInstance);
                 addClient(serviceInstance, application, serverInstance, testContext, testConfigurer);
-
+                //add server instance properties to the test context
+                testContext.addProperty(serverInstance.getFqn(), serverInstance.getProperties());
                 //reifiy the test class
                 testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
                 testResourcesProvider.start(testContext, serviceInstance);
@@ -122,10 +125,10 @@ public class SystemTestRunner implements TestRunner {
                         -> createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance)
                 );
 
-                serviceLocatorUtil.findAllWithFilter(TestReifier.class, SystemTest.class)
+                serviceLocatorUtil.findAllWithFilter(FinalReifier.class, SystemTest.class)
                         .forEach(p -> p.reify(testContext));
 
-                serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, SystemTest.class)
+                serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, SystemTest.class)
                         .forEach(p -> p.verify(testContext));
             });
         }
@@ -136,6 +139,9 @@ public class SystemTestRunner implements TestRunner {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
         Optional<SutDescriptor> sutDescriptor = testContext.getSutDescriptor();
+
+        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, SystemTest.class)
+                .forEach(p -> p.verify(testContext));
 
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()
@@ -182,10 +188,11 @@ public class SystemTestRunner implements TestRunner {
         //add the client instance itself to the dependency injection service
         String serverInstanceName = serverProvider.getClass().getSimpleName();
         Class serverInstanceContract = ServerInstance.class;
+        Instance server = serverInstance.getServer();
 
         //add the underlying server instance to the dependency injection service
         serviceInstance.addConstant(serverInstance, serverInstanceName, serverInstanceContract);
-        serviceInstance.replace(serverInstance, application.serverName(), application.serverContract());
+        serviceInstance.replace(server, application.serverName(), application.serverContract());
     }
 
     void addClient(ServiceInstance serviceInstance,

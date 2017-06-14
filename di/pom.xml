@@ -21,14 +21,14 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
     </parent>
     <packaging>pom</packaging>
 
     <groupId>org.testifyproject.di</groupId>
     <artifactId>di</artifactId>
 
-    <name>DI</name>
+    <name>[DI]</name>
     <description>A module that contains Dependency Injection Framework ServiceInstance SPI Contract Implementations.</description>
 
     <modules>

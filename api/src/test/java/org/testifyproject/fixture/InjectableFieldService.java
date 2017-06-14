@@ -15,10 +15,11 @@
  */
 package org.testifyproject.fixture;
 
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Fixture;
+import org.testifyproject.annotation.Property;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Virtual;
 
 /**
@@ -42,6 +43,9 @@ public class InjectableFieldService {
 
     @Virtual
     TestContract virtual;
+    
+    @Property("property")
+    TestContract property;
 
     TestContract non;
 

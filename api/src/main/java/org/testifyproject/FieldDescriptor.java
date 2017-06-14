@@ -16,7 +16,7 @@
 package org.testifyproject;
 
 import org.testifyproject.trait.FieldTrait;
-import org.testifyproject.trait.MockTrait;
+import org.testifyproject.trait.FieldAnnotationTrait;
 
 /**
  * A contract that defines methods to access properties of or perform operations
@@ -24,7 +24,7 @@ import org.testifyproject.trait.MockTrait;
  *
  * @author saden
  */
-public interface FieldDescriptor extends FieldTrait, MockTrait {
+public interface FieldDescriptor extends FieldTrait, FieldAnnotationTrait {
 
     /**
      * <p>

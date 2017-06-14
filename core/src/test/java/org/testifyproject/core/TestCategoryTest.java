@@ -47,7 +47,7 @@ public class TestCategoryTest {
 
         TestCategory.find(TestCategory.Level.class, categories);
     }
-    
+
     @Test
     public void givenValidCategoriesLevelFindShouldReturn() {
         String[] categories = {
@@ -82,31 +82,35 @@ public class TestCategoryTest {
     public void givenInvalidCategoriesDynamicFindShouldThrowException() {
         String[] categories = {
             "local",
-            "virtual"
+            "virtual",
+            "remote"
         };
 
         List<Enum> result = TestCategory.find(TestCategory.Dynamic.class, categories);
 
-        assertThat(result).contains(TestCategory.Dynamic.LOCAL,
-                TestCategory.Dynamic.VIRTUAL
+        assertThat(result).contains(
+                TestCategory.Dynamic.LOCAL,
+                TestCategory.Dynamic.VIRTUAL,
+                TestCategory.Dynamic.REMOTE
         );
     }
 
     @Test
     public void verifyTestCategoryLevelEnums() {
-        assertThat(TestCategory.Level.values())
-                .containsExactly(TestCategory.Level.UNIT,
-                        TestCategory.Level.INTEGRATION,
-                        TestCategory.Level.SYSTEM
-                );
+        assertThat(TestCategory.Level.values()).containsExactly(
+                TestCategory.Level.UNIT,
+                TestCategory.Level.INTEGRATION,
+                TestCategory.Level.SYSTEM
+        );
     }
 
     @Test
     public void verifyTestCategoryDynamicEnums() {
-        assertThat(TestCategory.Dynamic.values())
-                .containsExactly(TestCategory.Dynamic.LOCAL,
-                        TestCategory.Dynamic.VIRTUAL
-                );
+        assertThat(TestCategory.Dynamic.values()).containsExactly(
+                TestCategory.Dynamic.LOCAL,
+                TestCategory.Dynamic.VIRTUAL,
+                TestCategory.Dynamic.REMOTE
+        );
     }
 
 }

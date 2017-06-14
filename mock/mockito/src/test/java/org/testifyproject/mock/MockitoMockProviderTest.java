@@ -15,10 +15,12 @@
  */
 package org.testifyproject.mock;
 
+import java.net.URI;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
+import org.mockito.exceptions.base.MockitoException;
 import org.mockito.internal.util.MockUtil;
 import org.testifyproject.fixture.Mockable;
 
@@ -36,51 +38,77 @@ public class MockitoMockProviderTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullCreateShouldThrowException() {
+    public void givenNullCreateFakeShouldThrowException() {
         sut.createFake(null);
     }
 
+    @Test(expected = MockitoException.class)
+    public void givenFinalTypeCreateFakeShouldThrowException() {
+        URI result = sut.createFake(URI.class);
+
+        assertThat(MockUtil.isMock(result)).isTrue();
+    }
+
     @Test
-    public void givenTypeCreateShouldReturnMockInstance() {
+    public void givenNonFinalTypeCreateFakeShouldReturnFakeInstance() {
         Mockable result = sut.createFake(Mockable.class);
+
         assertThat(MockUtil.isMock(result)).isTrue();
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenTypeAndNullDelegateCreateShouldThrowException() {
+    public void givenTypeAndNullDelegateCreateVirtualShouldThrowException() {
         Mockable result = sut.createVirtual(Mockable.class, null);
+
         result.getUpdated();
     }
 
     @Test
-    public void givenTypeAndDelegateCreateShouldReturnMockInstance() {
+    public void givenTypeAndDelegateCreateVirtualShouldReturnVirtualInstance() {
         Mockable delegate = new Mockable();
 
         Mockable result = sut.createVirtual(Mockable.class, delegate);
-        assertThat(MockUtil.isMock(result)).isTrue();
-
         result.setUpdated(Boolean.TRUE);
+
+        assertThat(MockUtil.isMock(result)).isTrue();
         assertThat(delegate.getUpdated()).isTrue();
+    }
+
+    @Test
+    public void givenTypeAndDelegateCreateVirtualSutShouldReturnVirtualInstance() {
+        Mockable delegate = new Mockable();
+
+        Mockable result = sut.createVirtualSut(Mockable.class, delegate);
+        result.setUpdated(Boolean.TRUE);
+
+        assertThat(MockUtil.isSpy(result)).isTrue();
+        assertThat(delegate.getUpdated()).isFalse();
     }
 
     @Test
     public void givenNullIsMockShouldReturnFalse() {
         Mockable instance = null;
+
         Boolean result = sut.isMock(instance);
+
         assertThat(result).isFalse();
     }
 
     @Test
     public void givenNonMockIsMockShouldReturnFalse() {
         Mockable instance = new Mockable();
+
         Boolean result = sut.isMock(instance);
+
         assertThat(result).isFalse();
     }
 
     @Test
-    public void givenMockIsMockShouldReturnFalse() {
+    public void givenMockIsMockShouldReturnTrue() {
         Mockable instance = mock(Mockable.class);
+
         Boolean result = sut.isMock(instance);
+
         assertThat(result).isTrue();
     }
 

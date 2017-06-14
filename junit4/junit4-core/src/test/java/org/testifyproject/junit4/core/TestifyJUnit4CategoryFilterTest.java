@@ -34,7 +34,7 @@ import org.testifyproject.junit4.fixture.filter.VirtualResourceTestClass;
 public class TestifyJUnit4CategoryFilterTest {
 
     TestifyJUnit4CategoryFilter sut;
-
+    
     @Before
     public void init() {
         sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);
@@ -89,7 +89,6 @@ public class TestifyJUnit4CategoryFilterTest {
         Class testClass = LocalResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "local");
 
         boolean result = sut.shouldRun(description);
 
@@ -105,7 +104,6 @@ public class TestifyJUnit4CategoryFilterTest {
         Class testClass = VirtualResourceTestClass.class;
 
         given(description.getTestClass()).willReturn(testClass);
-        System.setProperty("testify.categories", "integration");
 
         boolean result = sut.shouldRun(description);
 
