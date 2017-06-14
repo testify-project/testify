@@ -56,6 +56,14 @@ public interface MockProvider {
     }
 
     /**
+     * Verify all interaction between the system under test and its
+     * collaborators.
+     *
+     * @param collaborators an array of collaborators that will be verified
+     */
+    void verifyAllInteraction(Object... collaborators);
+
+    /**
      * Determine if the given instance is a mock instance.
      *
      * @param <T>the instance type

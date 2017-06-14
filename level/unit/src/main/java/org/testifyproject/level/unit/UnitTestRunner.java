@@ -21,12 +21,13 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.CollaboratorsReifier;
-import org.testifyproject.extension.ConfigurationVerifier;
-import org.testifyproject.extension.SutReifier;
 import org.testifyproject.extension.FieldReifier;
-import org.testifyproject.extension.TestReifier;
-import org.testifyproject.extension.WiringVerifier;
+import org.testifyproject.extension.FinalReifier;
+import org.testifyproject.extension.InitialReifier;
+import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreVerifier;
+import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.SutReifier;
 import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
 
@@ -54,21 +55,21 @@ public class UnitTestRunner implements TestRunner {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, UnitTest.class)
                 .forEach(p -> p.verify(testContext));
 
         serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitTest.class)
                 .forEach(p -> p.reify(testContext));
 
         if (testDescriptor.getCollaboratorProvider().isPresent()) {
-            serviceLocatorUtil.findAllWithFilter(CollaboratorsReifier.class, UnitTest.class)
+            serviceLocatorUtil.findAllWithFilter(InitialReifier.class, UnitTest.class)
                     .forEach(p -> p.reify(testContext));
         }
 
         serviceLocatorUtil.findAllWithFilter(FieldReifier.class, UnitTest.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(TestReifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(FinalReifier.class, UnitTest.class)
                 .forEach(p -> p.reify(testContext));
 
         //invoke init method on test fields annotated with Fixture
@@ -79,7 +80,7 @@ public class UnitTestRunner implements TestRunner {
         testContext.getSutDescriptor()
                 .ifPresent(p -> p.init(testInstance));
 
-        serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, UnitTest.class)
+        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, UnitTest.class)
                 .forEach(p -> p.verify(testContext));
     }
 
@@ -89,13 +90,15 @@ public class UnitTestRunner implements TestRunner {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Optional<SutDescriptor> sutDescriptor = testContext.getSutDescriptor();
 
+        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, UnitTest.class)
+                .forEach(p -> p.verify(testContext));
+
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()
                 .forEach(p -> p.destroy(testInstance));
 
         //invoke destroy method on sut field annotated with Fixture
-        sutDescriptor
-                .ifPresent(p -> p.destroy(testInstance));
+        sutDescriptor.ifPresent(p -> p.destroy(testInstance));
     }
 
 }

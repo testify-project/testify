@@ -18,30 +18,28 @@ package org.testifyproject.extension;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method to perform reification of the test class
- * collaborator fields. Note test class reification is executed in the following
- * order:
+ * A contract that defines a method to verify that the test class is configured
+ * correctly before it is executed. Note test class verification is executed in
+ * the following order:
  * <ul>
- * <li>{@link InitialReifier} - Perform initial initialization of test class
- * collaborator fields</li>
- * <li>{@link FieldReifier} - Perform standard initialization of test class
- * collaborator fields</li>
- * <li>{@link SutReifier} - Perform initialization of of the system under test
- * (SUT) field</li>
- * <li>{@link FinalReifier} - Perform final initialization of test class
- * fields</li>
+ * <li>{@link PreVerifier} - Verify test class is configured correctly before is
+ * executed</li>
+ * <li>{@link PreiVerifier} - Verify test class is initialized correctly before
+ * is executed</li>
+ * <li>{@link PostVerifier} - Verify test class produces the correct result
+ * after it is executed</li>
  * </ul>
  *
  * @author saden
  */
 @FunctionalInterface
-public interface FieldReifier {
+public interface PreVerifier {
 
     /**
-     * Reify the test class using the given test context.
+     * Verify the test class using the given test context.
      *
      * @param testContext the test context
      */
-    void reify(TestContext testContext);
+    void verify(TestContext testContext);
 
 }

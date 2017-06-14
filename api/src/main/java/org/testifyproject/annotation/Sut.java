@@ -48,4 +48,17 @@ public @interface Sut {
      */
     boolean value() default false;
 
+    /**
+     * <p>
+     * Indicates whether all interaction between system under test and its
+     * collaborators should be verified.
+     * </p>
+     * <p>
+     * By default verification is not performed.
+     * </p>
+     *
+     * @return true if interaction should be verified, false otherwise.
+     */
+    boolean verify() default false;
+
 }

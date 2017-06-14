@@ -43,10 +43,11 @@ import org.testifyproject.annotation.Application;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.ConfigurationVerifier;
+import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.FieldReifier;
-import org.testifyproject.extension.TestReifier;
-import org.testifyproject.extension.WiringVerifier;
+import org.testifyproject.extension.FinalReifier;
+import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.level.system.fixture.TestClientProvider;
@@ -100,8 +101,8 @@ public class SystemTestRunnerTest {
         FieldReifier fieldReifier = mock(FieldReifier.class);
         List<FieldReifier> fieldReifiers = ImmutableList.of(fieldReifier);
 
-        ConfigurationVerifier configurationVerifier = mock(ConfigurationVerifier.class);
-        List<ConfigurationVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
+        PreVerifier configurationVerifier = mock(PreVerifier.class);
+        List<PreVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
         Class serverProviderType = ServerProvider.class;
         ServerProvider serverProvider = mock(ServerProvider.class);
         Object serverConfig = new Object();
@@ -113,7 +114,7 @@ public class SystemTestRunnerTest {
         given(testDescriptor.getApplication()).willReturn(foundApplication);
         given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, SystemTest.class))
                 .willReturn(fieldReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, SystemTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, SystemTest.class))
                 .willReturn(configurationVerifiers);
         given(application.serverProvider()).willReturn(serverProviderType);
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
@@ -128,7 +129,7 @@ public class SystemTestRunnerTest {
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getApplication();
         verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, SystemTest.class);
-        verify(serviceLocatorUtil).findAllWithFilter(ConfigurationVerifier.class, SystemTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, SystemTest.class);
         verify(application).serverProvider();
         verify(serviceLocatorUtil).getOne(serverProviderType);
         verify(serverProvider).configure(testContext);
@@ -148,8 +149,8 @@ public class SystemTestRunnerTest {
         FieldReifier fieldReifier = mock(FieldReifier.class);
         List<FieldReifier> fieldReifiers = ImmutableList.of(fieldReifier);
 
-        ConfigurationVerifier configurationVerifier = mock(ConfigurationVerifier.class);
-        List<ConfigurationVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
+        PreVerifier configurationVerifier = mock(PreVerifier.class);
+        List<PreVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
         Class serverProviderType = TestServerProvider.class;
         ServerProvider serverProvider = mock(ServerProvider.class);
         Object serverConfig = new Object();
@@ -161,7 +162,7 @@ public class SystemTestRunnerTest {
         given(testDescriptor.getApplication()).willReturn(foundApplication);
         given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, SystemTest.class))
                 .willReturn(fieldReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, SystemTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, SystemTest.class))
                 .willReturn(configurationVerifiers);
         given(application.serverProvider()).willReturn(serverProviderType);
         given(reflectionUtil.newInstance(serverProviderType)).willReturn(serverProvider);
@@ -176,7 +177,7 @@ public class SystemTestRunnerTest {
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getApplication();
         verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, SystemTest.class);
-        verify(serviceLocatorUtil).findAllWithFilter(ConfigurationVerifier.class, SystemTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, SystemTest.class);
         verify(application).serverProvider();
         verify(reflectionUtil).newInstance(serverProviderType);
         verify(serverProvider).configure(testContext);
@@ -197,8 +198,8 @@ public class SystemTestRunnerTest {
         FieldReifier fieldReifier = mock(FieldReifier.class);
         List<FieldReifier> fieldReifiers = ImmutableList.of(fieldReifier);
 
-        ConfigurationVerifier configurationVerifier = mock(ConfigurationVerifier.class);
-        List<ConfigurationVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
+        PreVerifier configurationVerifier = mock(PreVerifier.class);
+        List<PreVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
         Class serverProviderType = ServerProvider.class;
         ServerProvider serverProvider = mock(ServerProvider.class);
         Object serverConfig = new Object();
@@ -207,13 +208,13 @@ public class SystemTestRunnerTest {
         Optional<ServiceInstance> foundServiceInstance = Optional.of(serviceInstance);
         TestResourcesProvider testResourcesProvider = mock(TestResourcesProvider.class);
 
-        TestReifier testReifier = mock(TestReifier.class);
-        List<TestReifier> testReifiers = ImmutableList.of(testReifier);
+        FinalReifier testReifier = mock(FinalReifier.class);
+        List<FinalReifier> testReifiers = ImmutableList.of(testReifier);
         String fqn  = "fqn";
         Map<String, Object> properties = mock(Map.class);
         
-        WiringVerifier wiringVerifier = mock(WiringVerifier.class);
-        List<WiringVerifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
+        PreiVerifier wiringVerifier = mock(PreiVerifier.class);
+        List<PreiVerifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
         SutDescriptor sutDescriptor = mock(SutDescriptor.class);
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
 
@@ -223,7 +224,7 @@ public class SystemTestRunnerTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, SystemTest.class))
                 .willReturn(fieldReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(ConfigurationVerifier.class, SystemTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, SystemTest.class))
                 .willReturn(configurationVerifiers);
         given(application.serverProvider()).willReturn(serverProviderType);
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
@@ -238,9 +239,9 @@ public class SystemTestRunnerTest {
         given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         willDoNothing().given(sut).createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance);
-        given(serviceLocatorUtil.findAllWithFilter(TestReifier.class, SystemTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class, SystemTest.class))
                 .willReturn(testReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(WiringVerifier.class, SystemTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, SystemTest.class))
                 .willReturn(wiringVerifiers);
         sut.start(testContext);
 
@@ -248,7 +249,7 @@ public class SystemTestRunnerTest {
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getApplication();
         verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, SystemTest.class);
-        verify(serviceLocatorUtil).findAllWithFilter(ConfigurationVerifier.class, SystemTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, SystemTest.class);
         verify(application).serverProvider();
         verify(serviceLocatorUtil).getOne(serverProviderType);
         verify(serverProvider).configure(testContext);
@@ -263,8 +264,8 @@ public class SystemTestRunnerTest {
         verify(serviceLocatorUtil).getOne(TestResourcesProvider.class);
         verify(testContext).getSutDescriptor();
         verify(sut).createClassUnderTest(sutDescriptor, application, serviceInstance, testInstance);
-        verify(serviceLocatorUtil).findAllWithFilter(TestReifier.class, SystemTest.class);
-        verify(serviceLocatorUtil).findAllWithFilter(WiringVerifier.class, SystemTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class, SystemTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, SystemTest.class);
     }
 
     @Test
@@ -284,6 +285,12 @@ public class SystemTestRunnerTest {
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         SutDescriptor sutDescriptor = mock(SutDescriptor.class);
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+        
+        PostVerifier postVerifier = mock(PostVerifier.class);
+        List<PostVerifier> postVerifiers = ImmutableList.of(postVerifier);
+
+        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, SystemTest.class))
+                .willReturn(postVerifiers);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -293,6 +300,7 @@ public class SystemTestRunnerTest {
 
         sut.stop(testContext);
 
+        verify(postVerifier).verify(testContext);
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);

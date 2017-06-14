@@ -34,9 +34,9 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.slf4j.MDC;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -208,6 +208,8 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 "starting test runner '{}'",
                 testRunner.getClass().getName()
         );
+
+        TestContextHolder.INSTANCE.set(testContext);
 
         testRunner.start(testContext);
 

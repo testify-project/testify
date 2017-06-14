@@ -142,7 +142,7 @@ public class DefaultTestContextTest {
     }
 
     @Test
-    public void callToGetTestReifierShouldReturn() {
+    public void callToGetFinalReifierShouldReturn() {
         TestConfigurer result = sut.getTestConfigurer();
 
         assertThat(result).isEqualTo(testConfigurer);

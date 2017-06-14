@@ -18,7 +18,19 @@ package org.testifyproject.extension;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method for reifying the sut class.
+ * A contract that defines a method to perform reification of the test class
+ * system under test (SUT) field. Note test class reification is executed in the
+ * following order:
+ * <ul>
+ * <li>{@link InitialReifier} - Perform initial initialization of test class
+ * collaborator fields</li>
+ * <li>{@link FieldReifier} - Perform standard initialization of test class
+ * collaborator fields</li>
+ * <li>{@link SutReifier} - Perform initialization of of the system under test
+ * (SUT) field</li>
+ * <li>{@link FinalReifier} - Perform final initialization of test class
+ * fields</li>
+ * </ul>
  *
  * @author saden
  */
@@ -26,7 +38,7 @@ import org.testifyproject.TestContext;
 public interface SutReifier {
 
     /**
-     * Reify the sut class using the given test context.
+     * Reify the test class using the given test context.
      *
      * @param testContext the test context
      */

@@ -20,6 +20,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.stream.IntStream;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.easymock.cglib.proxy.Factory;
 import org.testifyproject.MockProvider;
 import org.testifyproject.tools.Discoverable;
@@ -40,8 +44,9 @@ public class EasyMockMockProvider implements MockProvider {
     @Override
     public <T> T createVirtual(Class<? extends T> type, T delegate) {
         try {
-            T instance = EasyMock.createMock(type);
+            T instance = createMock(type);
             Method[] methods = delegate.getClass().getDeclaredMethods();
+
             for (Method method : methods) {
                 if (Modifier.isStatic(method.getModifiers())) {
                     continue;
@@ -51,17 +56,23 @@ public class EasyMockMockProvider implements MockProvider {
                         .mapToObj(p -> EasyMock.anyObject())
                         .toArray(Object[]::new);
 
-                EasyMock.expect(method.invoke(instance, params))
+                expect(method.invoke(instance, params))
                         .andDelegateTo(delegate);
             }
 
-            EasyMock.replay(instance);
+            replay(instance);
+
             return instance;
         } catch (IllegalAccessException
                 | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new IllegalArgumentException("Could not delegate method calls", e);
         }
+    }
+
+    @Override
+    public void verifyAllInteraction(Object... collaborators) {
+        verify(collaborators);
     }
 
     @Override

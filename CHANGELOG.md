@@ -20,10 +20,19 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Added ability to use expression language to access sub-graphs of properties
 - Added ServerInstanceBuilder to build server instances
 - Added createVirtualSut to MockProvider contract
+- Added support for verifying interaction between the SUT and its collaborators
+ - Added `verify` attribute to @Sut annotation
+ - Added PostVerifier contract to perform verification after test case finish
+ - Added InteractionPostVerifier implementation to verify all interaction
+ - Added `verifyAllInteraction` method to MockProvider contract
 
 ### Changed
 - Refactored ServerInstance and added FQN field and added ability to add properties to it
 - Changed property names to camel-case to avoid properties being treated as expressions
+- Renamed ConfigurationVerifier to PreVerifier
+- Renamed WiringVerifier to PreiVerifier
+- Renamed CollaboratorsReifier to InitialReifier
+- Renamed TestReifier to FinalReifier
 
 ## [0.9.4] - 2017-06-06
 ### Changed

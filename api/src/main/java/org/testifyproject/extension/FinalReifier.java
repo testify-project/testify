@@ -18,9 +18,8 @@ package org.testifyproject.extension;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method to perform reification of the test class
- * collaborator fields. Note test class reification is executed in the following
- * order:
+ * A contract that defines a method to perform final reification of the test
+ * class. Note test class reification is executed in the following order:
  * <ul>
  * <li>{@link InitialReifier} - Perform initial initialization of test class
  * collaborator fields</li>
@@ -35,7 +34,7 @@ import org.testifyproject.TestContext;
  * @author saden
  */
 @FunctionalInterface
-public interface FieldReifier {
+public interface FinalReifier {
 
     /**
      * Reify the test class using the given test context.
@@ -43,5 +42,4 @@ public interface FieldReifier {
      * @param testContext the test context
      */
     void reify(TestContext testContext);
-
 }
