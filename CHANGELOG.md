@@ -13,7 +13,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
-## [0.9.5-SNAPSHOT] - 2017-06-12
+## [0.9.5] - 2017-06-14
 ### Added
 - Added Injection of properties of resources and test context into test classes
  - Added @Property field annotation
