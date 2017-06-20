@@ -20,17 +20,17 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
 
 /**
  * Insure local resource providers have default constructors.
  *
  * @author saden
  */
-@SystemTest
-@IntegrationTest
+@SystemCategory
+@IntegrationCategory
 @Discoverable
 public class LocalResourcePreVerifier implements PreVerifier {
 

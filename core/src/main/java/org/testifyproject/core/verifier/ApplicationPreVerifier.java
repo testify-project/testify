@@ -21,8 +21,8 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.SystemCategory;
 
 /**
  * Insure system tests annotate the test class with
@@ -30,7 +30,7 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@SystemTest
+@SystemCategory
 @Discoverable
 public class ApplicationPreVerifier implements PreVerifier {
 

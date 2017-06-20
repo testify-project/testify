@@ -20,17 +20,17 @@ import java.util.Set;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
 
 /**
  * A class that reifies test class fields that have not been initialized.
  *
  * @author saden
  */
-@IntegrationTest
-@SystemTest
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class ServiceFinalReifier implements FinalReifier {
 

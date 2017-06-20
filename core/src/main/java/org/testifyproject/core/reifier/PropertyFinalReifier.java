@@ -22,19 +22,19 @@ import org.testifyproject.apache.commons.jexl3.JexlContext;
 import org.testifyproject.apache.commons.jexl3.JexlEngine;
 import org.testifyproject.apache.commons.jexl3.MapContext;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * A class that reifies test class property fields.
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
-@SystemTest
+@UnitCategory
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class PropertyFinalReifier implements FinalReifier {
 

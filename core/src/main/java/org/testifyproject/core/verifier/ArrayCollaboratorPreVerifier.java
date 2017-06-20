@@ -19,19 +19,19 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * Insure insure that test fields are not arrays.
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
-@SystemTest
+@UnitCategory
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class ArrayCollaboratorPreVerifier implements PreVerifier {
 

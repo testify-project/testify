@@ -21,8 +21,8 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * Insure that the test class contains a field annotated with
@@ -30,7 +30,7 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@UnitTest
+@UnitCategory
 @Discoverable
 public class SutPreVerifier implements PreVerifier {
 

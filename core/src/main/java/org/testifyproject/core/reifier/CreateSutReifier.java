@@ -18,15 +18,15 @@ package org.testifyproject.core.reifier;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.SutReifier;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * A class that reifies the sut class.
  *
  * @author saden
  */
-@UnitTest
+@UnitCategory
 @Discoverable
 public class CreateSutReifier implements SutReifier {
 

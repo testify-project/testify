@@ -25,9 +25,9 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.extension.PreiVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * Insure that the system under test constructor parameters are defined as
@@ -35,8 +35,8 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
+@UnitCategory
+@IntegrationCategory
 @Discoverable
 public class ConstructorPreiVerifier implements PreiVerifier {
 

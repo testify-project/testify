@@ -20,10 +20,10 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.extension.PostVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * Verify all interaction between the SUT and its collaborators based on
@@ -31,9 +31,9 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
-@SystemTest
+@UnitCategory
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class InteractionPostVerifier implements PostVerifier {
 

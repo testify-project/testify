@@ -19,10 +19,10 @@ import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.extension.FieldReifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * A class that reifies test fields annotated with
@@ -30,9 +30,9 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
-@SystemTest
+@UnitCategory
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class FakeFieldReifier implements FieldReifier {
 

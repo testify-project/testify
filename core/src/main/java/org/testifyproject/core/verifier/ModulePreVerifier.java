@@ -22,8 +22,8 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
 
 /**
  * Insure that integration test classes are annotated with {@link Module} or
@@ -31,7 +31,7 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@IntegrationTest
+@IntegrationCategory
 @Discoverable
 public class ModulePreVerifier implements PreVerifier {
 

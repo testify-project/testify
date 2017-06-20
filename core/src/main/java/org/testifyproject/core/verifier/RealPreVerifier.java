@@ -24,9 +24,9 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
 
 /**
  * Insure that the test class contains a field annotated with
@@ -35,8 +35,8 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@IntegrationTest
-@SystemTest
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class RealPreVerifier implements PreVerifier {
 

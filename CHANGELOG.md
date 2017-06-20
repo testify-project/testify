@@ -13,6 +13,14 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.6-SNAPSHOT]
+### Added
+- Added Beta and Experimental annotations so users can be notified of beta and experimental features
+- Added ability to update Javadoc for api and core on javadoc.io after deployment of artifacts
+
+### Changed
+- Renamed UnitTest, IntegrationTest, and SystemTest extention annotations to avoid confusion
+
 ## [0.9.5] - 2017-06-14
 ### Added
 - Added Injection of properties of resources and test context into test classes

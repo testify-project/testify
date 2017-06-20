@@ -37,8 +37,8 @@ import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  *
@@ -105,37 +105,37 @@ public class UnitTestRunnerTest {
 
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, UnitTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, UnitCategory.class))
                 .willReturn(configurationVerifiers);
-        given(serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitCategory.class))
                 .willReturn(sutReifiers);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
-        given(serviceLocatorUtil.findAllWithFilter(InitialReifier.class, UnitTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(InitialReifier.class, UnitCategory.class))
                 .willReturn(collaboratorsReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, UnitTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, UnitCategory.class))
                 .willReturn(fieldReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class, UnitTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class, UnitCategory.class))
                 .willReturn(testReifiers);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, UnitTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, UnitCategory.class))
                 .willReturn(wiringVerifiers);
 
         sut.start(testContext);
 
         verify(testContext).getTestInstance();
         verify(testContext).getTestDescriptor();
-        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, UnitTest.class);
-        verify(serviceLocatorUtil).findAllWithFilter(SutReifier.class, UnitTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, UnitCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(SutReifier.class, UnitCategory.class);
         verify(testDescriptor).getCollaboratorProvider();
-        verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class, UnitTest.class);
-        verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, UnitTest.class);
-        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class, UnitTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class, UnitCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, UnitCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class, UnitCategory.class);
         verify(testDescriptor).getFieldDescriptors();
         verify(fieldDescriptor).init(testInstance);
         verify(testContext).getSutDescriptor();
         verify(sutDescriptor).init(testInstance);
-        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, UnitTest.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, UnitCategory.class);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class UnitTestRunnerTest {
         PostVerifier postVerifier = mock(PostVerifier.class);
         List<PostVerifier> postVerifiers = ImmutableList.of(postVerifier);
 
-        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, UnitTest.class))
+        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, UnitCategory.class))
                 .willReturn(postVerifiers);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);

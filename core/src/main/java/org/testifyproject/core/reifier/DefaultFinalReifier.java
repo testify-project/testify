@@ -22,17 +22,17 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * A class that reifies the test class.
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
+@UnitCategory
+@IntegrationCategory
 @Discoverable
 public class DefaultFinalReifier implements FinalReifier {
 

@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture.locator.impl;
+package org.testifyproject.extension.annotation;
 
-import org.testifyproject.fixture.locator.SingleImplementationContract;
-import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.annotation.UnitCategory;
+import java.lang.annotation.Documented;
+import static java.lang.annotation.ElementType.TYPE;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
 
 /**
+ * An annotation that can be placed on a class to categorize it as part of unit
+ * test family of tests.
  *
  * @author saden
  */
-@UnitCategory
-@Discoverable
-public class SingleImplementationContractImpl implements SingleImplementationContract {
+@Documented
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface UnitCategory {
 
 }
