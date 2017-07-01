@@ -53,7 +53,7 @@ public class ImplicitNameIndistinctTypeTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String helloGreeting = "Hello";
         String worldGreeting = "Hola";
         given(english.greet()).willReturn(helloGreeting);

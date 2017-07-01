@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.analyzer;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -94,6 +95,11 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
+    public Class getAnnotatedElement() {
+        return getTestClass();
+    }
+
+    @Override
     public Optional<Application> getApplication() {
         return findProperty(TestDescriptorProperties.APPLICATION);
     }
@@ -126,6 +132,16 @@ public class DefaultTestDescriptor implements TestDescriptor {
     @Override
     public List<RemoteResource> getRemoteResources() {
         return findList(TestDescriptorProperties.REMOTE_RESOURCES);
+    }
+
+    @Override
+    public List<Annotation> getInspectedAnnotations() {
+        return findList(TestDescriptorProperties.INSPECTED_ANNOTATIONS);
+    }
+
+    @Override
+    public List<Class<? extends Annotation>> getGuidelines() {
+        return findList(TestDescriptorProperties.GUIDELINE_ANNOTATIONS);
     }
 
     @Override

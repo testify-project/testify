@@ -16,9 +16,10 @@
 package org.testifyproject.core;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import org.testifyproject.Instance;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
@@ -27,6 +28,8 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.tools.Discoverable;
@@ -46,18 +49,18 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
     private ServiceLocatorUtil serviceLocatorUtil;
     private ReflectionUtil reflectionUtil;
-    private Map<VirtualResource, VirtualResourceProvider> virtualResourceProviders;
+    private List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances;
 
     public DefaultVirtualResourceProvider() {
-        this(ServiceLocatorUtil.INSTANCE, ReflectionUtil.INSTANCE, new LinkedHashMap<>());
+        this(ServiceLocatorUtil.INSTANCE, ReflectionUtil.INSTANCE, new LinkedList<>());
     }
 
     DefaultVirtualResourceProvider(ServiceLocatorUtil serviceLocatorUtil,
             ReflectionUtil reflectionUtil,
-            Map<VirtualResource, VirtualResourceProvider> virtualResourceProviders) {
+            List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances) {
         this.serviceLocatorUtil = serviceLocatorUtil;
         this.reflectionUtil = reflectionUtil;
-        this.virtualResourceProviders = virtualResourceProviders;
+        this.resourceInstances = resourceInstances;
     }
 
     @Override
@@ -87,17 +90,27 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
             Object configuration = virtualResourceProvider.configure(testContext, virtualResource, configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
-            VirtualResourceInstance<Object> virtualResourceInstance
-                    = virtualResourceProvider.start(testContext, virtualResource, configuration);
+            try {
+                VirtualResourceInstance<Object> virtualResourceInstance
+                        = virtualResourceProvider.start(testContext, virtualResource, configuration);
 
-            //add resource properties to the test context with its fqn as its key
-            testContext.addProperty(virtualResourceInstance.getFqn(), virtualResourceInstance.getProperties());
+                //add resource properties to the test context with its fqn as its key
+                testContext.addProperty(virtualResourceInstance.getFqn(), virtualResourceInstance.getProperties());
 
-            //process the the resource instance
-            processInstance(virtualResource, virtualResourceInstance, serviceInstance);
+                //process the the resource instance
+                processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
-            //track the resource so it can be stopped later
-            virtualResourceProviders.put(virtualResource, virtualResourceProvider);
+                //track the resource so it can be stopped later
+                ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                        virtualResource,
+                        virtualResourceProvider,
+                        virtualResourceInstance);
+
+                resourceInstances.add(resourceInstance);
+            } catch (Exception e) {
+                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' virtual resource",
+                        e, virtualResource.value());
+            }
         });
     }
 
@@ -140,9 +153,18 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
     @Override
     public void stop(TestContext testContex) {
-        virtualResourceProviders.forEach((virtualResource, virtualResourceProvider)
-                -> virtualResourceProvider.stop(testContex, virtualResource)
-        );
+        resourceInstances.forEach(resourceInstance -> {
+            try {
+                VirtualResourceProvider provider = resourceInstance.getProvider();
+                VirtualResource virtualResource = resourceInstance.getAnnotation();
+                VirtualResourceInstance instance = resourceInstance.getValue();
+
+                provider.stop(testContex, virtualResource, instance);
+            } catch (Exception e) {
+                LoggingUtil.INSTANCE.error("Could not stop '{}' virtual resource",
+                        resourceInstance.getAnnotation().value(), e);
+            }
+        });
     }
 
 }

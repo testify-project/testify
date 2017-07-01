@@ -34,8 +34,8 @@ import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * A class used to run a integration test.
@@ -47,7 +47,6 @@ import org.testifyproject.extension.annotation.IntegrationCategory;
 public class IntegrationTestRunner implements TestRunner {
 
     TestResourcesProvider testResourcesProvider;
-
     private final ServiceLocatorUtil serviceLocatorUtil;
 
     public IntegrationTestRunner() {
@@ -68,7 +67,7 @@ public class IntegrationTestRunner implements TestRunner {
         serviceLocatorUtil.findAllWithFilter(FieldReifier.class, IntegrationCategory.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, IntegrationCategory.class)
+        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
         ServiceProvider serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class);
@@ -112,7 +111,7 @@ public class IntegrationTestRunner implements TestRunner {
         serviceLocatorUtil.findAllWithFilter(FinalReifier.class, IntegrationCategory.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, IntegrationCategory.class)
+        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
     }
@@ -122,7 +121,7 @@ public class IntegrationTestRunner implements TestRunner {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
 
-        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, IntegrationCategory.class)
+        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
         //invoke destroy method on fields annotated with Fixture

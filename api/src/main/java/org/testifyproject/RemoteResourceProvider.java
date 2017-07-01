@@ -68,9 +68,10 @@ public interface RemoteResourceProvider<T, C> {
      *
      * @param testContext the test context
      * @param remoteResource test class remote resource annotation
+     * @param instance the remote resource instance
      * @throws java.lang.Exception an exception thrown while stopping
      */
-    void stop(TestContext testContext, RemoteResource remoteResource)
+    void stop(TestContext testContext, RemoteResource remoteResource, RemoteResourceInstance<C> instance)
             throws Exception;
 
 }

@@ -56,7 +56,7 @@ public class ImplicitGenericTypeDistinctTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String helloGreeting = "Hello";
         String worldGreeting = "World!";
         Hello helloInstance = mock(Hello.class);

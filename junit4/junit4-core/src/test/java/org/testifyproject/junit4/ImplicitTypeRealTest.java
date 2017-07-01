@@ -45,7 +45,7 @@ public class ImplicitTypeRealTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String result = sut.execute();
 
         assertThat(result).isEqualTo("Hiya!");

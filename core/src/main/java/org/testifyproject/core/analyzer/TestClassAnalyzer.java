@@ -76,12 +76,15 @@ public class TestClassAnalyzer extends ClassVisitor {
             inspectors.forEach(inspector -> {
                 Handles handles = inspector.getClass().getDeclaredAnnotation(Handles.class);
                 if (handles != null) {
-                    Class<? extends Annotation> typeHandled = handles.value();
+                    Class<? extends Annotation>[] typesHandled = handles.value();
 
-                    if (typeHandled.isAssignableFrom(annotationClass)) {
-                        inspector.inspect(testDescriptor, testClass, testClass.getDeclaredAnnotation(annotationClass));
-                    } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
-                        inspector.inspect(testDescriptor, annotationClass, annotationClass.getDeclaredAnnotation(Bundle.class));
+                    for (Class<? extends Annotation> typeHandled : typesHandled) {
+
+                        if (typeHandled.isAssignableFrom(annotationClass)) {
+                            inspector.inspect(testDescriptor, testClass, testClass.getDeclaredAnnotation(annotationClass));
+                        } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
+                            inspector.inspect(testDescriptor, annotationClass, annotationClass.getDeclaredAnnotation(Bundle.class));
+                        }
                     }
                 }
             });

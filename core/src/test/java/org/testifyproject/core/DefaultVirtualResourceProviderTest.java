@@ -15,7 +15,7 @@
  */
 package org.testifyproject.core;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +29,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -51,15 +52,15 @@ public class DefaultVirtualResourceProviderTest {
     DefaultVirtualResourceProvider sut;
     ServiceLocatorUtil serviceLocatorUtil;
     ReflectionUtil reflectionUtil;
-    Map<VirtualResource, VirtualResourceProvider> virtualResourceProviders;
+    List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances;
 
     @Before
     public void init() {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
         reflectionUtil = mock(ReflectionUtil.class);
-        virtualResourceProviders = mock(Map.class, delegatesTo(new LinkedHashMap<>()));
+        resourceInstances = mock(List.class, delegatesTo(new LinkedList<>()));
 
-        sut = spy(new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, virtualResourceProviders));
+        sut = spy(new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, resourceInstances));
     }
 
     @Test
@@ -97,7 +98,7 @@ public class DefaultVirtualResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithDefaultProviderShouldStartResources() {
+    public void callToStartWithDefaultProviderShouldStartResources() throws Exception {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
@@ -153,7 +154,7 @@ public class DefaultVirtualResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithCustomProviderShouldStartResources() {
+    public void callToStartWithCustomProviderShouldStartResources() throws Exception {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
@@ -315,15 +316,22 @@ public class DefaultVirtualResourceProviderTest {
     }
 
     @Test
-    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() {
+    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() throws Exception {
         TestContext testContext = mock(TestContext.class);
         VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
-        virtualResourceProviders.put(virtualResource, virtualResourceProvider);
+        VirtualResourceInstance virtualResourceInstance = mock(VirtualResourceInstance.class);
+        
+        ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                virtualResource,
+                virtualResourceProvider,
+                virtualResourceInstance);
+        
+        resourceInstances.add(resourceInstance);
 
         sut.stop(testContext);
 
-        verify(virtualResourceProvider).stop(testContext, virtualResource);
+        verify(virtualResourceProvider).stop(testContext, virtualResource, virtualResourceInstance);
         verifyNoMoreInteractions(virtualResourceProvider);
     }
 

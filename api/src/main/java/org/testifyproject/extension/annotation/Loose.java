@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture;
+package org.testifyproject.extension.annotation;
 
-import static java.lang.annotation.ElementType.*;
+import java.lang.annotation.Documented;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
-import org.testifyproject.annotation.Bundle;
-import org.testifyproject.annotation.VirtualResource;
 
 /**
+ * An annotation that can be placed a test class to indicate that verifications
+ * should be loose.
  *
  * @author saden
  */
-@Bundle
-@VirtualResource("postgres")
+@Documented
 @Retention(RUNTIME)
-@Target({ANNOTATION_TYPE, TYPE, FIELD, METHOD})
-public @interface TestAnnotation {
+@Target({TYPE, ANNOTATION_TYPE})
+public @interface Loose {
 
 }

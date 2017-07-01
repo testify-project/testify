@@ -38,7 +38,7 @@ public class NoConstructorTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String greeting = "Hello!";
         String result = sut.execute();
 

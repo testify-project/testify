@@ -74,7 +74,7 @@ public class TestContextHolderTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullConsumerExesuteShouldThrowException() {
+    public void givenNullConsumerExecuteShouldThrowException() {
         Consumer<TestContext> consumer = null;
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
@@ -83,7 +83,7 @@ public class TestContextHolderTest {
     }
 
     @Test
-    public void givenValidConsumerAndNoTestContextExesuteShouldDoNothing() {
+    public void givenValidConsumerAndNoTestContextExecuteShouldDoNothing() {
         Consumer<TestContext> consumer = mock(Consumer.class);
 
         sut.execute(consumer);
@@ -92,7 +92,7 @@ public class TestContextHolderTest {
     }
 
     @Test
-    public void givenValidConsumerExesuteShouldCallConsumer() {
+    public void givenValidConsumerExecuteShouldCallConsumer() {
         Consumer<TestContext> consumer = mock(Consumer.class);
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
@@ -105,7 +105,7 @@ public class TestContextHolderTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void givenNullFunctionExesuteShouldThrowException() {
+    public void givenNullFunctionExecuteShouldThrowException() {
         Function<TestContext, Object> function = null;
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
@@ -114,7 +114,7 @@ public class TestContextHolderTest {
     }
 
     @Test
-    public void givenValidFunctionAndNoTestContextExesuteShouldDoNothing() {
+    public void givenValidFunctionAndNoTestContextExecuteShouldDoNothing() {
         Function<TestContext, Object> function = mock(Function.class);
 
         Object result = sut.execute(function);
@@ -124,7 +124,7 @@ public class TestContextHolderTest {
     }
 
     @Test
-    public void givenValidFunctionExesuteShouldCallConsumer() {
+    public void givenValidFunctionExecuteShouldCallConsumer() {
         Object answer = mock(Object.class);
 
         Function<TestContext, Object> function = mock(Function.class);

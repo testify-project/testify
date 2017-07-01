@@ -55,7 +55,7 @@ public class ExplicitNameIndistinctGenericTypeTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String englishGreeting = "Hello";
         String spanishGreeting = "Hola";
         Hello englishInstance = mock(Hello.class);

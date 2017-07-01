@@ -28,8 +28,8 @@ import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * A class used to run a integration test.
@@ -55,7 +55,7 @@ public class UnitTestRunner implements TestRunner {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, UnitCategory.class)
+        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor.getGuidelines(), UnitCategory.class)
                 .forEach(p -> p.verify(testContext));
 
         serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitCategory.class)
@@ -80,7 +80,7 @@ public class UnitTestRunner implements TestRunner {
         testContext.getSutDescriptor()
                 .ifPresent(p -> p.init(testInstance));
 
-        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, UnitCategory.class)
+        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor.getGuidelines(), UnitCategory.class)
                 .forEach(p -> p.verify(testContext));
     }
 
@@ -90,7 +90,7 @@ public class UnitTestRunner implements TestRunner {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Optional<SutDescriptor> sutDescriptor = testContext.getSutDescriptor();
 
-        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, UnitCategory.class)
+        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor.getGuidelines(), UnitCategory.class)
                 .forEach(p -> p.verify(testContext));
 
         //invoke destroy method on fields annotated with Fixture

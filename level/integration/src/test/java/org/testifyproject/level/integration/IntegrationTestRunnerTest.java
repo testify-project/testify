@@ -37,15 +37,16 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestResourcesProvider;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.InitialReifier;
-import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.FinalReifier;
+import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableSet;
-import org.testifyproject.extension.annotation.IntegrationCategory;
 
 /**
  *
@@ -112,14 +113,16 @@ public class IntegrationTestRunnerTest {
 
         PreiVerifier wiringVerifier = mock(PreiVerifier.class);
         List<PreiVerifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
+        List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getGuidelines()).willReturn(guidelines);
         given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, IntegrationCategory.class))
                 .willReturn(fieldReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class))
                 .willReturn(configurationVerifiers);
         given(serviceLocatorUtil.getOne(ServiceProvider.class)).willReturn(serviceProvider);
         given(serviceProvider.create(testContext)).willReturn(serviceContext);
@@ -135,7 +138,7 @@ public class IntegrationTestRunnerTest {
                 .willReturn(collaboratorsReifiers);
         given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class, IntegrationCategory.class))
                 .willReturn(testReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, guidelines, IntegrationCategory.class))
                 .willReturn(wiringVerifiers);
 
         sut.start(testContext);
@@ -145,7 +148,7 @@ public class IntegrationTestRunnerTest {
         verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
         verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, IntegrationCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class);
         verify(serviceLocatorUtil).getOne(ServiceProvider.class);
         verify(serviceProvider).create(testContext);
         verify(serviceProvider).configure(testContext, serviceContext);
@@ -165,7 +168,7 @@ public class IntegrationTestRunnerTest {
         verify(testDescriptor).getCollaboratorProvider();
         verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class, IntegrationCategory.class);
         verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class, IntegrationCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, guidelines, IntegrationCategory.class);
     }
 
     @Test
@@ -184,8 +187,10 @@ public class IntegrationTestRunnerTest {
 
         PostVerifier postVerifier = mock(PostVerifier.class);
         List<PostVerifier> postVerifiers = ImmutableList.of(postVerifier);
+        List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
-        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, IntegrationCategory.class))
+        given(testDescriptor.getGuidelines()).willReturn(guidelines);
+        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, guidelines, IntegrationCategory.class))
                 .willReturn(postVerifiers);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);

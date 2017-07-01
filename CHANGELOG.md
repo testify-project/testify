@@ -17,6 +17,9 @@ was added, changed, deprecated, removed, fix and security fixes.
 ### Added
 - Added Beta and Experimental annotations so users can be notified of beta and experimental features
 - Added ability to update Javadoc for api and core on javadoc.io after deployment of artifacts
+- Added the ability to get any annotation on the test class as well as those defined in`@Bundle` annotation from TestContext and TestDescriptor API
+- Added ability to get all inspected annotations from the TestContext API
+- Added @Strict, @Lenient, and @Loose guideline extention annotations
 
 ### Changed
 - Renamed UnitTest, IntegrationTest, and SystemTest extention annotations to avoid confusion

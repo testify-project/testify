@@ -52,7 +52,7 @@ public class ImplicitGenericTypeInitializationTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String helloGreeting = "Hello";
         Hello helloInstance = mock(Hello.class);
 

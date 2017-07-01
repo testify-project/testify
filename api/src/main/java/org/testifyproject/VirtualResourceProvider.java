@@ -57,15 +57,20 @@ public interface VirtualResourceProvider<T> {
      * @param virtualResource test class virtual resource annotation
      * @param configuration the virtual resource configuration object
      * @return a virtual resource instance
+     * @throws java.lang.Exception an exception thrown while starting
      */
-    VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, T configuration);
+    VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, T configuration)
+            throws Exception;
 
     /**
      * Stop the virtual resource.
      *
      * @param testContext the test context
      * @param virtualResource test class virtual resource annotation
+     * @param instance the value of instance
+     * @throws java.lang.Exception an exception thrown while stopping
      */
-    void stop(TestContext testContext, VirtualResource virtualResource);
+    void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance)
+            throws Exception;
 
 }

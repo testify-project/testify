@@ -15,13 +15,14 @@
  */
 package org.testifyproject.core;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.RemoteResourceProvider;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -48,14 +50,14 @@ public class DefaultRemoteResourceProviderTest {
 
     DefaultRemoteResourceProvider sut;
     ReflectionUtil reflectionUtil;
-    Map<RemoteResource, RemoteResourceProvider> resourceProviders;
+    List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances;
 
     @Before
     public void init() {
         reflectionUtil = mock(ReflectionUtil.class);
-        resourceProviders = mock(Map.class, delegatesTo(new LinkedHashMap<>()));
+        resourceInstances = mock(List.class, delegatesTo(new LinkedList<>()));
 
-        sut = spy(new DefaultRemoteResourceProvider(reflectionUtil, resourceProviders));
+        sut = spy(new DefaultRemoteResourceProvider(reflectionUtil, resourceInstances));
     }
 
     @Test
@@ -111,6 +113,9 @@ public class DefaultRemoteResourceProviderTest {
         String configKey = "test";
         PropertiesReader configReader = mock(PropertiesReader.class);
 
+        ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance> resourceInstance
+                = DefaultResourceInstance.of(remoteResource, remoteResourceProvider, remoteResourceInstance);
+
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testDescriptor.getRemoteResources()).willReturn(virtualResources);
@@ -141,7 +146,7 @@ public class DefaultRemoteResourceProviderTest {
         verify(remoteResourceInstance).getFqn();
         verify(remoteResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
-        verify(resourceProviders).put(remoteResource, remoteResourceProvider);
+        verify(resourceInstances).add(eq(resourceInstance));
         verify(sut).processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
@@ -254,11 +259,17 @@ public class DefaultRemoteResourceProviderTest {
         TestContext testContext = mock(TestContext.class);
         RemoteResource remoteResource = mock(RemoteResource.class);
         RemoteResourceProvider remoteResourceProvider = mock(RemoteResourceProvider.class);
-        resourceProviders.put(remoteResource, remoteResourceProvider);
+        RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
+        ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                remoteResource,
+                remoteResourceProvider,
+                remoteResourceInstance);
+
+        resourceInstances.add(resourceInstance);
 
         sut.stop(testContext);
 
-        verify(remoteResourceProvider).stop(testContext, remoteResource);
+        verify(remoteResourceProvider).stop(testContext, remoteResource, remoteResourceInstance);
         verifyNoMoreInteractions(remoteResourceProvider);
     }
 

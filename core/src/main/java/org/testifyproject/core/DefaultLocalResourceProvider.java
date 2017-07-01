@@ -16,11 +16,12 @@
 package org.testifyproject.core;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
@@ -28,6 +29,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
@@ -45,15 +47,16 @@ import org.testifyproject.trait.PropertiesReader;
 public class DefaultLocalResourceProvider implements ResourceProvider {
 
     private ReflectionUtil reflectionUtil;
-    private Map<LocalResource, LocalResourceProvider> localResourceProviders;
+    private List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances;
 
     public DefaultLocalResourceProvider() {
-        this(ReflectionUtil.INSTANCE, new LinkedHashMap<>());
+        this(ReflectionUtil.INSTANCE, new LinkedList<>());
     }
 
-    DefaultLocalResourceProvider(ReflectionUtil reflectionUtil, Map<LocalResource, LocalResourceProvider> localResourceProviders) {
+    DefaultLocalResourceProvider(ReflectionUtil reflectionUtil,
+            List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances) {
         this.reflectionUtil = reflectionUtil;
-        this.localResourceProviders = localResourceProviders;
+        this.resourceInstances = resourceInstances;
     }
 
     @Override
@@ -88,9 +91,14 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
                 processInstance(localResource, localResourceInstance, value, serviceInstance);
 
                 //track the resource so it can be stopped later
-                localResourceProviders.put(localResource, localResourceProvider);
+                ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                        localResource,
+                        localResourceProvider,
+                        localResourceInstance);
+
+                resourceInstances.add(resourceInstance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, value);
+                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' local resource", e, value);
             }
         });
     }
@@ -153,11 +161,16 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
     @Override
     public void stop(TestContext testContext) {
-        localResourceProviders.forEach((localResource, localResourceProvider) -> {
+        resourceInstances.forEach(resourceInstance -> {
             try {
-                localResourceProvider.stop(testContext, localResource);
+                LocalResourceProvider provider = resourceInstance.getProvider();
+                LocalResource localResource = resourceInstance.getAnnotation();
+                LocalResourceInstance instance = resourceInstance.getValue();
+
+                provider.stop(testContext, localResource, instance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not stop '{}' resource", e, localResource.value());
+                LoggingUtil.INSTANCE.error("Could not stop '{}' local resource",
+                        resourceInstance.getAnnotation().value(), e);
             }
         });
     }
