@@ -53,7 +53,7 @@ public class ImplicitTypeInitializationTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         System.out.println("Exesuting test:" + this);
         String helloGreeting = "Hello";
         given(hello.greet()).willReturn(helloGreeting);

@@ -47,7 +47,8 @@ public class TestVirtualResourceProvider implements VirtualResourceProvider<Void
     }
 
     @Override
-    public void stop(TestContext testContext, VirtualResource virtualResource) {
+    public void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance) {
     }
 
 }
+

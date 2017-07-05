@@ -68,9 +68,10 @@ public interface LocalResourceProvider<T, S, C> {
      *
      * @param testContext the test context
      * @param localResource test class local resource annotation
+     * @param instance the local resource instance
      * @throws java.lang.Exception an exception thrown while stopping
      */
-    void stop(TestContext testContext, LocalResource localResource)
+    void stop(TestContext testContext, LocalResource localResource, LocalResourceInstance<S, C> instance)
             throws Exception;
 
 }

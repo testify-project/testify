@@ -38,7 +38,7 @@ public class MultipleTestMethodsTest {
     }
 
     @Test
-    public void callToExesuteShouldReturnString1() {
+    public void callToExecuteShouldReturnString1() {
         String greeting = "Hello!";
         String result = sut.execute();
 
@@ -46,7 +46,7 @@ public class MultipleTestMethodsTest {
     }
 
     @Test
-    public void callToExesuteShouldReturnString2() {
+    public void callToExecuteShouldReturnString2() {
         String greeting = "Hello!";
         String result = sut.execute();
 

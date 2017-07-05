@@ -15,19 +15,22 @@
  */
 package org.testifyproject.core.util;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestifyException;
+import org.testifyproject.extension.annotation.Strict;
+import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.fixture.locator.MultiImplmentationContract;
 import org.testifyproject.fixture.locator.NoImplementationConract;
 import org.testifyproject.fixture.locator.SingleImplementationContract;
 import org.testifyproject.fixture.locator.impl.FirstMultiImplmentationContract;
 import org.testifyproject.fixture.locator.impl.SecondMultiImplmentationContract;
 import org.testifyproject.fixture.locator.impl.SingleImplementationContractImpl;
-import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  *
@@ -93,6 +96,18 @@ public class ServiceLocatorUtilTest {
         Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
 
         List<MultiImplmentationContract> result = sut.findAllWithFilter(contract, UnitCategory.class);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    public void givenContractWithImplementationsFindAllWithFilterAndGuidelineShouldReturnListWithImplementation() {
+        Class guideline = Strict.class;
+
+        List<Class<? extends Annotation>> guidelines = ImmutableList.of(guideline);
+        Class<MultiImplmentationContract> contract = MultiImplmentationContract.class;
+
+        List<MultiImplmentationContract> result = sut.findAllWithFilter(contract, guidelines, UnitCategory.class);
 
         assertThat(result).hasSize(1);
     }

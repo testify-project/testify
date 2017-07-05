@@ -13,31 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.extension.annotation;
+package org.testifyproject;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Documented;
-import static java.lang.annotation.ElementType.TYPE;
-import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on a class to donate it as capable of
- * handing a specific type of annotations. This is useful for writing custom
- * inspectors that handles a specific annotations.
+ * A contract that defines a resource instance which consists of a resource
+ * annotation, resource provider and resource instance.
  *
  * @author saden
+ * @param <A> the resource annotation type
+ * @param <P> the resource provider type
+ * @param <I> the resource instance type
  */
-@Documented
-@Retention(RUNTIME)
-@Target(TYPE)
-public @interface Handles {
+public interface ResourceInstance<A extends Annotation, P, I> {
 
     /**
-     * The annotation classes that are inspected.
+     * Get the resource annotation.
      *
-     * @return the annotation classes.
+     * @return the resource annotation
      */
-    Class<? extends Annotation>[] value();
+    A getAnnotation();
+
+    /**
+     * Get the resource provider.
+     *
+     * @return the resource provider
+     */
+    P getProvider();
+
+    /**
+     * Get the resource instance.
+     *
+     * @return the resource instance
+     */
+    I getValue();
 }

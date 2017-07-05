@@ -65,18 +65,71 @@ public class ServiceLocatorUtil {
 
     /**
      * Find all implementations of the given type annotated with the given
+     * guideline and filter annotations.
+     *
+     * @param <T> the SPI type
+     * @param type the SPI contract
+     * @param guidelines list of applicable guideline annotations types
+     * @param filters the annotation to filter the implementations on
+     * @return a list that contains all implementations, empty list otherwise
+     */
+    public <T> List<T> findAllWithFilter(Class<T> type,
+            List<Class<? extends Annotation>> guidelines,
+            Class<? extends Annotation>... filters) {
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
+
+        return stream(serviceLoader.spliterator(), true)
+                .parallel()
+                .filter(service -> {
+                    Class serviceType = service.getClass();
+                    boolean filter = true;
+
+                    for (Class<? extends Annotation> guideline : guidelines) {
+                        if (!serviceType.isAnnotationPresent(guideline)) {
+                            filter = false;
+                            break;
+                        }
+                    }
+
+                    for (Class<? extends Annotation> filterAnnotation : filters) {
+                        if (!serviceType.isAnnotationPresent(filterAnnotation)) {
+                            filter = false;
+                            break;
+                        }
+                    }
+
+                    return filter;
+                })
+                .collect(toList());
+    }
+
+    /**
+     * Find all implementations of the given type annotated with the given
      * annotation.
      *
      * @param <T> the SPI type
      * @param type the SPI contract
-     * @param filter the annotation to filter on implementations on
+     * @param filters the annotation to filter the implementations on
      * @return a list that contains all implementations, empty list otherwise
      */
-    public <T> List<T> findAllWithFilter(Class<T> type, Class<? extends Annotation> filter) {
+    public <T> List<T> findAllWithFilter(Class<T> type, Class<? extends Annotation>... filters) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
 
         return stream(serviceLoader.spliterator(), true)
-                .filter(p -> p.getClass().isAnnotationPresent(filter))
+                .parallel()
+                .filter(service -> {
+                    Class serviceType = service.getClass();
+                    boolean filter = true;
+
+                    for (Class<? extends Annotation> filterAnnotation : filters) {
+                        if (!serviceType.isAnnotationPresent(filterAnnotation)) {
+                            filter = false;
+                            break;
+                        }
+                    }
+
+                    return filter;
+                })
                 .collect(toList());
     }
 
@@ -107,14 +160,27 @@ public class ServiceLocatorUtil {
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
-     * @param filter the annotation to filter on implementations on
+     * @param filters the annotations to filter the implementations on
      * @return a list that contains all implementations, empty list otherwise
      */
-    public <T> T getOneWithFilter(Class<T> contract, Class<? extends Annotation> filter) {
+    public <T> T getOneWithFilter(Class<T> contract, Class<? extends Annotation>... filters) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
         List<T> result = stream(serviceLoader.spliterator(), true)
-                .filter(p -> p.getClass().isAnnotationPresent(filter))
+                .parallel()
+                .filter(service -> {
+                    Class serviceType = service.getClass();
+                    boolean filter = true;
+
+                    for (Class<? extends Annotation> filterAnnotation : filters) {
+                        if (!serviceType.isAnnotationPresent(filterAnnotation)) {
+                            filter = false;
+                            break;
+                        }
+                    }
+
+                    return filter;
+                })
                 .collect(toList());
 
         insureOne(result, contract.getName());
@@ -165,6 +231,7 @@ public class ServiceLocatorUtil {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(contract);
 
         List<T> result = stream(serviceLoader.spliterator(), true)
+                .parallel()
                 .filter(service -> {
                     if (service.getClass().equals(defaultImplementation)) {
                         implementationRef.compareAndSet(null, service);

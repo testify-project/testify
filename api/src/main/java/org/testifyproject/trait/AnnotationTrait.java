@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
+import org.testifyproject.annotation.Bundle;
+import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  * A contract that specifies annotated element traits.
@@ -49,8 +50,21 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
      */
     default <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationType) {
         T type = getAnnotatedElement();
+        A declaredAnnotation = type.getDeclaredAnnotation(annotationType);
 
-        return ofNullable(type.getDeclaredAnnotation(annotationType));
+        if (declaredAnnotation == null) {
+            for (Annotation annotation : type.getDeclaredAnnotations()) {
+                Class<? extends Annotation> declaredAnnotationType = annotation.annotationType();
+                Bundle bundle = declaredAnnotationType.getDeclaredAnnotation(Bundle.class);
+
+                if (bundle != null) {
+                    declaredAnnotation = declaredAnnotationType.getDeclaredAnnotation(annotationType);
+                    break;
+                }
+            }
+        }
+
+        return ofNullable(declaredAnnotation);
     }
 
     /**
@@ -62,9 +76,22 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
      */
     default <A extends Annotation> List<A> getAnnotations(Class<A> annotationType) {
         T type = getAnnotatedElement();
+        A[] declaredAnnotations = type.getDeclaredAnnotationsByType(annotationType);
 
-        return Stream.of(type.getDeclaredAnnotationsByType(annotationType))
-                .collect(toList());
+        ImmutableList.Builder<A> listBuilder = ImmutableList.builder();
+
+        listBuilder.add(declaredAnnotations);
+
+        for (Annotation annotation : type.getDeclaredAnnotations()) {
+            Class<? extends Annotation> declaredAnnotationType = annotation.annotationType();
+            Bundle bundle = declaredAnnotationType.getDeclaredAnnotation(Bundle.class);
+
+            if (bundle != null) {
+                listBuilder.add(declaredAnnotationType.getDeclaredAnnotationsByType(annotationType));
+            }
+        }
+
+        return listBuilder.build();
     }
 
     /**

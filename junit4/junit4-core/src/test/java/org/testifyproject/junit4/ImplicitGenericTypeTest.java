@@ -50,7 +50,7 @@ public class ImplicitGenericTypeTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String greeting = "Hello!";
         Hello hello = mock(Hello.class);
         given(collaborator.get()).willReturn(hello);

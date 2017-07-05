@@ -15,6 +15,7 @@
  */
 package org.testifyproject;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -26,6 +27,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.trait.AnnotationTrait;
 import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
 
@@ -35,7 +37,7 @@ import org.testifyproject.trait.PropertiesWriter;
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesReader, PropertiesWriter {
+public interface TestDescriptor extends PropertiesReader, PropertiesWriter, AnnotationTrait<Class> {
 
     /**
      * The name of the test class.
@@ -130,6 +132,21 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter {
      * @return a list with remote resources, empty list otherwise
      */
     List<RemoteResource> getRemoteResources();
+
+    /**
+     * Get a list of all known and inspected annotations including those placed
+     * on {@link org.testifyproject.annotation.Bundle} annotation.
+     *
+     * @return a list of inspected annotations, empty list otherwise
+     */
+    List<Annotation> getInspectedAnnotations();
+
+    /**
+     * Get guideline annotations associated with the test.
+     *
+     * @return a list of guidelines, empty array otherwise
+     */
+    List<Class<? extends Annotation>> getGuidelines();
 
     /**
      * Find the config handler associated with the test class capable of

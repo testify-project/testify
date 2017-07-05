@@ -132,7 +132,7 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
     /**
      * Indicates whether test resources should be eagerly started. Note that
      * during integration tests resources can be started right before the test
-     * case is exesuted but in system tests the start of resources must be
+     * case is executed but in system tests the start of resources must be
      * delayed until the application server is running.
      *
      * @return resource start strategy

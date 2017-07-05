@@ -54,7 +54,7 @@ public class ImplicitTypeDistinctTypesTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String helloGreeting = "Hello";
         String worldGreeting = "World!";
         given(hello.greet()).willReturn(helloGreeting);

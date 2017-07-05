@@ -51,7 +51,7 @@ public class VerifyInteractionTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String helloGreeting = "Hello";
         given(hello.greet()).willReturn(helloGreeting);
 

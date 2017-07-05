@@ -46,7 +46,7 @@ public class InvalidVirtualResourceProvider implements VirtualResourceProvider<V
     }
 
     @Override
-    public void stop(TestContext testContext, VirtualResource virtualResource) {
+    public void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

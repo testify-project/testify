@@ -49,6 +49,8 @@ public class TestLocalResourceProvider implements LocalResourceProvider<Void, Da
     }
 
     @Override
-    public void stop(TestContext testContext, LocalResource localResource) throws Exception {
+    public void stop(TestContext testContext,
+            LocalResource localResource,
+            LocalResourceInstance<DataSource, Connection> instance) throws Exception {
     }
 }

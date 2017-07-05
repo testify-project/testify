@@ -40,6 +40,6 @@ public class ValidLocalResourceProvider implements LocalResourceProvider {
     }
 
     @Override
-    public void stop(TestContext testContext, LocalResource localResource) {
+    public void stop(TestContext testContext, LocalResource localResource, LocalResourceInstance instance) {
     }
 }

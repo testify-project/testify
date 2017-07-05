@@ -15,14 +15,16 @@
  */
 package org.testifyproject.fixture.locator.impl;
 
+import org.testifyproject.extension.annotation.Strict;
+import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.fixture.locator.MultiImplmentationContract;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  *
  * @author saden
  */
+@Strict
 @UnitCategory
 @Discoverable
 public class SecondMultiImplmentationContract implements MultiImplmentationContract {

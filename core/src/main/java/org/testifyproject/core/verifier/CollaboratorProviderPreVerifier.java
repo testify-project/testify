@@ -20,16 +20,22 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.Lenient;
+import org.testifyproject.extension.annotation.Loose;
+import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure that collaborator provider methods are configured correctly.
  *
  * @author saden
  */
+@Strict
+@Lenient
+@Loose
 @UnitCategory
 @IntegrationCategory
 @SystemCategory

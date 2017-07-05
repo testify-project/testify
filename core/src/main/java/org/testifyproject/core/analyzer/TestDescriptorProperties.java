@@ -77,6 +77,16 @@ public class TestDescriptorProperties {
      */
     public static final String FIELD_DESCRIPTORS_CACHE = "fieldDescriptorsCache";
 
+    /**
+     * Inspected annotations cache property key.
+     */
+    public static final String INSPECTED_ANNOTATIONS = "inspectedAnnotations";
+
+    /**
+     * Inspected annotations cache property key.
+     */
+    public static final String GUIDELINE_ANNOTATIONS = "guidelineAnnotations";
+
     private TestDescriptorProperties() {
     }
 }
