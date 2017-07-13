@@ -50,13 +50,13 @@ public class LocalResourceIT {
     @Test
     public void givenLocalResourceVerifyInjectionOfLocalResourceAndClient() {
         assertThat(instance).isNotNull();
-        assertThat(instance.getFqn()).isEqualTo("test");
+        assertThat(instance.getFqn()).isEqualTo("local.test.resource");
         assertThat(resource).isNotNull();
         assertThat(client).isNotNull();
 
         Instance<DataSource> resourceInstance = instance.getResource();
         assertThat(resourceInstance).isNotNull();
-        assertThat(resourceInstance.getValue()).isEqualTo(resource);;
+        assertThat(resourceInstance.getValue()).isEqualTo(resource);
 
         Optional<Instance<Connection>> foundClient = instance.getClient();
         assertThat(foundClient).isNotEmpty();

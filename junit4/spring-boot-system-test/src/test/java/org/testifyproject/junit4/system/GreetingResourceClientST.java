@@ -15,41 +15,30 @@
  */
 package org.testifyproject.junit4.system;
 
-import java.net.InetAddress;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.OK;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.Instance;
-import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Real;
-import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 
-/**
- *
- * @author saden
- */
-@VirtualResource("test")
+@RunWith(SpringBootSystemTest.class)
 @Application(GreetingServletApplication.class)
-@RunWith(SpringSystemTest.class)
-public class GreetingResourceVirtualResourceST {
+public class GreetingResourceClientST {
 
-    @Real
-    VirtualResourceInstance<InetAddress> instance;
-
-    @Real
-    InetAddress resource;
+    @Sut
+    WebTarget sut;
 
     @Test
-    public void verifyInjections() {
-        assertThat(instance).isNotNull();
-        assertThat(resource).isNotNull();
-        assertThat(instance.getFqn()).isEqualTo("test");
+    public void givenClientInstanceGetGreetingResourceShouldReturn() {
+        Response result = sut.path("/").request().get();
 
-        Instance<InetAddress> resourceInstance = instance.getResource();
-        assertThat(resourceInstance).isNotNull();
-        assertThat(resourceInstance.getValue()).isEqualTo(resource);
+        assertThat(result).isNotNull();
+        assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
+        assertThat(result.readEntity(String.class)).isEqualTo("Hello");
     }
 
 }

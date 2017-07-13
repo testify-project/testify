@@ -31,18 +31,32 @@ public interface RemoteResourceProvider<T, C> {
     /**
      * <p>
      * A method to configure a remote resource. Configuring a remote resource
-     * for testing typically involves creating a configuration object that can
-     * be further configured by a test class method annotated with
-     * {@link org.testifyproject.annotation.ConfigHandler}.
+     * typically involves creating a default configuration object that can be
+     * further configured by a
+     * {@link org.testifyproject.annotation.ConfigHandler} method. Please note:
      * </p>
-     * <p>
-     * Note that implementation of this method should not do any work beyond
-     * returning configuration object. That is to is to say it should be
-     * stateless and should not perform instantiation of the remote resource for
-     * testing as that should be handled in
+     * <ul>
+     * <li>Implementation of this method should not do any work beyond returning
+     * configuration object. It should be stateless and should not perform
+     * instantiation of the remote resource as that should be handled in
      * {@link #start(org.testifyproject.TestContext, org.testifyproject.annotation.RemoteResource, java.lang.Object) }
      * method.
-     * </p>
+     * </li>
+     * <li>
+     * The value of PropertiesReader by default encapsulates
+     * {@code .testify.yml} configuration properties. A specific section in
+     * {@code .testify.yml} can be specified through {@link RemoteResource#configKey()
+     * }.
+     * </li>
+     * <li>
+     * The configuration object returned by this method is simply default
+     * configuration. It can be updated or replaced with entirely new
+     * configuration object by the
+     * {@link org.testifyproject.annotation.ConfigHandler} method before it is
+     * passed to {@link #start(org.testifyproject.TestContext, org.testifyproject.annotation.RemoteResource, java.lang.Object)
+     * } method
+     * </li>
+     * </ul>
      *
      * @param testContext the test context
      * @param remoteResource test class remote resource annotation

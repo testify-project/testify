@@ -21,40 +21,36 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.ClientInstance;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.web.GreetingApplication;
+import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
+import org.testifyproject.junit4.fixture.web.service.GreetingService;
 
-/**
- *
- * @author saden
- */
-@Application(GreetingApplication.class)
-@RunWith(Jersey2SystemTest.class)
-public class GreetingResourceClientInstanceST {
+@Application(GreetingServletApplication.class)
+@RunWith(SpringSystemTest.class)
+public class SpringSystemTestFakeST {
 
     @Sut
-    ClientInstance<WebTarget> sut;
+    WebTarget sut;
+
+    @Fake
+    GreetingService greetingService;
 
     @Test
-    public void verifyInjections() {
-        //Arrange
-        String phrase = "Hello";
+    public void givenClientInstanceGetGreetingResourceShouldReturn() {
+        String greeting = "Hi";
+        given(greetingService.getGreeting()).willReturn(greeting);
 
-        //Act
-        Response result = sut.getValue()
-                .path("/")
-                .request()
-                .get();
+        Response result = sut.path("/").request().get();
 
-        //Assert
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
-        assertThat(result.hasEntity()).isTrue();
+        assertThat(result.readEntity(String.class)).isEqualTo(greeting);
 
-        Object entity = result.readEntity(String.class);
-        assertThat(entity).isEqualTo(phrase);
+        verify(greetingService).getGreeting();
     }
 
 }

@@ -215,19 +215,19 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        String value = "value";
+        String fqn = "fqn";
         String name = "";
         Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-        String resourceInstanceName = "resource://" + value;
+        String resourceInstanceName = "resource:/" + fqn;
 
-        given(virtualResource.value()).willReturn(value);
+        given(virtualResourceInstance.getFqn()).willReturn(fqn);
         given(virtualResource.name()).willReturn(name);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         willDoNothing().given(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
 
         sut.processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
-        verify(virtualResource).value();
+        verify(virtualResourceInstance).getFqn();
         verify(virtualResource).name();
         verify(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         verify(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
@@ -241,19 +241,16 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        String value = "value";
         String name = "name";
         Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-        String resourceInstanceName = "resource://" + name;
+        String resourceInstanceName = "resource:/" + name;
 
-        given(virtualResource.value()).willReturn(value);
         given(virtualResource.name()).willReturn(name);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         willDoNothing().given(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
 
         sut.processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
-        verify(virtualResource).value();
         verify(virtualResource).name();
         verify(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         verify(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
@@ -263,7 +260,7 @@ public class DefaultVirtualResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithNoConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -290,7 +287,7 @@ public class DefaultVirtualResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);

@@ -36,6 +36,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
@@ -139,14 +140,21 @@ public class SpringServiceInstance implements ServiceInstance {
 
         Annotation annotation = qualifiers[0];
         Class<? extends Annotation> annotationType = annotation.annotationType();
+
         String[] beanNames = context.getBeanNamesForAnnotation(annotationType);
         for (String beanName : beanNames) {
             Class<?> beanType = context.getType(beanName);
+
             if (token.isSupertypeOf(beanType)) {
                 instance = context.getBean(beanName, beanType);
                 break;
             }
         }
+
+        if (instance == null && NAME_QUALIFIER.contains(annotationType)) {
+            instance = context.getBean((String) AnnotationUtils.getValue(annotation));
+        }
+
         return instance;
     }
 

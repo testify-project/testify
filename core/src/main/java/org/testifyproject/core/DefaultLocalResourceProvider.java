@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,9 +114,9 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
         Class<LocalResourceInstance> resourceInstanceContract = LocalResourceInstance.class;
 
         if (name.isEmpty()) {
-            resourceInstanceName = "resource://" + value.getSimpleName();
+            resourceInstanceName = Paths.get("resource:/", localResourceInstance.getFqn()).normalize().toString();
         } else {
-            resourceInstanceName = "resource://" + name;
+            resourceInstanceName = Paths.get("resource:/", name).normalize().toString();
         }
 
         serviceInstance.addConstant(localResourceInstance, resourceInstanceName, resourceInstanceContract);
@@ -132,9 +133,9 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
         Class<?> resourceContract = localResource.resourceContract();
 
         if (resourceName.isEmpty()) {
-            resourceName = resourceInstanceName + "/resource";
+            resourceName = Paths.get(resourceInstanceName, "resource").toString();
         } else {
-            resourceName = resourceInstanceName + "/" + resourceName;
+            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
         }
 
         Instance resourceInstance = localResourceInstance.getResource();
@@ -150,9 +151,9 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
             Class<?> clientContract = localResource.clientContract();
 
             if (clientName.isEmpty()) {
-                clientName = resourceInstanceName + "/client";
+                clientName = Paths.get(resourceInstanceName, "client").toString();
             } else {
-                clientName = resourceInstanceName + "/" + clientName;
+                clientName = Paths.get(resourceInstanceName, clientName).normalize().toString();
             }
 
             serviceInstance.replace(clientInstance, clientName, clientContract);

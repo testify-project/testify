@@ -160,16 +160,19 @@ public class DefaultRemoteResourceProviderTest {
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         String name = "";
+        String fqn = "fqn";
         Class<RemoteResourceInstance> resourceInstanceContract = RemoteResourceInstance.class;
-        String resourceInstanceName = "resource://" + value.getSimpleName();
+        String resourceInstanceName = "resource:/" + fqn;
 
         given(remoteResource.name()).willReturn(name);
+        given(remoteResourceInstance.getFqn()).willReturn(fqn);
         willDoNothing().given(serviceInstance).addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
         willDoNothing().given(sut).processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
 
         sut.processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
         verify(remoteResource).name();
+        verify(remoteResourceInstance).getFqn();
         verify(serviceInstance).addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
         verify(sut).processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
 
@@ -185,7 +188,7 @@ public class DefaultRemoteResourceProviderTest {
 
         String name = "name";
         Class<RemoteResourceInstance> resourceInstanceContract = RemoteResourceInstance.class;
-        String resourceInstanceName = "resource://" + name;
+        String resourceInstanceName = "resource:/" + name;
 
         given(remoteResource.name()).willReturn(name);
         willDoNothing().given(serviceInstance).addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
@@ -202,7 +205,7 @@ public class DefaultRemoteResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithNoConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         RemoteResource remoteResource = mock(RemoteResource.class);
         RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -229,7 +232,7 @@ public class DefaultRemoteResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         RemoteResource remoteResource = mock(RemoteResource.class);
         RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);

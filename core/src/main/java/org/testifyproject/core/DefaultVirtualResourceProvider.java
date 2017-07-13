@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -117,16 +118,15 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
     void processInstance(VirtualResource virtualResource,
             VirtualResourceInstance<Object> virtualResourceInstance,
             ServiceInstance serviceInstance) {
-        String value = virtualResource.value();
         String name = virtualResource.name();
 
         String resourceInstanceName;
         Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
 
         if (name.isEmpty()) {
-            resourceInstanceName = "resource://" + value;
+            resourceInstanceName = Paths.get("resource:/", virtualResourceInstance.getFqn()).normalize().toString();
         } else {
-            resourceInstanceName = "resource://" + name;
+            resourceInstanceName = Paths.get("resource:/", name).normalize().toString();
         }
 
         serviceInstance.addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
@@ -143,9 +143,9 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
         Instance resourceInstance = virtualResourceInstance.getResource();
 
         if (resourceName.isEmpty()) {
-            resourceName = resourceInstanceName + "/resource";
+            resourceName = Paths.get(resourceInstanceName, "resource").toString();
         } else {
-            resourceName = resourceInstanceName + "/" + resourceName;
+            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
         }
 
         serviceInstance.replace(resourceInstance, resourceName, resourceContract);

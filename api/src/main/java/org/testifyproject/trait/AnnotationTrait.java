@@ -104,15 +104,15 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
     default Annotation[] getMetaAnnotations(Collection<Class<? extends Annotation>>... metaAnnotationTypes) {
         T annotatedElement = getAnnotatedElement();
 
-        return Stream.of(metaAnnotationTypes).parallel()
+        //XXX: dont execute on this stream in parallel
+        Annotation[] annotations = Stream.of(metaAnnotationTypes).parallel()
                 .flatMap(Collection::parallelStream)
                 .distinct()
                 .map(annotationType -> {
                     Annotation declaredAnnotation = annotatedElement.getDeclaredAnnotation(annotationType);
 
                     if (declaredAnnotation == null) {
-                        Annotation[] annotations = annotatedElement.getDeclaredAnnotations();
-                        for (Annotation annotation : annotations) {
+                        for (Annotation annotation : annotatedElement.getDeclaredAnnotations()) {
                             if (annotation.annotationType().isAnnotationPresent(annotationType)) {
                                 return annotation;
                             }
@@ -122,7 +122,10 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
                     return declaredAnnotation;
                 })
                 .filter(Objects::nonNull)
+                .distinct()
                 .toArray(Annotation[]::new);
+
+        return annotations;
     }
 
     /**

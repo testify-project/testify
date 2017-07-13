@@ -159,19 +159,22 @@ public class DefaultLocalResourceProviderTest {
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         Class value = LocalResourceProvider.class;
+        String fqn = "fqn";
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         String name = "";
         Class<LocalResourceInstance> resourceInstanceContract = LocalResourceInstance.class;
-        String resourceInstanceName = "resource://" + value.getSimpleName();
+        String resourceInstanceName = "resource:/" + fqn;
 
         given(localResource.name()).willReturn(name);
+        given(localResourceInstance.getFqn()).willReturn(fqn);
         willDoNothing().given(sut).processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
         willDoNothing().given(sut).processClient(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
 
         sut.processInstance(localResource, localResourceInstance, value, serviceInstance);
 
         verify(localResource).name();
+        verify(localResourceInstance).getFqn();
         verify(serviceInstance).addConstant(localResourceInstance, resourceInstanceName, resourceInstanceContract);
         verify(sut).processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
         verify(sut).processClient(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
@@ -188,7 +191,7 @@ public class DefaultLocalResourceProviderTest {
 
         String name = "name";
         Class<LocalResourceInstance> resourceInstanceContract = LocalResourceInstance.class;
-        String resourceInstanceName = "resource://" + name;
+        String resourceInstanceName = "resource:/" + name;
 
         given(localResource.name()).willReturn(name);
         willDoNothing().given(sut).processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
@@ -206,7 +209,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithNoConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -232,7 +235,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -258,7 +261,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessClientWithNoClientShouldDoNothing() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -276,7 +279,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessClientWithNoConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -304,7 +307,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessClientWithConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance<Object, Object> localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
