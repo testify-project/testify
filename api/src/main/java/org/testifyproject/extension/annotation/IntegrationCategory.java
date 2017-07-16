@@ -23,13 +23,13 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation that can be placed on a class to categorize it as part of
- * system test family of tests.
+ * integration test family of tests.
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface SystemTest {
+public @interface IntegrationCategory {
 
 }

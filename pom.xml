@@ -23,7 +23,7 @@
 
     <groupId>org.testifyproject</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9.5</version>
+    <version>0.9.6</version>
     <packaging>pom</packaging>
     
     <name>[Testify Project]</name>
@@ -475,6 +475,7 @@
                             <exclude>archetype.properties</exclude>
                             <exclude>.mvn/**</exclude>
                             <exclude>mvnw*</exclude>
+                            <exclude>CODEOWNERS</exclude>
                         </excludes>
                     </configuration>
                 </plugin>

@@ -28,20 +28,20 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.Fake;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  *
  * @author saden
  */
-public class RealFieldReifierTest {
-    
-    RealFieldReifier sut;
+public class FakeCollaboratorReifierTest {
+
+    FakeCollaboratorReifier sut;
 
     @Before
     public void init() {
-        sut = new RealFieldReifier();
+        sut = new FakeCollaboratorReifier();
     }
 
     @Test(expected = NullPointerException.class)
@@ -50,7 +50,7 @@ public class RealFieldReifierTest {
     }
 
     @Test
-    public void givenTestDescriptorWithoutFieldsReifyShouldDoNothing() {
+    public void givenTestWithoutFieldsReifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MockProvider mockProvider = mock(MockProvider.class);
@@ -59,75 +59,124 @@ public class RealFieldReifierTest {
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
+        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
     }
 
     @Test
-    public void givenTestDescriptorWithRealFieldAndMockValueReifyShouldSetRealField() {
+    public void givenFakeFieldWithMockValueReifyShouldSetField() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        Real real = mock(Real.class);
-        Optional<Real> foundReal = Optional.of(real);
+        Fake fake = mock(Fake.class);
+        Optional<Fake> foundFake = Optional.of(fake);
         Class fieldType = Object.class;
         Object fieldValue = mock(Object.class);
         Optional<Object> foundValue = Optional.of(fieldValue);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(fieldDescriptor.getReal()).willReturn(foundReal);
+        given(fieldDescriptor.getFake()).willReturn(foundFake);
         given(fieldDescriptor.getType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
+        given(mockProvider.isMock(fieldValue)).willReturn(true);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
+        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
-        verify(fieldDescriptor).getReal();
+        verify(fieldDescriptor).getFake();
         verify(fieldDescriptor).getType();
         verify(fieldDescriptor).getValue(testInstance);
+        verify(mockProvider).isMock(fieldValue);
         verify(fieldDescriptor).setValue(testInstance, fieldValue);
     }
 
     @Test
-    public void givenTestDescriptorWithRealFieldAndNoValueReifyShouldSetRealField() {
+    public void givenFakeFieldWithValueReifyShouldCreateVirtualAndSetField() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        Real real = mock(Real.class);
-        Optional<Real> foundReal = Optional.of(real);
+        Fake fake = mock(Fake.class);
+        Optional<Fake> foundFake = Optional.of(fake);
+        Class fieldType = Object.class;
+        Object fieldValue = new Object();
+        Optional<Object> foundValue = Optional.of(fieldValue);
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getMockProvider()).willReturn(mockProvider);
+        given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
+        given(fieldDescriptor.getFake()).willReturn(foundFake);
+        given(fieldDescriptor.getType()).willReturn(fieldType);
+        given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
+        given(mockProvider.isMock(fieldValue)).willReturn(false);
+        given(mockProvider.createVirtual(eq(fieldType), any(fieldType))).willReturn(fieldValue);
+
+        sut.reify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testContext).getTestInstance();
+        verify(testContext).getMockProvider();
+        verify(testDescriptor).getFieldDescriptors();
+        verify(fieldDescriptor).getFake();
+        verify(fieldDescriptor).getType();
+        verify(fieldDescriptor).getValue(testInstance);
+        verify(mockProvider).isMock(fieldValue);
+        verify(mockProvider).createVirtual(eq(fieldType), any(fieldType));
+        verify(fieldDescriptor).setValue(testInstance, fieldValue);
+    }
+
+    @Test
+    public void givenFakeFieldWithoutValueReifyShouldCreateFakeAndSetField() {
+        TestContext testContext = mock(TestContext.class);
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        MockProvider mockProvider = mock(MockProvider.class);
+        Object testInstance = mock(Object.class);
+        FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
+        Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
+        Fake fake = mock(Fake.class);
+        Optional<Fake> foundFake = Optional.of(fake);
         Class fieldType = Object.class;
         Optional<Object> foundValue = Optional.empty();
         Object fieldValue = new Object();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(fieldDescriptor.getReal()).willReturn(foundReal);
+        given(fieldDescriptor.getFake()).willReturn(foundFake);
         given(fieldDescriptor.getType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
+        given(mockProvider.createFake(fieldType)).willReturn(fieldValue);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
+        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
-        verify(fieldDescriptor).getReal();
+        verify(fieldDescriptor).getFake();
         verify(fieldDescriptor).getType();
         verify(fieldDescriptor).getValue(testInstance);
+        verify(mockProvider).createFake(fieldType);
         verify(fieldDescriptor).setValue(eq(testInstance), any(fieldType));
     }
-    
 }

@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Bundle;
+import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.AnnotationInspector;
 import org.testifyproject.extension.annotation.Handles;
@@ -45,18 +46,22 @@ public class BundleInspector implements AnnotationInspector<Bundle> {
 
             Class<? extends Annotation> annotationClass = annotation.annotationType();
 
-            for (AnnotationInspector inspector : inspectors) {
+            inspectors.forEach((inspector) -> {
                 Handles handles = inspector.getClass().getDeclaredAnnotation(Handles.class);
-                Class<? extends Annotation> typeHandled = handles.value();
+                Class<? extends Annotation>[] typesHandled = handles.value();
 
-                if (typeHandled.isAssignableFrom(annotationClass)) {
-                    Annotation foundAnnotation = annotatedType.getDeclaredAnnotation(annotationClass);
-                    inspector.inspect(testDescriptor, annotatedType, foundAnnotation);
-                } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
-                    Annotation foundAnnotation = annotationClass.getDeclaredAnnotation(Bundle.class);
-                    inspector.inspect(testDescriptor, annotationClass, foundAnnotation);
+                for (Class<? extends Annotation> typeHandled : typesHandled) {
+                    if (typeHandled.isAssignableFrom(annotationClass)) {
+                        Annotation foundAnnotation = annotatedType.getDeclaredAnnotation(annotationClass);
+                        inspector.inspect(testDescriptor, annotatedType, foundAnnotation);
+                        testDescriptor.addListElement(TestDescriptorProperties.INSPECTED_ANNOTATIONS, foundAnnotation);
+                    } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
+                        Annotation foundAnnotation = annotationClass.getDeclaredAnnotation(Bundle.class);
+                        inspector.inspect(testDescriptor, annotationClass, foundAnnotation);
+                    }
                 }
-            }
+
+            });
         }
     }
 

@@ -45,7 +45,7 @@ public class VirtualResourceIT {
     public void verifyInjections() {
         assertThat(instance).isNotNull();
         assertThat(resource).isNotNull();
-        assertThat(instance.getFqn()).isEqualTo("test");
+        assertThat(instance.getFqn()).isEqualTo("virtual.test.resource");
 
         Instance<InetAddress> resourceInstance = instance.getResource();
         assertThat(resourceInstance).isNotNull();

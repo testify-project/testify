@@ -30,18 +30,32 @@ public interface VirtualResourceProvider<T> {
     /**
      * <p>
      * A method to configure a virtual resource. Configuring a virtual resource
-     * typically involves creating a configuration object so it can be further
-     * configured by a test class method annotated with
-     * {@link org.testifyproject.annotation.ConfigHandler}.
+     * typically involves creating a default configuration object that can be
+     * further configured by a
+     * {@link org.testifyproject.annotation.ConfigHandler} method. Please note:
      * </p>
-     * <p>
-     * Note that implementation of this method should not do any work beyond
-     * returning configuration object. That is to is to say it should be
-     * stateless and should not perform instantiation of the virtual resource as
-     * that should be handled in {@link #start
-     * (org.testifyproject.TestContext, java.lang.Object, java.lang.Object)}
+     * <ul>
+     * <li>Implementation of this method should not do any work beyond returning
+     * configuration object. It should be stateless and should not perform
+     * instantiation of the virtual resource as that should be handled in
+     * {@link #start(org.testifyproject.TestContext, org.testifyproject.annotation.VirtualResource, java.lang.Object) }
      * method.
-     * </p>
+     * </li>
+     * <li>
+     * The value of PropertiesReader by default encapsulates
+     * {@code .testify.yml} configuration properties. A specific section in
+     * {@code .testify.yml} can be specified through {@link VirtualResource#configKey()
+     * }.
+     * </li>
+     * <li>
+     * The configuration object returned by this method is simply default
+     * configuration. It can be updated or replaced with entirely new
+     * configuration object by the
+     * {@link org.testifyproject.annotation.ConfigHandler} method before it is
+     * passed to {@link #start(org.testifyproject.TestContext, org.testifyproject.annotation.VirtualResource, java.lang.Object)
+     * } method
+     * </li>
+     * </ul>
      *
      * @param testContext the test context
      * @param virtualResource test class virtual resource annotation
@@ -57,15 +71,20 @@ public interface VirtualResourceProvider<T> {
      * @param virtualResource test class virtual resource annotation
      * @param configuration the virtual resource configuration object
      * @return a virtual resource instance
+     * @throws java.lang.Exception an exception thrown while starting
      */
-    VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, T configuration);
+    VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, T configuration)
+            throws Exception;
 
     /**
      * Stop the virtual resource.
      *
      * @param testContext the test context
      * @param virtualResource test class virtual resource annotation
+     * @param instance the value of instance
+     * @throws java.lang.Exception an exception thrown while stopping
      */
-    void stop(TestContext testContext, VirtualResource virtualResource);
+    void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance)
+            throws Exception;
 
 }

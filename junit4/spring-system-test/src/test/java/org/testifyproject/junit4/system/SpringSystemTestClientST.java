@@ -21,36 +21,24 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
-import org.testifyproject.junit4.fixture.web.service.GreetingService;
 
 @Application(GreetingServletApplication.class)
 @RunWith(SpringSystemTest.class)
-public class GreetingResourceWebTargetClientST {
+public class SpringSystemTestClientST {
 
     @Sut
     WebTarget sut;
 
-    @Fake
-    GreetingService greetingService;
-
     @Test
-    public void givenClientInstanceGetGreetingResourceShouldReturn() {
-        String greeting = "Hi";
-        given(greetingService.getGreeting()).willReturn(greeting);
-
+    public void callToApplicationRootResourceShouldReturnHelloMessage() {
         Response result = sut.path("/").request().get();
 
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
-        assertThat(result.readEntity(String.class)).isEqualTo(greeting);
-
-        verify(greetingService).getGreeting();
+        assertThat(result.readEntity(String.class)).isEqualTo("Hello");
     }
 
 }

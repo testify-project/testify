@@ -25,8 +25,10 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.extension.PreiVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.UnitTest;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.Lenient;
+import org.testifyproject.extension.annotation.Strict;
+import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -35,8 +37,10 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
+@Strict
+@Lenient
+@UnitCategory
+@IntegrationCategory
 @Discoverable
 public class ConstructorPreiVerifier implements PreiVerifier {
 

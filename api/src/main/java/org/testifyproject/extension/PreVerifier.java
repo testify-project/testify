@@ -22,7 +22,7 @@ import org.testifyproject.TestContext;
  * correctly before it is executed. Note test class verification is executed in
  * the following order:
  * <ul>
- * <li>{@link PreVerifier} - Verify test class is configured correctly before is
+ * <li><b>{@link PreVerifier}</b> - Verify test class is configured correctly before is
  * executed</li>
  * <li>{@link PreiVerifier} - Verify test class is initialized correctly before
  * is executed</li>

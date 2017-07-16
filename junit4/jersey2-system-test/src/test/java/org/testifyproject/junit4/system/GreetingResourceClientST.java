@@ -21,25 +21,26 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.ClientInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
+import org.testifyproject.junit4.fixture.web.GreetingApplication;
 
-/**
- *
- * @author saden
- */
-@RunWith(SpringBootSystemTest.class)
-@Application(GreetingServletApplication.class)
-public class GreetingResourceClientInstanceClientST {
+@Application(GreetingApplication.class)
+@RunWith(Jersey2SystemTest.class)
+public class GreetingResourceClientST {
 
     @Sut
-    ClientInstance<WebTarget> sut;
+    WebTarget sut;
 
     @Test
-    public void givenClientInstanceGetGreetingResourceShouldReturn() {
-        Response result = sut.getValue().path("/").request().get();
+    public void verifyInjections() {
+        //Arrange
+        String phrase = "Hello";
+
+        //Act
+        Response result = sut.path("/").request().get();
+
+        //Assert
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(OK.getStatusCode());
         assertThat(result.readEntity(String.class)).isEqualTo("Hello");

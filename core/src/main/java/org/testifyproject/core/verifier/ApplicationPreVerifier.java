@@ -21,7 +21,10 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.SystemTest;
+import org.testifyproject.extension.annotation.Lenient;
+import org.testifyproject.extension.annotation.Loose;
+import org.testifyproject.extension.annotation.Strict;
+import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -30,7 +33,10 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@SystemTest
+@Strict
+@Lenient
+@Loose
+@SystemCategory
 @Discoverable
 public class ApplicationPreVerifier implements PreVerifier {
 

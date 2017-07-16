@@ -16,30 +16,32 @@
 package org.testifyproject.core.reifier;
 
 import java.util.Optional;
+import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.extension.FieldReifier;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.extension.CollaboratorReifier;
 
 /**
  * A class that reifies test fields annotated with
- * {@link  org.testifyproject.annotation.Real}.
+ * {@link  org.testifyproject.annotation.Virtual}.
  *
  * @author saden
  */
-@UnitTest
+@UnitCategory
 @Discoverable
-public class RealFieldReifier implements FieldReifier {
+public class VirtualCollaboratorReifier implements CollaboratorReifier {
 
     @Override
     public void reify(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        MockProvider mockProvider = testContext.getMockProvider();
 
         testDescriptor.getFieldDescriptors().parallelStream()
-                .filter(p -> p.getReal().isPresent())
+                .filter(p -> p.getVirtual().isPresent())
                 .forEach(fieldDescriptor -> {
                     Class<?> fieldType = fieldDescriptor.getType();
                     Object fieldValue = null;
@@ -50,6 +52,10 @@ public class RealFieldReifier implements FieldReifier {
                         fieldValue = foundFieldValue.get();
                     } else if (!fieldType.isInterface()) {
                         fieldValue = ReflectionUtil.INSTANCE.newInstance(fieldType);
+                    }
+
+                    if (fieldValue != null && !mockProvider.isMock(fieldValue)) {
+                        fieldValue = mockProvider.createVirtual(fieldType, fieldValue);
                     }
 
                     fieldDescriptor.setValue(testInstance, fieldValue);

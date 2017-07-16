@@ -15,7 +15,7 @@
  */
 package org.testifyproject.core;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -49,14 +51,14 @@ public class DefaultLocalResourceProviderTest {
 
     DefaultLocalResourceProvider sut;
     ReflectionUtil reflectionUtil;
-    Map<LocalResource, LocalResourceProvider> resourceProviders;
+    List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances;
 
     @Before
     public void init() {
         reflectionUtil = mock(ReflectionUtil.class);
-        resourceProviders = mock(Map.class, delegatesTo(new LinkedHashMap<>()));
+        resourceInstances = mock(List.class, delegatesTo(new LinkedList<>()));
 
-        sut = spy(new DefaultLocalResourceProvider(reflectionUtil, resourceProviders));
+        sut = spy(new DefaultLocalResourceProvider(reflectionUtil, resourceInstances));
     }
 
     @Test
@@ -142,7 +144,11 @@ public class DefaultLocalResourceProviderTest {
         verify(localResourceInstance).getFqn();
         verify(localResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
-        verify(resourceProviders).put(localResource, localResourceProvider);
+
+        ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance> resourceInstance
+                = DefaultResourceInstance.of(localResource, localResourceProvider, localResourceInstance);
+
+        verify(resourceInstances).add(eq(resourceInstance));
         verify(sut).processInstance(localResource, localResourceInstance, value, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
@@ -153,19 +159,22 @@ public class DefaultLocalResourceProviderTest {
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         Class value = LocalResourceProvider.class;
+        String fqn = "fqn";
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
         String name = "";
         Class<LocalResourceInstance> resourceInstanceContract = LocalResourceInstance.class;
-        String resourceInstanceName = "resource://" + value.getSimpleName();
+        String resourceInstanceName = "resource:/" + fqn;
 
         given(localResource.name()).willReturn(name);
+        given(localResourceInstance.getFqn()).willReturn(fqn);
         willDoNothing().given(sut).processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
         willDoNothing().given(sut).processClient(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
 
         sut.processInstance(localResource, localResourceInstance, value, serviceInstance);
 
         verify(localResource).name();
+        verify(localResourceInstance).getFqn();
         verify(serviceInstance).addConstant(localResourceInstance, resourceInstanceName, resourceInstanceContract);
         verify(sut).processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
         verify(sut).processClient(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
@@ -182,7 +191,7 @@ public class DefaultLocalResourceProviderTest {
 
         String name = "name";
         Class<LocalResourceInstance> resourceInstanceContract = LocalResourceInstance.class;
-        String resourceInstanceName = "resource://" + name;
+        String resourceInstanceName = "resource:/" + name;
 
         given(localResource.name()).willReturn(name);
         willDoNothing().given(sut).processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
@@ -200,7 +209,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithNoConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -226,7 +235,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -252,7 +261,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessClientWithNoClientShouldDoNothing() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -270,7 +279,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessClientWithNoConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -298,7 +307,7 @@ public class DefaultLocalResourceProviderTest {
 
     @Test
     public void callToProcessClientWithConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceInstance<Object, Object> localResourceInstance = mock(LocalResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -329,11 +338,17 @@ public class DefaultLocalResourceProviderTest {
         TestContext testContext = mock(TestContext.class);
         LocalResource localResource = mock(LocalResource.class);
         LocalResourceProvider localResourceProvider = mock(LocalResourceProvider.class);
-        resourceProviders.put(localResource, localResourceProvider);
+        LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
+        ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                localResource,
+                localResourceProvider,
+                localResourceInstance);
+
+        resourceInstances.add(resourceInstance);
 
         sut.stop(testContext);
 
-        verify(localResourceProvider).stop(testContext, localResource);
+        verify(localResourceProvider).stop(testContext, localResource, localResourceInstance);
         verifyNoMoreInteractions(localResourceProvider);
     }
 

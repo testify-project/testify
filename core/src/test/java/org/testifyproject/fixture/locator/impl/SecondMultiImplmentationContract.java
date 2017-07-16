@@ -15,7 +15,8 @@
  */
 package org.testifyproject.fixture.locator.impl;
 
-import org.testifyproject.extension.annotation.UnitTest;
+import org.testifyproject.extension.annotation.Strict;
+import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.fixture.locator.MultiImplmentationContract;
 import org.testifyproject.tools.Discoverable;
 
@@ -23,7 +24,8 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@UnitTest
+@Strict
+@UnitCategory
 @Discoverable
 public class SecondMultiImplmentationContract implements MultiImplmentationContract {
 

@@ -23,11 +23,11 @@ import org.testifyproject.TestContext;
  * <ul>
  * <li>{@link InitialReifier} - Perform initial initialization of test class
  * collaborator fields</li>
- * <li>{@link FieldReifier} - Perform standard initialization of test class
+ * <li>{@link CollaboratorReifier} - Perform standard initialization of test class
  * collaborator fields</li>
  * <li>{@link SutReifier} - Perform initialization of of the system under test
  * (SUT) field</li>
- * <li>{@link FinalReifier} - Perform final initialization of test class
+ * <li><b>{@link FinalReifier}</b> - Perform final initialization of test class
  * fields</li>
  * </ul>
  *

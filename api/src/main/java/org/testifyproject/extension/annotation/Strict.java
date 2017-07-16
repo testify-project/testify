@@ -16,20 +16,21 @@
 package org.testifyproject.extension.annotation;
 
 import java.lang.annotation.Documented;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on a class to categorize it as part of
- * integration test family of tests.
+ * An annotation that can be placed a test class to indicate that verifications
+ * should be strict.
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
-@Target(TYPE)
-public @interface IntegrationTest {
+@Target({TYPE, ANNOTATION_TYPE})
+public @interface Strict {
 
 }

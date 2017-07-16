@@ -23,9 +23,9 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.InitialReifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * A class that reifies the sut and test based on the presence of
@@ -34,8 +34,8 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@UnitTest
-@IntegrationTest
+@UnitCategory
+@IntegrationCategory
 @Discoverable
 public class CollaboratorsInitialReifier implements InitialReifier {
 

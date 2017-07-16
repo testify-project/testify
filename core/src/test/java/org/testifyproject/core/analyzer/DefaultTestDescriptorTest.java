@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.analyzer;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableMap;
@@ -75,6 +77,13 @@ public class DefaultTestDescriptorTest {
     @Test
     public void callToGetTestClassShouldReturn() {
         Class<?> result = sut.getTestClass();
+
+        assertThat(result).isEqualTo(testClass);
+    }
+
+    @Test
+    public void callToGetAnnotatedElementShouldReturn() {
+        Class<?> result = sut.getAnnotatedElement();
 
         assertThat(result).isEqualTo(testClass);
     }
@@ -153,6 +162,26 @@ public class DefaultTestDescriptorTest {
         properties.put(TestDescriptorProperties.REMOTE_RESOURCES, ImmutableList.of(value));
 
         List<RemoteResource> result = sut.getRemoteResources();
+
+        assertThat(result).containsExactly(value);
+    }
+
+    @Test
+    public void callToGetInspectedAnnotationsShouldReturn() {
+        RemoteResource value = mock(RemoteResource.class);
+        properties.put(TestDescriptorProperties.INSPECTED_ANNOTATIONS, ImmutableList.of(value));
+
+        List<Annotation> result = sut.getInspectedAnnotations();
+
+        assertThat(result).containsExactly(value);
+    }
+
+    @Test
+    public void callToGetGuidelineAnnotationsShouldReturn() {
+        Class<Strict> value = Strict.class;
+        properties.put(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, ImmutableList.of(value));
+
+        List<Class<? extends Annotation>> result = sut.getGuidelines();
 
         assertThat(result).containsExactly(value);
     }

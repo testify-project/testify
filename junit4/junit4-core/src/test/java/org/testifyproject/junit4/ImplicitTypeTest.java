@@ -48,7 +48,7 @@ public class ImplicitTypeTest {
     }
 
     @Test
-    public void givenNothingClassToExesuteShouldReturnHello() {
+    public void givenNothingClassToExecuteShouldReturnHello() {
         String greeting = "Hello!";
         given(collaborator.greet()).willReturn(greeting);
 

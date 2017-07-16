@@ -19,11 +19,15 @@ import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import org.testifyproject.annotation.Bundle;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
  * @author saden
  */
+@Bundle
+@VirtualResource("postgres")
 @Retention(RUNTIME)
 @Target({ANNOTATION_TYPE, TYPE, FIELD, METHOD})
 public @interface TestAnnotation {

@@ -18,14 +18,17 @@ package org.testifyproject.core.verifier;
 import java.util.List;
 import java.util.Optional;
 import static java.util.stream.Collectors.toList;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.Lenient;
+import org.testifyproject.extension.annotation.Loose;
+import org.testifyproject.extension.annotation.Strict;
+import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -35,8 +38,11 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@IntegrationTest
-@SystemTest
+@Strict
+@Lenient
+@Loose
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class RealPreVerifier implements PreVerifier {
 

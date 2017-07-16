@@ -45,10 +45,12 @@ public class TestLocalResourceProvider implements LocalResourceProvider<Void, Da
         return LocalResourceInstanceBuilder.builder()
                 .resource(mock(DataSource.class), DataSource.class)
                 .client(mock(Connection.class), Connection.class)
-                .build("test");
+                .build("local.test.resource");
     }
 
     @Override
-    public void stop(TestContext testContext, LocalResource localResource) throws Exception {
+    public void stop(TestContext testContext,
+            LocalResource localResource,
+            LocalResourceInstance<DataSource, Connection> instance) throws Exception {
     }
 }

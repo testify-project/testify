@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.fixture.PrimaryTestService;
 import org.testifyproject.fixture.TestAnnotation;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -73,6 +74,15 @@ public class AnnotationTraitTest {
         assertThat(result).containsInstanceOf(annotationType);
     }
 
+    @Test
+    public void givenBundleAnnotatedAnnotationGetAnnotationShouldReturnOptionalWithAnnotation() {
+        Class<VirtualResource> annotationType = VirtualResource.class;
+
+        Optional<VirtualResource> result = sut.getAnnotation(annotationType);
+
+        assertThat(result).containsInstanceOf(annotationType);
+    }
+
     @Test(expected = NullPointerException.class)
     public void givenNullGetAnnotationsShouldReturnEmptyList() {
         Class<Annotation> annotationType = null;
@@ -93,6 +103,15 @@ public class AnnotationTraitTest {
         Class<TestAnnotation> annotationType = TestAnnotation.class;
 
         List<TestAnnotation> result = sut.getAnnotations(annotationType);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    public void givenBundleAnnotationGetAnnotationsShouldReturnListWithAnnotations() {
+        Class<VirtualResource> annotationType = VirtualResource.class;
+
+        List<VirtualResource> result = sut.getAnnotations(annotationType);
 
         assertThat(result).hasSize(1);
     }

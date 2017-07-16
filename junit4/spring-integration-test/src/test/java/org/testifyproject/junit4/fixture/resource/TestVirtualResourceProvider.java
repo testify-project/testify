@@ -43,11 +43,12 @@ public class TestVirtualResourceProvider implements VirtualResourceProvider<Void
     public VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, Void configuration) {
         return VirtualResourceInstanceBuilder.builder()
                 .resource(InetAddresses.forString("127.0.0.1"), InetAddress.class)
-                .build("test");
+                .build("virtual.test.resource");
     }
 
     @Override
-    public void stop(TestContext testContext, VirtualResource virtualResource) {
+    public void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance) {
     }
 
 }
+

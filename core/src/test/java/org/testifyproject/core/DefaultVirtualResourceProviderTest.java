@@ -15,7 +15,7 @@
  */
 package org.testifyproject.core;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +29,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.Instance;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -51,15 +52,15 @@ public class DefaultVirtualResourceProviderTest {
     DefaultVirtualResourceProvider sut;
     ServiceLocatorUtil serviceLocatorUtil;
     ReflectionUtil reflectionUtil;
-    Map<VirtualResource, VirtualResourceProvider> virtualResourceProviders;
+    List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances;
 
     @Before
     public void init() {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
         reflectionUtil = mock(ReflectionUtil.class);
-        virtualResourceProviders = mock(Map.class, delegatesTo(new LinkedHashMap<>()));
+        resourceInstances = mock(List.class, delegatesTo(new LinkedList<>()));
 
-        sut = spy(new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, virtualResourceProviders));
+        sut = spy(new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, resourceInstances));
     }
 
     @Test
@@ -97,7 +98,7 @@ public class DefaultVirtualResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithDefaultProviderShouldStartResources() {
+    public void callToStartWithDefaultProviderShouldStartResources() throws Exception {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
@@ -153,7 +154,7 @@ public class DefaultVirtualResourceProviderTest {
     }
 
     @Test
-    public void callToStartWithCustomProviderShouldStartResources() {
+    public void callToStartWithCustomProviderShouldStartResources() throws Exception {
         TestContext testContext = mock(TestContext.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
@@ -214,19 +215,19 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        String value = "value";
+        String fqn = "fqn";
         String name = "";
         Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-        String resourceInstanceName = "resource://" + value;
+        String resourceInstanceName = "resource:/" + fqn;
 
-        given(virtualResource.value()).willReturn(value);
+        given(virtualResourceInstance.getFqn()).willReturn(fqn);
         given(virtualResource.name()).willReturn(name);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         willDoNothing().given(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
 
         sut.processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
-        verify(virtualResource).value();
+        verify(virtualResourceInstance).getFqn();
         verify(virtualResource).name();
         verify(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         verify(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
@@ -240,19 +241,16 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        String value = "value";
         String name = "name";
         Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-        String resourceInstanceName = "resource://" + name;
+        String resourceInstanceName = "resource:/" + name;
 
-        given(virtualResource.value()).willReturn(value);
         given(virtualResource.name()).willReturn(name);
         willDoNothing().given(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         willDoNothing().given(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
 
         sut.processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
-        verify(virtualResource).value();
         verify(virtualResource).name();
         verify(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
         verify(sut).processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
@@ -262,7 +260,7 @@ public class DefaultVirtualResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithNoConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -289,7 +287,7 @@ public class DefaultVirtualResourceProviderTest {
 
     @Test
     public void callToProcessResourceWithConfigurationShouldStart() throws Exception {
-        String resourceInstanceName = "resource://test";
+        String resourceInstanceName = "resource:/test";
         VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -315,15 +313,22 @@ public class DefaultVirtualResourceProviderTest {
     }
 
     @Test
-    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() {
+    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() throws Exception {
         TestContext testContext = mock(TestContext.class);
         VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
-        virtualResourceProviders.put(virtualResource, virtualResourceProvider);
+        VirtualResourceInstance virtualResourceInstance = mock(VirtualResourceInstance.class);
+        
+        ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                virtualResource,
+                virtualResourceProvider,
+                virtualResourceInstance);
+        
+        resourceInstances.add(resourceInstance);
 
         sut.stop(testContext);
 
-        verify(virtualResourceProvider).stop(testContext, virtualResource);
+        verify(virtualResourceProvider).stop(testContext, virtualResource, virtualResourceInstance);
         verifyNoMoreInteractions(virtualResourceProvider);
     }
 

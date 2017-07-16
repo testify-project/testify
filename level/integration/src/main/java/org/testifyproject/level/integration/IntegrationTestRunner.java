@@ -28,26 +28,25 @@ import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
+import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.CollaboratorReifier;
 
 /**
  * A class used to run a integration test.
  *
  * @author saden
  */
-@IntegrationTest
+@IntegrationCategory
 @Discoverable
 public class IntegrationTestRunner implements TestRunner {
 
     TestResourcesProvider testResourcesProvider;
-
     private final ServiceLocatorUtil serviceLocatorUtil;
 
     public IntegrationTestRunner() {
@@ -65,10 +64,10 @@ public class IntegrationTestRunner implements TestRunner {
         Optional<SutDescriptor> foundSutDescriptor = testContext.getSutDescriptor();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        serviceLocatorUtil.findAllWithFilter(FieldReifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class, IntegrationCategory.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
         ServiceProvider serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class);
@@ -105,14 +104,14 @@ public class IntegrationTestRunner implements TestRunner {
         });
 
         if (testDescriptor.getCollaboratorProvider().isPresent()) {
-            serviceLocatorUtil.findAllWithFilter(InitialReifier.class, IntegrationTest.class)
+            serviceLocatorUtil.findAllWithFilter(InitialReifier.class, IntegrationCategory.class)
                     .forEach(p -> p.reify(testContext));
         }
 
-        serviceLocatorUtil.findAllWithFilter(FinalReifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(FinalReifier.class, IntegrationCategory.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
     }
@@ -122,7 +121,7 @@ public class IntegrationTestRunner implements TestRunner {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
 
-        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, IntegrationTest.class)
+        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
         //invoke destroy method on fields annotated with Fixture

@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import org.testifyproject.Instance;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.RemoteResourceProvider;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
@@ -28,6 +30,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
@@ -45,16 +48,16 @@ import org.testifyproject.trait.PropertiesReader;
 public class DefaultRemoteResourceProvider implements ResourceProvider {
 
     private ReflectionUtil reflectionUtil;
-    private Map<RemoteResource, RemoteResourceProvider> remoteResourceProviders;
+    private List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances;
 
     public DefaultRemoteResourceProvider() {
-        this(ReflectionUtil.INSTANCE, new LinkedHashMap<>());
+        this(ReflectionUtil.INSTANCE, new LinkedList<>());
     }
 
     DefaultRemoteResourceProvider(ReflectionUtil reflectionUtil,
-            Map<RemoteResource, RemoteResourceProvider> remoteResourceProviders) {
+            List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances) {
         this.reflectionUtil = reflectionUtil;
-        this.remoteResourceProviders = remoteResourceProviders;
+        this.resourceInstances = resourceInstances;
     }
 
     @Override
@@ -89,9 +92,14 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
                 processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
 
                 //track the resource so it can be stopped later
-                remoteResourceProviders.put(remoteResource, remoteResourceProvider);
+                ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                        remoteResource,
+                        remoteResourceProvider,
+                        remoteResourceInstance);
+
+                resourceInstances.add(resourceInstance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' resource", e, value);
+                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' remote resource", e, value);
             }
         });
     }
@@ -106,9 +114,9 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
         Class<RemoteResourceInstance> resourceInstanceContract = RemoteResourceInstance.class;
 
         if (name.isEmpty()) {
-            resourceInstanceName = "resource://" + value.getSimpleName();
+            resourceInstanceName = Paths.get("resource:/", remoteResourceInstance.getFqn()).normalize().toString();
         } else {
-            resourceInstanceName = "resource://" + name;
+            resourceInstanceName = Paths.get("resource:/", name).normalize().toString();
         }
 
         serviceInstance.addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
@@ -120,15 +128,14 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
             RemoteResource remoteResource,
             RemoteResourceInstance<Object> remoteResourceInstance,
             ServiceInstance serviceInstance) {
-
         String resourceName = remoteResource.resourceName();
         Class<?> resourceContract = remoteResource.resourceContract();
         Instance resourceInstance = remoteResourceInstance.getResource();
 
         if (resourceName.isEmpty()) {
-            resourceName = resourceInstanceName + "/resource";
+            resourceName = Paths.get(resourceInstanceName, "resource").toString();
         } else {
-            resourceName = resourceInstanceName + "/" + resourceName;
+            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
         }
 
         serviceInstance.replace(resourceInstance, resourceName, resourceContract);
@@ -136,11 +143,16 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
 
     @Override
     public void stop(TestContext testContext) {
-        remoteResourceProviders.forEach((remoteResource, remoteResourceProvider) -> {
+        resourceInstances.forEach(resourceInstance -> {
             try {
-                remoteResourceProvider.stop(testContext, remoteResource);
+                RemoteResourceProvider provider = resourceInstance.getProvider();
+                RemoteResource remoteResource = resourceInstance.getAnnotation();
+                RemoteResourceInstance instance = resourceInstance.getValue();
+
+                provider.stop(testContext, remoteResource, instance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not stop '{}' resource", e, remoteResource.value());
+                LoggingUtil.INSTANCE.error("Could not stop '{}' remote resource",
+                        resourceInstance.getAnnotation().value(), e);
             }
         });
     }

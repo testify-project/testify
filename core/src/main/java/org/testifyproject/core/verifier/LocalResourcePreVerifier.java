@@ -20,8 +20,11 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.Lenient;
+import org.testifyproject.extension.annotation.Loose;
+import org.testifyproject.extension.annotation.Strict;
+import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -29,8 +32,11 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
-@SystemTest
-@IntegrationTest
+@Strict
+@Lenient
+@Loose
+@SystemCategory
+@IntegrationCategory
 @Discoverable
 public class LocalResourcePreVerifier implements PreVerifier {
 

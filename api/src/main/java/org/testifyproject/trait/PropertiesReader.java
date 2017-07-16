@@ -36,13 +36,22 @@ import static java.util.Optional.ofNullable;
 public interface PropertiesReader extends PropertiesTrait {
 
     /**
-     * Find a map typed associated with the given mapKey and return an instance
-     * of PropertiesReader that wraps the found map.
-     *
+     * <p>
+     * Get a PropertiesReader instance for the given mapKey. Note that:
+     * </p>
+     * <ul>
+     * <li>If the key is empty then the this PropertiesReader instance will be
+     * returned</li>
+     * <li>If the key is not found then an empty map will be returned</li>
+     * </ul>
      * @param mapKey the key key associated with the map
      * @return an instance that wraps the found map
      */
     default PropertiesReader getPropertiesReader(String mapKey) {
+        if (mapKey.isEmpty()) {
+            return this;
+        }
+
         Map<String, Object> result = findMap(mapKey);
 
         return DefaultPropertiesReader.of(result);

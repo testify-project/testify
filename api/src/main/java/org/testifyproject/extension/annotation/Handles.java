@@ -24,8 +24,8 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation that can be placed on a class to donate it as capable of
- * handing a specific type of annotation. This is useful for writing custom
- * inspectors that handles a specific annotation.
+ * handing a specific type of annotations. This is useful for writing custom
+ * inspectors that handles a specific annotations.
  *
  * @author saden
  */
@@ -35,9 +35,9 @@ import java.lang.annotation.Target;
 public @interface Handles {
 
     /**
-     * The annotation class that is inspected.
+     * The annotation classes that are inspected.
      *
-     * @return the annotation class.
+     * @return the annotation classes.
      */
-    Class<? extends Annotation> value();
+    Class<? extends Annotation>[] value();
 }

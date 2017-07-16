@@ -52,11 +52,11 @@ import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.core.util.SettingUtil;
-import org.testifyproject.extension.annotation.IntegrationTest;
-import org.testifyproject.extension.annotation.SystemTest;
-import org.testifyproject.extension.annotation.UnitTest;
 import org.testifyproject.guava.common.base.Throwables;
 import org.testifyproject.mock.MockitoMockProvider;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  * Base class for all Testify Unit Runners. This class analyzes the test class,
@@ -251,13 +251,13 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
 
         switch (level) {
             case UNIT:
-                testLevelClass = UnitTest.class;
+                testLevelClass = UnitCategory.class;
                 break;
             case INTEGRATION:
-                testLevelClass = IntegrationTest.class;
+                testLevelClass = IntegrationCategory.class;
                 break;
             case SYSTEM:
-                testLevelClass = SystemTest.class;
+                testLevelClass = SystemCategory.class;
                 break;
             default:
                 throw new AssertionError(level.name());
