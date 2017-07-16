@@ -20,9 +20,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Added the ability to get any annotation on the test class as well as those defined in`@Bundle` annotation from TestContext and TestDescriptor API
 - Added ability to get all inspected annotations from the TestContext API
 - Added @Strict, @Lenient, and @Loose guideline extention annotations
+- Added Guidelines PreVerifier to insure online one guideline annotation is present.
 
 ### Changed
-- Renamed UnitTest, IntegrationTest, and SystemTest extention annotations to avoid confusion
+- Renamed UnitTest, IntegrationTest, and SystemTest extention annotations to UnitCategory, IntegrationCategory and SystemCategory avoid confusion
 
 ## [0.9.5] - 2017-06-14
 ### Added

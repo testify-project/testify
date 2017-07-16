@@ -475,6 +475,7 @@
                             <exclude>archetype.properties</exclude>
                             <exclude>.mvn/**</exclude>
                             <exclude>mvnw*</exclude>
+                            <exclude>CODEOWNERS</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
