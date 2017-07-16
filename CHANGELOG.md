@@ -13,7 +13,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
-## [0.9.6-SNAPSHOT]
+## [0.9.6] - 2017-07-16
 ### Added
 - Added Beta and Experimental annotations so users can be notified of beta and experimental features
 - Added ability to update Javadoc for api and core on javadoc.io after deployment of artifacts
