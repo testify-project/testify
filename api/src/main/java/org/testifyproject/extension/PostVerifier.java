@@ -26,7 +26,7 @@ import org.testifyproject.TestContext;
  * executed</li>
  * <li>{@link PreiVerifier} - Verify test class is initialized correctly before
  * is executed</li>
- * <li>{@link PostVerifier} - Verify test class produces the correct result
+ * <li><b>{@link PostVerifier}</b> - Verify test class produces the correct result
  * after it is executed</li>
  * </ul>
  *

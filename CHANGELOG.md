@@ -24,6 +24,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ### Changed
 - Renamed UnitTest, IntegrationTest, and SystemTest extention annotations to UnitCategory, IntegrationCategory and SystemCategory avoid confusion
+- Renamed FieldReifier to CollaboratorReifier
 
 ## [0.9.5] - 2017-06-14
 ### Added

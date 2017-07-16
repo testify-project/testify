@@ -33,13 +33,13 @@ import org.testifyproject.annotation.Application;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.FieldReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.CollaboratorReifier;
 
 /**
  * A class used to run a system test.
@@ -81,7 +81,7 @@ public class SystemTestRunner implements TestRunner {
             //create and initalize mock fields. this is necessary so we can configure
             //expected interaction prior to making a call to the application
             //endpoints
-            serviceLocatorUtil.findAllWithFilter(FieldReifier.class, SystemCategory.class)
+            serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class, SystemCategory.class)
                     .forEach(p -> p.reify(testContext));
 
             serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor.getGuidelines(), SystemCategory.class)

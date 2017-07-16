@@ -31,7 +31,7 @@ import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.FieldReifier;
+import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
@@ -87,8 +87,8 @@ public class UnitTestRunnerTest {
         InitialReifier collaboratorsReifier = mock(InitialReifier.class);
         List<InitialReifier> collaboratorsReifiers = ImmutableList.of(collaboratorsReifier);
 
-        FieldReifier fieldReifier = mock(FieldReifier.class);
-        List<FieldReifier> fieldReifiers = ImmutableList.of(fieldReifier);
+        CollaboratorReifier collaboratorReifier = mock(CollaboratorReifier.class);
+        List<CollaboratorReifier> collaboratorReifiers = ImmutableList.of(collaboratorReifier);
 
         FinalReifier testReifier = mock(FinalReifier.class);
         List<FinalReifier> testReifiers = ImmutableList.of(testReifier);
@@ -116,8 +116,8 @@ public class UnitTestRunnerTest {
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
         given(serviceLocatorUtil.findAllWithFilter(InitialReifier.class, UnitCategory.class))
                 .willReturn(collaboratorsReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, UnitCategory.class))
-                .willReturn(fieldReifiers);
+        given(serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class, UnitCategory.class))
+                .willReturn(collaboratorReifiers);
         given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class, UnitCategory.class))
                 .willReturn(testReifiers);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
@@ -133,7 +133,7 @@ public class UnitTestRunnerTest {
         verify(serviceLocatorUtil).findAllWithFilter(SutReifier.class, UnitCategory.class);
         verify(testDescriptor).getCollaboratorProvider();
         verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class, UnitCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, UnitCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class, UnitCategory.class);
         verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class, UnitCategory.class);
         verify(testDescriptor).getFieldDescriptors();
         verify(fieldDescriptor).init(testInstance);

@@ -24,8 +24,8 @@ import org.testifyproject.TestContext;
  * <ul>
  * <li>{@link InitialReifier} - Perform initial initialization of test class
  * collaborator fields</li>
- * <li>{@link FieldReifier} - Perform standard initialization of test class
- * collaborator fields</li>
+ * <li><b>{@link CollaboratorReifier}</b> - Perform standard initialization of
+ * test class collaborator fields</li>
  * <li>{@link SutReifier} - Perform initialization of of the system under test
  * (SUT) field</li>
  * <li>{@link FinalReifier} - Perform final initialization of test class
@@ -35,7 +35,7 @@ import org.testifyproject.TestContext;
  * @author saden
  */
 @FunctionalInterface
-public interface FieldReifier {
+public interface CollaboratorReifier {
 
     /**
      * Reify the test class using the given test context.

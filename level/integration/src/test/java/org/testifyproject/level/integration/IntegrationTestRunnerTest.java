@@ -37,7 +37,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestResourcesProvider;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.FieldReifier;
+import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
@@ -87,8 +87,8 @@ public class IntegrationTestRunnerTest {
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
 
-        FieldReifier fieldReifier = mock(FieldReifier.class);
-        List<FieldReifier> fieldReifiers = ImmutableList.of(fieldReifier);
+        CollaboratorReifier collaboratorReifier = mock(CollaboratorReifier.class);
+        List<CollaboratorReifier> collaboratorReifiers = ImmutableList.of(collaboratorReifier);
 
         PreVerifier configurationVerifier = mock(PreVerifier.class);
         List<PreVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
@@ -120,8 +120,8 @@ public class IntegrationTestRunnerTest {
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
-        given(serviceLocatorUtil.findAllWithFilter(FieldReifier.class, IntegrationCategory.class))
-                .willReturn(fieldReifiers);
+        given(serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class, IntegrationCategory.class))
+                .willReturn(collaboratorReifiers);
         given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class))
                 .willReturn(configurationVerifiers);
         given(serviceLocatorUtil.getOne(ServiceProvider.class)).willReturn(serviceProvider);
@@ -147,7 +147,7 @@ public class IntegrationTestRunnerTest {
         verify(testContext).getTestConfigurer();
         verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
-        verify(serviceLocatorUtil).findAllWithFilter(FieldReifier.class, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class, IntegrationCategory.class);
         verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class);
         verify(serviceLocatorUtil).getOne(ServiceProvider.class);
         verify(serviceProvider).create(testContext);

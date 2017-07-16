@@ -28,20 +28,20 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Virtual;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  *
  * @author saden
  */
-public class VirtualFieldReifierTest {
-
-    VirtualFieldReifier sut;
+public class RealCollaboratorReifierTest {
+    
+    RealCollaboratorReifier sut;
 
     @Before
     public void init() {
-        sut = new VirtualFieldReifier();
+        sut = new RealCollaboratorReifier();
     }
 
     @Test(expected = NullPointerException.class)
@@ -59,89 +59,75 @@ public class VirtualFieldReifierTest {
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
-        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
     }
 
     @Test
-    public void givenTestDescriptorWithVirtualFieldAndMockValueReifyShouldSetVirtualField() {
+    public void givenTestDescriptorWithRealFieldAndMockValueReifyShouldSetRealField() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        Virtual virtual = mock(Virtual.class);
-        Optional<Virtual> foundVirtual = Optional.of(virtual);
+        Real real = mock(Real.class);
+        Optional<Real> foundReal = Optional.of(real);
         Class fieldType = Object.class;
         Object fieldValue = mock(Object.class);
         Optional<Object> foundValue = Optional.of(fieldValue);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(fieldDescriptor.getVirtual()).willReturn(foundVirtual);
+        given(fieldDescriptor.getReal()).willReturn(foundReal);
         given(fieldDescriptor.getType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
-        given(mockProvider.isMock(fieldValue)).willReturn(true);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
-        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
-        verify(fieldDescriptor).getVirtual();
+        verify(fieldDescriptor).getReal();
         verify(fieldDescriptor).getType();
         verify(fieldDescriptor).getValue(testInstance);
-        verify(mockProvider).isMock(fieldValue);
         verify(fieldDescriptor).setValue(testInstance, fieldValue);
     }
 
     @Test
-    public void givenTestDescriptorWithVirtualFieldAndNoValueReifyShouldSetVirtualField() {
+    public void givenTestDescriptorWithRealFieldAndNoValueReifyShouldSetRealField() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
-        Virtual virtual = mock(Virtual.class);
-        Optional<Virtual> foundVirtual = Optional.of(virtual);
+        Real real = mock(Real.class);
+        Optional<Real> foundReal = Optional.of(real);
         Class fieldType = Object.class;
         Optional<Object> foundValue = Optional.empty();
         Object fieldValue = new Object();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testContext.getMockProvider()).willReturn(mockProvider);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(fieldDescriptor.getVirtual()).willReturn(foundVirtual);
+        given(fieldDescriptor.getReal()).willReturn(foundReal);
         given(fieldDescriptor.getType()).willReturn(fieldType);
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
-        given(mockProvider.isMock(any(fieldType))).willReturn(false);
-        given(mockProvider.createVirtual(eq(fieldType), any(fieldType))).willReturn(fieldValue);
 
         sut.reify(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
-        verify(testContext).getMockProvider();
         verify(testDescriptor).getFieldDescriptors();
-        verify(fieldDescriptor).getVirtual();
+        verify(fieldDescriptor).getReal();
         verify(fieldDescriptor).getType();
         verify(fieldDescriptor).getValue(testInstance);
-        verify(mockProvider).isMock(any(fieldType));
-        verify(mockProvider).createVirtual(eq(fieldType), any(fieldType));
-        verify(fieldDescriptor).setValue(testInstance, fieldValue);
+        verify(fieldDescriptor).setValue(eq(testInstance), any(fieldType));
     }
-
+    
 }

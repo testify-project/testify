@@ -15,47 +15,42 @@
  */
 package org.testifyproject.core.reifier;
 
-import org.testifyproject.MockProvider;
+import java.util.Optional;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.extension.FieldReifier;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.annotation.IntegrationCategory;
-import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.extension.CollaboratorReifier;
 
 /**
  * A class that reifies test fields annotated with
- * {@link  org.testifyproject.annotation.Fake}.
+ * {@link  org.testifyproject.annotation.Real}.
  *
  * @author saden
  */
 @UnitCategory
-@IntegrationCategory
-@SystemCategory
 @Discoverable
-public class FakeFieldReifier implements FieldReifier {
+public class RealCollaboratorReifier implements CollaboratorReifier {
 
     @Override
     public void reify(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        MockProvider mockProvider = testContext.getMockProvider();
 
         testDescriptor.getFieldDescriptors().parallelStream()
-                .filter(p -> p.getFake().isPresent())
+                .filter(p -> p.getReal().isPresent())
                 .forEach(fieldDescriptor -> {
                     Class<?> fieldType = fieldDescriptor.getType();
+                    Object fieldValue = null;
 
-                    Object fieldValue = fieldDescriptor.getValue(testInstance)
-                            .map(value -> {
-                                if (mockProvider.isMock(value)) {
-                                    return value;
-                                }
+                    Optional<Object> foundFieldValue = fieldDescriptor.getValue(testInstance);
 
-                                return mockProvider.createVirtual(fieldType, value);
-                            })
-                            .orElseGet(() -> mockProvider.createFake(fieldType));
+                    if (foundFieldValue.isPresent()) {
+                        fieldValue = foundFieldValue.get();
+                    } else if (!fieldType.isInterface()) {
+                        fieldValue = ReflectionUtil.INSTANCE.newInstance(fieldType);
+                    }
 
                     fieldDescriptor.setValue(testInstance, fieldValue);
                 });

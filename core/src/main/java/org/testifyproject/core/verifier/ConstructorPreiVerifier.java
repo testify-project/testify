@@ -27,7 +27,6 @@ import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
-import org.testifyproject.extension.annotation.Loose;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
@@ -40,7 +39,6 @@ import org.testifyproject.tools.Discoverable;
  */
 @Strict
 @Lenient
-@Loose
 @UnitCategory
 @IntegrationCategory
 @Discoverable
