@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import org.testifyproject.DataProvider;
 import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
@@ -37,8 +39,10 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.core.util.FileSystemUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.fixture.resource.TestDataProvider;
 import org.testifyproject.fixture.resource.ValidVirtualResourceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.trait.PropertiesReader;
@@ -50,17 +54,20 @@ import org.testifyproject.trait.PropertiesReader;
 public class DefaultVirtualResourceProviderTest {
 
     DefaultVirtualResourceProvider sut;
-    ServiceLocatorUtil serviceLocatorUtil;
     ReflectionUtil reflectionUtil;
+    FileSystemUtil fileSystemUtil;
+    ServiceLocatorUtil serviceLocatorUtil;
     List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances;
 
     @Before
     public void init() {
-        serviceLocatorUtil = mock(ServiceLocatorUtil.class);
         reflectionUtil = mock(ReflectionUtil.class);
+        fileSystemUtil = mock(FileSystemUtil.class);
+        serviceLocatorUtil = mock(ServiceLocatorUtil.class);
+
         resourceInstances = mock(List.class, delegatesTo(new LinkedList<>()));
 
-        sut = spy(new DefaultVirtualResourceProvider(serviceLocatorUtil, reflectionUtil, resourceInstances));
+        sut = spy(new DefaultVirtualResourceProvider(reflectionUtil, fileSystemUtil, serviceLocatorUtil, resourceInstances));
     }
 
     @Test
@@ -112,6 +119,10 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = mock(Object.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
+        String[] dataFilePatterns = {"test.class"};
+        List<Path> dataFiles = mock(List.class);
+        Class dataProviderType = TestDataProvider.class;
+        DataProvider dataProvider = mock(TestDataProvider.class);
         String fqn = "fqn";
         Map<String, Object> properties = mock(Map.class);
 
@@ -128,6 +139,10 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResourceProvider.configure(testContext, virtualResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
+        given(virtualResource.dataFiles()).willReturn(dataFilePatterns);
+        given(fileSystemUtil.findClasspathFiles(dataFilePatterns)).willReturn(dataFiles);
+        given(virtualResource.dataProvider()).willReturn(dataProviderType);
+        given(reflectionUtil.newInstance(dataProviderType)).willReturn(dataProvider);
         given(virtualResourceInstance.getFqn()).willReturn(fqn);
         given(virtualResourceInstance.getProperties()).willReturn(properties);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
@@ -145,6 +160,13 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
+        verify(virtualResource).dataFiles();
+        verify(fileSystemUtil).findClasspathFiles(dataFilePatterns);
+        verify(virtualResourceProvider).load(testContext, virtualResource, virtualResourceInstance, dataFiles);
+        verify(virtualResource).dataProvider();
+        verify(reflectionUtil).newInstance(dataProviderType);
+        verify(serviceInstance).inject(dataProvider);
+        verify(dataProvider).load(testContext, dataFiles, virtualResourceInstance);
         verify(virtualResourceInstance).getFqn();
         verify(virtualResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
@@ -168,6 +190,10 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         Object configuration = mock(Object.class);
         VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
+        String[] dataFilePatterns = {"test.class"};
+        List<Path> dataFiles = mock(List.class);
+        Class dataProviderType = TestDataProvider.class;
+        DataProvider dataProvider = mock(TestDataProvider.class);
         String fqn = "fqn";
         Map<String, Object> properties = mock(Map.class);
 
@@ -184,6 +210,10 @@ public class DefaultVirtualResourceProviderTest {
         given(virtualResourceProvider.configure(testContext, virtualResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(virtualResourceProvider.start(testContext, virtualResource, configuration)).willReturn(virtualResourceInstance);
+        given(virtualResource.dataFiles()).willReturn(dataFilePatterns);
+        given(fileSystemUtil.findClasspathFiles(dataFilePatterns)).willReturn(dataFiles);
+        given(virtualResource.dataProvider()).willReturn(dataProviderType);
+        given(reflectionUtil.newInstance(dataProviderType)).willReturn(dataProvider);
         given(virtualResourceInstance.getFqn()).willReturn(fqn);
         given(virtualResourceInstance.getProperties()).willReturn(properties);
         willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
@@ -201,6 +231,13 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(virtualResourceProvider).start(testContext, virtualResource, configuration);
+        verify(virtualResource).dataFiles();
+        verify(fileSystemUtil).findClasspathFiles(dataFilePatterns);
+        verify(virtualResourceProvider).load(testContext, virtualResource, virtualResourceInstance, dataFiles);
+        verify(virtualResource).dataProvider();
+        verify(reflectionUtil).newInstance(dataProviderType);
+        verify(serviceInstance).inject(dataProvider);
+        verify(dataProvider).load(testContext, dataFiles, virtualResourceInstance);
         verify(virtualResourceInstance).getFqn();
         verify(virtualResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
@@ -318,12 +355,12 @@ public class DefaultVirtualResourceProviderTest {
         VirtualResource virtualResource = mock(VirtualResource.class);
         VirtualResourceProvider virtualResourceProvider = mock(VirtualResourceProvider.class);
         VirtualResourceInstance virtualResourceInstance = mock(VirtualResourceInstance.class);
-        
+
         ResourceInstance resourceInstance = DefaultResourceInstance.of(
                 virtualResource,
                 virtualResourceProvider,
                 virtualResourceInstance);
-        
+
         resourceInstances.add(resourceInstance);
 
         sut.stop(testContext);

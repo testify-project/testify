@@ -13,6 +13,12 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.7-SNAPSHOT]
+### Added
+- Added support for loading data into resources through `#load(...)` method defined in `LocalResourceProvider`, `RemoteResourceProvider`, and `VirtualResourceProvider` contracts
+- Added the ability to load data via a `DataProvider` contract
+- Added `dataFiles` and `dataProvider` attributes to `LocalResource`, `RemoteResource` and `VirtualResource` annotations.
+
 ## [0.9.6] - 2017-07-16
 ### Added
 - Added Beta and Experimental annotations so users can be notified of beta and experimental features

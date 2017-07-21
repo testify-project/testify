@@ -15,6 +15,7 @@
  */
 package org.testifyproject;
 
+import java.util.List;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.trait.PropertiesReader;
 
@@ -75,6 +76,24 @@ public interface VirtualResourceProvider<T> {
      */
     VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, T configuration)
             throws Exception;
+
+    /**
+     * Load the given list of data file into the local resource prior to the
+     * resource being used. Note that by default this method does not have to be
+     * implemented.
+     *
+     * @param testContext the test context
+     * @param virtualResource test class remote resource annotation
+     * @param instance the virtual resource instance
+     * @param dataFiles a list of data files that should be loaded
+     * @throws java.lang.Exception an exception thrown while loading data
+     */
+    default void load(TestContext testContext,
+            VirtualResource virtualResource,
+            VirtualResourceInstance instance,
+            List<String> dataFiles)
+            throws Exception {
+    }
 
     /**
      * Stop the virtual resource.

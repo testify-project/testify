@@ -15,6 +15,7 @@
  */
 package org.testifyproject;
 
+import java.util.List;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.trait.PropertiesReader;
 
@@ -76,6 +77,24 @@ public interface RemoteResourceProvider<T, C> {
      */
     RemoteResourceInstance<C> start(TestContext testContext, RemoteResource remoteResource, T config)
             throws Exception;
+
+    /**
+     * Load the given list of data file into the local resource prior to the
+     * resource being used. Note that by default this method does not have to be
+     * implemented.
+     *
+     * @param testContext the test context
+     * @param remoteResource test class remote resource annotation
+     * @param instance the remote resource instance
+     * @param dataFiles a list of data files that should be loaded
+     * @throws java.lang.Exception an exception thrown while loading data
+     */
+    default void load(TestContext testContext,
+            RemoteResource remoteResource,
+            RemoteResourceInstance<C> instance,
+            List<String> dataFiles)
+            throws Exception {
+    }
 
     /**
      * Stop the remote resource.

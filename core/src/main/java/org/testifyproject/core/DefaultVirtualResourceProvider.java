@@ -15,10 +15,12 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.testifyproject.DataProvider;
 import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
@@ -30,6 +32,7 @@ import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.FileSystemUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
@@ -48,19 +51,27 @@ import org.testifyproject.trait.PropertiesReader;
 @Discoverable
 public class DefaultVirtualResourceProvider implements ResourceProvider {
 
-    private ServiceLocatorUtil serviceLocatorUtil;
     private ReflectionUtil reflectionUtil;
+    private FileSystemUtil fileSystemUtil;
+    private ServiceLocatorUtil serviceLocatorUtil;
     private List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances;
 
     public DefaultVirtualResourceProvider() {
-        this(ServiceLocatorUtil.INSTANCE, ReflectionUtil.INSTANCE, new LinkedList<>());
+        this(
+                ReflectionUtil.INSTANCE,
+                FileSystemUtil.INSTANCE,
+                ServiceLocatorUtil.INSTANCE,
+                new LinkedList<>()
+        );
     }
 
-    DefaultVirtualResourceProvider(ServiceLocatorUtil serviceLocatorUtil,
-            ReflectionUtil reflectionUtil,
+    DefaultVirtualResourceProvider(ReflectionUtil reflectionUtil,
+            FileSystemUtil fileSystemUtil,
+            ServiceLocatorUtil serviceLocatorUtil,
             List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances) {
-        this.serviceLocatorUtil = serviceLocatorUtil;
         this.reflectionUtil = reflectionUtil;
+        this.fileSystemUtil = fileSystemUtil;
+        this.serviceLocatorUtil = serviceLocatorUtil;
         this.resourceInstances = resourceInstances;
     }
 
@@ -94,6 +105,25 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
             try {
                 VirtualResourceInstance<Object> virtualResourceInstance
                         = virtualResourceProvider.start(testContext, virtualResource, configuration);
+
+                //determine if there are data files and load the data into te resource
+                String[] dataFilePatterns = virtualResource.dataFiles();
+
+                if (dataFilePatterns.length != 0) {
+                    //load the data using the resource provider load method
+                    List<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
+                    virtualResourceProvider.load(testContext, virtualResource, virtualResourceInstance, dataFiles);
+
+                    //if there is data provider defined then create an instance of
+                    //it and load data using the data provider as well
+                    Class<? extends DataProvider> dataProviderType = virtualResource.dataProvider();
+
+                    if (!DataProvider.class.equals(dataProviderType)) {
+                        DataProvider dataProvider = reflectionUtil.newInstance(dataProviderType);
+                        serviceInstance.inject(dataProvider);
+                        dataProvider.load(testContext, dataFiles, virtualResourceInstance);
+                    }
+                }
 
                 //add resource properties to the test context with its fqn as its key
                 testContext.addProperty(virtualResourceInstance.getFqn(), virtualResourceInstance.getProperties());

@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import org.testifyproject.DataProvider;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
@@ -39,7 +41,9 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.core.util.FileSystemUtil;
 import org.testifyproject.core.util.ReflectionUtil;
+import org.testifyproject.fixture.resource.TestDataProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.trait.PropertiesReader;
 
@@ -51,14 +55,16 @@ public class DefaultLocalResourceProviderTest {
 
     DefaultLocalResourceProvider sut;
     ReflectionUtil reflectionUtil;
+    FileSystemUtil fileSystemUtil;
     List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances;
 
     @Before
     public void init() {
         reflectionUtil = mock(ReflectionUtil.class);
+        fileSystemUtil = mock(FileSystemUtil.class);
         resourceInstances = mock(List.class, delegatesTo(new LinkedList<>()));
 
-        sut = spy(new DefaultLocalResourceProvider(reflectionUtil, resourceInstances));
+        sut = spy(new DefaultLocalResourceProvider(reflectionUtil, fileSystemUtil, resourceInstances));
     }
 
     @Test
@@ -107,6 +113,10 @@ public class DefaultLocalResourceProviderTest {
         Object configuration = mock(Object.class);
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
+        String[] dataFilePatterns = {"test.class"};
+        List<Path> dataFiles = mock(List.class);
+        Class dataProviderType = TestDataProvider.class;
+        DataProvider dataProvider = mock(TestDataProvider.class);
         String fqn = "fqn";
         Map<String, Object> properties = mock(Map.class);
 
@@ -124,6 +134,10 @@ public class DefaultLocalResourceProviderTest {
         given(localResourceProvider.configure(testContext, localResource, configReader)).willReturn(configuration);
         given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
         given(localResourceProvider.start(testContext, localResource, configuration)).willReturn(localResourceInstance);
+        given(localResource.dataFiles()).willReturn(dataFilePatterns);
+        given(fileSystemUtil.findClasspathFiles(dataFilePatterns)).willReturn(dataFiles);
+        given(localResource.dataProvider()).willReturn(dataProviderType);
+        given(reflectionUtil.newInstance(dataProviderType)).willReturn(dataProvider);
         given(localResourceInstance.getFqn()).willReturn(fqn);
         given(localResourceInstance.getProperties()).willReturn(properties);
         willDoNothing().given(sut).processInstance(localResource, localResourceInstance, value, serviceInstance);
@@ -141,6 +155,13 @@ public class DefaultLocalResourceProviderTest {
         verify(localResourceProvider).configure(testContext, localResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(localResourceProvider).start(testContext, localResource, configuration);
+        verify(localResource).dataFiles();
+        verify(fileSystemUtil).findClasspathFiles(dataFilePatterns);
+        verify(localResourceProvider).load(testContext, localResource, localResourceInstance, dataFiles);
+        verify(localResource).dataProvider();
+        verify(reflectionUtil).newInstance(dataProviderType);
+        verify(serviceInstance).inject(dataProvider);
+        verify(dataProvider).load(testContext, dataFiles, localResourceInstance);
         verify(localResourceInstance).getFqn();
         verify(localResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);

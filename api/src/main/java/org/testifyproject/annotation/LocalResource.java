@@ -22,6 +22,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import org.testifyproject.DataProvider;
 import org.testifyproject.LocalResourceProvider;
 
 /**
@@ -77,6 +78,24 @@ public @interface LocalResource {
      * @return the configKey section key.
      */
     String configKey() default "";
+
+    /**
+     * A list of classpath data files that should be loaded into the local
+     * resource prior to being used. Note that
+     * {@link java.nio.file.FileSystem#getPathMatcher(java.lang.String)} glob
+     * patterns are supported
+     *
+     * @return an array of data file names or patterns.
+     */
+    String[] dataFiles() default {};
+
+    /**
+     * Specifies a data provider implementations that loads data into the
+     * resource prior to it being used.
+     *
+     * @return the data provider implementation class.
+     */
+    Class<? extends DataProvider> dataProvider() default DataProvider.class;
 
     /**
      * <p>

@@ -17,16 +17,24 @@ package org.testifyproject.core.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
 import java.nio.file.FileVisitResult;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
+import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.guava.common.io.Resources;
 
 /**
  * A utility class that provides functionality for working with file systems.
@@ -47,6 +55,38 @@ public class FileSystemUtil {
      */
     public String createPath(String first, String... more) {
         return Paths.get(first, more).normalize().toString();
+    }
+
+    public List<Path> findClasspathFiles(String... patterns) {
+        ImmutableList.Builder<Path> builder = ImmutableList.builder();
+
+        URL classesURI = FileSystemUtil.class.getProtectionDomain().getCodeSource().getLocation();
+        URL testClassesURL = Resources.getResource("");
+
+        try {
+            builder.addAll(findPathFiles(Paths.get(classesURI.toURI()), patterns));
+            builder.addAll(findPathFiles(Paths.get(testClassesURL.toURI()), patterns));
+        } catch (URISyntaxException e) {
+            throw ExceptionUtil.INSTANCE.propagate(e);
+        }
+
+        return builder.build();
+    }
+
+    public List<Path> findPathFiles(Path path, String... patterns) {
+        ImmutableList.Builder<Path> matches = ImmutableList.builder();
+        FileSystem fileSystem = path.getFileSystem();
+        List<PathMatcher> pathMatchers = Stream.of(patterns)
+                .map(p -> fileSystem.getPathMatcher("glob:" + p))
+                .collect(toList());
+
+        try {
+            Files.walkFileTree(path, new FindFiles(pathMatchers, matches));
+        } catch (IOException e) {
+            throw ExceptionUtil.INSTANCE.propagate(e);
+        }
+
+        return matches.build();
     }
 
     /**
@@ -93,6 +133,8 @@ public class FileSystemUtil {
     /**
      * A File Visitor implementation that walks through a directory and deletes
      * its content.
+     *
+     * @author saden
      */
     private static class DeleteDirectoryFileVisitor extends SimpleFileVisitor<Path> {
 
@@ -116,6 +158,41 @@ public class FileSystemUtil {
             } else {
                 exceptions.add(e);
             }
+
+            return CONTINUE;
+        }
+    }
+
+    /**
+     * A File Visitor implementation that walks through a directory and finds
+     * paths that match specific path patterns.
+     *
+     * @author saden
+     */
+    private static class FindFiles extends SimpleFileVisitor<Path> {
+
+        private final List<PathMatcher> pathMatchers;
+        private final ImmutableList.Builder<Path> matches;
+
+        FindFiles(List<PathMatcher> pathMatchers, ImmutableList.Builder<Path> matches) {
+            this.pathMatchers = pathMatchers;
+            this.matches = matches;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            pathMatchers.parallelStream()
+                    .filter(p -> p.matches(file))
+                    .forEach(p -> matches.add(file));
+
+            return CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+            pathMatchers.parallelStream()
+                    .filter(p -> p.matches(dir))
+                    .forEach(p -> matches.add(dir));
 
             return CONTINUE;
         }
