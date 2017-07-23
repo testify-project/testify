@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,7 +119,7 @@ public class FileSystemUtilTest {
     public void givenGlobForNonExistentFilesFindClasspathFilesShouldReturnEmptyList() {
         String[] patterns = {"*.testext"};
 
-        List<Path> result = sut.findClasspathFiles(patterns);
+        Set<Path> result = sut.findClasspathFiles(patterns);
 
         assertThat(result).isEmpty();
     }
@@ -132,7 +132,7 @@ public class FileSystemUtilTest {
                 FileSystemUtilTest.class.getSimpleName()
         );
 
-        List<Path> result = sut.findClasspathFiles(new String[]{pattern});
+        Set<Path> result = sut.findClasspathFiles(new String[]{pattern});
 
         assertThat(result).hasSize(2);
     }

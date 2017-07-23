@@ -15,7 +15,7 @@
  */
 package org.testifyproject;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * A contract that defines methods to load data into a resource.
@@ -32,5 +32,5 @@ public interface DataProvider<T> {
      * @param dataFiles the data files that will be loaded
      * @param instance the resource instance
      */
-    void load(TestContext testContext, List<String> dataFiles, T instance);
+    void load(TestContext testContext, Set<String> dataFiles, T instance);
 }

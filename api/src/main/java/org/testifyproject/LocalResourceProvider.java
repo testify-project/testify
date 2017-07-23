@@ -15,7 +15,7 @@
  */
 package org.testifyproject;
 
-import java.util.List;
+import java.util.Set;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.trait.PropertiesReader;
 
@@ -89,13 +89,13 @@ public interface LocalResourceProvider<T, R, C> {
      * @param testContext the test context
      * @param localResource test class local resource annotation
      * @param instance the local resource instance
-     * @param dataFiles a list of data files that should be loaded
+     * @param dataFiles a data files that should be loaded
      * @throws java.lang.Exception an exception thrown while loading data
      */
     default void load(TestContext testContext,
             LocalResource localResource,
             LocalResourceInstance<R, C> instance,
-            List<String> dataFiles)
+            Set<String> dataFiles)
             throws Exception {
     }
 

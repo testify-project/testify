@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -113,7 +114,7 @@ public class DefaultRemoteResourceProviderTest {
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
         RemoteResourceInstance<Object> remoteResourceInstance = mock(RemoteResourceInstance.class);
         String[] dataFilePatterns = {"test.class"};
-        List<Path> dataFiles = mock(List.class);
+        Set<Path> dataFiles = mock(Set.class);
         Class dataProviderType = TestDataProvider.class;
         DataProvider dataProvider = mock(TestDataProvider.class);
         String fqn = "fqn";

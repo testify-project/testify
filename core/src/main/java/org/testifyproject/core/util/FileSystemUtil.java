@@ -30,10 +30,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import java.util.stream.Stream;
-import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.guava.common.collect.ImmutableSet;
+import org.testifyproject.guava.common.collect.ImmutableSortedSet;
 import org.testifyproject.guava.common.io.Resources;
 
 /**
@@ -57,15 +59,18 @@ public class FileSystemUtil {
         return Paths.get(first, more).normalize().toString();
     }
 
-    public List<Path> findClasspathFiles(String... patterns) {
-        ImmutableList.Builder<Path> builder = ImmutableList.builder();
-
-        URL classesURI = FileSystemUtil.class.getProtectionDomain().getCodeSource().getLocation();
-        URL testClassesURL = Resources.getResource("");
+    public Set<Path> findClasspathFiles(String... patterns) {
+        ImmutableSortedSet.Builder<Path> builder = ImmutableSortedSet.naturalOrder();
 
         try {
-            builder.addAll(findPathFiles(Paths.get(classesURI.toURI()), patterns));
-            builder.addAll(findPathFiles(Paths.get(testClassesURL.toURI()), patterns));
+            URL classesURI = FileSystemUtil.class.getProtectionDomain().getCodeSource().getLocation();
+            builder.addAll(findFiles(Paths.get(classesURI.toURI()), patterns));
+
+            URL testClassesURL = Resources.getResource("");
+
+            if (!classesURI.equals(testClassesURL)) {
+                builder.addAll(findFiles(Paths.get(testClassesURL.toURI()), patterns));
+            }
         } catch (URISyntaxException e) {
             throw ExceptionUtil.INSTANCE.propagate(e);
         }
@@ -73,15 +78,27 @@ public class FileSystemUtil {
         return builder.build();
     }
 
-    public List<Path> findPathFiles(Path path, String... patterns) {
-        ImmutableList.Builder<Path> matches = ImmutableList.builder();
-        FileSystem fileSystem = path.getFileSystem();
-        List<PathMatcher> pathMatchers = Stream.of(patterns)
-                .map(p -> fileSystem.getPathMatcher("glob:" + p))
-                .collect(toList());
+    /**
+     * Recursively find files in the given directory path with the given
+     * patterns.
+     *
+     * @param dir the directory path that will be searched
+     * @param patterns file paths or {@link PathMatcher glob file patterns}
+     * @return a set of matching paths
+     */
+    public Set<Path> findFiles(Path dir, String... patterns) {
+        ImmutableSortedSet.Builder<Path> matches = ImmutableSortedSet.naturalOrder();
 
         try {
-            Files.walkFileTree(path, new FindFiles(pathMatchers, matches));
+            if (dir.toFile().isDirectory()) {
+                FileSystem fileSystem = dir.getFileSystem();
+
+                Set<PathMatcher> pathMatchers = Stream.of(patterns)
+                        .map(p -> fileSystem.getPathMatcher("glob:" + p))
+                        .collect(toSet());
+
+                Files.walkFileTree(dir, new FindFiles(pathMatchers, matches));
+            }
         } catch (IOException e) {
             throw ExceptionUtil.INSTANCE.propagate(e);
         }
@@ -171,10 +188,10 @@ public class FileSystemUtil {
      */
     private static class FindFiles extends SimpleFileVisitor<Path> {
 
-        private final List<PathMatcher> pathMatchers;
-        private final ImmutableList.Builder<Path> matches;
+        private final Set<PathMatcher> pathMatchers;
+        private final ImmutableSet.Builder<Path> matches;
 
-        FindFiles(List<PathMatcher> pathMatchers, ImmutableList.Builder<Path> matches) {
+        FindFiles(Set<PathMatcher> pathMatchers, ImmutableSet.Builder<Path> matches) {
             this.pathMatchers = pathMatchers;
             this.matches = matches;
         }

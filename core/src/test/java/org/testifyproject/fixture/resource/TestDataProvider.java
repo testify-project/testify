@@ -15,7 +15,7 @@
  */
 package org.testifyproject.fixture.resource;
 
-import java.util.List;
+import java.util.Set;
 import org.testifyproject.DataProvider;
 import org.testifyproject.TestContext;
 
@@ -26,7 +26,7 @@ import org.testifyproject.TestContext;
 public class TestDataProvider implements DataProvider {
 
     @Override
-    public void load(TestContext testContext, List dataFiles, Object instance) {
+    public void load(TestContext testContext, Set dataFiles, Object instance) {
     }
 
 }

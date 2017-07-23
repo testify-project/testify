@@ -15,7 +15,7 @@
  */
 package org.testifyproject;
 
-import java.util.List;
+import java.util.Set;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.trait.PropertiesReader;
 
@@ -86,13 +86,13 @@ public interface RemoteResourceProvider<T, C> {
      * @param testContext the test context
      * @param remoteResource test class remote resource annotation
      * @param instance the remote resource instance
-     * @param dataFiles a list of data files that should be loaded
+     * @param dataFiles a data files that should be loaded
      * @throws java.lang.Exception an exception thrown while loading data
      */
     default void load(TestContext testContext,
             RemoteResource remoteResource,
             RemoteResourceInstance<C> instance,
-            List<String> dataFiles)
+            Set<String> dataFiles)
             throws Exception {
     }
 

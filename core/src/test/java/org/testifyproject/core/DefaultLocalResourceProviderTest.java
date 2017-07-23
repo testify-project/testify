@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,7 +115,7 @@ public class DefaultLocalResourceProviderTest {
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
         LocalResourceInstance localResourceInstance = mock(LocalResourceInstance.class);
         String[] dataFilePatterns = {"test.class"};
-        List<Path> dataFiles = mock(List.class);
+        Set<Path> dataFiles = mock(Set.class);
         Class dataProviderType = TestDataProvider.class;
         DataProvider dataProvider = mock(TestDataProvider.class);
         String fqn = "fqn";

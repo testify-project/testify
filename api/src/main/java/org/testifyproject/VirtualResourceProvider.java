@@ -15,7 +15,7 @@
  */
 package org.testifyproject;
 
-import java.util.List;
+import java.util.Set;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.trait.PropertiesReader;
 
@@ -85,13 +85,13 @@ public interface VirtualResourceProvider<T> {
      * @param testContext the test context
      * @param virtualResource test class remote resource annotation
      * @param instance the virtual resource instance
-     * @param dataFiles a list of data files that should be loaded
+     * @param dataFiles a data files that should be loaded
      * @throws java.lang.Exception an exception thrown while loading data
      */
     default void load(TestContext testContext,
             VirtualResource virtualResource,
             VirtualResourceInstance instance,
-            List<String> dataFiles)
+            Set<String> dataFiles)
             throws Exception {
     }
 

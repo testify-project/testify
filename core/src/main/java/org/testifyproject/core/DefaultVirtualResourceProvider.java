@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.testifyproject.DataProvider;
 import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
@@ -111,7 +112,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
                 if (dataFilePatterns.length != 0) {
                     //load the data using the resource provider load method
-                    List<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
+                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
                     virtualResourceProvider.load(testContext, virtualResource, virtualResourceInstance, dataFiles);
 
                     //if there is data provider defined then create an instance of
