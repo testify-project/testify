@@ -18,6 +18,13 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Added support for loading data into resources through `#load(...)` method defined in `LocalResourceProvider`, `RemoteResourceProvider`, and `VirtualResourceProvider` contracts
 - Added the ability to load data via a `DataProvider` contract
 - Added `dataFiles` and `dataProvider` attributes to `LocalResource`, `RemoteResource` and `VirtualResource` annotations.
+- Added new `ExpressionUtil` class for working with expressions
+- Added `env` attribute to `VirtualResource` annotation to pass environmental variables to virtual resources
+- Added `ports` attribute to `VirtualResource` annotation to specify which ports should be reachable
+
+### Changed
+- Changed the default value of `VirtualResource#maxRetries` to 5 from 3
+- Changed the default value of `VirtualResource#maxDuration` to 32000 from 8000 ms
 
 ## [0.9.6] - 2017-07-16
 ### Added

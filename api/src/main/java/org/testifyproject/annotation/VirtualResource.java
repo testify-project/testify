@@ -159,12 +159,28 @@ public @interface VirtualResource {
     boolean link() default true;
 
     /**
+     * A list of environmental variables. Note that the the environmental
+     * variables can contain expressions.
+     *
+     * @return a list of environmental variables.
+     */
+    String[] env() default {};
+
+    /**
      * A flag that indicate whether to wait for all virtual resource ports to be
      * reachable.
      *
      * @return wait for ports to be reachable if true, false otherwise.
      */
     boolean await() default true;
+
+    /**
+     * A list of ports exposed by the virtual resource that we should wait for
+     * to be reachable.
+     *
+     * @return a list of ports
+     */
+    int[] ports() default {};
 
     /**
      * The amount of time to wait between port reachability retries. By default
@@ -190,7 +206,7 @@ public @interface VirtualResource {
      *
      * @return max retries.
      */
-    int maxRetries() default 3;
+    int maxRetries() default 5;
 
     /**
      * Maximum retry duration before giving up waiting for ports to be
@@ -200,7 +216,7 @@ public @interface VirtualResource {
      *
      * @return max retries.
      */
-    long maxDuration() default 8000;
+    long maxDuration() default 32000;
 
     /**
      * Maximum duration to wait for an image to be pulled before giving up

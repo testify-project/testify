@@ -17,15 +17,12 @@ package org.testifyproject.core.reifier;
 
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.apache.commons.jexl3.JexlBuilder;
-import org.testifyproject.apache.commons.jexl3.JexlContext;
-import org.testifyproject.apache.commons.jexl3.JexlEngine;
-import org.testifyproject.apache.commons.jexl3.MapContext;
+import org.testifyproject.core.util.ExpressionUtil;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies test class property fields.
@@ -38,12 +35,20 @@ import org.testifyproject.extension.annotation.UnitCategory;
 @Discoverable
 public class PropertyFinalReifier implements FinalReifier {
 
+    private final ExpressionUtil expressionUtil;
+
+    public PropertyFinalReifier() {
+        this(ExpressionUtil.INSTANCE);
+    }
+
+    PropertyFinalReifier(ExpressionUtil expressionUtil) {
+        this.expressionUtil = expressionUtil;
+    }
+
     @Override
     public void reify(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        JexlEngine jexlEngine = new JexlBuilder().create();
-        JexlContext jexlContext = new MapContext(testContext.getProperties());
 
         testDescriptor.getFieldDescriptors().parallelStream().forEach(fieldDescriptor -> {
             fieldDescriptor.getProperty().ifPresent(property -> {
@@ -51,8 +56,7 @@ public class PropertyFinalReifier implements FinalReifier {
                 Object value = testContext.getProperty(propertyValue);
 
                 if (value == null && property.expression()) {
-                    value = jexlEngine.createExpression(propertyValue)
-                            .evaluate(jexlContext);
+                    value = expressionUtil.evaluateExpression(propertyValue, testContext.getProperties());
                 }
 
                 fieldDescriptor.setValue(testInstance, value);
