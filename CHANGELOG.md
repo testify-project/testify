@@ -13,7 +13,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
-## [0.9.7-SNAPSHOT]
+## [0.9.7] - 2017-07-29
 ### Added
 - Added support for loading data into resources through `#load(...)` method defined in `LocalResourceProvider`, `RemoteResourceProvider`, and `VirtualResourceProvider` contracts
 - Added the ability to load data via a `DataProvider` contract
