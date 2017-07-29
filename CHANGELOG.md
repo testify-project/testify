@@ -25,6 +25,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 ### Changed
 - Changed the default value of `VirtualResource#maxRetries` to 5 from 3
 - Changed the default value of `VirtualResource#maxDuration` to 32000 from 8000 ms
+- Updated dependency artifact versions
 
 ## [0.9.6] - 2017-07-16
 ### Added

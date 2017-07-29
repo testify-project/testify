@@ -29,7 +29,7 @@
     <description>A module that provides Testify's annotations</description>
 
     <properties>
-        <slf4j.version>1.7.24</slf4j.version>
+        <slf4j.version>1.7.25</slf4j.version>
     </properties>
     
     <dependencies>
