@@ -27,6 +27,7 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Property;
+import org.testifyproject.core.util.ExpressionUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
@@ -37,9 +38,16 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
 public class PropertyFinalReifierTest {
 
     PropertyFinalReifier sut;
+    ExpressionUtil expressionUtil;
 
     @Before
     public void init() {
+        expressionUtil = mock(ExpressionUtil.class);
+        sut = new PropertyFinalReifier(expressionUtil);
+    }
+
+    @Test
+    public void verifyDefaultConstructor() {
         sut = new PropertyFinalReifier();
     }
 
@@ -93,7 +101,6 @@ public class PropertyFinalReifierTest {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = mock(Object.class);
-        Map<String, Object> properties = ImmutableMap.of();
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Property property = mock(Property.class);
@@ -103,7 +110,6 @@ public class PropertyFinalReifierTest {
 
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testContext.getProperties()).willReturn(properties);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getProperty()).willReturn(foundProperty);
         given(property.value()).willReturn(propertyValue);
@@ -113,7 +119,6 @@ public class PropertyFinalReifierTest {
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
-        verify(testContext).getProperties();
         verify(testDescriptor).getFieldDescriptors();
         verify(property).value();
         verify(fieldDescriptor).getProperty();
@@ -141,6 +146,7 @@ public class PropertyFinalReifierTest {
         given(property.value()).willReturn(propertyValue);
         given(testContext.getProperty(propertyValue)).willReturn(null);
         given(property.expression()).willReturn(true);
+        given(expressionUtil.evaluateExpression(propertyValue, properties)).willReturn(value);
 
         sut.reify(testContext);
 
@@ -151,6 +157,7 @@ public class PropertyFinalReifierTest {
         verify(property).value();
         verify(fieldDescriptor).getProperty();
         verify(property).expression();
+        verify(expressionUtil).evaluateExpression(propertyValue, properties);
         verify(fieldDescriptor).setValue(testInstance, value);
     }
 

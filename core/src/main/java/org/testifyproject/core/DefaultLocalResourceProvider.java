@@ -15,10 +15,13 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import org.testifyproject.DataProvider;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
@@ -30,6 +33,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.FileSystemUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.tools.Discoverable;
@@ -48,15 +52,18 @@ import org.testifyproject.trait.PropertiesReader;
 public class DefaultLocalResourceProvider implements ResourceProvider {
 
     private ReflectionUtil reflectionUtil;
+    private FileSystemUtil fileSystemUtil;
     private List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances;
 
     public DefaultLocalResourceProvider() {
-        this(ReflectionUtil.INSTANCE, new LinkedList<>());
+        this(ReflectionUtil.INSTANCE, FileSystemUtil.INSTANCE, new LinkedList<>());
     }
 
     DefaultLocalResourceProvider(ReflectionUtil reflectionUtil,
+            FileSystemUtil fileSystemUtil,
             List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances) {
         this.reflectionUtil = reflectionUtil;
+        this.fileSystemUtil = fileSystemUtil;
         this.resourceInstances = resourceInstances;
     }
 
@@ -84,6 +91,25 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
                 //start the resource
                 LocalResourceInstance<Object, Object> localResourceInstance
                         = localResourceProvider.start(testContext, localResource, configuration);
+
+                //determine if there are data files and load the data into te resource
+                String[] dataFilePatterns = localResource.dataFiles();
+
+                if (dataFilePatterns.length != 0) {
+                    //load the data using the resource provider load method
+                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
+                    localResourceProvider.load(testContext, localResource, localResourceInstance, dataFiles);
+
+                    //if there is data provider defined then create an instance of
+                    //it and load data using the data provider as well
+                    Class<? extends DataProvider> dataProviderType = localResource.dataProvider();
+
+                    if (!DataProvider.class.equals(dataProviderType)) {
+                        DataProvider dataProvider = reflectionUtil.newInstance(dataProviderType);
+                        serviceInstance.inject(dataProvider);
+                        dataProvider.load(testContext, dataFiles, localResourceInstance);
+                    }
+                }
 
                 //add resource properties to the test context with its fqn as its key
                 testContext.addProperty(localResourceInstance.getFqn(), localResourceInstance.getProperties());

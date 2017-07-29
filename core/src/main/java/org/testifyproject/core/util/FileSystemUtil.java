@@ -17,16 +17,26 @@ package org.testifyproject.core.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
 import java.nio.file.FileVisitResult;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
+import java.util.stream.Stream;
+import org.testifyproject.guava.common.collect.ImmutableSet;
+import org.testifyproject.guava.common.collect.ImmutableSortedSet;
+import org.testifyproject.guava.common.io.Resources;
 
 /**
  * A utility class that provides functionality for working with file systems.
@@ -47,6 +57,53 @@ public class FileSystemUtil {
      */
     public String createPath(String first, String... more) {
         return Paths.get(first, more).normalize().toString();
+    }
+
+    public Set<Path> findClasspathFiles(String... patterns) {
+        ImmutableSortedSet.Builder<Path> builder = ImmutableSortedSet.naturalOrder();
+
+        try {
+            URL classesURI = FileSystemUtil.class.getProtectionDomain().getCodeSource().getLocation();
+            builder.addAll(findFiles(Paths.get(classesURI.toURI()), patterns));
+
+            URL testClassesURL = Resources.getResource("");
+
+            if (!classesURI.equals(testClassesURL)) {
+                builder.addAll(findFiles(Paths.get(testClassesURL.toURI()), patterns));
+            }
+        } catch (URISyntaxException e) {
+            throw ExceptionUtil.INSTANCE.propagate(e);
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Recursively find files in the given directory path with the given
+     * patterns.
+     *
+     * @param dir the directory path that will be searched
+     * @param patterns file paths or {@link PathMatcher glob file patterns}
+     * @return a set of matching paths
+     */
+    public Set<Path> findFiles(Path dir, String... patterns) {
+        ImmutableSortedSet.Builder<Path> matches = ImmutableSortedSet.naturalOrder();
+
+        try {
+            if (dir.toFile().isDirectory()) {
+                FileSystem fileSystem = dir.getFileSystem();
+
+                Set<PathMatcher> pathMatchers = Stream.of(patterns)
+                        .map(p -> fileSystem.getPathMatcher("glob:" + p))
+                        .collect(toSet());
+
+                Files.walkFileTree(dir, new FindFiles(pathMatchers, matches));
+            }
+        } catch (IOException e) {
+            throw ExceptionUtil.INSTANCE.propagate(e);
+        }
+
+        return matches.build();
     }
 
     /**
@@ -93,6 +150,8 @@ public class FileSystemUtil {
     /**
      * A File Visitor implementation that walks through a directory and deletes
      * its content.
+     *
+     * @author saden
      */
     private static class DeleteDirectoryFileVisitor extends SimpleFileVisitor<Path> {
 
@@ -116,6 +175,41 @@ public class FileSystemUtil {
             } else {
                 exceptions.add(e);
             }
+
+            return CONTINUE;
+        }
+    }
+
+    /**
+     * A File Visitor implementation that walks through a directory and finds
+     * paths that match specific path patterns.
+     *
+     * @author saden
+     */
+    private static class FindFiles extends SimpleFileVisitor<Path> {
+
+        private final Set<PathMatcher> pathMatchers;
+        private final ImmutableSet.Builder<Path> matches;
+
+        FindFiles(Set<PathMatcher> pathMatchers, ImmutableSet.Builder<Path> matches) {
+            this.pathMatchers = pathMatchers;
+            this.matches = matches;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            pathMatchers.parallelStream()
+                    .filter(p -> p.matches(file))
+                    .forEach(p -> matches.add(file));
+
+            return CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+            pathMatchers.parallelStream()
+                    .filter(p -> p.matches(dir))
+                    .forEach(p -> matches.add(dir));
 
             return CONTINUE;
         }

@@ -15,6 +15,7 @@
  */
 package org.testifyproject;
 
+import java.util.Set;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.trait.PropertiesReader;
 
@@ -23,10 +24,10 @@ import org.testifyproject.trait.PropertiesReader;
  *
  * @author saden
  * @param <T> the configuration type
- * @param <S> the server type
+ * @param <R> the resource type
  * @param <C> the client type
  */
-public interface LocalResourceProvider<T, S, C> {
+public interface LocalResourceProvider<T, R, C> {
 
     /**
      * <p>
@@ -77,8 +78,26 @@ public interface LocalResourceProvider<T, S, C> {
      * @return a local resource instance
      * @throws java.lang.Exception an exception thrown while starting
      */
-    LocalResourceInstance<S, C> start(TestContext testContext, LocalResource localResource, T config)
+    LocalResourceInstance<R, C> start(TestContext testContext, LocalResource localResource, T config)
             throws Exception;
+
+    /**
+     * Load the given list of data file into the local resource prior to the
+     * resource being used. Note that by default this method does not have to be
+     * implemented.
+     *
+     * @param testContext the test context
+     * @param localResource test class local resource annotation
+     * @param instance the local resource instance
+     * @param dataFiles a data files that should be loaded
+     * @throws java.lang.Exception an exception thrown while loading data
+     */
+    default void load(TestContext testContext,
+            LocalResource localResource,
+            LocalResourceInstance<R, C> instance,
+            Set<String> dataFiles)
+            throws Exception {
+    }
 
     /**
      * Stop the local resource.
@@ -88,7 +107,7 @@ public interface LocalResourceProvider<T, S, C> {
      * @param instance the local resource instance
      * @throws java.lang.Exception an exception thrown while stopping
      */
-    void stop(TestContext testContext, LocalResource localResource, LocalResourceInstance<S, C> instance)
+    void stop(TestContext testContext, LocalResource localResource, LocalResourceInstance<R, C> instance)
             throws Exception;
 
 }

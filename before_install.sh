@@ -22,7 +22,9 @@ if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     tar --strip-components 1 -xzf secrets.tar.gz
     gpg --fast-import testifybot.asc
     eval "$(ssh-agent -s)"
+    chmod 600 testifybot_rsa
     ssh-add testifybot_rsa
+    ssh-agent -k #see https://github.com/travis-ci/travis-ci/issues/8082
 fi
 
 echo "Before Install Operations All Done!"
