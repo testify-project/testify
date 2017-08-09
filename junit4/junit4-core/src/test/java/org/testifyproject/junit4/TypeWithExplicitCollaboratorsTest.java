@@ -22,7 +22,7 @@ import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.junit4.fixture.TypeWithExplicitCollaborators;
-import org.testifyproject.junit4.fixture.collaborator.Hello;
+import org.testifyproject.junit4.fixture.common.Hello;
 
 /**
  *

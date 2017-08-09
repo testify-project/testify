@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4.fixture;
 
-import org.testifyproject.junit4.fixture.collaborator.Hello;
+import org.testifyproject.junit4.fixture.common.Hello;
 
 /**
  *

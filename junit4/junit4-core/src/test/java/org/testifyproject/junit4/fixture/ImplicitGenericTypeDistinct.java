@@ -16,8 +16,8 @@
 package org.testifyproject.junit4.fixture;
 
 import java.util.function.Supplier;
-import org.testifyproject.junit4.fixture.collaborator.Hello;
-import org.testifyproject.junit4.fixture.collaborator.World;
+import org.testifyproject.junit4.fixture.common.Hello;
+import org.testifyproject.junit4.fixture.common.World;
 
 /**
  *
