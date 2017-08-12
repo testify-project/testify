@@ -19,10 +19,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import static java.util.stream.Collectors.toList;
-import org.testifyproject.MethodDescriptor;
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
@@ -50,7 +50,7 @@ public class ConstructorPreiVerifier implements PreiVerifier {
         Object testInstance = testContext.getTestInstance();
         String testClassName = testDescriptor.getTestClassName();
 
-        Optional<MethodDescriptor> foundCollaboratorProvider = testDescriptor.getCollaboratorProvider();
+        Optional<CollaboratorProvider> foundCollaboratorProvider = testDescriptor.getCollaboratorProvider();
 
         if (!foundCollaboratorProvider.isPresent()) {
             testContext.getSutDescriptor().ifPresent(sutDescriptor -> {

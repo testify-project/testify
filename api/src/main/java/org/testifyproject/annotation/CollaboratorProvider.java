@@ -27,10 +27,11 @@ import java.lang.annotation.Target;
 /**
  * <p>
  * An annotation used to specifying a provider of the system under test's
- * collaborators. This annotation can be placed on a test class or method. This
- * is useful for configuring a system under test whose collaborator(s) can not be
- * faked or virtualized (i.e. a {@link java.net.URL} collaborator which is a
- * final class). Note that if this annotation is placed on:
+ * collaborators. This annotation can be placed on a test class or method within
+ * a test class. This is useful for configuring a system under test whose
+ * collaborator(s) can not be faked or virtualized (i.e. a {@link java.net.URL}
+ * collaborator which is a final class). Note that if this annotation is placed
+ * on:
  * </p>
  * <ul>
  * <li>
@@ -52,10 +53,10 @@ import java.lang.annotation.Target;
 public @interface CollaboratorProvider {
 
     /**
-     * Specifies the class that contains methods that provide collaborator for
-     * the system under test.
+     * Specifies a list of classes that contain methods that provide
+     * collaborator for the system under test.
      *
-     * @return the class.
+     * @return a list of collaborator provider classes.
      */
-    Class<?> value() default void.class;
+    Class<?>[] value() default {};
 }

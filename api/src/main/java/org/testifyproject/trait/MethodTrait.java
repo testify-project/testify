@@ -63,6 +63,18 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
     }
 
     /**
+     * Determine if the method has the given return type.
+     *
+     * @param returnType the method return type
+     * @return true if the method has the given return type, false otherwise
+     */
+    default Boolean hasReturnType(Type returnType) {
+        TypeToken token = TypeToken.of(getAnnotatedElement().getReturnType());
+
+        return token.isSubtypeOf(returnType);
+    }
+
+    /**
      * Determine if the method has parameters of the given type.
      *
      * @param parameterTypes the parameter types

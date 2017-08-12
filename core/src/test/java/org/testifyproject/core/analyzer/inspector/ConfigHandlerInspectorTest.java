@@ -26,32 +26,32 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
-import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
-import org.testifyproject.fixture.inspector.TestCollaboratorProvider;
-import org.testifyproject.fixture.inspector.TestEmptyCollaboratorProvider;
+import org.testifyproject.fixture.inspector.TestConfigHandler;
+import org.testifyproject.fixture.inspector.TestEmptyConfigHandler;
 
 /**
  *
  * @author saden
  */
-public class CollaboratorProviderInspectorTest {
+public class ConfigHandlerInspectorTest {
 
-    CollaboratorProviderInspector sut;
+    ConfigHandlerInspector sut;
 
     @Before
     public void init() {
-        sut = new CollaboratorProviderInspector();
+        sut = new ConfigHandlerInspector();
     }
 
     @Test(expected = TestifyException.class)
-    public void givenEmptyCollaboratorProviderValueInspectShouldThrowException() {
+    public void givenEmptyConfigHandlerValueInspectShouldThrowException() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
-        CollaboratorProvider annotation = mock(CollaboratorProvider.class);
-        Class[] providers = {};
+        ConfigHandler annotation = mock(ConfigHandler.class);
+        Class[] handlers = {};
 
-        given(annotation.value()).willReturn(providers);
+        given(annotation.value()).willReturn(handlers);
 
         sut.inspect(testDescriptor, annotatedType, annotation);
     }
@@ -60,15 +60,15 @@ public class CollaboratorProviderInspectorTest {
     public void givenParamtersInspectShouldAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
-        CollaboratorProvider annotation = mock(CollaboratorProvider.class);
-        Class[] providers = {TestCollaboratorProvider.class};
+        ConfigHandler annotation = mock(ConfigHandler.class);
+        Class[] handlers = {TestConfigHandler.class};
 
-        given(annotation.value()).willReturn(providers);
+        given(annotation.value()).willReturn(handlers);
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(eq(TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
-        verify(testDescriptor).addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, annotation);
+        verify(testDescriptor).addListElement(eq(TestDescriptorProperties.CONFIG_HANDLERS), any(MethodDescriptor.class));
+        verify(testDescriptor).addProperty(TestDescriptorProperties.CONFIG_HANDLER, annotation);
         verifyNoMoreInteractions(testDescriptor);
     }
 
@@ -76,14 +76,14 @@ public class CollaboratorProviderInspectorTest {
     public void givenParamtersInspectShouldNotAddProperty() {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Class<?> annotatedType = Object.class;
-        CollaboratorProvider annotation = mock(CollaboratorProvider.class);
-        Class[] providers = {TestEmptyCollaboratorProvider.class};
+        ConfigHandler annotation = mock(ConfigHandler.class);
+        Class[] handlers = {TestEmptyConfigHandler.class};
 
-        given(annotation.value()).willReturn(providers);
+        given(annotation.value()).willReturn(handlers);
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, annotation);
+        verify(testDescriptor).addProperty(TestDescriptorProperties.CONFIG_HANDLER, annotation);
         verifyNoMoreInteractions(testDescriptor);
     }
 

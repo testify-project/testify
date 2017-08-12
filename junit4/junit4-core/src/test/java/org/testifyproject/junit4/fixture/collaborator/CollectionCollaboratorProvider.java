@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4;
+package org.testifyproject.junit4.fixture.collaborator;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Sut;
-import org.testifyproject.annotation.Fake;
-import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
+import java.util.Collection;
+import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.junit4.fixture.common.Hello;
+import org.testifyproject.junit4.fixture.common.World;
 
 /**
  *
  * @author saden
  */
-@RunWith(UnitTest.class)
-public class MissingFakeDeclarationTest {
+public class CollectionCollaboratorProvider {
 
-    @Sut
-    ImplicitTypeDistinctTypes sut;
-
-    @Fake
-    Hello hello;
-
-    @Test(expected = NullPointerException.class)
-    public void givenMissingMockShouldThrowException() {
-        sut.execute();
+    Collection provide() {
+        return ImmutableList.of(new Hello(), new World());
     }
 
 }

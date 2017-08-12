@@ -30,6 +30,8 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
@@ -145,8 +147,18 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public Optional<MethodDescriptor> getCollaboratorProvider() {
+    public Optional<CollaboratorProvider> getCollaboratorProvider() {
         return findProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER);
+    }
+
+    @Override
+    public List<MethodDescriptor> getCollaboratorProviders() {
+        return findList(TestDescriptorProperties.COLLABORATOR_PROVIDERS);
+    }
+
+    @Override
+    public Optional<ConfigHandler> getConfigHandler() {
+        return findProperty(TestDescriptorProperties.CONFIG_HANDLER);
     }
 
     @Override
@@ -196,6 +208,14 @@ public class DefaultTestDescriptor implements TestDescriptor {
         return getConfigHandlers()
                 .parallelStream()
                 .filter(methodDescriptor -> methodDescriptor.hasParameterTypes(parameterType))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<MethodDescriptor> findCollaboratorProvider(Type returnType) {
+        return getCollaboratorProviders()
+                .parallelStream()
+                .filter(methodDescriptor -> methodDescriptor.hasReturnType(returnType))
                 .findFirst();
     }
 

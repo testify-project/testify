@@ -144,4 +144,23 @@ public interface TypeTrait {
         });
     }
 
+    /**
+     * Find a method with the given name. Note that this method will find the
+     * first method that matches the given name without consideration for method
+     * parameters.
+     *
+     * @param methodName the method name
+     * @return found method or throws {@link IllegalStateException}
+     */
+    default Optional<Method> findMethod(String methodName) {
+        return AccessController.doPrivileged((PrivilegedAction<Optional<Method>>) () -> {
+            for (Method declaredMethod : getType().getDeclaredMethods()) {
+                if (declaredMethod.getName().equals(methodName)) {
+                    return Optional.of(declaredMethod);
+                }
+            }
+
+            return Optional.empty();
+        });
+    }
 }

@@ -15,7 +15,7 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.Collection;
+import java.util.List;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -46,18 +46,22 @@ public class CollaboratorProviderPreVerifier implements PreVerifier {
     public void verify(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        testDescriptor.getCollaboratorProvider().ifPresent(collaboratorProvider -> {
-            Class<?> returnType = collaboratorProvider.getReturnType();
-            String methodName = collaboratorProvider.getName();
+        testDescriptor.getCollaboratorProviders().parallelStream().forEach(collaboratorProvider -> {
+            List<Class> parameterTypes = collaboratorProvider.getParameterTypes();
+            int size = parameterTypes.size();
+            String name = collaboratorProvider.getName();
             String declaringClassName = collaboratorProvider.getDeclaringClassName();
-            String returnTypeName = returnType.getSimpleName();
+            Class returnType = collaboratorProvider.getReturnType();
 
-            ExceptionUtil.INSTANCE.raise(!(Object[].class.isAssignableFrom(returnType)
-                    || Collection.class.isAssignableFrom(returnType)),
-                    "Collaborator provider method '{}' in '{}' has an invalid return type ('{}'). "
-                    + "Collaborator provider methods must return an instance of "
-                    + "java.lang.Object[] or java.util.Collection.",
-                    methodName, declaringClassName, returnTypeName);
+            ExceptionUtil.INSTANCE.raise(size > 0,
+                    "Collaborator Provider method '{}' in class '{}' has {} paramters. "
+                    + "Please insure the configuration handler has no paramters.",
+                    name, declaringClassName, size);
+
+            ExceptionUtil.INSTANCE.raise(returnType.equals(void.class) || returnType.equals(Void.class),
+                    "Collaborator Provider method '{}' in class '{}' has void return type."
+                    + "Please insure the collaborator provider returns a non-void type.",
+                    name, declaringClassName);
         });
     }
 

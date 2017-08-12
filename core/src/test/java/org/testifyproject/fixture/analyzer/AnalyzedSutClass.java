@@ -26,6 +26,14 @@ public class AnalyzedSutClass {
 
     private final Map<UUID, String> store;
 
+    public static final AnalyzedSutClass builder(Map<UUID, String> store) {
+        return new AnalyzedSutClass(store);
+    }
+
+    public AnalyzedSutClass() {
+        this.store = null;
+    }
+
     AnalyzedSutClass(Map<UUID, String> store) {
         this.store = store;
     }

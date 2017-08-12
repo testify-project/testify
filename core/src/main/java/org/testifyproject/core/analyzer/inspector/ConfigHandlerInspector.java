@@ -21,10 +21,10 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.AnnotationInspector;
 import org.testifyproject.extension.annotation.Handles;
-import static org.testifyproject.guava.common.base.Preconditions.checkState;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -38,25 +38,27 @@ public class ConfigHandlerInspector implements AnnotationInspector<ConfigHandler
 
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, ConfigHandler configHandler) {
-        Class<?>[] handlerClasses = configHandler.value();
+        Class<?>[] handlers = configHandler.value();
 
-        checkState(handlerClasses.length != 0,
-                "@ConfigHandler value attribute on '%s' must be specified.",
-                annotatedType.getName());
+        ExceptionUtil.INSTANCE.raise(configHandler.value().length == 0,
+                "@ConfigHandler value attribute on '{}' is not specified.",
+                annotatedType.getSimpleName());
 
-        for (Class<?> handlerClass : handlerClasses) {
-            Object instance = ReflectionUtil.INSTANCE.newInstance(handlerClass);
+        for (Class<?> handlerClass : handlers) {
+            Object handlerInstance = ReflectionUtil.INSTANCE.newInstance(handlerClass);
             Method[] methods = handlerClass.getDeclaredMethods();
 
             for (Method method : methods) {
                 if (!method.isSynthetic()) {
                     method.setAccessible(true);
 
-                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, handlerInstance);
                     testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
                 }
             }
         }
+
+        testDescriptor.addProperty(TestDescriptorProperties.CONFIG_HANDLER, configHandler);
     }
 
 }

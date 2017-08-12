@@ -236,4 +236,21 @@ public class TypeTraitTest {
         assertThat(result).isNotNull();
     }
 
+    @Test
+    public void givenNonExistentMethodNameFindMethodShouldReturnEmptyOptional() {
+        Class<?> type = PrimaryTestService.class;
+        String methodName = "notAMethod";
+
+        Optional<Method> result = sut.findMethod(methodName);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void givenExistentMethodNameFindMethodShouldReturnOptionalWithMethod() {
+        Class<?> type = PrimaryTestService.class;
+        String methodName = "getMessage";
+
+        Optional<Method> result = sut.findMethod(methodName);
+        assertThat(result).isPresent();
+    }
 }

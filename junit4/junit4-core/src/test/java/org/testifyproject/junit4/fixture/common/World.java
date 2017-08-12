@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Sut;
-import org.testifyproject.annotation.Fake;
-import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
-import org.testifyproject.junit4.fixture.common.Hello;
+package org.testifyproject.junit4.fixture.common;
 
 /**
  *
  * @author saden
  */
-@RunWith(UnitTest.class)
-public class MissingFakeDeclarationTest {
+public class World {
 
-    @Sut
-    ImplicitTypeDistinctTypes sut;
-
-    @Fake
-    Hello hello;
-
-    @Test(expected = NullPointerException.class)
-    public void givenMissingMockShouldThrowException() {
-        sut.execute();
+    public String greet() {
+        return null;
     }
 
 }
