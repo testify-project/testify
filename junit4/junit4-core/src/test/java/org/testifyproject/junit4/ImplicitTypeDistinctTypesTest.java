@@ -25,8 +25,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
-import org.testifyproject.junit4.fixture.collaborator.Hello;
-import org.testifyproject.junit4.fixture.collaborator.World;
+import org.testifyproject.junit4.fixture.common.Hello;
+import org.testifyproject.junit4.fixture.common.World;
 
 /**
  *

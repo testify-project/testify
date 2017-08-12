@@ -13,16 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.fixture.collaborator;
+package org.testifyproject.fixture;
 
 /**
  *
  * @author saden
  */
-public class World {
+public class MethodTestService implements TestContract {
 
-    public String greet() {
-        return null;
+    private String message = "Hi!!!";
+
+    void init() {
+        message = "init";
+    }
+
+    void destroy() {
+        message = "destroy";
+
+    }
+
+    @Override
+    public String getMessage() {
+        return String.format(message);
+    }
+
+    @Override
+    public String sayHello(String name) {
+        return String.format("Hello %s!", name);
     }
 
 }

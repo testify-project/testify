@@ -15,29 +15,29 @@
  */
 package org.testifyproject.junit4;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.annotation.Fake;
-import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
-import org.testifyproject.junit4.fixture.common.Hello;
+import org.testifyproject.junit4.fixture.collaborator.ArrayCollaboratorProvider;
+import org.testifyproject.junit4.fixture.collaborator.CollaboratorType;
 
 /**
  *
  * @author saden
  */
+@CollaboratorProvider(ArrayCollaboratorProvider.class)
 @RunWith(UnitTest.class)
-public class MissingFakeDeclarationTest {
+public class CollaboratorProviderArrayTest {
 
-    @Sut
-    ImplicitTypeDistinctTypes sut;
+    @Sut(factoryMethod = "builder")
+    CollaboratorType sut;
 
-    @Fake
-    Hello hello;
-
-    @Test(expected = NullPointerException.class)
-    public void givenMissingMockShouldThrowException() {
-        sut.execute();
+    @Test
+    public void verifyInjections() {
+        assertThat(sut).isNotNull();
+        assertThat(sut.getHello()).isNotNull();
+        assertThat(sut.getWorld()).isNotNull();
     }
-
 }

@@ -28,12 +28,22 @@ public class TestDescriptorProperties {
     public static final String APPLICATION = "application";
 
     /**
-     * Test Descriptor CollaboratorProvider property key.
+     * Test Descriptor Collaborator Provider annotation property key.
      */
     public static final String COLLABORATOR_PROVIDER = "collaboratorProvider";
 
     /**
-     * Test Descriptor Config Handlers property key.
+     * Test Descriptor Collaborator Provider methods property key.
+     */
+    public static final String COLLABORATOR_PROVIDERS = "collaboratorProviders";
+
+    /**
+     * Test Descriptor Config Handlers annotation property key.
+     */
+    public static final String CONFIG_HANDLER = "configHandler";
+
+    /**
+     * Test Descriptor Config Handler methods property key.
      */
     public static final String CONFIG_HANDLERS = "configHandlers";
 

@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.junit4.fixture.ImplicitType;
-import org.testifyproject.junit4.fixture.collaborator.Hello;
+import org.testifyproject.junit4.fixture.common.Hello;
 
 /**
  *

@@ -15,21 +15,33 @@
  */
 package org.testifyproject.junit4.fixture.collaborator;
 
+import org.testifyproject.junit4.fixture.common.Hello;
+import org.testifyproject.junit4.fixture.common.World;
+
 /**
  *
  * @author saden
  */
-public class Hello {
+public class CollaboratorType {
 
-    private boolean called;
+    private final Hello hello;
+    private final World world;
 
-    public String greet() {
-        called = true;
-        return "Hiya!";
+    public static final CollaboratorType builder(Hello hello, World world) {
+        return new CollaboratorType(hello, world);
     }
 
-    public boolean isCalled() {
-        return called;
+    public CollaboratorType(Hello hello, World world) {
+        this.hello = hello;
+        this.world = world;
+    }
+
+    public Hello getHello() {
+        return hello;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
 }

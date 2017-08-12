@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
@@ -61,12 +63,18 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     ClassLoader getTestClassLoader();
 
     /**
-     * Get the system under test collaborator provider associated with the test
-     * class.
+     * The collaborator provider annotation associated with the test class.
      *
-     * @return an optional with method descriptor, empty optional otherwise
+     * @return an optional with collaborator provider, empty optional otherwise
      */
-    Optional<MethodDescriptor> getCollaboratorProvider();
+    Optional<CollaboratorProvider> getCollaboratorProvider();
+
+    /**
+     * Get the collaborator provider methods associated with the test class.
+     *
+     * @return a list of method descriptor, empty list otherwise
+     */
+    List<MethodDescriptor> getCollaboratorProviders();
 
     /**
      * The application annotation associated with the test class.
@@ -81,6 +89,13 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
      * @return an optional with sut class field, empty optional otherwise
      */
     Optional<Field> getSutField();
+
+    /**
+     * The config handler annotation associated with the test class.
+     *
+     * @return an optional with config handler, empty optional otherwise
+     */
+    Optional<ConfigHandler> getConfigHandler();
 
     /**
      * Get a list method handlers for all the config handlers associated with
@@ -156,6 +171,14 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
      * @return an optional with method descriptor, empty optional otherwise
      */
     Optional<MethodDescriptor> findConfigHandler(Type configurableType);
+
+    /**
+     * Find the collaborator provider for the given return type.
+     *
+     * @param returnType the return type
+     * @return an optional with method descriptor, empty optional otherwise
+     */
+    Optional<MethodDescriptor> findCollaboratorProvider(Type returnType);
 
     /**
      * Find the descriptor for a field with the given type and name on the test

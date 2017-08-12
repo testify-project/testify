@@ -49,6 +49,7 @@ public class AnalyzerUtilTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getSutField()).isNotEmpty();
+        assertThat(result.getConfigHandler()).isPresent();
         assertThat(result.getConfigHandlers()).isNotEmpty();
         assertThat(result.getFieldDescriptors())
                 .allMatch(p -> p.getName().equals("store")
@@ -60,6 +61,7 @@ public class AnalyzerUtilTest {
                 .allMatch(p -> p.value().equals("org.testifyproject.fixture.analyzer"));
         assertThat(result.getVirtualResources()).hasSize(1);
         assertThat(result.getCollaboratorProvider()).isPresent();
+        assertThat(result.getCollaboratorProviders()).isNotEmpty();
     }
 
     @Test(expected = NullPointerException.class)

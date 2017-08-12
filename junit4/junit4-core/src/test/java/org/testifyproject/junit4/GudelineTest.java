@@ -21,7 +21,7 @@ import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
-import org.testifyproject.junit4.fixture.collaborator.Hello;
+import org.testifyproject.junit4.fixture.common.Hello;
 
 /**
  *
