@@ -13,7 +13,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
-## [0.9.8-SNAPSHOT]
+## [0.9.8] - 2017-08-12
 ### Added
 - Added the ability to create SUT using a factory method within the SUT class
  - Added `factoryMethod` attribute to the `@Sut` annotation
