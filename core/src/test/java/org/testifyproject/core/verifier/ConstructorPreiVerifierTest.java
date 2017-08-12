@@ -23,12 +23,12 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MethodDescriptor;
 import org.testifyproject.ParameterDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
@@ -57,8 +57,8 @@ public class ConstructorPreiVerifierTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         String testClassName = "TestClass";
-        MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
-        Optional<MethodDescriptor> foundCollaboratorProvider = Optional.of(collaboratorProvider);
+        CollaboratorProvider collaboratorProvider = mock(CollaboratorProvider.class);
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(collaboratorProvider);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -79,7 +79,7 @@ public class ConstructorPreiVerifierTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         String testClassName = "TestClass";
-        Optional<MethodDescriptor> foundCollaboratorProvider = Optional.empty();
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.empty();
         Optional<SutDescriptor> foundSutDescriptor = Optional.empty();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
@@ -103,7 +103,7 @@ public class ConstructorPreiVerifierTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         String testClassName = "TestClass";
-        Optional<MethodDescriptor> foundCollaboratorProvider = Optional.empty();
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.empty();
         SutDescriptor sutDescriptor = mock(SutDescriptor.class);
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         String sutClassName = "SutClass";
@@ -149,7 +149,7 @@ public class ConstructorPreiVerifierTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
         String testClassName = "TestClass";
-        Optional<MethodDescriptor> foundCollaboratorProvider = Optional.empty();
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.empty();
         SutDescriptor sutDescriptor = mock(SutDescriptor.class);
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         String sutClassName = "SutClass";

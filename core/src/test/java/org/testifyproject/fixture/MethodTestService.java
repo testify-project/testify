@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture.analyzer;
-
-import java.util.Map;
-import java.util.UUID;
+package org.testifyproject.fixture;
 
 /**
  *
  * @author saden
  */
-public class AnalyzedSutClass {
+public class MethodTestService implements TestContract {
 
-    private final Map<UUID, String> store;
+    private String message = "Hi!!!";
 
-    public static final AnalyzedSutClass builder(Map<UUID, String> store) {
-        return new AnalyzedSutClass(store);
+    void init() {
+        message = "init";
     }
 
-    public AnalyzedSutClass() {
-        this.store = null;
+    void destroy() {
+        message = "destroy";
+
     }
 
-    AnalyzedSutClass(Map<UUID, String> store) {
-        this.store = store;
+    @Override
+    public String getMessage() {
+        return String.format(message);
     }
 
-    public void save(String message) {
-
+    @Override
+    public String sayHello(String name) {
+        return String.format("Hello %s!", name);
     }
 
 }

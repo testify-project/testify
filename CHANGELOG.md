@@ -13,6 +13,12 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.8-SNAPSHOT]
+### Added
+- Added the ability to create SUT using a factory method within the SUT class
+ - Added `factoryMethod` attribute to the `@Sut` annotation
+- Added the ability to specify multiple collaborator providers by changing `@CollaboratorProvder#value` to an array of classes
+
 ## [0.9.7] - 2017-07-29
 ### Added
 - Added support for loading data into resources through `#load(...)` method defined in `LocalResourceProvider`, `RemoteResourceProvider`, and `VirtualResourceProvider` contracts

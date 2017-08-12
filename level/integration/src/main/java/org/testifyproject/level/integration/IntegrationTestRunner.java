@@ -28,6 +28,7 @@ import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
@@ -35,7 +36,6 @@ import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.CollaboratorReifier;
 
 /**
  * A class used to run a integration test.

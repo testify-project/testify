@@ -188,7 +188,7 @@ public class DefaultTestDescriptorTest {
 
     @Test
     public void callToGetCollaboratorProviderShouldReturn() {
-        Optional<MethodDescriptor> result = sut.getCollaboratorProvider();
+        List<MethodDescriptor> result = sut.getCollaboratorProviders();
 
         assertThat(result).isNotNull();
     }
@@ -206,7 +206,6 @@ public class DefaultTestDescriptorTest {
     @Test
     public void callToGetFieldDescriptorsShouldReturn() {
         Class<Object> type = Object.class;
-        DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         List<FieldDescriptor> value = ImmutableList.of(fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS, value);

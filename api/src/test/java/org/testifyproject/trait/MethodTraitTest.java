@@ -69,6 +69,29 @@ public class MethodTraitTest {
     }
 
     @Test(expected = NullPointerException.class)
+    public void givenNullHasReturnTypeShouldThrowException() {
+        Type returnType = null;
+
+        sut.hasReturnType(returnType);
+    }
+
+    @Test
+    public void givenNonMatchingReturnTypeHasReturnTypeShouldReturnFalse() {
+        Type returnType = Integer.class;
+
+        Boolean result = sut.hasReturnType(returnType);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void givenMatchingReturnTypeHasReturnTypeShouldReturnTrue() {
+        Type returnType = String.class;
+
+        Boolean result = sut.hasReturnType(returnType);
+        assertThat(result).isTrue();
+    }
+
+    @Test(expected = NullPointerException.class)
     public void givenNullHasParameterTypesShouldThrowException() {
         Type[] parameterTypes = null;
 

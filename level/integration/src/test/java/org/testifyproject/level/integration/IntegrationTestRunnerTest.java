@@ -27,7 +27,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MethodDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.SutDescriptor;
@@ -35,6 +34,7 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestResourcesProvider;
+import org.testifyproject.annotation.CollaboratorProvider;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
@@ -102,8 +102,8 @@ public class IntegrationTestRunnerTest {
         Class sutType = Object.class;
         Annotation[] sutQualifiers = {};
         Object sutInstance = new Object();
-        MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
-        Optional<MethodDescriptor> foundCollaboratorProvider = Optional.of(collaboratorProvider);
+        CollaboratorProvider collaboratorProvider = mock(CollaboratorProvider.class);
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(collaboratorProvider);
 
         InitialReifier collaboratorsReifier = mock(InitialReifier.class);
         List<InitialReifier> collaboratorsReifiers = ImmutableList.of(collaboratorsReifier);

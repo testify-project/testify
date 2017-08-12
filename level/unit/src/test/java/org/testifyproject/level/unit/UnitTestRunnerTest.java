@@ -26,10 +26,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MethodDescriptor;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
@@ -93,8 +93,8 @@ public class UnitTestRunnerTest {
         FinalReifier testReifier = mock(FinalReifier.class);
         List<FinalReifier> testReifiers = ImmutableList.of(testReifier);
 
-        MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
-        Optional<MethodDescriptor> foundCollaboratorProvider = Optional.of(collaboratorProvider);
+        CollaboratorProvider collaboratorProvider = mock(CollaboratorProvider.class);
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(collaboratorProvider);
 
         PreiVerifier wiringVerifier = mock(PreiVerifier.class);
         List<PreiVerifier> wiringVerifiers = ImmutableList.of(wiringVerifier);

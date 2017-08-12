@@ -16,7 +16,6 @@
 package org.testifyproject.core.verifier;
 
 import java.util.List;
-import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -44,9 +43,8 @@ public class ConfigHandlerPreVerifier implements PreVerifier {
     @Override
     public void verify(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        List<MethodDescriptor> configHandlers = testDescriptor.getConfigHandlers();
 
-        configHandlers.parallelStream().forEach(configHandler -> {
+        testDescriptor.getConfigHandlers().parallelStream().forEach(configHandler -> {
             List<Class> parameterTypes = configHandler.getParameterTypes();
             int size = parameterTypes.size();
             String name = configHandler.getName();
@@ -60,7 +58,8 @@ public class ConfigHandlerPreVerifier implements PreVerifier {
 
             Class paramterType = parameterTypes.get(0);
 
-            ExceptionUtil.INSTANCE.raise(!(Void.TYPE.isAssignableFrom(returnType)
+            ExceptionUtil.INSTANCE.raise(!(returnType.equals(void.class)
+                    || returnType.equals(Void.class)
                     || returnType.isAssignableFrom(paramterType)),
                     "Configuration Handler method '{}' in class '{}' has return type returns '{}'."
                     + "Please insure the configuration handler returns a void or a super type of '{}'.",

@@ -21,10 +21,10 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
+import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.AnnotationInspector;
 import org.testifyproject.extension.annotation.Handles;
-import static org.testifyproject.guava.common.base.Preconditions.checkState;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -39,24 +39,27 @@ public class CollaboratorProviderInspector implements AnnotationInspector<Collab
 
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, CollaboratorProvider collaboratorProvider) {
-        Class<?> providerClass = collaboratorProvider.value();
-        checkState(providerClass != void.class,
-                "The value of @CollaboratorProvider annotation on '%s' must be specified.",
-                annotatedType.getName());
+        Class<?>[] providers = collaboratorProvider.value();
 
-        Method[] methods = providerClass.getDeclaredMethods();
+        ExceptionUtil.INSTANCE.raise(providers.length == 0,
+                "@CollaboratorProvider value attribute on '{}' is not specified.",
+                annotatedType.getSimpleName());
 
-        for (Method method : methods) {
-            if (!method.isSynthetic()) {
-                method.setAccessible(true);
+        for (Class<?> providerClass : providers) {
+            Method[] methods = providerClass.getDeclaredMethods();
+            Object providerInstance = ReflectionUtil.INSTANCE.newInstance(providerClass);
 
-                Object instance = ReflectionUtil.INSTANCE.newInstance(providerClass);
-                MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, instance);
-                testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, methodDescriptor);
+            for (Method method : methods) {
+                if (!method.isSynthetic()) {
+                    method.setAccessible(true);
 
-                return;
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, providerInstance);
+                    testDescriptor.addListElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
+                }
             }
         }
+
+        testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, collaboratorProvider);
     }
 
 }

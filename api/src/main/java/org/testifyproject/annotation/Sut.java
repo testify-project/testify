@@ -49,6 +49,14 @@ public @interface Sut {
     boolean value() default false;
 
     /**
+     * Indicates the method in the system under test that should be used to
+     * create an instance of the system under test.
+     *
+     * @return the factory method name.
+     */
+    String factoryMethod() default "";
+
+    /**
      * <p>
      * Indicates whether all interaction between system under test and its
      * collaborators should be verified.

@@ -13,33 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture.analyzer;
+package org.testifyproject.junit4.fixture.collaborator;
 
-import java.util.Map;
-import java.util.UUID;
+import org.testifyproject.junit4.fixture.common.Hello;
+import org.testifyproject.junit4.fixture.common.World;
 
 /**
  *
  * @author saden
  */
-public class AnalyzedSutClass {
+public class ArrayCollaboratorProvider {
 
-    private final Map<UUID, String> store;
-
-    public static final AnalyzedSutClass builder(Map<UUID, String> store) {
-        return new AnalyzedSutClass(store);
-    }
-
-    public AnalyzedSutClass() {
-        this.store = null;
-    }
-
-    AnalyzedSutClass(Map<UUID, String> store) {
-        this.store = store;
-    }
-
-    public void save(String message) {
-
+    Object[] provide() {
+        return new Object[]{new Hello(), new World()};
     }
 
 }

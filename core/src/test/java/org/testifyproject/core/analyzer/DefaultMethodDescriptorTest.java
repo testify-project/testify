@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
-import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
+import org.testifyproject.fixture.MethodTestService;
 
 /**
  *
@@ -35,7 +35,7 @@ public class DefaultMethodDescriptorTest {
 
     @Before
     public void init() throws NoSuchMethodException {
-        method = AnalyzedTestClass.class.getDeclaredMethod("collaborators");
+        method = MethodTestService.class.getDeclaredMethod("init");
         instance = new Object();
 
         sut = new DefaultMethodDescriptor(method, instance);
