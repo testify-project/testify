@@ -139,7 +139,7 @@ public class CollaboratorsInitialReifierTest {
         willReturn(foundMethod).given(sutDescriptor).findMethod(factoryMethodName);
         willReturn(collaboratorProviders).given(testDescriptor).getCollaboratorProviders();
         willReturn(true).given(collaboratorProvider).hasReturnType(Object[].class);
-        willReturn(foundCollaborators).given(sut).getCollaborators(collaboratorProvider, testInstance);
+        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor, collaboratorProvider, testInstance);
         willReturn(collaborators).given(sut).convertToArray(collaborators);
         willReturn(Map.class).given(sut).getCollaboratorType(mockProvider, collaborator);
 
@@ -175,7 +175,7 @@ public class CollaboratorsInitialReifierTest {
         willReturn(foundMethod).given(sutDescriptor).findMethod(factoryMethodName);
         willReturn(collaboratorProviders).given(testDescriptor).getCollaboratorProviders();
         willReturn(true).given(collaboratorProvider).hasReturnType(Collection.class);
-        willReturn(foundCollaborators).given(sut).getCollaborators(collaboratorProvider, testInstance);
+        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor, collaboratorProvider, testInstance);
         willReturn(collaboratorsArray).given(sut).convertToArray(collaborators);
         willReturn(Map.class).given(sut).getCollaboratorType(mockProvider, collaborator);
 
@@ -212,7 +212,7 @@ public class CollaboratorsInitialReifierTest {
         willReturn(collaboratorProviders).given(testDescriptor).getCollaboratorProviders();
         willReturn(false).given(collaboratorProvider).hasReturnType(any());
         given(testDescriptor.findCollaboratorProvider(Map.class)).willReturn(foundCollaboratorMethodDescriptor);
-        willReturn(foundCollaborators).given(sut).getCollaborators(collaboratorMethodDescriptor, testInstance);
+        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor, collaboratorMethodDescriptor, testInstance);
 
         sut.processFactoryMethod(factoryMethodName,
                 testDescriptor,
@@ -237,7 +237,6 @@ public class CollaboratorsInitialReifierTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
         List<MethodDescriptor> collaboratorProviders = ImmutableList.of(collaboratorProvider);
-        Map collaborator = mock(Map.class);
         MockProvider mockProvider = mock(MockProvider.class);
         Optional<MethodDescriptor> foundCollaboratorMethodDescriptor = Optional.empty();
 
@@ -273,7 +272,7 @@ public class CollaboratorsInitialReifierTest {
 
         willReturn(collaboratorProviders).given(testDescriptor).getCollaboratorProviders();
         willReturn(true).given(collaboratorProvider).hasReturnType(any());
-        willReturn(foundCollaborators).given(sut).getCollaborators(collaboratorProvider, testInstance);
+        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor, collaboratorProvider, testInstance);
         willReturn(collaborators).given(sut).convertToArray(collaborator);
         willDoNothing().given(sut).processCollaborators(mockProvider, sutDescriptor, sutValue, collaborators);
 
@@ -366,6 +365,7 @@ public class CollaboratorsInitialReifierTest {
 
     @Test
     public void givenMethodDescriptorWithInstanceGetCollaboratorsShouldReturnCollaborators() {
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         Object testInstance = new Object();
         Object instance = new Object();
@@ -376,7 +376,7 @@ public class CollaboratorsInitialReifierTest {
         given(methodDescriptor.getInstance()).willReturn(foundInstance);
         given(methodDescriptor.invoke(instance)).willReturn(foundValue);
 
-        Optional<Object> result = sut.getCollaborators(methodDescriptor, testInstance);
+        Optional<Object> result = sut.getCollaborators(testDescriptor, methodDescriptor, testInstance);
 
         assertThat(result).contains(value);
         verify(methodDescriptor).getInstance();
@@ -385,6 +385,7 @@ public class CollaboratorsInitialReifierTest {
 
     @Test
     public void givenMethodDescriptorWithoutInstanceGetCollaboratorsShouldReturnCollaborators() {
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         Object testInstance = new Object();
         Optional<Object> foundInstance = Optional.empty();
@@ -394,7 +395,7 @@ public class CollaboratorsInitialReifierTest {
         given(methodDescriptor.getInstance()).willReturn(foundInstance);
         given(methodDescriptor.invoke(testInstance)).willReturn(foundValue);
 
-        Optional<Object> result = sut.getCollaborators(methodDescriptor, testInstance);
+        Optional<Object> result = sut.getCollaborators(testDescriptor, methodDescriptor, testInstance);
 
         assertThat(result).contains(value);
         verify(methodDescriptor).getInstance();

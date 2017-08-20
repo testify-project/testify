@@ -72,6 +72,23 @@ public class DefaultMethodDescriptorTest {
     }
 
     @Test
+    public void givenDefinedNameGetNameShouldReturnMethodName() throws NoSuchMethodException {
+        method = MethodTestService.class.getDeclaredMethod("destroy");
+        sut = DefaultMethodDescriptor.of(method, instance);
+
+        assertThat(sut).isNotNull();
+        assertThat(sut.getDefinedName()).isEqualTo("kill");
+    }
+
+    @Test
+    public void givenUndefinedNameGetNameShouldReturnMethodName() {
+        sut = DefaultMethodDescriptor.of(method, instance);
+
+        assertThat(sut).isNotNull();
+        assertThat(sut.getDefinedName()).isEqualTo(method.getName());
+    }
+
+    @Test
     public void givenDifferentTypeInstancesShouldNotBeEqual() {
         String differentType = "instance";
 

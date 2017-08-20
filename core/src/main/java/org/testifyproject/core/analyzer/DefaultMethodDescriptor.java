@@ -21,9 +21,11 @@ import static java.util.Optional.ofNullable;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.testifyproject.MethodDescriptor;
+import org.testifyproject.annotation.Name;
 
 /**
- * A descriptor class used to access or perform operations on test class methods.
+ * A descriptor class used to access or perform operations on test class
+ * methods.
  *
  * @author saden
  */
@@ -50,7 +52,8 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
     }
 
     /**
-     * Create a new method descriptor instance from the given method and instance.
+     * Create a new method descriptor instance from the given method and
+     * instance.
      *
      * @param method the underlying method
      * @param instance the instance associated with the method
@@ -68,6 +71,17 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
     @Override
     public Method getMember() {
         return method;
+    }
+
+    @Override
+    public String getDefinedName() {
+        Name name = method.getDeclaredAnnotation(Name.class);
+
+        if (name == null) {
+            return method.getName();
+        }
+
+        return name.value();
     }
 
 }

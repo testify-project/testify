@@ -181,6 +181,15 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<MethodDescriptor> findCollaboratorProvider(Type returnType);
 
     /**
+     * Find the collaborator provider for the given name and return type.
+     *
+     * @param returnType the return type
+     * @param name the name associated with the collaborator provider method
+     * @return an optional with method descriptor, empty optional otherwise
+     */
+    Optional<MethodDescriptor> findCollaboratorProvider(Type returnType, String name);
+
+    /**
      * Find the descriptor for a field with the given type and name on the test
      * class.
      *

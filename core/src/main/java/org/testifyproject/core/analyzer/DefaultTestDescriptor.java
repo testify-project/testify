@@ -19,11 +19,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
+import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.testifyproject.FieldDescriptor;
@@ -34,9 +37,11 @@ import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.core.util.LoggingUtil;
 
 /**
  * A descriptor class used to access or perform operations on a test class.
@@ -215,8 +220,38 @@ public class DefaultTestDescriptor implements TestDescriptor {
     public Optional<MethodDescriptor> findCollaboratorProvider(Type returnType) {
         return getCollaboratorProviders()
                 .parallelStream()
+                .filter(methodDescriptor -> !methodDescriptor.hasAnyAnnotations(Name.class))
                 .filter(methodDescriptor -> methodDescriptor.hasReturnType(returnType))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<MethodDescriptor> findCollaboratorProvider(Type returnType, String name) {
+        Deque<MethodDescriptor> methodDescriptors = new LinkedList<>();
+
+        getCollaboratorProviders().forEach(methodDescriptor -> {
+            Optional<Name> nameAnnotation = methodDescriptor.getAnnotation(Name.class);
+
+            if (nameAnnotation.isPresent()
+                    && nameAnnotation.get().value().equals(name)
+                    && methodDescriptor.hasReturnType(returnType)) {
+                methodDescriptors.addFirst(methodDescriptor);
+            } else if (methodDescriptor.hasReturnType(returnType)
+                    && methodDescriptor.getName().equals(name)) {
+                methodDescriptors.addLast(methodDescriptor);
+            }
+        });
+
+        if (methodDescriptors.size() > 1) {
+            LoggingUtil.INSTANCE.warn("Multiple canidate methods found with return type '{}'"
+                    + " and name '{}':\n{}",
+                    returnType.getTypeName(),
+                    name, methodDescriptors.stream()
+                            .map(Object::toString)
+                            .collect(Collectors.joining(", ")));
+        }
+
+        return methodDescriptors.stream().findFirst();
     }
 
 }
