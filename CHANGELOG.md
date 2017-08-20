@@ -21,6 +21,12 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Added the ability to find collaborator method by name and return type to `TestDescriptor`
 - Added the ability to compose collaborator providers by allowing `@CollaboratorProvder` to be annotated with `@CollaboratorProvder`
 
+### Changed
+- Renamed `getDefinedName` method `FieldDescriptor` and `MethodDescriptor` to `getDeclaredName`
+
+### Removed
+- Removed `name` attribute from `@Fake`, `@Virtual` and `@Real`. `@Named` can be used on the field as a replacement.
+
 ## [0.9.8] - 2017-08-12
 ### Added
 - Added the ability to create SUT using a factory method within the SUT class

@@ -17,17 +17,14 @@ package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.annotation.Fake;
-import org.testifyproject.annotation.Real;
-import org.testifyproject.annotation.Virtual;
+import org.testifyproject.annotation.Name;
 
 /**
- * A descriptor class used to access properties of or perform operations on an analyzed test class
- * or the system under test fields. getF
+ * A descriptor class used to access properties of or perform operations on an
+ * analyzed test class or the system under test fields. getF
  *
  * @author saden
  */
@@ -67,26 +64,14 @@ public class DefaultFieldDescriptor implements FieldDescriptor {
     }
 
     @Override
-    public String getDefinedName() {
-        String name = "";
-        Optional<Fake> foundFake = getFake();
-        Optional<Real> foundReal = getReal();
-        Optional<Virtual> foundVirtual = getVirtual();
+    public String getDeclaredName() {
+        Name name = field.getDeclaredAnnotation(Name.class);
 
-        if (foundFake.isPresent()) {
-            name = foundFake.get().value();
-        } else if (foundReal.isPresent()) {
-            name = foundReal.get().value();
-        } else if (foundVirtual.isPresent()) {
-            name = foundVirtual.get().value();
+        if (name == null) {
+            return field.getName();
         }
 
-        //if name has not been spcified then use the field name
-        if ("".equals(name)) {
-            name = field.getName();
-        }
-
-        return name;
+        return name.value();
     }
 
 }

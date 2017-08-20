@@ -39,20 +39,4 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface Virtual {
 
-    /**
-     * <p>
-     * This value represents the field name of the system under test associated
-     * with the test field. Please note that name based auto detection only
-     * works if your code is compiled with parameter names or debug information
-     * (javac -parameters or javac -g:vars).
-     * </p>
-     * <p>
-     * By default this value is set to "" to enable auto detection. If you wish
-     * to not rely on auto detection you can explicitly specify the name of the
-     * system under test field associated with the test field.
-     * </p>
-     *
-     * @return the system under test field name.
-     */
-    String value() default "";
 }

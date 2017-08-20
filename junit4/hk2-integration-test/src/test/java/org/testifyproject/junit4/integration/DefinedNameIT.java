@@ -19,9 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Sut;
+import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
+import org.testifyproject.annotation.Sut;
 import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.DefinedGreeter;
 import org.testifyproject.junit4.fixture.common.impl.Hello;
@@ -37,10 +38,12 @@ public class DefinedNameIT {
     @Sut
     DefinedGreeter sut;
 
-    @Real("greeting1")
+    @Name("greeting1")
+    @Real
     Hello hello1;
 
-    @Real("greeting2")
+    @Name("greeting2")
+    @Real
     Hello hello2;
 
     @Test

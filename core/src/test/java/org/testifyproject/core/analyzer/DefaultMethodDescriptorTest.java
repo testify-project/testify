@@ -77,7 +77,7 @@ public class DefaultMethodDescriptorTest {
         sut = DefaultMethodDescriptor.of(method, instance);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getDefinedName()).isEqualTo("kill");
+        assertThat(sut.getDeclaredName()).isEqualTo("kill");
     }
 
     @Test
@@ -85,7 +85,7 @@ public class DefaultMethodDescriptorTest {
         sut = DefaultMethodDescriptor.of(method, instance);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getDefinedName()).isEqualTo(method.getName());
+        assertThat(sut.getDeclaredName()).isEqualTo(method.getName());
     }
 
     @Test

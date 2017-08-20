@@ -42,10 +42,13 @@ public interface MethodDescriptor extends MethodTrait {
      * <p>
      * In the event a method name is not explicitly defined the value returned
      * by calling {@link java.lang.reflect.Method#getName()} will be returned.
+     * Please note that name detection only works if your code is compiled with
+     * parameter names or debug information (javac -parameters or javac
+     * -g:vars).
      * </p>
      *
      * @return the method name
      */
-    String getDefinedName();
+    String getDeclaredName();
 
 }

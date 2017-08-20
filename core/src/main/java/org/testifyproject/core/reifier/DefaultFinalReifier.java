@@ -62,7 +62,7 @@ public class DefaultFinalReifier implements FinalReifier {
             Object sutInstance) {
         MockProvider mockProvider = testContext.getMockProvider();
         Object testInstance = testContext.getTestInstance();
-        String testFieldName = testFieldDescriptor.getDefinedName();
+        String testFieldName = testFieldDescriptor.getDeclaredName();
         Type testFieldGenericType = testFieldDescriptor.getGenericType();
 
         Optional<FieldDescriptor> foundMatchingField

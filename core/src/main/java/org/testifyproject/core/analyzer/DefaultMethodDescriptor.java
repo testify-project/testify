@@ -74,7 +74,7 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
     }
 
     @Override
-    public String getDefinedName() {
+    public String getDeclaredName() {
         Name name = method.getDeclaredAnnotation(Name.class);
 
         if (name == null) {

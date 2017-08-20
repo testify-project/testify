@@ -19,9 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Name;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.common.DefinedGreeting;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.common.impl.Hello;
@@ -37,10 +38,12 @@ public class DefinedGreetingFakeIT {
     @Sut
     DefinedGreeting sut;
 
-    @Fake("greeting1")
+    @Name("greeting1")
+    @Fake
     Hello hello1;
 
-    @Fake("greeting2")
+    @Name("greeting2")
+    @Fake
     Hello hello2;
 
     @Test

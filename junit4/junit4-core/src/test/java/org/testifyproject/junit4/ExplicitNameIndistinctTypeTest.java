@@ -22,8 +22,9 @@ import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Name;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.ExplicitNameIndistinctType;
 import org.testifyproject.junit4.fixture.common.Hello;
 
@@ -40,7 +41,8 @@ public class ExplicitNameIndistinctTypeTest {
     @Fake
     Hello english;
 
-    @Fake("spanish")
+    @Name("spanish")
+    @Fake
     Hello spanishi;
 
     @Before

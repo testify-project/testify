@@ -93,7 +93,7 @@ public class DefaultFinalReifierTest {
 
         given(testContext.getMockProvider()).willReturn(mockProvder);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testFieldDescriptor.getDefinedName()).willReturn(testFieldName);
+        given(testFieldDescriptor.getDeclaredName()).willReturn(testFieldName);
         given(testFieldDescriptor.getGenericType()).willReturn(testFieldGenericType);
         given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(foundMatchingField);
         willDoNothing().given(sut).processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
@@ -102,7 +102,7 @@ public class DefaultFinalReifierTest {
 
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
-        verify(testFieldDescriptor).getDefinedName();
+        verify(testFieldDescriptor).getDeclaredName();
         verify(testFieldDescriptor).getGenericType();
         verify(sutDescriptor).findFieldDescriptor(testFieldGenericType, testFieldName);
     }
@@ -124,7 +124,7 @@ public class DefaultFinalReifierTest {
 
         given(testContext.getMockProvider()).willReturn(mockProvder);
         given(testContext.getTestInstance()).willReturn(testInstance);
-        given(testFieldDescriptor.getDefinedName()).willReturn(testFieldName);
+        given(testFieldDescriptor.getDeclaredName()).willReturn(testFieldName);
         given(testFieldDescriptor.getGenericType()).willReturn(testFieldGenericType);
         given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(unfoundMatchingField);
         given(sutDescriptor.findFieldDescriptor(testFieldGenericType)).willReturn(foundMatchingField);
@@ -134,7 +134,7 @@ public class DefaultFinalReifierTest {
 
         verify(testContext).getMockProvider();
         verify(testContext).getTestInstance();
-        verify(testFieldDescriptor).getDefinedName();
+        verify(testFieldDescriptor).getDeclaredName();
         verify(testFieldDescriptor).getGenericType();
         verify(sutDescriptor).findFieldDescriptor(testFieldGenericType, testFieldName);
         verify(sutDescriptor).findFieldDescriptor(testFieldGenericType);
