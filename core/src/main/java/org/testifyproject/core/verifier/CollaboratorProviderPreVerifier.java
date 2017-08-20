@@ -53,11 +53,6 @@ public class CollaboratorProviderPreVerifier implements PreVerifier {
             String declaringClassName = collaboratorProvider.getDeclaringClassName();
             Class returnType = collaboratorProvider.getReturnType();
 
-            ExceptionUtil.INSTANCE.raise(size > 0,
-                    "Collaborator Provider method '{}' in class '{}' has {} paramters. "
-                    + "Please insure the configuration handler has no paramters.",
-                    name, declaringClassName, size);
-
             ExceptionUtil.INSTANCE.raise(returnType.equals(void.class) || returnType.equals(Void.class),
                     "Collaborator Provider method '{}' in class '{}' has void return type."
                     + "Please insure the collaborator provider returns a non-void type.",

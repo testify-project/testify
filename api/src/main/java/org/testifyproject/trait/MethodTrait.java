@@ -17,6 +17,7 @@ package org.testifyproject.trait;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -51,6 +52,15 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
      */
     default List<Class> getParameterTypes() {
         return of(getAnnotatedElement().getParameterTypes()).collect(toList());
+    }
+
+    /**
+     * Get the method parameter types.
+     *
+     * @return a list of parameter types, empty list otherwise
+     */
+    default List<Parameter> getParameters() {
+        return of(getAnnotatedElement().getParameters()).collect(toList());
     }
 
     /**

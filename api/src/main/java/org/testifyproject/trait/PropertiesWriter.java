@@ -22,7 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
- * A contracts that specifies methods for writing property values. class.
+ * A contracts that specifies methods for writing property values. Note that
+ * property keys are immutable (added if they absent). Elements and entries can
+ * still be added to list and map elements.
  * </p>
  * <p>
  * Note that with respect to null keys and values the behavior the methods in

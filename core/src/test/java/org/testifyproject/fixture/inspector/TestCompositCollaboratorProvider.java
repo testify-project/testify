@@ -13,36 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture;
+package org.testifyproject.fixture.inspector;
 
-import org.testifyproject.annotation.Name;
+import java.util.Map;
+import static org.mockito.Mockito.mock;
+import org.testifyproject.annotation.CollaboratorProvider;
 
 /**
  *
  * @author saden
  */
-public class MethodTestService implements TestContract {
+@CollaboratorProvider(TestCollaboratorProvider.class)
+public class TestCompositCollaboratorProvider {
 
-    private String message = "Hi!!!";
-
-    void init() {
-        message = "init";
+    Object[] collaborators() {
+        return new Object[]{mock(Map.class)};
     }
-
-    @Name("kill")
-    void destroy() {
-        message = "destroy";
-
-    }
-
-    @Override
-    public String getMessage() {
-        return String.format(message);
-    }
-
-    @Override
-    public String sayHello(String name) {
-        return String.format("Hello %s!", name);
-    }
-
 }

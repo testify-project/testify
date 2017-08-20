@@ -13,6 +13,14 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.9-SNAPSHOT]
+### Added
+- Added new `@Name` annotation that can be used to associate a custom name with a field, method or method parameter
+- Added the ability to find and inject collaborator method arguments by name
+- Added `MethodDescriptor#getDefinedName()` to return the name of the method
+- Added the ability to find collaborator method by name and return type to `TestDescriptor`
+- Added the ability to compose collaborator providers by allowing `@CollaboratorProvder` to be annotated with `@CollaboratorProvder`
+
 ## [0.9.8] - 2017-08-12
 ### Added
 - Added the ability to create SUT using a factory method within the SUT class

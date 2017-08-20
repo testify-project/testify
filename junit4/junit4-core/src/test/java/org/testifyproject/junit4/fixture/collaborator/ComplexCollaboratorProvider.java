@@ -13,36 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture;
+package org.testifyproject.junit4.fixture.collaborator;
 
-import org.testifyproject.annotation.Name;
+import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.junit4.fixture.common.Hello;
 
 /**
  *
  * @author saden
  */
-public class MethodTestService implements TestContract {
+@CollaboratorProvider(InvidualCollaboratorProvider.class)
+public class ComplexCollaboratorProvider {
 
-    private String message = "Hi!!!";
-
-    void init() {
-        message = "init";
-    }
-
-    @Name("kill")
-    void destroy() {
-        message = "destroy";
-
-    }
-
-    @Override
-    public String getMessage() {
-        return String.format(message);
-    }
-
-    @Override
-    public String sayHello(String name) {
-        return String.format("Hello %s!", name);
+    String provide(Hello hello) {
+        return hello.greet();
     }
 
 }

@@ -33,4 +33,19 @@ public interface MethodDescriptor extends MethodTrait {
      */
     Optional<Object> getInstance();
 
+    /**
+     * <p>
+     * Get the explicitly defined method name. Please note that method names are
+     * explicitly defined by annotating the method with
+     * {@link org.testifyproject.annotation.Name}.
+     * </p>
+     * <p>
+     * In the event a method name is not explicitly defined the value returned
+     * by calling {@link java.lang.reflect.Method#getName()} will be returned.
+     * </p>
+     *
+     * @return the method name
+     */
+    String getDefinedName();
+
 }

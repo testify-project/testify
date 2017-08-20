@@ -95,41 +95,6 @@ public class CollaboratorProviderPreVerifierTest {
     }
 
     @Test(expected = TestifyException.class)
-    public void givenCollaboratorProviderMethodWithParamterVerifyShouldThrowException() {
-        TestContext testContext = mock(TestContext.class);
-        TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
-        List<MethodDescriptor> collaboratorProviders = ImmutableList.of(collaboratorProvider);
-
-        List<Class> parameterTypes = ImmutableList.of(Object.class);
-        String name = "name";
-        String declaringClassName = "declaringClassName";
-        Class returnType = Object.class;
-
-        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testDescriptor.getCollaboratorProviders()).willReturn(collaboratorProviders);
-        given(collaboratorProvider.getParameterTypes()).willReturn(parameterTypes);
-        given(collaboratorProvider.getName()).willReturn(name);
-        given(collaboratorProvider.getDeclaringClassName()).willReturn(declaringClassName);
-        given(collaboratorProvider.getReturnType()).willReturn(returnType);
-
-        try {
-            sut.verify(testContext);
-        }
-        catch (TestifyException e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getCollaboratorProviders();
-            verify(collaboratorProvider).getParameterTypes();
-            verify(collaboratorProvider).getName();
-            verify(collaboratorProvider).getDeclaringClassName();
-            verify(collaboratorProvider).getReturnType();
-
-            verifyNoMoreInteractions(testContext, testDescriptor, collaboratorProvider);
-            throw e;
-        }
-    }
-
-    @Test(expected = TestifyException.class)
     public void givenCollaboratorProviderMethodThatReturnsVoidVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);

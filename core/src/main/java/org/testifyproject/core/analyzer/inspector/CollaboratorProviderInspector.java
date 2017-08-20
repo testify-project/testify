@@ -57,6 +57,14 @@ public class CollaboratorProviderInspector implements AnnotationInspector<Collab
                     testDescriptor.addListElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
                 }
             }
+
+            //capture collaborator provider on the collaborator provider
+            CollaboratorProvider providerCollaboratorProvider
+                    = providerClass.getDeclaredAnnotation(CollaboratorProvider.class);
+
+            if (providerCollaboratorProvider != null) {
+                inspect(testDescriptor, providerClass, providerCollaboratorProvider);
+            }
         }
 
         testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, collaboratorProvider);
