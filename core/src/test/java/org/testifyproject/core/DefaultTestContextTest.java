@@ -16,6 +16,7 @@
 package org.testifyproject.core;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,15 +25,25 @@ import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.SutDescriptor;
+import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.RemoteResourceInstance;
+import org.testifyproject.RemoteResourceProvider;
+import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
+import org.testifyproject.SutDescriptor;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
-import org.testifyproject.TestConfigurer;
+import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.annotation.RemoteResource;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
@@ -165,6 +176,30 @@ public class DefaultTestContextTest {
     @Test
     public void callToGetSutDescriptorShouldReturn() {
         Optional<SutDescriptor> result = sut.getSutDescriptor();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void callToGetLocalResourceInstancesShouldReturn() {
+        List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> result
+                = sut.getLocalResourceInstances();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void callToGetVirtualResourceInstancesShouldReturn() {
+        List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> result
+                = sut.getVirtualResourceInstances();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void callToGetRemoteResourceInstancesShouldReturn() {
+        List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> result
+                = sut.getRemoteResourceInstances();
 
         assertThat(result).isEmpty();
     }

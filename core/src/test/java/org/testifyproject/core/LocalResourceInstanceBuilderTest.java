@@ -16,13 +16,14 @@
 package org.testifyproject.core;
 
 import java.util.Map;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
@@ -33,77 +34,152 @@ public class LocalResourceInstanceBuilderTest {
 
     LocalResourceInstanceBuilder sut;
     String fqn;
+    LocalResource localResource;
 
     @Before
     public void init() {
         fqn = "test";
+        localResource = mock(LocalResource.class);
         sut = LocalResourceInstanceBuilder.builder();
     }
 
     @Test
-    public void givenResourceBuildShouldSetResource() {
-        Object resource = mock(Object.class);
+    public void givenFqnAndLocalResourceBuildShouldCreateInstance() {
+        LocalResourceInstance<Object, Object> result = sut.build(fqn, localResource);
 
-        LocalResourceInstance result = sut.resource(resource).build(fqn);
+        assertThat(result).isNotNull();
+        assertThat(result.getFqn()).isEqualTo(fqn);
+        assertThat(result.getLocalResource()).isEqualTo(localResource);
+    }
+
+    @Test
+    public void givenResourceAndContractWithoutCustomNameAndContractBuildShouldAddResource() {
+        String customName = "";
+        Class customContract = void.class;
+        Object resourceValue = mock(Object.class);
+        Class resourceContract = Object.class;
+
+        given(localResource.resourceName()).willReturn(customName);
+        given(localResource.resourceContract()).willReturn(customContract);
+
+        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue, resourceContract)
+                .build(fqn, localResource);
 
         assertThat(result).isNotNull();
 
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
-        assertThat(instance.getValue()).isEqualTo(resource);
-        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getName()).contains("resource:/test/resource");
+        assertThat(instance.getContract()).contains(resourceContract);
+        assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
     @Test
-    public void givenResourceWithContractBuildShouldSetResource() {
-        Object resource = mock(Object.class);
-        Class contract = Object.class;
+    public void givenResourceWithoutCustomNameAndContractBuildShouldAddResource() {
+        String customName = "";
+        Class customContract = void.class;
+        Object resourceValue = mock(Object.class);
 
-        LocalResourceInstance result = sut.resource(resource, contract).build(fqn);
+        given(localResource.resourceName()).willReturn(customName);
+        given(localResource.resourceContract()).willReturn(customContract);
+
+        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue).build(fqn, localResource);
 
         assertThat(result).isNotNull();
 
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
-        assertThat(instance.getValue()).isEqualTo(resource);
-        assertThat(instance.getContract()).contains(contract);
+        assertThat(instance.getName()).contains("resource:/test/resource");
+        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
     @Test
-    public void givenClientBuildShouldSetClient() {
-        Object client = mock(Object.class);
+    public void givenResourceWithCustomNameAndContractBuildShouldAddResource() {
+        String customName = "customName";
+        Class customContract = Object.class;
+        Object resourceValue = mock(Object.class);
 
-        LocalResourceInstance result = sut.client(client).build(fqn);
+        given(localResource.resourceName()).willReturn(customName);
+        given(localResource.resourceContract()).willReturn(customContract);
+
+        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue).build(fqn, localResource);
 
         assertThat(result).isNotNull();
 
-        Optional<Instance<Object>> foundClient = result.getClient();
-        assertThat(foundClient).isPresent();
+        Instance instance = result.getResource();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getName()).contains("resource:/test/customName");
+        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getValue()).isEqualTo(resourceValue);
+    }
 
-        Instance<Object> instance = foundClient.get();
+    @Test
+    public void givenClientAndContractWithoutCustomNameAndContractBuildShouldAddClient() {
+        String customName = "";
+        Class customContract = void.class;
+        Object clientValue = mock(Object.class);
+        Class clientContract = Object.class;
+
+        given(localResource.clientName()).willReturn(customName);
+        given(localResource.clientContract()).willReturn(customContract);
+
+        LocalResourceInstance<Object, Object> result = sut.client(clientValue, clientContract)
+                .build(fqn, localResource);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getClient()).isPresent();
+
+        Instance instance = result.getClient().get();
 
         assertThat(instance).isNotNull();
-        assertThat(instance.getValue()).isEqualTo(client);
+        assertThat(instance.getName()).contains("resource:/test/client");
+        assertThat(instance.getContract()).contains(clientContract);
+        assertThat(instance.getValue()).isEqualTo(clientValue);
+    }
+    
+    @Test
+    public void givenClientWithoutCustomNameAndContractBuildShouldAddClient() {
+        String customName = "";
+        Class customContract = void.class;
+        Object clientValue = mock(Object.class);
+
+        given(localResource.clientName()).willReturn(customName);
+        given(localResource.clientContract()).willReturn(customContract);
+
+        LocalResourceInstance<Object, Object> result = sut.client(clientValue).build(fqn, localResource);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getClient()).isPresent();
+
+        Instance instance = result.getClient().get();
+
+        assertThat(instance).isNotNull();
+        assertThat(instance.getName()).contains("resource:/test/client");
         assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 
     @Test
-    public void givenClientWithContractBuildShouldSetClient() {
-        Object client = mock(Object.class);
-        Class contract = Object.class;
+    public void givenClientWithCustomNameAndContractBuildShouldAddClient() {
+        String customName = "customName";
+        Class customContract = Object.class;
+        Object clientValue = mock(Object.class);
 
-        LocalResourceInstance result = sut.client(client, contract).build(fqn);
+        given(localResource.clientName()).willReturn(customName);
+        given(localResource.clientContract()).willReturn(customContract);
+
+        LocalResourceInstance<Object, Object> result = sut.client(clientValue).build(fqn, localResource);
 
         assertThat(result).isNotNull();
+        assertThat(result.getClient()).isPresent();
 
-        Optional<Instance<Object>> foundClient = result.getClient();
-        assertThat(foundClient).isPresent();
+        Instance instance = result.getClient().get();
 
-        Instance<Object> clientInstance = foundClient.get();
-
-        assertThat(clientInstance).isNotNull();
-        assertThat(clientInstance.getValue()).isEqualTo(client);
-        assertThat(clientInstance.getContract()).contains(contract);
+        assertThat(instance).isNotNull();
+        assertThat(instance.getName()).contains("resource:/test/customName");
+        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 
     @Test
@@ -111,7 +187,7 @@ public class LocalResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        LocalResourceInstance result = sut.property(key, value).build(fqn);
+        LocalResourceInstance<Object, Object> result = sut.property(key, value).build(fqn, localResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -123,7 +199,7 @@ public class LocalResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(key, value);
 
-        LocalResourceInstance result = sut.properties(properties).build(fqn);
+        LocalResourceInstance<Object, Object> result = sut.properties(properties).build(fqn, localResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);

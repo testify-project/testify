@@ -42,6 +42,7 @@ import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.LoggingUtil;
+import org.testifyproject.extension.annotation.Hint;
 
 /**
  * A descriptor class used to access or perform operations on a test class.
@@ -149,6 +150,11 @@ public class DefaultTestDescriptor implements TestDescriptor {
     @Override
     public List<Class<? extends Annotation>> getGuidelines() {
         return findList(TestDescriptorProperties.GUIDELINE_ANNOTATIONS);
+    }
+
+    @Override
+    public Optional<Hint> getHint() {
+        return findProperty(TestDescriptorProperties.HINT_ANNOTATION);
     }
 
     @Override

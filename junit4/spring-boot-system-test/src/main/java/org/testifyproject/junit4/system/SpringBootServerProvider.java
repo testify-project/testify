@@ -94,11 +94,11 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
     }
 
     @Override
-    public ServerInstance<EmbeddedServletContainer> start(TestContext testContext, SpringApplicationBuilder configuration) {
+    public ServerInstance<EmbeddedServletContainer> start(TestContext testContext, Application application, SpringApplicationBuilder configuration) {
         LoggingUtil.INSTANCE.debug("Starting Spring Boot application '{}'", testContext.getName());
-        SpringApplication application = configuration.build();
+        SpringApplication springApplication = configuration.build();
 
-        application.run();
+        springApplication.run();
 
         Optional<ServletContext> servletContext = testContext.findProperty(APP_SERVLET_CONTEXT);
         Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(APP_SERVLET_CONTAINER);
@@ -113,17 +113,17 @@ public class SpringBootServerProvider implements ServerProvider<SpringApplicatio
             return ServerInstanceBuilder.builder()
                     .baseURI(baseURI)
                     .server(server)
-                    .property(APP, application)
+                    .property(APP, springApplication)
                     .property(APP_NAME, testContext.getName())
                     .property(APP_SERVLET_CONTAINER, server)
-                    .build("springboot");
+                    .build("springboot", application);
         }
 
         throw ExceptionUtil.INSTANCE.propagate("Could not start springboot application due to missing servlet container");
     }
 
     @Override
-    public void stop(TestContext testContext, ServerInstance<EmbeddedServletContainer> serverInstance) {
+    public void stop(ServerInstance<EmbeddedServletContainer> serverInstance) {
         if (serverInstance != null) {
             LoggingUtil.INSTANCE.debug("Stopping Spring Boot server");
             serverInstance.getServer().getValue().stop();

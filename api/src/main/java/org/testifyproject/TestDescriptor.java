@@ -29,6 +29,7 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.trait.AnnotationTrait;
 import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
@@ -162,6 +163,13 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
      * @return a list of guidelines, empty array otherwise
      */
     List<Class<? extends Annotation>> getGuidelines();
+
+    /**
+     * Get hint annotation associated with the test.
+     *
+     * @return the hint annotation, empty optional otherwise
+     */
+    Optional<Hint> getHint();
 
     /**
      * Find the config handler associated with the test class capable of

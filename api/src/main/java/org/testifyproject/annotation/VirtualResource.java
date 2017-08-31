@@ -141,7 +141,7 @@ public @interface VirtualResource {
      *
      * @return the virtual resource's contract type.
      */
-    Class<?> resourceContract() default void.class;
+    Class resourceContract() default void.class;
 
     /**
      * The number of virtual resource nodes to start.

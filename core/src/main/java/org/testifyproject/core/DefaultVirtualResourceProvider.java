@@ -18,11 +18,9 @@ package org.testifyproject.core;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.testifyproject.DataProvider;
-import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
@@ -55,25 +53,21 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
     private ReflectionUtil reflectionUtil;
     private FileSystemUtil fileSystemUtil;
     private ServiceLocatorUtil serviceLocatorUtil;
-    private List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances;
 
     public DefaultVirtualResourceProvider() {
         this(
                 ReflectionUtil.INSTANCE,
                 FileSystemUtil.INSTANCE,
-                ServiceLocatorUtil.INSTANCE,
-                new LinkedList<>()
+                ServiceLocatorUtil.INSTANCE
         );
     }
 
     DefaultVirtualResourceProvider(ReflectionUtil reflectionUtil,
             FileSystemUtil fileSystemUtil,
-            ServiceLocatorUtil serviceLocatorUtil,
-            List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances) {
+            ServiceLocatorUtil serviceLocatorUtil) {
         this.reflectionUtil = reflectionUtil;
         this.fileSystemUtil = fileSystemUtil;
         this.serviceLocatorUtil = serviceLocatorUtil;
-        this.resourceInstances = resourceInstances;
     }
 
     @Override
@@ -138,7 +132,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
                         virtualResourceProvider,
                         virtualResourceInstance);
 
-                resourceInstances.add(resourceInstance);
+                testContext.addListElement(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES, resourceInstance);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' virtual resource",
                         e, virtualResource.value());
@@ -161,36 +155,21 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
         }
 
         serviceInstance.addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
-
-        processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
-    }
-
-    void processResource(String resourceInstanceName,
-            VirtualResource virtualResource,
-            VirtualResourceInstance<Object> virtualResourceInstance,
-            ServiceInstance serviceInstance) {
-        String resourceName = virtualResource.resourceName();
-        Class<?> resourceContract = virtualResource.resourceContract();
-        Instance resourceInstance = virtualResourceInstance.getResource();
-
-        if (resourceName.isEmpty()) {
-            resourceName = Paths.get(resourceInstanceName, "resource").toString();
-        } else {
-            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
-        }
-
-        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
+        serviceInstance.replace(virtualResourceInstance.getResource());
     }
 
     @Override
-    public void stop(TestContext testContex) {
+    public void stop(TestContext testContext) {
+        List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances
+                = testContext.findList(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
+
         resourceInstances.forEach(resourceInstance -> {
             try {
                 VirtualResourceProvider provider = resourceInstance.getProvider();
                 VirtualResource virtualResource = resourceInstance.getAnnotation();
                 VirtualResourceInstance instance = resourceInstance.getValue();
 
-                provider.stop(testContex, virtualResource, instance);
+                provider.stop(testContext, virtualResource, instance);
             } catch (Exception e) {
                 LoggingUtil.INSTANCE.error("Could not stop '{}' virtual resource",
                         resourceInstance.getAnnotation().value(), e);

@@ -34,6 +34,7 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.di.spring.SpringServiceProvider;
 
 /**
  * A class that intercepts methods of classes that extend
@@ -71,7 +72,8 @@ public class SpringSystemInterceptor {
             ConfigurableWebApplicationContext configuredApplicationContext
                     = testConfigurer.configure(testContext, applicationContext);
 
-            ServiceProvider<ConfigurableApplicationContext> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
+            ServiceProvider<ConfigurableApplicationContext> serviceProvider
+                    = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class, SpringServiceProvider.class);
             ServiceInstance serviceInstance = serviceProvider.configure(testContext, configuredApplicationContext);
             testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
         });

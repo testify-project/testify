@@ -15,11 +15,8 @@
  */
 package org.testifyproject.fixture;
 
+import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.annotation.Fake;
-import org.testifyproject.annotation.Fixture;
-import org.testifyproject.annotation.Real;
-import org.testifyproject.annotation.Virtual;
 
 /**
  *
@@ -33,15 +30,10 @@ public class TestFieldService {
     @Sut(true)
     TestContract virtualSut;
 
-    @Real
-    @Fixture
-    TestContract real;
+    @Name("test")
+    TestContract named;
 
-    @Fake
-    TestContract fake;
-
-    @Virtual
-    TestContract virtual;
+    TestContract unnamed;
 
     TestContract non;
 

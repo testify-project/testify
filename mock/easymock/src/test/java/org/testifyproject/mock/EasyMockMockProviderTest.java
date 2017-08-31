@@ -17,6 +17,7 @@ package org.testifyproject.mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
 import org.easymock.cglib.proxy.Factory;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,4 +84,18 @@ public class EasyMockMockProviderTest {
         assertThat(result).isTrue();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void givenNonMockObjectVerifyAllInteractionsShouldThrowException() {
+        Object collaborator = new Object();
+
+        sut.verifyAllInteraction(collaborator);
+    }
+
+    @Test
+    public void givenMockObjectVerifyAllInteractionsShouldDoNothing() {
+        Object collaborator = createMock(Object.class);
+        replay(collaborator);
+
+        sut.verifyAllInteraction(collaborator);
+    }
 }

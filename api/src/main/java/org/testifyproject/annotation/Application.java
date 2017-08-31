@@ -65,7 +65,7 @@ public @interface Application {
      *
      * @return a the client name.
      */
-    String clientName() default "applicationClient";
+    String clientName() default "";
 
     /**
      * <p>
@@ -79,7 +79,36 @@ public @interface Application {
      *
      * @return the client contract class
      */
-    Class<?> clientContract() default void.class;
+    Class clientContract() default void.class;
+
+    /**
+     * <p>
+     * Specifies the client provider name. This useful for giving the client
+     * provider instance a unique name that can be used to qualify and
+     * distinguish it from other similar services.
+     * </p>
+     * <p>
+     * Note that the default client name is "applicationClientProvider".
+     * </p>
+     *
+     * @return a the client provider name.
+     */
+    String clientProviderName() default "";
+
+    /**
+     * <p>
+     * Specifies the contract implemented by the client provider. This useful
+     * for getting the client provider instance by its contract.
+     * </p>
+     * <p>
+     * Note that if the client provider contract class is not specified the
+     * client provider instance will be injectable by its implementation class
+     * only.
+     * </p>
+     *
+     * @return the client provider contract class
+     */
+    Class clientProviderContract() default void.class;
 
     /**
      * Specifies the class that provides
@@ -102,7 +131,7 @@ public @interface Application {
      *
      * @return a the server name.
      */
-    String serverName() default "applicationServer";
+    String serverName() default "";
 
     /**
      * <p>
@@ -116,6 +145,6 @@ public @interface Application {
      *
      * @return the server contract class
      */
-    Class<?> serverContract() default void.class;
+    Class serverContract() default void.class;
 
 }

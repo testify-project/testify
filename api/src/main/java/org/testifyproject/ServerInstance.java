@@ -16,6 +16,7 @@
 package org.testifyproject;
 
 import java.net.URI;
+import org.testifyproject.annotation.Application;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
@@ -33,6 +34,13 @@ public interface ServerInstance<T> extends PropertiesReader {
      * @return the server instance's fully qualified name
      */
     String getFqn();
+
+    /**
+     * Get the application annotation associated with the server instance.
+     *
+     * @return the application annotation
+     */
+    Application getApplication();
 
     /**
      * The server base URI.

@@ -46,6 +46,7 @@ import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Application;
 import static org.testifyproject.core.ApplicationInstanceProperties.APPLICATION_INSTANCE;
 import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER;
 import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_HANDLERS;
@@ -115,7 +116,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public ServerInstance<Undertow> start(TestContext testContext, DeploymentInfo deploymentInfo) {
+    public ServerInstance<Undertow> start(TestContext testContext, Application application, DeploymentInfo deploymentInfo) {
         try {
             DeploymentManager deploymentManager = Servlets.defaultContainer()
                     .addDeployment(deploymentInfo);
@@ -140,20 +141,21 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
 
             URI baseURI = new URI(DEFAULT_SCHEME, null, host, port, path, null, null);
 
-            return ServerInstanceBuilder.builder()
+            ServerInstance serverInstance = ServerInstanceBuilder.builder()
                     .baseURI(baseURI)
                     .server(server)
                     .property("deploymentInfo", deploymentInfo)
                     .property("deploymentManager", deploymentManager)
                     .property("httpHandler", httpHandler)
-                    .build("undertow");
+                    .build("undertow", application);
+            return serverInstance;
         } catch (Exception e) {
             throw ExceptionUtil.INSTANCE.propagate("Could not start Undertow Server", e);
         }
     }
 
     @Override
-    public void stop(TestContext testContext, ServerInstance<Undertow> serverInstance) {
+    public void stop(ServerInstance<Undertow> serverInstance) {
         if (serverInstance != null) {
             LoggingUtil.INSTANCE.debug("Stopping Undertow server");
             serverInstance.getServer().getValue().stop();

@@ -15,9 +15,11 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Paths;
 import java.util.Map;
 import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
@@ -29,8 +31,9 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class VirtualResourceInstanceBuilder<R> {
 
-    private String fqn;
-    private Instance<R> resource;
+    private R resource;
+    private Class<R> resourceContract;
+
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
@@ -39,7 +42,7 @@ public class VirtualResourceInstanceBuilder<R> {
      * @return a new resource builder
      */
     public static VirtualResourceInstanceBuilder builder() {
-        return new VirtualResourceInstanceBuilder();
+        return new VirtualResourceInstanceBuilder<>();
     }
 
     /**
@@ -49,7 +52,7 @@ public class VirtualResourceInstanceBuilder<R> {
      * @return this object
      */
     public VirtualResourceInstanceBuilder<R> resource(R resource) {
-        this.resource = DefaultInstance.of(resource);
+        this.resource = resource;
 
         return this;
     }
@@ -58,11 +61,12 @@ public class VirtualResourceInstanceBuilder<R> {
      * Set the underlying resource to the given resource and contract.
      *
      * @param resource the underlying resource
-     * @param contract the underlying resource contract
+     * @param contract the underlying resource resource contract
      * @return this object
      */
-    public VirtualResourceInstanceBuilder<R> resource(R resource, Class<? extends R> contract) {
-        this.resource = DefaultInstance.of(resource, contract);
+    public VirtualResourceInstanceBuilder<R> resource(R resource, Class<R> contract) {
+        this.resource = resource;
+        this.resourceContract = contract;
 
         return this;
     }
@@ -75,7 +79,7 @@ public class VirtualResourceInstanceBuilder<R> {
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public VirtualResourceInstanceBuilder property(String key, Object value) {
+    public VirtualResourceInstanceBuilder<R> property(String key, Object value) {
         this.properties.put(key, value);
 
         return this;
@@ -87,7 +91,7 @@ public class VirtualResourceInstanceBuilder<R> {
      * @param properties a map that contains key value pairs.
      * @return this object
      */
-    public VirtualResourceInstanceBuilder properties(Map<String, Object> properties) {
+    public VirtualResourceInstanceBuilder<R> properties(Map<String, Object> properties) {
         this.properties.putAll(properties);
 
         return this;
@@ -101,9 +105,33 @@ public class VirtualResourceInstanceBuilder<R> {
      * resource provider implementations.
      *
      * @param fqn the fully qualified name of the virtual resource
+     * @param virtualResource the virtual resource annotation
      * @return a virtual resource instance
      */
-    public VirtualResourceInstance build(String fqn) {
-        return DefaultVirtualResourceInstance.of(fqn, resource, properties.build());
+    public VirtualResourceInstance<R> build(String fqn, VirtualResource virtualResource) {
+        Instance<R> resourceInstance = createResource(fqn, virtualResource);
+
+        return DefaultVirtualResourceInstance.of(fqn, virtualResource, resourceInstance, properties.build());
     }
+
+    Instance<R> createResource(String fqn, VirtualResource virtualResource) {
+        if (resource == null) {
+            return null;
+        }
+
+        String resourceName;
+
+        if ("".equals(virtualResource.resourceName())) {
+            resourceName = Paths.get("resource:/", fqn, "resource").toString();
+        } else {
+            resourceName = Paths.get("resource:/", fqn, virtualResource.resourceName()).toString();
+        }
+
+        if (!void.class.equals(virtualResource.resourceContract())) {
+            resourceContract = virtualResource.resourceContract();
+        }
+
+        return DefaultInstance.of(resource, resourceName, resourceContract);
+    }
+
 }

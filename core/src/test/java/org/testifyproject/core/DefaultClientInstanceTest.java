@@ -15,10 +15,17 @@
  */
 package org.testifyproject.core;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.ClientInstance;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.Mockito.mock;
+import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.annotation.Application;
 
 /**
  *
@@ -26,42 +33,51 @@ import org.testifyproject.ClientInstance;
  */
 public class DefaultClientInstanceTest {
 
-    ClientInstance<Object> sut;
-    Object client;
-    Class<Object> contract;
+    DefaultClientInstance<Object> sut;
+
+    String fqn;
+    Application application;
+    Instance<Object> client;
+    Instance<Object> clientProvider;
+    Map<String, Object> properties;
 
     @Before
     public void init() {
-        client = new Object();
-        contract = Object.class;
+        fqn = "name";
+        application = mock(Application.class);
+        client = mock(Instance.class);
+        clientProvider = mock(Instance.class);
+        properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        sut = DefaultClientInstance.of(client, contract);
-
-        assertThat(sut.getValue()).isEqualTo(client);
-        assertThat(sut.getContract()).contains(contract);
+        sut = DefaultClientInstance.of(fqn, application, client, clientProvider, properties);
     }
 
     @Test
-    public void givenBaseURIAndClientOfShouldReturn() {
-        sut = DefaultClientInstance.of(client);
+    public void callToGetNameShouldReturnName() {
+        String result = sut.getFqn();
 
-        assertThat(sut).isNotNull();
-        assertThat(sut.getValue()).isEqualTo(client);
-        assertThat(sut.getContract()).isEmpty();
+        assertThat(result).isEqualTo(fqn);
     }
 
     @Test
     public void callToGetClientShouldReturnClient() {
-        Object result = sut.getValue();
+        Instance<Object> result = sut.getClient();
 
         assertThat(result).isEqualTo(client);
     }
 
     @Test
-    public void givenNullInstancesShouldNotBeEqual() {
-        ClientInstance<Object> instance = null;
+    public void callToGetResourceShouldReturnResource() {
+        Optional<Instance<Object>> result = sut.getClientProvider();
 
-        assertThat(sut).isNotEqualTo(instance);
+        assertThat(result).contains(clientProvider);
+    }
+
+    @Test
+    public void givenNullInstancesShouldNotBeEqual() {
+        LocalResourceInstance<Object, Object> localResourceInstance = null;
+
+        assertThat(sut).isNotEqualTo(localResourceInstance);
     }
 
     @Test
@@ -74,7 +90,8 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ClientInstance<Object> uneuqual = DefaultClientInstance.of(new Object());
+        DefaultClientInstance<Object> uneuqual
+                = DefaultClientInstance.of(fqn, application, clientProvider, null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -83,12 +100,12 @@ public class DefaultClientInstanceTest {
     @Test
     public void givenSameInstancesShouldBeEqual() {
         assertThat(sut).isEqualTo(sut);
-
     }
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ClientInstance<Object> equal = DefaultClientInstance.of(client, contract);
+        DefaultClientInstance<Object> equal
+                = DefaultClientInstance.of(fqn, application, client, clientProvider, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -98,10 +115,11 @@ public class DefaultClientInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains(
-                "DefaultClientInstance",
-                "instance",
-                "contract"
-        );
+        assertThat(result).contains("DefaultClientInstance",
+                "application",
+                "fqn",
+                "client",
+                "clientProvider",
+                "properties");
     }
 }

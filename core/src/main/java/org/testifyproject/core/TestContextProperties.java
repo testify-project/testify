@@ -44,6 +44,14 @@ public class TestContextProperties {
      */
     public static final String APP_CONTEXT_PATH = "appContextPath";
     /**
+     * The application client instance property key.
+     */
+    public static final String APP_CLIENT_INSTANCE = "appClientInstance";
+    /**
+     * The application server instance property key.
+     */
+    public static final String APP_SERVER_INSTANCE = "appServerInstance";
+    /**
      * The application servlet container property key.
      */
     public static final String APP_SERVLET_CONTAINER = "appServletContainer";
@@ -67,6 +75,18 @@ public class TestContextProperties {
      * The application system under test descriptor property key.
      */
     public static final String SUT_DESCRIPTOR = "sutDescriptor";
+    /**
+     * The local resource instances property key.
+     */
+    public static final String LOCAL_RESOURCE_INSTANCES = "localResourceInstances";
+    /**
+     * The virtual resource instances property key.
+     */
+    public static final String VIRTUAL_RESOURCE_INSTANCES = "virtualResourceInstances";
+    /**
+     * The remote resource instances property key.
+     */
+    public static final String REMOTE_RESOURCE_INSTANCES = "remoteResourceInstances";
 
     private TestContextProperties() {
     }

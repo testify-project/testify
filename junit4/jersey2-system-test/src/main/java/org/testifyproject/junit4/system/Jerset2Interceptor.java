@@ -33,6 +33,7 @@ import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.BASE_URI;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.di.hk2.HK2ServiceProvider;
 
 /**
  * A class that intercepts methods of classes that extend or implement
@@ -72,7 +73,8 @@ public class Jerset2Interceptor {
             ServiceLocator serviceLocator = applicationHandler.getServiceLocator();
             serviceLocator = testContext.getTestConfigurer().configure(testContext, serviceLocator);
 
-            ServiceProvider<ServiceLocator> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
+            ServiceProvider<ServiceLocator> serviceProvider
+                    = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class, HK2ServiceProvider.class);
 
             ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceLocator);
             serviceProvider.postConfigure(testContext, serviceInstance);

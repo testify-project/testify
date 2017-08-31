@@ -34,7 +34,6 @@ import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
-import org.testifyproject.core.util.ServiceLocatorUtil;
 
 /**
  * A class that is called after the application context is refreshed to
@@ -49,11 +48,12 @@ public class SpringBeanFactoryPostProcessor implements
 
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
-    List<ResourceProvider> resourceProviders;
+    private final List<ResourceProvider> resourceProviders;
 
-    public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance) {
+    public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance, List<ResourceProvider> resourceProviders) {
         this.testContext = testContext;
         this.serviceInstance = serviceInstance;
+        this.resourceProviders = resourceProviders;
     }
 
     @Override
@@ -70,6 +70,10 @@ public class SpringBeanFactoryPostProcessor implements
             if (!replacedBeanNames.contains(beanName)) {
                 BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
                 Class<?> beanType = beanFactory.getType(beanName);
+
+                if (beanDefinition.isPrimary()) {
+                    processPrimary(beanFactory, beanDefinition, beanName, beanType);
+                }
 
                 //mark all beans as lazy beans so we don't needlessly
                 //instianticate them during testing
@@ -97,8 +101,26 @@ public class SpringBeanFactoryPostProcessor implements
 
         //start all test requires
         if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
             resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
+        }
+    }
+
+    void processPrimary(DefaultListableBeanFactory beanFactory, BeanDefinition beanDefinition, String beanName, Class<?> beanType) {
+        String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
+
+        if (beanNamesForType.length > 1) {
+            for (String beanNameForType : beanNamesForType) {
+                if (beanNameForType.equals(beanName)) {
+                    beanFactory.removeBeanDefinition(beanNameForType);
+                } else {
+                    beanFactory.removeBeanDefinition(beanNameForType);
+
+                    GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
+                    replacementBeanDefinition.setPrimary(false);
+                    replacementBeanDefinition.setLazyInit(true);
+                    beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
+                }
+            }
         }
     }
 

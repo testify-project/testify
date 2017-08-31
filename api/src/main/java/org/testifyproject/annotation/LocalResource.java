@@ -124,7 +124,7 @@ public @interface LocalResource {
      *
      * @return the contract implemented by the underlying local resource.
      */
-    Class<?> resourceContract() default void.class;
+    Class resourceContract() default void.class;
 
     /**
      * <p>
@@ -153,6 +153,6 @@ public @interface LocalResource {
      *
      * @return the resource's client contract class.
      */
-    Class<?> clientContract() default void.class;
+    Class clientContract() default void.class;
 
 }

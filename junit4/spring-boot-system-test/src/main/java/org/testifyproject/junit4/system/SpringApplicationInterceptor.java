@@ -34,6 +34,7 @@ import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_ARGUMENTS;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.di.spring.SpringServiceProvider;
 
 /**
  * A class that intercepts methods of classes that extend or implement
@@ -84,7 +85,8 @@ public class SpringApplicationInterceptor {
             throws Exception {
         ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
         //TODO: should the service provider be set up front and available from the test context?
-        ServiceProvider serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
+        ServiceProvider serviceProvider
+                = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class, SpringServiceProvider.class);
 
         ServiceInstance serviceInstance
                 = testContextHolder.execute((Function<TestContext, ServiceInstance>) testContext

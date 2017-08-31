@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.mockito.exceptions.base.MockitoException;
+import org.mockito.exceptions.misusing.NotAMockException;
 import org.mockito.internal.util.MockUtil;
 import org.testifyproject.fixture.Mockable;
 
@@ -110,6 +111,20 @@ public class MockitoMockProviderTest {
         Boolean result = sut.isMock(instance);
 
         assertThat(result).isTrue();
+    }
+
+    @Test(expected = NotAMockException.class)
+    public void givenNonMockObjectVerifyAllInteractionsShouldThrowException() {
+        Object collaborator = new Object();
+
+        sut.verifyAllInteraction(collaborator);
+    }
+
+    @Test
+    public void givenMockObjectVerifyAllInteractionsShouldDoNothing() {
+        Object collaborator = mock(Object.class);
+
+        sut.verifyAllInteraction(collaborator);
     }
 
 }

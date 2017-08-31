@@ -53,13 +53,15 @@ public class SpringBeanFactoryPostProcessorTest {
     SpringBeanFactoryPostProcessor sut;
     TestContext testContext;
     ServiceInstance serviceInstance;
+    List<ResourceProvider> resourcesProviders;
 
     @Before
     public void init() {
         testContext = mock(TestContext.class);
         serviceInstance = mock(ServiceInstance.class);
+        resourcesProviders = mock(List.class);
 
-        sut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance));
+        sut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance, resourcesProviders));
     }
 
     @Test
@@ -214,11 +216,12 @@ public class SpringBeanFactoryPostProcessorTest {
 
     @Test
     public void callToOnApplicationEventWithLazyStartStrategyShouldStartResources() {
-        StartStrategy resourceStartStrategy = StartStrategy.LAZY;
         ResourceProvider resourceProvider = mock(ResourceProvider.class);
         List<ResourceProvider> resourceProviders = ImmutableList.of(resourceProvider);
+        sut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance, resourceProviders));
 
-        sut.resourceProviders = resourceProviders;
+        StartStrategy resourceStartStrategy = StartStrategy.LAZY;
+
         given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
         ContextClosedEvent event = mock(ContextClosedEvent.class);
 

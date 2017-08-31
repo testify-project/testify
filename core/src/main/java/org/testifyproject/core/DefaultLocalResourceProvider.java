@@ -18,11 +18,9 @@ package org.testifyproject.core;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.testifyproject.DataProvider;
-import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.ResourceInstance;
@@ -53,18 +51,15 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
     private ReflectionUtil reflectionUtil;
     private FileSystemUtil fileSystemUtil;
-    private List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances;
 
     public DefaultLocalResourceProvider() {
-        this(ReflectionUtil.INSTANCE, FileSystemUtil.INSTANCE, new LinkedList<>());
+        this(ReflectionUtil.INSTANCE, FileSystemUtil.INSTANCE);
     }
 
     DefaultLocalResourceProvider(ReflectionUtil reflectionUtil,
-            FileSystemUtil fileSystemUtil,
-            List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances) {
+            FileSystemUtil fileSystemUtil) {
         this.reflectionUtil = reflectionUtil;
         this.fileSystemUtil = fileSystemUtil;
-        this.resourceInstances = resourceInstances;
     }
 
     @Override
@@ -123,7 +118,7 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
                         localResourceProvider,
                         localResourceInstance);
 
-                resourceInstances.add(resourceInstance);
+                testContext.addListElement(TestContextProperties.LOCAL_RESOURCE_INSTANCES, resourceInstance);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' local resource", e, value);
             }
@@ -146,48 +141,15 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
         }
 
         serviceInstance.addConstant(localResourceInstance, resourceInstanceName, resourceInstanceContract);
-
-        processResource(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
-        processClient(resourceInstanceName, localResource, localResourceInstance, serviceInstance);
-    }
-
-    void processResource(String resourceInstanceName,
-            LocalResource localResource,
-            LocalResourceInstance<Object, Object> localResourceInstance,
-            ServiceInstance serviceInstance) {
-        String resourceName = localResource.resourceName();
-        Class<?> resourceContract = localResource.resourceContract();
-
-        if (resourceName.isEmpty()) {
-            resourceName = Paths.get(resourceInstanceName, "resource").toString();
-        } else {
-            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
-        }
-
-        Instance resourceInstance = localResourceInstance.getResource();
-        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
-    }
-
-    void processClient(String resourceInstanceName,
-            LocalResource localResource,
-            LocalResourceInstance<Object, Object> localResourceInstance,
-            ServiceInstance serviceInstance) {
-        localResourceInstance.getClient().ifPresent(clientInstance -> {
-            String clientName = localResource.clientName();
-            Class<?> clientContract = localResource.clientContract();
-
-            if (clientName.isEmpty()) {
-                clientName = Paths.get(resourceInstanceName, "client").toString();
-            } else {
-                clientName = Paths.get(resourceInstanceName, clientName).normalize().toString();
-            }
-
-            serviceInstance.replace(clientInstance, clientName, clientContract);
-        });
+        serviceInstance.replace(localResourceInstance.getResource());
+        localResourceInstance.getClient().ifPresent(serviceInstance::replace);
     }
 
     @Override
     public void stop(TestContext testContext) {
+        List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances
+                = testContext.findList(TestContextProperties.LOCAL_RESOURCE_INSTANCES);
+
         resourceInstances.forEach(resourceInstance -> {
             try {
                 LocalResourceProvider provider = resourceInstance.getProvider();

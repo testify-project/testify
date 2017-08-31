@@ -45,7 +45,7 @@ public class TestLocalResourceProvider implements LocalResourceProvider<Void, Da
         return LocalResourceInstanceBuilder.builder()
                 .resource(mock(DataSource.class), DataSource.class)
                 .client(mock(Connection.class), Connection.class)
-                .build("local.test.resource");
+                .build("local.test.resource", localResource);
     }
 
     @Override

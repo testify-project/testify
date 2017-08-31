@@ -18,11 +18,9 @@ package org.testifyproject.core;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.testifyproject.DataProvider;
-import org.testifyproject.Instance;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.RemoteResourceProvider;
 import org.testifyproject.ResourceInstance;
@@ -53,18 +51,15 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
 
     private ReflectionUtil reflectionUtil;
     private FileSystemUtil fileSystemUtil;
-    private List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances;
 
     public DefaultRemoteResourceProvider() {
-        this(ReflectionUtil.INSTANCE, FileSystemUtil.INSTANCE, new LinkedList<>());
+        this(ReflectionUtil.INSTANCE, FileSystemUtil.INSTANCE);
     }
 
     DefaultRemoteResourceProvider(ReflectionUtil reflectionUtil,
-            FileSystemUtil fileSystemUtil,
-            List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances) {
+            FileSystemUtil fileSystemUtil) {
         this.reflectionUtil = reflectionUtil;
         this.fileSystemUtil = fileSystemUtil;
-        this.resourceInstances = resourceInstances;
     }
 
     @Override
@@ -123,7 +118,7 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
                         remoteResourceProvider,
                         remoteResourceInstance);
 
-                resourceInstances.add(resourceInstance);
+                testContext.addListElement(TestContextProperties.REMOTE_RESOURCE_INSTANCES, resourceInstance);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' remote resource", e, value);
             }
@@ -146,29 +141,14 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
         }
 
         serviceInstance.addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
-
-        processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
-    }
-
-    void processResource(String resourceInstanceName,
-            RemoteResource remoteResource,
-            RemoteResourceInstance<Object> remoteResourceInstance,
-            ServiceInstance serviceInstance) {
-        String resourceName = remoteResource.resourceName();
-        Class<?> resourceContract = remoteResource.resourceContract();
-        Instance resourceInstance = remoteResourceInstance.getResource();
-
-        if (resourceName.isEmpty()) {
-            resourceName = Paths.get(resourceInstanceName, "resource").toString();
-        } else {
-            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
-        }
-
-        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
+        serviceInstance.replace(remoteResourceInstance.getResource());
     }
 
     @Override
     public void stop(TestContext testContext) {
+        List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances
+                = testContext.findList(TestContextProperties.REMOTE_RESOURCE_INSTANCES);
+
         resourceInstances.forEach(resourceInstance -> {
             try {
                 RemoteResourceProvider provider = resourceInstance.getProvider();

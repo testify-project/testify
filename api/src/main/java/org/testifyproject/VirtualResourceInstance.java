@@ -15,6 +15,7 @@
  */
 package org.testifyproject;
 
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
@@ -32,6 +33,14 @@ public interface VirtualResourceInstance<R> extends PropertiesReader {
      * @return the virtual resource's fully qualified name
      */
     String getFqn();
+
+    /**
+     * Get the virtual resource annotation associated with the virtual resource
+     * instance.
+     *
+     * @return the virtual resource annotation
+     */
+    VirtualResource getVirtualResource();
 
     /**
      * Get the resource instance associated with the virtual resource.

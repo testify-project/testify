@@ -23,6 +23,7 @@ import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
+import org.testifyproject.annotation.Application;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
@@ -33,26 +34,29 @@ public class ServerInstanceBuilderTest {
 
     ServerInstanceBuilder sut;
     String fqn;
+    Application application;
 
     @Before
     public void init() {
         fqn = "test";
+        application = mock(Application.class);
         sut = ServerInstanceBuilder.builder();
     }
 
     @Test
     public void givenFqnBuildShouldSetName() {
-        ServerInstance result = sut.build(fqn);
+        ServerInstance result = sut.build(fqn, application);
 
         assertThat(result).isNotNull();
         assertThat(result.getFqn()).isEqualTo(fqn);
+        assertThat(result.getApplication()).isEqualTo(application);
     }
 
     @Test
     public void givenBaseURIBuildShouldSetBaseURI() {
         URI baseURI = URI.create("uri://test");
 
-        ServerInstance result = sut.baseURI(baseURI).build(fqn);
+        ServerInstance result = sut.baseURI(baseURI).build(fqn, application);
 
         assertThat(result).isNotNull();
         assertThat(result.getBaseURI()).isEqualTo(baseURI);
@@ -62,7 +66,7 @@ public class ServerInstanceBuilderTest {
     public void givenServerBuildShouldSetServer() {
         Object server = mock(Object.class);
 
-        ServerInstance result = sut.server(server).build(fqn);
+        ServerInstance result = sut.server(server).build(fqn, application);
 
         assertThat(result).isNotNull();
 
@@ -78,7 +82,7 @@ public class ServerInstanceBuilderTest {
         Object server = mock(Object.class);
         Class contract = Object.class;
 
-        ServerInstance result = sut.server(server, contract).build(fqn);
+        ServerInstance result = sut.server(server, contract).build(fqn, application);
 
         assertThat(result).isNotNull();
 
@@ -94,7 +98,7 @@ public class ServerInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        ServerInstance result = sut.property(key, value).build(fqn);
+        ServerInstance result = sut.property(key, value).build(fqn, application);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -106,7 +110,7 @@ public class ServerInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(name, value);
 
-        ServerInstance result = sut.properties(properties).build(fqn);
+        ServerInstance result = sut.properties(properties).build(fqn, application);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(name)).contains(value);

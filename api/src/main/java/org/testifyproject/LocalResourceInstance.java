@@ -16,6 +16,7 @@
 package org.testifyproject;
 
 import java.util.Optional;
+import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
@@ -37,6 +38,14 @@ public interface LocalResourceInstance<R, C> extends PropertiesReader {
      * @return the local resource's fully qualified name
      */
     String getFqn();
+
+    /**
+     * Get the local resource annotation associated with the local resource
+     * instance.
+     *
+     * @return the local resource annotation
+     */
+    LocalResource getLocalResource();
 
     /**
      * Get the client instance associated with the local resource.

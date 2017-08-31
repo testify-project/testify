@@ -20,9 +20,18 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Added `MethodDescriptor#getDefinedName()` to return the name of the method
 - Added the ability to find collaborator method by name and return type to `TestDescriptor`
 - Added the ability to compose collaborator providers by allowing `@CollaboratorProvder` to be annotated with `@CollaboratorProvder`
+- Added `InstanceProvider` contract to enable the addition of custom constants to the `ServiceInstance`
+- Added `@Hint` annotation to provide hints during test execution (i.e. `ServiceProvider` implementation)
+- Added `ClientInstanceBuilder` class to build client instances.
+- Added the ability to get local, virtual and remote resources from the `TestContext`
+- Added a method to get application annotation from `ServerInstance` contract
 
 ### Changed
 - Renamed `getDefinedName` method `FieldDescriptor` and `MethodDescriptor` to `getDeclaredName`
+- Changed `configure` and `start` methods in `ServerProvider` contract by adding `@Applicaiton` annotation parameter
+- Changed `configure` and `create` methods in `ClientProvider` contract by adding `@Applicaiton` annotation parameter
+- Changed stop method in `ClientProvider` contract by adding `ClientInstance` parameter
+- Changed ClientInstance contract to return client and clientProvider instances. Also added methods to get `fqn` and `annotation`.
 
 ### Removed
 - Removed `name` attribute from `@Fake`, `@Virtual` and `@Real`. `@Named` can be used on the field as a replacement.
