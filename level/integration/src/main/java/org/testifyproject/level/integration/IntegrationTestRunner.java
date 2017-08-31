@@ -75,7 +75,7 @@ public class IntegrationTestRunner implements TestRunner {
 
         ServiceProvider serviceProvider;
 
-        Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor.getAnnotation(Hint.class)
+        Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor.getHint()
                 .map(Hint::serviceProvider)
                 .filter(((Predicate) ServiceProvider.class::equals).negate());
 

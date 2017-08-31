@@ -133,7 +133,7 @@ public class IntegrationTestRunnerTest {
                 .willReturn(collaboratorReifiers);
         given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class))
                 .willReturn(configurationVerifiers);
-        given(testDescriptor.getAnnotation(Hint.class)).willReturn(foundHint);
+        given(testDescriptor.getHint()).willReturn(foundHint);
         given(hint.serviceProvider()).willReturn(hintServiceProvider);
         given(serviceLocatorUtil.getOne(ServiceProvider.class, hintServiceProvider)).willReturn(serviceProvider);
         given(serviceProvider.create(testContext)).willReturn(serviceContext);
@@ -160,7 +160,7 @@ public class IntegrationTestRunnerTest {
         verify(testContext).getTestDescriptor();
         verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class, IntegrationCategory.class);
         verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class);
-        verify(testDescriptor).getAnnotation(Hint.class);
+        verify(testDescriptor).getHint();
         verify(hint).serviceProvider();
         verify(serviceLocatorUtil).getOne(ServiceProvider.class, hintServiceProvider);
         verify(serviceProvider).create(testContext);
