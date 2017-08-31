@@ -53,7 +53,7 @@ public class CollaboratorProviderPreVerifier implements PreVerifier {
             String declaringClassName = collaboratorProvider.getDeclaringClassName();
             Class returnType = collaboratorProvider.getReturnType();
 
-            ExceptionUtil.INSTANCE.raise(returnType.equals(void.class) || returnType.equals(Void.class),
+            ExceptionUtil.INSTANCE.raise(void.class.equals(returnType) || Void.class.equals(returnType),
                     "Collaborator Provider method '{}' in class '{}' has void return type."
                     + "Please insure the collaborator provider returns a non-void type.",
                     name, declaringClassName);

@@ -15,6 +15,8 @@
  */
 package org.testifyproject;
 
+import org.testifyproject.annotation.Application;
+
 /**
  * A contract that defines methods to configure, start and stop a server.
  *
@@ -36,17 +38,17 @@ public interface ServerProvider<T, S> {
      * Start the server using the given configuration object.
      *
      * @param testContext the test context
+     * @param application the application annotation
      * @param configuration server configuration object
      * @return a server instance
      */
-    ServerInstance<S> start(TestContext testContext, T configuration);
+    ServerInstance<S> start(TestContext testContext, Application application, T configuration);
 
     /**
      * Stop the server.
      *
-     * @param testContext the test context
      * @param serverInstance the server instance
      */
-    void stop(TestContext testContext, ServerInstance<S> serverInstance);
+    void stop(ServerInstance<S> serverInstance);
 
 }

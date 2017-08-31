@@ -81,7 +81,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public ServerInstance<HttpServer> start(TestContext testContext, ResourceConfig resourceConfig) {
+    public ServerInstance<HttpServer> start(TestContext testContext, Application application, ResourceConfig resourceConfig) {
         URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PATH));
         // create and start a new instance of grizzly http server
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig, true);
@@ -102,14 +102,14 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
                     .property(APP, resourceConfig)
                     .property(APP_NAME, testContext.getName())
                     .property(APP_SERVLET_CONTAINER, server)
-                    .build("jersey");
+                    .build("jersey", application);
         }
 
         return serverInstance;
     }
 
     @Override
-    public void stop(TestContext testContext, ServerInstance<HttpServer> serverInstance) {
+    public void stop(ServerInstance<HttpServer> serverInstance) {
         if (serverInstance != null) {
             LoggingUtil.INSTANCE.debug("Stopping Jersey server");
             serverInstance.getServer().getValue().stop();

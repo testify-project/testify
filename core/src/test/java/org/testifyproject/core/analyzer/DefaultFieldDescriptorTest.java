@@ -68,37 +68,26 @@ public class DefaultFieldDescriptorTest {
     }
 
     @Test
-    public void callTogetDeclaredNameShouldReturnFieldName() {
+    public void callToGetDeclaredNameShouldReturnFieldName() {
         String result = sut.getDeclaredName();
 
         assertThat(result).isEqualTo(field.getName());
     }
 
     @Test
-    public void callTogetDeclaredNameForRealFieldShouldReturnRealFieldName() throws NoSuchFieldException {
-        String name = "real";
+    public void callToGetDeclaredNameWithoutNameShouldReturnFieldName() throws NoSuchFieldException {
+        String name = "named";
         field = TestFieldService.class.getDeclaredField(name);
         sut = new DefaultFieldDescriptor(field);
 
         String result = sut.getDeclaredName();
 
-        assertThat(result).isEqualTo(name);
+        assertThat(result).isEqualTo("test");
     }
 
     @Test
-    public void callTogetDeclaredNameForFakeFieldShouldReturnFakeFieldName() throws NoSuchFieldException {
-        String name = "fake";
-        field = TestFieldService.class.getDeclaredField(name);
-        sut = new DefaultFieldDescriptor(field);
-
-        String result = sut.getDeclaredName();
-
-        assertThat(result).isEqualTo(name);
-    }
-
-    @Test
-    public void callTogetDeclaredNameForVirtualFieldShouldReturnVirtualFieldName() throws NoSuchFieldException {
-        String name = "virtual";
+    public void callToGetDeclaredNameWithNameShouldReturnName() throws NoSuchFieldException {
+        String name = "unnamed";
         field = TestFieldService.class.getDeclaredField(name);
         sut = new DefaultFieldDescriptor(field);
 

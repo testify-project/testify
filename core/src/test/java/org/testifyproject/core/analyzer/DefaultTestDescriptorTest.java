@@ -34,6 +34,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
@@ -268,6 +269,55 @@ public class DefaultTestDescriptorTest {
         Optional<MethodDescriptor> result = sut.findConfigHandler(parameterType);
 
         assertThat(result).contains(value);
+    }
+
+    @Test
+    public void givenReturnTypeFindCollaboratorProviderShouldReturnFoundMethods() {
+        Class<Object> returnType = Object.class;
+        MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(methodDescriptor));
+
+        given(methodDescriptor.hasAnyAnnotations(Name.class)).willReturn(false);
+        given(methodDescriptor.hasReturnType(returnType)).willReturn(true);
+
+        Optional<MethodDescriptor> result = sut.findCollaboratorProvider(returnType);
+
+        assertThat(result).contains(methodDescriptor);
+    }
+
+    @Test
+    public void givenCollaboratorWithNameFindCollaboratorProviderShouldReturnFoundMethods() {
+        Class<Object> returnType = Object.class;
+        String name = "test";
+        MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(methodDescriptor));
+        Name nameAnnotation = mock(Name.class);
+        Optional<Name> foundName = Optional.of(nameAnnotation);
+
+        given(methodDescriptor.getAnnotation(Name.class)).willReturn(foundName);
+        given(nameAnnotation.value()).willReturn(name);
+        given(methodDescriptor.hasReturnType(returnType)).willReturn(true);
+
+        Optional<MethodDescriptor> result = sut.findCollaboratorProvider(returnType, name);
+
+        assertThat(result).contains(methodDescriptor);
+    }
+
+    @Test
+    public void givenCollaboratorWithoutNameFindCollaboratorProviderShouldReturnFoundMethods() {
+        Class<Object> returnType = Object.class;
+        String name = "test";
+        MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(methodDescriptor));
+        Optional<Name> foundName = Optional.empty();
+
+        given(methodDescriptor.getAnnotation(Name.class)).willReturn(foundName);
+        given(methodDescriptor.getName()).willReturn(name);
+        given(methodDescriptor.hasReturnType(returnType)).willReturn(true);
+
+        Optional<MethodDescriptor> result = sut.findCollaboratorProvider(returnType, name);
+
+        assertThat(result).contains(methodDescriptor);
     }
 
     @Test

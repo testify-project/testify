@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation that can be placed on field, method, or method parameter to
- * associate it with a name.
+ * associate it with a name that can be used to qualify them.
  *
  * @author saden
  */

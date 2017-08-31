@@ -15,9 +15,11 @@
  */
 package org.testifyproject.core;
 
+import java.nio.file.Paths;
 import java.util.Map;
 import org.testifyproject.Instance;
 import org.testifyproject.RemoteResourceInstance;
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
@@ -29,7 +31,9 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  */
 public class RemoteResourceInstanceBuilder<R> {
 
-    private Instance<R> resource;
+    private R resource;
+    private Class<R> resourceContract;
+
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
@@ -48,7 +52,7 @@ public class RemoteResourceInstanceBuilder<R> {
      * @return this object
      */
     public RemoteResourceInstanceBuilder<R> resource(R resource) {
-        this.resource = DefaultInstance.of(resource);
+        this.resource = resource;
 
         return this;
     }
@@ -60,8 +64,9 @@ public class RemoteResourceInstanceBuilder<R> {
      * @param contract the underlying resource resource contract
      * @return this object
      */
-    public RemoteResourceInstanceBuilder<R> resource(R resource, Class<? extends R> contract) {
-        this.resource = DefaultInstance.of(resource, contract);
+    public RemoteResourceInstanceBuilder<R> resource(R resource, Class<R> contract) {
+        this.resource = resource;
+        this.resourceContract = contract;
 
         return this;
     }
@@ -100,10 +105,33 @@ public class RemoteResourceInstanceBuilder<R> {
      * resource provider implementations.
      *
      * @param fqn the fully qualified name of the remote resource
+     * @param remoteResource the remote resource annotation
      * @return a remote resource instance
      */
-    public RemoteResourceInstance<R> build(String fqn) {
-        return DefaultRemoteResourceInstance.of(fqn, resource, properties.build());
+    public RemoteResourceInstance<R> build(String fqn, RemoteResource remoteResource) {
+        Instance<R> resourceInstance = createResource(fqn, remoteResource);
+
+        return DefaultRemoteResourceInstance.of(fqn, remoteResource, resourceInstance, properties.build());
+    }
+
+    Instance<R> createResource(String fqn, RemoteResource remoteResource) {
+        if (resource == null) {
+            return null;
+        }
+
+        String resourceName;
+
+        if ("".equals(remoteResource.resourceName())) {
+            resourceName = Paths.get("resource:/", fqn, "resource").toString();
+        } else {
+            resourceName = Paths.get("resource:/", fqn, remoteResource.resourceName()).toString();
+        }
+
+        if (!void.class.equals(remoteResource.resourceContract())) {
+            resourceContract = remoteResource.resourceContract();
+        }
+
+        return DefaultInstance.of(resource, resourceName, resourceContract);
     }
 
 }

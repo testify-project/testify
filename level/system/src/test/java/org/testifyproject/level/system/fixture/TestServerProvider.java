@@ -18,6 +18,7 @@ package org.testifyproject.level.system.fixture;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Application;
 
 /**
  *
@@ -31,12 +32,12 @@ public class TestServerProvider implements ServerProvider {
     }
 
     @Override
-    public ServerInstance start(TestContext testContext, Object configuration) {
+    public ServerInstance start(TestContext testContext, Application application, Object configuration) {
         return null;
     }
 
     @Override
-    public void stop(TestContext testContext, ServerInstance serverInstance) {
+    public void stop(ServerInstance serverInstance) {
     }
 
 }

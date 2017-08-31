@@ -15,63 +15,87 @@
  */
 package org.testifyproject.core;
 
+import java.util.Map;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.testifyproject.ClientInstance;
+import org.testifyproject.Instance;
+import org.testifyproject.annotation.Application;
 
 /**
  * Default implementation of {@link ClientInstance} contract.
  *
  * @author saden
- * @param <T> the client type
+ * @param <C> the client type
  */
 @ToString
 @EqualsAndHashCode
-public class DefaultClientInstance<T> implements ClientInstance<T> {
+public class DefaultClientInstance<C> implements ClientInstance<C> {
 
-    private final T instance;
-    private final Class<? extends T> contract;
+    private final String fqn;
+    private final Application application;
+    private final Instance<C> client;
+    private final Instance clientProvider;
+    private final Map<String, Object> properties;
 
-    DefaultClientInstance(T client, Class<? extends T> contract) {
-        this.instance = client;
-        this.contract = contract;
+    DefaultClientInstance(
+            String fqn,
+            Application application,
+            Instance<C> client,
+            Instance clientProvider,
+            Map<String, Object> properties) {
+        this.fqn = fqn;
+        this.application = application;
+        this.client = client;
+        this.clientProvider = clientProvider;
+        this.properties = properties;
     }
 
     /**
-     * Create a new client client instance from the given parameters.
+     * Create a client instance based on the given parameters.
      *
-     * @param <T> the client type
-     * @param instance the underlying client instance
-     * @return a client instance
+     * @param <C> the underlying client provider client type
+     * @param fqn the fully qualified name of the client
+     * @param application the application annotation
+     * @param clientProvider the underlying local provider instance
+     * @param client the client instance
+     * @param properties the provider instance properties
+     * @return a new provider instance
      */
-    public static <T> ClientInstance of(T instance) {
-        return new DefaultClientInstance(instance, null);
-    }
-
-    /**
-     * Create a new client client instance from the given parameters. Note that the name associated
-     * with the client will be derived from the client implementation's
-     * {@link Class#getSimpleName() simple class name}.
-     *
-     * @param <T> the client type
-     * @param instance the underlying client instance
-     * @param contract the contract implemented by the client
-     * @return a client instance
-     */
-    public static <T> ClientInstance of(T instance, Class<? extends T> contract) {
-        return new DefaultClientInstance(instance, contract);
+    public static <C> DefaultClientInstance<C> of(
+            String fqn,
+            Application application,
+            Instance<C> client,
+            Instance clientProvider,
+            Map<String, Object> properties) {
+        return new DefaultClientInstance<>(fqn, application, client, clientProvider, properties);
     }
 
     @Override
-    public T getValue() {
-        return instance;
+    public String getFqn() {
+        return fqn;
     }
 
     @Override
-    public Optional<Class<? extends T>> getContract() {
-        return ofNullable(contract);
+    public Application getApplication() {
+        return application;
+    }
+
+    @Override
+    public Instance<C> getClient() {
+        return client;
+    }
+
+    @Override
+    public <P> Optional<Instance<P>> getClientProvider() {
+        return ofNullable(clientProvider);
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
 }

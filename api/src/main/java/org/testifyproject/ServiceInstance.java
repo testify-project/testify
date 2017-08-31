@@ -69,17 +69,43 @@ public interface ServiceInstance {
     void addConstant(Object instance, String name, Class contract);
 
     /**
+     * Add the given instance as a constant.
+     *
+     * @param <T> the instance type
+     * @param instance the instance
+     */
+    default <T> void addConstant(Instance<T> instance) {
+        T value = instance.getValue();
+        String name = null;
+        Class contract = null;
+
+        Optional<String> foundName = instance.getName();
+
+        if (foundName.isPresent()) {
+            name = foundName.get();
+        }
+
+        Optional<Class<? extends T>> foundContract = instance.getContract();
+
+        if (foundContract.isPresent()) {
+            contract = foundContract.get();
+        }
+
+        addConstant(value, name, contract);
+    }
+
+    /**
      * Replace all services that implement the given contract with the given
      * name and instance. If services that implement the contract are not found
      * this method should behave like
      * {@link #addConstant(java.lang.Object, java.lang.String, java.lang.Class)}.
      *
-     * @param instance the service instance
+     * @param value the service value
      * @param name the name of the service
      * @param contract the contract implemented by the instance
      *
      */
-    void replace(Object instance, String name, Class contract);
+    void replace(Object value, String name, Class contract);
 
     /**
      * Add the given module(s) to the service instance.
@@ -97,31 +123,25 @@ public interface ServiceInstance {
      *
      * @param <T> the instance type
      * @param instance the instance
-     * @param overrideName the override name
-     * @param overrideContract the override contract
      */
-    default <T> void replace(Instance<T> instance, String overrideName, Class overrideContract) {
-        T constant = instance.getValue();
-        Optional<String> foundName = instance.getName();
-        Optional<Class<? extends T>> foundContract = instance.getContract();
-
+    default <T> void replace(Instance<T> instance) {
+        T value = instance.getValue();
         String name = null;
+        Class contract = null;
 
-        if (overrideName != null && !overrideName.isEmpty()) {
-            name = overrideName;
-        } else if (foundName.isPresent()) {
+        Optional<String> foundName = instance.getName();
+
+        if (foundName.isPresent()) {
             name = foundName.get();
         }
 
-        Class<? extends T> contract = null;
+        Optional<Class<? extends T>> foundContract = instance.getContract();
 
-        if (overrideContract != null && !void.class.equals(overrideContract)) {
-            contract = overrideContract;
-        } else if (foundContract.isPresent()) {
+        if (foundContract.isPresent()) {
             contract = foundContract.get();
         }
 
-        replace(constant, name, contract);
+        replace(value, name, contract);
     }
 
     /**

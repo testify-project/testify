@@ -124,6 +124,6 @@ public @interface RemoteResource {
      *
      * @return the remote resource's contract type.
      */
-    Class<?> resourceContract() default void.class;
+    Class resourceContract() default void.class;
 
 }

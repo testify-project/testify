@@ -20,6 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  * An implementation of {@link VirtualResourceInstance SPI Contract} that
@@ -33,11 +34,16 @@ import org.testifyproject.VirtualResourceInstance;
 public class DefaultVirtualResourceInstance<R> implements VirtualResourceInstance<R> {
 
     private final String fqn;
+    private final VirtualResource virtualResource;
     private final Instance<R> resource;
     private final Map<String, Object> properties;
 
-    DefaultVirtualResourceInstance(String fqn, Instance<R> resource, Map<String, Object> properties) {
+    DefaultVirtualResourceInstance(String fqn,
+            VirtualResource virtualResource,
+            Instance<R> resource,
+            Map<String, Object> properties) {
         this.fqn = fqn;
+        this.virtualResource = virtualResource;
         this.resource = resource;
         this.properties = properties;
     }
@@ -47,17 +53,26 @@ public class DefaultVirtualResourceInstance<R> implements VirtualResourceInstanc
      *
      * @param <R> the underlying virtual resource type
      * @param fqn the virtual resource's fully qualified name
+     * @param virtualResource the virtual resource annotation
      * @param resource the underlying virtual resource instance
      * @param properties properties associated with the instance
      * @return a new container instance.
      */
-    public static <R> VirtualResourceInstance of(String fqn, Instance<R> resource, Map<String, Object> properties) {
-        return new DefaultVirtualResourceInstance(fqn, resource, properties);
+    public static <R> VirtualResourceInstance of(String fqn,
+            VirtualResource virtualResource,
+            Instance<R> resource,
+            Map<String, Object> properties) {
+        return new DefaultVirtualResourceInstance(fqn, virtualResource, resource, properties);
     }
 
     @Override
     public String getFqn() {
         return fqn;
+    }
+
+    @Override
+    public VirtualResource getVirtualResource() {
+        return virtualResource;
     }
 
     @Override

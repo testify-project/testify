@@ -16,81 +16,94 @@
 package org.testifyproject.client;
 
 import java.net.URI;
+import java.util.Optional;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import org.testifyproject.ClientInstance;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
-import org.testifyproject.annotation.Sut;
-import org.testifyproject.annotation.Fake;
-import org.testifyproject.junit4.UnitTest;
+import org.testifyproject.annotation.Application;
 
 /**
  *
  * @author saden
  */
-@RunWith(UnitTest.class)
 public class WebTargetClientProviderTest {
 
-    @Sut
     WebTargetClientProvider sut;
 
-    @Fake
-    Client client;
+    TestContext testContext;
+    Application application;
+    URI baseURI;
 
-    @Test
-    public void givenNullConfigureShouldReturnClientBuilder() {
-        sut.configure(mock(TestContext.class), null);
+    @Before
+    public void init() {
+        testContext = mock(TestContext.class);
+        application = mock(Application.class, Answers.RETURNS_MOCKS);
+        baseURI = URI.create("uri://test");
+        sut = new WebTargetClientProvider();
     }
 
     @Test
-    public void givenServerInstanceConfigureShouldReturn() {
-        TestContext testContext = mock(TestContext.class);
-        URI baseURI = URI.create("http://test.server");
-        ClientBuilder result = sut.configure(testContext, baseURI);
+    public void givenValidConfigurationConfigureShouldReturnClientBuilder() {
+        ClientBuilder result = sut.configure(testContext, application, baseURI);
 
         assertThat(result).isNotNull();
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullConfigurationCreateShouldThrowException() {
-        TestContext testContext = mock(TestContext.class);
-        URI baseURI = URI.create("http://test.server");
-        ClientBuilder clientBuilder = null;
-
-        sut.create(testContext, baseURI, clientBuilder);
+        sut.create(testContext, application, baseURI, null);
     }
 
     @Test
-    public void givenClientBuilderCreateShouldReturnClientInstance() {
-        TestContext testContext = mock(TestContext.class);
-        URI baseURI = URI.create("http://test.server");
+    public void givenValidConfigurationCreateShouldReturnClientInstance() {
+        Client client = mock(Client.class);
         ClientBuilder clientBuilder = mock(ClientBuilder.class);
         WebTarget webTarget = mock(WebTarget.class);
 
         given(clientBuilder.build()).willReturn(client);
         given(client.target(baseURI)).willReturn(webTarget);
 
-        Instance<WebTarget> result = sut.create(testContext, baseURI, clientBuilder);
+        ClientInstance<WebTarget> result = sut.create(testContext, application, baseURI, clientBuilder);
 
         assertThat(result).isNotNull();
-        assertThat(result.getValue()).isEqualTo(webTarget);
-        assertThat(result.getContract()).contains(WebTarget.class);
+        assertThat(result.getFqn()).isEqualTo("jerseyClient");
+        assertThat(result.getApplication()).isEqualTo(application);
+        assertThat(result.getClient()).isNotNull();
+        assertThat(result.getClientProvider()).isNotNull();
 
         verify(clientBuilder).build();
         verify(client).target(baseURI);
+
+        verifyNoMoreInteractions(testContext, client, clientBuilder, webTarget);
     }
 
     @Test
     public void callToCloseShouldCloseClient() {
-        sut.destroy();
+        ClientInstance<WebTarget> clientInstance = mock(ClientInstance.class);
+        Client client = mock(Client.class);
+        Instance instance = mock(Instance.class);
+        Optional<Instance<Object>> foundInstance = Optional.of(instance);
 
+        given(clientInstance.getClientProvider()).willReturn(foundInstance);
+        given(instance.getValue()).willReturn(client);
+
+        sut.destroy(clientInstance);
+
+        verify(clientInstance).getClientProvider();
+        verify(instance).getValue();
         verify(client).close();
+
+        verifyNoMoreInteractions(testContext, application, clientInstance, instance, client);
     }
 }

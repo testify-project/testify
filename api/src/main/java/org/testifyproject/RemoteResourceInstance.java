@@ -15,6 +15,7 @@
  */
 package org.testifyproject;
 
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
@@ -34,6 +35,14 @@ public interface RemoteResourceInstance<R> extends PropertiesReader {
      * @return the remote resource's fully qualified name
      */
     String getFqn();
+
+    /**
+     * Get the remote resource annotation associated with the remote resource
+     * instance.
+     *
+     * @return the remote resource annotation
+     */
+    RemoteResource getRemoteResource();
 
     /**
      * Get the resource instance associated with the remote resource.

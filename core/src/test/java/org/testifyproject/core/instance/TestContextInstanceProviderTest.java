@@ -13,49 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.core.instance;
 
-import java.util.Optional;
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Answers;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import org.testifyproject.Instance;
+import org.testifyproject.TestContext;
+import org.testifyproject.core.DefaultInstance;
 
 /**
  *
  * @author saden
  */
-public class ClientInstanceTest {
+public class TestContextInstanceProviderTest {
 
-    ClientInstance<String> sut;
+    TestContextInstanceProvider sut;
 
     @Before
     public void init() {
-        sut = mock(ClientInstance.class, Answers.CALLS_REAL_METHODS);
-    }
-
-    @After
-    public void destroy() {
-        verifyNoMoreInteractions(sut);
+        sut = new TestContextInstanceProvider();
     }
 
     @Test
-    public void callToGetNameShouldReturnEmptyOptional() {
-        Optional<String> result = sut.getName();
+    public void givenTestContextGetShouldReturnTestContext() {
+        TestContext testContext = mock(TestContext.class);
+        Instance<Object> instance = DefaultInstance.of(testContext, TestContext.class);
+        List<Instance> result = sut.get(testContext);
 
-        assertThat(result).isEmpty();
-        verify(sut).getName();
-    }
-
-    @Test
-    public void callToGetContractShouldReturnEmptyOptional() {
-        Optional<Class<? extends String>> result = sut.getContract();
-
-        assertThat(result).isEmpty();
-        verify(sut).getContract();
+        assertThat(result).containsExactly(instance);
     }
 }

@@ -18,6 +18,8 @@ package org.testifyproject.level.integration;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import org.testifyproject.InstanceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.SutDescriptor;
@@ -34,6 +36,7 @@ import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.tools.Discoverable;
 
@@ -70,13 +73,28 @@ public class IntegrationTestRunner implements TestRunner {
         serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
-        ServiceProvider serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class);
+        ServiceProvider serviceProvider;
+
+        Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor.getAnnotation(Hint.class)
+                .map(Hint::serviceProvider)
+                .filter(((Predicate) ServiceProvider.class::equals).negate());
+
+        if (foundServiceProvider.isPresent()) {
+            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class, foundServiceProvider.get());
+        } else {
+            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class);
+        }
 
         Object serviceContext = serviceProvider.create(testContext);
 
         ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceContext);
         testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
-        serviceInstance.addConstant(testContext, null, TestContext.class);
+
+        //add constant instances
+        serviceLocatorUtil.findAllWithFilter(InstanceProvider.class, IntegrationCategory.class)
+                .stream()
+                .flatMap(p -> p.get(testContext).stream())
+                .forEach(serviceInstance::replace);
 
         serviceProvider.postConfigure(testContext, serviceInstance);
         testConfigurer.configure(testContext, serviceContext);

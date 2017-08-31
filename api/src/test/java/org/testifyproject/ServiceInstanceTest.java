@@ -44,178 +44,100 @@ public class ServiceInstanceTest {
     @Test(expected = NullPointerException.class)
     public void givenNullInstanceCallToReplaceShouldThrowException() {
         Instance<Object> instance = null;
-        String overrideName = "overrideName";
-        Class overrideContract = Class.class;
 
-        sut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance);
     }
 
     @Test
-    public void givenEmptyOverrideNameReplaceShouldReplaceInstance() {
+    public void givenInstanceWithoutNameAndContractReplaceShouldCallReplace() {
         Instance<Object> instance = mock(Instance.class);
-        String overrideName = "";
-        Class overrideContract = Object.class;
-
+        String name = null;
+        Class<Object> contract = null;
         Object constant = mock(Object.class);
 
-        String name = "name";
-        Optional<String> foundName = Optional.of(name);
+        Optional<String> foundName = Optional.ofNullable(name);
+        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
 
-        Class contract = Class.class;
-        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
-
-        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
+        given(instance.getValue()).willReturn(constant);
 
-        sut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance);
 
         verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(sut).replace(instance, overrideName, overrideContract);
-        verify(sut).replace(constant, name, overrideContract);
-    }
-
-    @Test
-    public void givenNullOverrideNameReplaceShouldReplaceInstance() {
-        Instance<Object> instance = mock(Instance.class);
-        String overrideName = null;
-        Class overrideContract = Object.class;
-
-        Object constant = mock(Object.class);
-
-        String name = "name";
-        Optional<String> foundName = Optional.of(name);
-
-        Class contract = Class.class;
-        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
-
-        given(instance.getValue()).willReturn(constant);
-        given(instance.getName()).willReturn(foundName);
-        given(instance.getContract()).willReturn(foundContract);
-
-        sut.replace(instance, overrideName, overrideContract);
-
-        verify(instance).getValue();
-        verify(instance).getName();
-        verify(instance).getContract();
-
-        verify(sut).replace(instance, overrideName, overrideContract);
-        verify(sut).replace(constant, name, overrideContract);
-    }
-
-    @Test
-    public void givenOverrideNameReplaceShouldReplaceInstance() {
-        Instance<Object> instance = mock(Instance.class);
-        String overrideName = "overrideName";
-        Class overrideContract = String.class;
-
-        Object constant = mock(Object.class);
-
-        String name = "name";
-        Optional<String> foundName = Optional.of(name);
-
-        Class contract = String.class;
-        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
-
-        given(instance.getValue()).willReturn(constant);
-        given(instance.getName()).willReturn(foundName);
-        given(instance.getContract()).willReturn(foundContract);
-
-        sut.replace(instance, overrideName, overrideContract);
-
-        verify(instance).getValue();
-        verify(instance).getName();
-        verify(instance).getContract();
-
-        verify(sut).replace(instance, overrideName, overrideContract);
-        verify(sut).replace(constant, overrideName, contract);
-    }
-
-    @Test
-    public void givenNullOverrideContractReplaceShouldReplaceInstance() {
-        Instance<Object> instance = mock(Instance.class);
-        String overrideName = "";
-        Class overrideContract = null;
-
-        Object constant = mock(Object.class);
-
-        String name = "name";
-        Optional<String> foundName = Optional.of(name);
-
-        Class contract = Class.class;
-        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
-
-        given(instance.getValue()).willReturn(constant);
-        given(instance.getName()).willReturn(foundName);
-        given(instance.getContract()).willReturn(foundContract);
-
-        sut.replace(instance, overrideName, overrideContract);
-
-        verify(instance).getValue();
-        verify(instance).getName();
-        verify(instance).getContract();
-
-        verify(sut).replace(instance, overrideName, overrideContract);
         verify(sut).replace(constant, name, contract);
     }
 
     @Test
-    public void givenVoidOverrideContractReplaceShouldReplaceInstance() {
+    public void givenInstanceWithNameAndContractReplaceShouldCallReplace() {
         Instance<Object> instance = mock(Instance.class);
-        String overrideName = "";
-        Class overrideContract = void.class;
-
+        String name = "test";
+        Class<Object> contract = Object.class;
         Object constant = mock(Object.class);
 
-        String name = "name";
-        Optional<String> foundName = Optional.of(name);
+        Optional<String> foundName = Optional.ofNullable(name);
+        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
 
-        Class contract = Class.class;
-        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
-
-        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
+        given(instance.getValue()).willReturn(constant);
 
-        sut.replace(instance, overrideName, overrideContract);
+        sut.replace(instance);
 
         verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(sut).replace(instance, overrideName, overrideContract);
         verify(sut).replace(constant, name, contract);
     }
 
     @Test
-    public void givenOverrideContractReplaceShouldReplaceInstance() {
+    public void givenInstanceWithoutNameAndContractAddConstantShouldCallReplace() {
         Instance<Object> instance = mock(Instance.class);
-        String overrideName = "";
-        Class overrideContract = Object.class;
-
+        String name = null;
+        Class<Object> contract = null;
         Object constant = mock(Object.class);
 
-        String name = "name";
-        Optional<String> foundName = Optional.of(name);
+        Optional<String> foundName = Optional.ofNullable(name);
+        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
 
-        Class contract = Class.class;
-        Optional<Class<? extends Object>> foundContract = Optional.of(contract);
-
-        given(instance.getValue()).willReturn(constant);
         given(instance.getName()).willReturn(foundName);
         given(instance.getContract()).willReturn(foundContract);
+        given(instance.getValue()).willReturn(constant);
 
-        sut.replace(instance, overrideName, overrideContract);
+        sut.addConstant(instance);
 
         verify(instance).getValue();
         verify(instance).getName();
         verify(instance).getContract();
 
-        verify(sut).replace(instance, overrideName, overrideContract);
-        verify(sut).replace(constant, name, overrideContract);
+        verify(sut).addConstant(constant, name, contract);
+    }
+
+    @Test
+    public void givenInstanceWithNameAndContractAddConstantShouldCallReplace() {
+        Instance<Object> instance = mock(Instance.class);
+        String name = "test";
+        Class<Object> contract = Object.class;
+        Object constant = mock(Object.class);
+
+        Optional<String> foundName = Optional.ofNullable(name);
+        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
+
+        given(instance.getName()).willReturn(foundName);
+        given(instance.getContract()).willReturn(foundContract);
+        given(instance.getValue()).willReturn(constant);
+
+        sut.addConstant(instance);
+
+        verify(instance).getValue();
+        verify(instance).getName();
+        verify(instance).getContract();
+
+        verify(sut).addConstant(constant, name, contract);
     }
 
     @Test

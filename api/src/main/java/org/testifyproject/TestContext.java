@@ -15,8 +15,12 @@
  */
 package org.testifyproject;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.annotation.RemoteResource;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
 
@@ -138,5 +142,26 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
      * @return resource start strategy
      */
     StartStrategy getResourceStartStrategy();
+
+    /**
+     * Get the local resource instances associated with the test.
+     *
+     * @return a list of local resource instances, empty list otherwise
+     */
+    List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> getLocalResourceInstances();
+
+    /**
+     * Get the virtual resource instances associated with the test.
+     *
+     * @return a list of virtual resource instances, empty list otherwise
+     */
+    List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> getVirtualResourceInstances();
+
+    /**
+     * Get the remote resource instances associated with the test.
+     *
+     * @return a list of remote resource instances, empty list otherwise
+     */
+    List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> getRemoteResourceInstances();
 
 }
