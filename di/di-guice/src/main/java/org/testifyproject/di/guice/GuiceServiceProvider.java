@@ -23,6 +23,8 @@ import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -30,6 +32,8 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class GuiceServiceProvider implements ServiceProvider<Injector> {
 

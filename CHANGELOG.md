@@ -20,11 +20,12 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Added `MethodDescriptor#getDefinedName()` to return the name of the method
 - Added the ability to find collaborator method by name and return type to `TestDescriptor`
 - Added the ability to compose collaborator providers by allowing `@CollaboratorProvder` to be annotated with `@CollaboratorProvder`
-- Added `InstanceProvider` contract to enable the addition of custom constants to the `ServiceInstance`
+- Added `PreInstanceProvider` and `PostInstanceProvider` contracts to enable the addition of custom constants to the `ServiceInstance`
 - Added `@Hint` annotation to provide hints during test execution (i.e. `ServiceProvider` implementation)
 - Added `ClientInstanceBuilder` class to build client instances.
 - Added the ability to get local, virtual and remote resources from the `TestContext`
 - Added a method to get application annotation from `ServerInstance` contract
+- Added a default implementation of `ServiceInstance` contract that can be used in unit tests
 
 ### Changed
 - Renamed `getDefinedName` method `FieldDescriptor` and `MethodDescriptor` to `getDeclaredName`

@@ -16,7 +16,6 @@
 package org.testifyproject.di.spring;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
@@ -33,16 +32,12 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.event.ContextClosedEvent;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.di.fixture.common.ControllerService;
 import org.testifyproject.di.fixture.module.TestModule;
-import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  *
@@ -53,15 +48,13 @@ public class SpringBeanFactoryPostProcessorTest {
     SpringBeanFactoryPostProcessor sut;
     TestContext testContext;
     ServiceInstance serviceInstance;
-    List<ResourceProvider> resourcesProviders;
 
     @Before
     public void init() {
         testContext = mock(TestContext.class);
         serviceInstance = mock(ServiceInstance.class);
-        resourcesProviders = mock(List.class);
 
-        sut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance, resourcesProviders));
+        sut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance));
     }
 
     @Test
@@ -212,23 +205,6 @@ public class SpringBeanFactoryPostProcessorTest {
         verify(beanFactory).getBeanNamesForType(beanType);
         verify(beanFactory).removeBeanDefinition(beanNameForType);
         verify(beanFactory).registerBeanDefinition(eq(beanNameForType), any(GenericBeanDefinition.class));
-    }
-
-    @Test
-    public void callToOnApplicationEventWithLazyStartStrategyShouldStartResources() {
-        ResourceProvider resourceProvider = mock(ResourceProvider.class);
-        List<ResourceProvider> resourceProviders = ImmutableList.of(resourceProvider);
-        sut = spy(new SpringBeanFactoryPostProcessor(testContext, serviceInstance, resourceProviders));
-
-        StartStrategy resourceStartStrategy = StartStrategy.LAZY;
-
-        given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
-        ContextClosedEvent event = mock(ContextClosedEvent.class);
-
-        sut.onApplicationEvent(event);
-
-        verify(testContext).getResourceStartStrategy();
-        verify(resourceProvider).stop(testContext);
     }
 
 }

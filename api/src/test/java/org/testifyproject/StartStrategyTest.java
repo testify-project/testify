@@ -26,7 +26,7 @@ public class StartStrategyTest {
 
     @Test
     public void verifyStartStrategyEnums() {
-        assertThat(StartStrategy.values()).containsExactly(StartStrategy.UNDEFINED,
+        assertThat(StartStrategy.values()).containsExactly(
                 StartStrategy.EAGER,
                 StartStrategy.LAZY
         );

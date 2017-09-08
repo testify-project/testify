@@ -16,7 +16,6 @@
 package org.testifyproject.di.spring;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.config.BeanDefinition;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
@@ -24,16 +23,14 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
+import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  * A class that is called after the application context is refreshed to
@@ -41,19 +38,14 @@ import org.testifyproject.annotation.Fixture;
  *
  * @author saden
  */
-public class SpringBeanFactoryPostProcessor implements
-        BeanFactoryPostProcessor,
-        ApplicationListener<ContextClosedEvent>,
-        Ordered {
+public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {
 
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
-    private final List<ResourceProvider> resourceProviders;
 
-    public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance, List<ResourceProvider> resourceProviders) {
+    public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance) {
         this.testContext = testContext;
         this.serviceInstance = serviceInstance;
-        this.resourceProviders = resourceProviders;
     }
 
     @Override
@@ -99,10 +91,12 @@ public class SpringBeanFactoryPostProcessor implements
 
         beanFactory.addBeanPostProcessor(new SpringReifierPostProcessor(testContext));
 
-        //start all test requires
-        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
-        }
+        //add constant instances
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(PreInstanceProvider.class)
+                .stream()
+                .flatMap(p -> p.get(testContext).stream())
+                .forEach(serviceInstance::replace);
+
     }
 
     void processPrimary(DefaultListableBeanFactory beanFactory, BeanDefinition beanDefinition, String beanName, Class<?> beanType) {
@@ -179,13 +173,6 @@ public class SpringBeanFactoryPostProcessor implements
                 beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
                 replacedBeanNames.add(beanNameForType);
             }
-        }
-    }
-
-    @Override
-    public void onApplicationEvent(ContextClosedEvent event) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
         }
     }
 

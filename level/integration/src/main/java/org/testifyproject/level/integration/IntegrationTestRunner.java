@@ -19,9 +19,9 @@ import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import org.testifyproject.InstanceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -39,6 +39,7 @@ import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  * A class used to run a integration test.
@@ -49,8 +50,8 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class IntegrationTestRunner implements TestRunner {
 
-    TestResourcesProvider testResourcesProvider;
     private final ServiceLocatorUtil serviceLocatorUtil;
+    TestResourcesProvider testResourcesProvider;
 
     public IntegrationTestRunner() {
         this(ServiceLocatorUtil.INSTANCE);
@@ -82,7 +83,7 @@ public class IntegrationTestRunner implements TestRunner {
         if (foundServiceProvider.isPresent()) {
             serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class, foundServiceProvider.get());
         } else {
-            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class);
+            serviceProvider = serviceLocatorUtil.getOneWithFilter(ServiceProvider.class, IntegrationCategory.class);
         }
 
         Object serviceContext = serviceProvider.create(testContext);
@@ -90,17 +91,19 @@ public class IntegrationTestRunner implements TestRunner {
         ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceContext);
         testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
 
-        //add constant instances
-        serviceLocatorUtil.findAllWithFilter(InstanceProvider.class, IntegrationCategory.class)
-                .stream()
-                .flatMap(p -> p.get(testContext).stream())
-                .forEach(serviceInstance::replace);
-
         serviceProvider.postConfigure(testContext, serviceInstance);
         testConfigurer.configure(testContext, serviceContext);
 
         testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
-        testResourcesProvider.start(testContext, serviceInstance);
+        testResourcesProvider.start(testContext);
+
+        if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
+            //add constant instances
+            serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, IntegrationCategory.class)
+                    .stream()
+                    .flatMap(p -> p.get(testContext).stream())
+                    .forEach(serviceInstance::replace);
+        }
 
         //XXX: Some DI framework (i.e. Spring) require that the service instance
         //context be initialized. We need to do the initialization after the
@@ -136,8 +139,8 @@ public class IntegrationTestRunner implements TestRunner {
 
     @Override
     public void stop(TestContext testContext) {
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Object testInstance = testContext.getTestInstance();
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
         serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor.getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
@@ -150,16 +153,12 @@ public class IntegrationTestRunner implements TestRunner {
         testContext.getSutDescriptor()
                 .ifPresent(p -> p.destroy(testInstance));
 
-        ServiceInstance serviceInstance = testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
-                .orElse(null);
-
         if (testResourcesProvider != null) {
-            testResourcesProvider.stop(testContext, serviceInstance);
+            testResourcesProvider.stop(testContext);
         }
 
-        if (serviceInstance != null) {
-            serviceInstance.destroy();
-        }
+        testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
+                .ifPresent(ServiceInstance::destroy);
     }
 
 }

@@ -15,15 +15,14 @@
  */
 package org.testifyproject.di.spring;
 
-import java.util.List;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
@@ -31,6 +30,8 @@ import org.testifyproject.tools.Discoverable;
  *
  * @author saden
  */
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class SpringServiceProvider implements ServiceProvider<ConfigurableApplicationContext> {
 
@@ -49,17 +50,12 @@ public class SpringServiceProvider implements ServiceProvider<ConfigurableApplic
     @Override
     public ServiceInstance configure(TestContext testContext, ConfigurableApplicationContext applicationContext) {
         SpringServiceInstance serviceInstance = new SpringServiceInstance(applicationContext);
-        List<ResourceProvider> resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
 
         SpringBeanFactoryPostProcessor postProcessor
-                = new SpringBeanFactoryPostProcessor(testContext, serviceInstance, resourceProviders);
-
-        SpringContextClosedListener closeListener
-                = new SpringContextClosedListener(testContext, resourceProviders);
+                = new SpringBeanFactoryPostProcessor(testContext, serviceInstance);
 
         applicationContext.setId(testContext.getName());
         applicationContext.addBeanFactoryPostProcessor(postProcessor);
-        applicationContext.addApplicationListener(closeListener);
 
         return serviceInstance;
     }

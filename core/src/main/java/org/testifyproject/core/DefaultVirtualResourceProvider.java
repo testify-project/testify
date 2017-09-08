@@ -16,14 +16,12 @@
 package org.testifyproject.core;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.testifyproject.DataProvider;
 import org.testifyproject.ResourceInstance;
 import org.testifyproject.ResourceProvider;
-import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -71,7 +69,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
     }
 
     @Override
-    public void start(TestContext testContext, ServiceInstance serviceInstance) {
+    public void start(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
@@ -91,7 +89,6 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
                 virtualResourceProvider = reflectionUtil.newInstance(provider);
             }
 
-            serviceInstance.inject(virtualResourceProvider);
             String configKey = virtualResource.configKey();
             PropertiesReader configReader = testContext.getPropertiesReader(configKey);
             Object configuration = virtualResourceProvider.configure(testContext, virtualResource, configReader);
@@ -115,16 +112,12 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
                     if (!DataProvider.class.equals(dataProviderType)) {
                         DataProvider dataProvider = reflectionUtil.newInstance(dataProviderType);
-                        serviceInstance.inject(dataProvider);
                         dataProvider.load(testContext, dataFiles, virtualResourceInstance);
                     }
                 }
 
                 //add resource properties to the test context with its fqn as its key
                 testContext.addProperty(virtualResourceInstance.getFqn(), virtualResourceInstance.getProperties());
-
-                //process the the resource instance
-                processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
                 //track the resource so it can be stopped later
                 ResourceInstance resourceInstance = DefaultResourceInstance.of(
@@ -138,24 +131,6 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
                         e, virtualResource.value());
             }
         });
-    }
-
-    void processInstance(VirtualResource virtualResource,
-            VirtualResourceInstance<Object> virtualResourceInstance,
-            ServiceInstance serviceInstance) {
-        String name = virtualResource.name();
-
-        String resourceInstanceName;
-        Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-
-        if (name.isEmpty()) {
-            resourceInstanceName = Paths.get("resource:/", virtualResourceInstance.getFqn()).normalize().toString();
-        } else {
-            resourceInstanceName = Paths.get("resource:/", name).normalize().toString();
-        }
-
-        serviceInstance.addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
-        serviceInstance.replace(virtualResourceInstance.getResource());
     }
 
     @Override

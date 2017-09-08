@@ -25,8 +25,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.ResourceProvider;
-import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -54,43 +52,25 @@ public class DefaultTestResourcesProviderTest {
         sut = new DefaultTestResourcesProvider();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void givenNullTestContextStartShouldThrowException() {
+    @Test
+    public void givenNullTestContextStartShouldDoNothing() {
         TestContext testContext = null;
-        ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        sut.start(testContext, serviceInstance);
+        sut.start(testContext);
     }
 
     @Test
-    public void givenEagerResourceStrategyStartShouldStartResources() {
+    public void givenTestContextWithResourcesStartShouldStartResources() {
         TestContext testContext = mock(TestContext.class);
-        ServiceInstance serviceInstance = mock(ServiceInstance.class);
         ResourceProvider resourceProvider = mock(ResourceProvider.class);
         List<ResourceProvider> foundResourceProviders = ImmutableList.of(resourceProvider);
-        StartStrategy resourceStartStrategy = StartStrategy.EAGER;
 
-        given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
         given(serviceLocatorUtil.findAll(ResourceProvider.class)).willReturn(foundResourceProviders);
 
-        sut.start(testContext, serviceInstance);
+        sut.start(testContext);
 
         assertThat(resourceProviders).contains(resourceProvider);
-        verify(resourceProvider).start(testContext, serviceInstance);
+        verify(resourceProvider).start(testContext);
     }
 
-    @Test
-    public void givenEagerResourceStrategyStopShouldStopResources() {
-        TestContext testContext = mock(TestContext.class);
-        ServiceInstance serviceInstance = mock(ServiceInstance.class);
-        ResourceProvider resourceProvider = mock(ResourceProvider.class);
-        resourceProviders.add(resourceProvider);
-        StartStrategy resourceStartStrategy = StartStrategy.EAGER;
-
-        given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
-
-        sut.stop(testContext, serviceInstance);
-
-        verify(resourceProvider).stop(testContext);
-    }
 }

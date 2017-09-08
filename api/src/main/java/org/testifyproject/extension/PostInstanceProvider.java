@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.extension;
 
 import java.util.List;
+import org.testifyproject.Instance;
+import org.testifyproject.TestContext;
 
 /**
  * A contract that defines a method to provider instances that be added to a
- * {@link ServiceInstance}.
+ * {@link org.testifyproject.ServiceInstance} last (after to
+ * {@link PreInstanceProvider}.
  *
  * @author saden
  */
-public interface InstanceProvider {
+public interface PostInstanceProvider {
 
     /**
      * Provide one or more instances.

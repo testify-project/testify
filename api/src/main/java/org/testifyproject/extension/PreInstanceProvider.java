@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.extension;
+
+import java.util.List;
+import org.testifyproject.Instance;
+import org.testifyproject.TestContext;
 
 /**
- * An enumeration class that defines resource start strategy.
+ * A contract that defines a method to provider instances that be added to a
+ * {@link org.testifyproject.ServiceInstance} first (prior to
+ * {@link PostInstanceProvider}.
  *
  * @author saden
  */
-public enum StartStrategy {
+public interface PreInstanceProvider {
 
     /**
-     * Indicates resources should be started eagerly.
+     * Provide one or more instances.
+     *
+     * @param testContext the test context
+     * @return a list of instances, null otherwise
      */
-    EAGER,
-    /**
-     * Indicates resources should be started lazily.
-     */
-    LAZY,
-
+    List<Instance> get(TestContext testContext);
 }

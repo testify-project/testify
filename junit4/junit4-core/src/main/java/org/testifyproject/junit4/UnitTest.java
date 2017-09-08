@@ -41,7 +41,7 @@ public class UnitTest extends TestifyJUnit4TestRunner {
     public UnitTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.UNIT)
-                .resourceStartStrategy(StartStrategy.UNDEFINED)
+                .resourceStartStrategy(StartStrategy.EAGER)
                 .build()
         );
     }

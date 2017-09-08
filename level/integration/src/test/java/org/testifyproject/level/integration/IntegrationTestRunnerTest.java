@@ -27,7 +27,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.InstanceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.SutDescriptor;
@@ -50,6 +49,7 @@ import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.level.fixture.TestServiceProvider;
+import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  *
@@ -103,8 +103,8 @@ public class IntegrationTestRunnerTest {
 
         Object serviceContext = new Object();
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
-        InstanceProvider instanceProvider = mock(InstanceProvider.class);
-        List<InstanceProvider> instanceProviders = ImmutableList.of(instanceProvider);
+        PreInstanceProvider instanceProvider = mock(PreInstanceProvider.class);
+        List<PreInstanceProvider> instanceProviders = ImmutableList.of(instanceProvider);
         TestResourcesProvider testResourcesProvider = mock(TestResourcesProvider.class);
         Set<Class<? extends Annotation>> nameQualifiers = ImmutableSet.of();
         Set<Class<? extends Annotation>> customQualifiers = ImmutableSet.of();
@@ -166,12 +166,12 @@ public class IntegrationTestRunnerTest {
         verify(serviceProvider).create(testContext);
         verify(serviceProvider).configure(testContext, serviceContext);
         verify(testContext).addProperty(SERVICE_INSTANCE, serviceInstance);
-        given(serviceLocatorUtil.findAllWithFilter(InstanceProvider.class, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, IntegrationCategory.class))
                 .willReturn(instanceProviders);
         verify(serviceProvider).postConfigure(testContext, serviceInstance);
         verify(testConfigurer).configure(testContext, serviceContext);
         verify(serviceLocatorUtil).getOne(TestResourcesProvider.class);
-        verify(testResourcesProvider).start(testContext, serviceInstance);
+        verify(testResourcesProvider).start(testContext);
         verify(serviceInstance).init();
         verify(serviceInstance).getNameQualifers();
         verify(serviceInstance).getCustomQualifiers();
@@ -219,8 +219,9 @@ public class IntegrationTestRunnerTest {
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
         verify(sutDescriptor).destroy(testInstance);
-        verify(testResourcesProvider).stop(testContext, serviceInstance);
+        verify(testResourcesProvider).stop(testContext);
         verify(serviceInstance).destroy();
+        verify(testResourcesProvider).stop(testContext);
 
     }
 }

@@ -72,7 +72,6 @@ public class SpringServiceProviderTest {
         assertThat((ConfigurableApplicationContext) result.getContext()).isEqualTo(applicationContext);
         verify(applicationContext).setId(testName);
         verify(applicationContext).addBeanFactoryPostProcessor(any(SpringBeanFactoryPostProcessor.class));
-        verify(applicationContext).addApplicationListener(any(SpringContextClosedListener.class));
     }
 
     @Test

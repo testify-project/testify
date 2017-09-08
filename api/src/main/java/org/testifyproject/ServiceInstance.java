@@ -62,11 +62,11 @@ public interface ServiceInstance {
     /**
      * Add a constant with the given name and contract.
      *
-     * @param instance the constant instance
+     * @param value the constant value
      * @param name the name associated with the constant
      * @param contract the contract associated with the constant
      */
-    void addConstant(Object instance, String name, Class contract);
+    void addConstant(Object value, String name, Class contract);
 
     /**
      * Add the given instance as a constant.
@@ -112,7 +112,8 @@ public interface ServiceInstance {
      *
      * @param modules an array of modules
      */
-    void addModules(Module... modules);
+    default void addModules(Module... modules) {
+    }
 
     /**
      * Replace all services that implement the given {@link Instance} as well as

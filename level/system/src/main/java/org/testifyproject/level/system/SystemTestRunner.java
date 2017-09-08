@@ -20,7 +20,6 @@ import java.util.Optional;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.Instance;
-import org.testifyproject.InstanceProvider;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
@@ -37,6 +36,7 @@ import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
+import org.testifyproject.extension.PostInstanceProvider;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
@@ -85,6 +85,9 @@ public class SystemTestRunner implements TestRunner {
             serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor.getGuidelines(), SystemCategory.class)
                     .forEach(p -> p.verify(testContext));
 
+            testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
+            testResourcesProvider.start(testContext);
+
             ServerInstance serverInstance = createServer(testContext, application, testConfigurer);
             testContext.addProperty(TestContextProperties.APP_SERVER_INSTANCE, serverInstance);
             testContext.addProperty(serverInstance.getFqn(), serverInstance.getProperties());
@@ -94,15 +97,10 @@ public class SystemTestRunner implements TestRunner {
             testContext.addProperty(clientInstance.getFqn(), clientInstance.getProperties());
 
             testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE).ifPresent(serviceInstance -> {
-                //add constant instances
-                serviceLocatorUtil.findAllWithFilter(InstanceProvider.class, SystemCategory.class)
+                serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class, SystemCategory.class)
                         .stream()
                         .flatMap(p -> p.get(testContext).stream())
                         .forEach(serviceInstance::replace);
-
-                //reifiy the test class
-                testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
-                testResourcesProvider.start(testContext, serviceInstance);
 
                 //XXX: Some DI framework (i.e. Spring) require that the service instance
                 //context be initialized. We need to do the initialization after the
@@ -146,12 +144,7 @@ public class SystemTestRunner implements TestRunner {
         testContext.<ServerInstance>findProperty(TestContextProperties.APP_SERVER_INSTANCE)
                 .ifPresent(serverProvider::stop);
 
-        if (testResourcesProvider != null) {
-            ServiceInstance serviceInstance = testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
-                    .orElse(null);
-
-            testResourcesProvider.stop(testContext, serviceInstance);
-        }
+        testResourcesProvider.stop(testContext);
     }
 
     void createSut(SutDescriptor sutDescriptor,

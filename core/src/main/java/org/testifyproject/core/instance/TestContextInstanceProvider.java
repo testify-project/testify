@@ -19,21 +19,23 @@ import java.util.List;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.DefaultInstance;
+import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.InstanceProvider;
 
 /**
- * An implementation of InstanceProvider that provides the test context.
+ * An implementation of PreInstanceProvider that provides the test context.
  *
  * @author saden
  */
+@UnitCategory
 @IntegrationCategory
 @SystemCategory
 @Discoverable
-public class TestContextInstanceProvider implements InstanceProvider {
+public class TestContextInstanceProvider implements PreInstanceProvider {
 
     @Override
     public List<Instance> get(TestContext testContext) {

@@ -26,6 +26,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
 
 /**
@@ -160,6 +161,16 @@ public class ServiceInstanceTest {
         sut.destroy();
 
         verify(sut).destroy();
+    }
+
+    @Test
+    public void callToAddModulesShouldDoNothing() {
+        Module module = mock(Module.class);
+
+        sut.addModules(module);
+
+        verify(sut).addModules(module);
+        verifyZeroInteractions(module);
     }
 
     @Test

@@ -13,57 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.core.analyzer;
+package org.testifyproject.core;
 
 import java.lang.reflect.Type;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * A key object used to find a descriptor in a collection based on its name and
- * type.
+ * A key object used to find a service based on its name and type.
  *
  * @author saden
  */
 @ToString
 @EqualsAndHashCode
-public class DescriptorKey {
+public class ServiceKey {
 
     private final Type type;
     private final String name;
 
-    public DescriptorKey(Type type, String name) {
+    public ServiceKey(Type type, String name) {
         this.type = type;
         this.name = name;
     }
 
     /**
-     * Create a new descriptor key instance from the given type.
+     * Create a new service key instance from the given type.
      *
      * @param type the underlying type
-     * @return a descriptor key instance
+     * @return a service key instance
      */
-    public static DescriptorKey of(Type type) {
-        return new DescriptorKey(type, null);
+    public static ServiceKey of(Type type) {
+        return new ServiceKey(type, null);
     }
 
     /**
-     * Create a new descriptor key instance from the given type and name.
+     * Create a new service key instance from the given type and name.
      *
      * @param type the underlying type
      * @param name the underlying name
-     * @return a descriptor key instance
+     * @return a service key instance
      */
-    public static DescriptorKey of(Type type, String name) {
-        return new DescriptorKey(type, name);
+    public static ServiceKey of(Type type, String name) {
+        return new ServiceKey(type, name);
     }
 
+    /**
+     * The service type.
+     *
+     * @return service type
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     * The service name.
+     *
+     * @return service name
+     */
     public String getName() {
         return name;
     }
-
 }

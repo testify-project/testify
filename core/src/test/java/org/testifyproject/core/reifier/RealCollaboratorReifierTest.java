@@ -25,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
-import org.testifyproject.MockProvider;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Real;
@@ -36,7 +36,7 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  * @author saden
  */
 public class RealCollaboratorReifierTest {
-    
+
     RealCollaboratorReifier sut;
 
     @Before
@@ -53,12 +53,15 @@ public class RealCollaboratorReifierTest {
     public void givenTestDescriptorWithoutFieldsReifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MockProvider mockProvider = mock(MockProvider.class);
         Object testInstance = mock(Object.class);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
         sut.reify(testContext);
@@ -73,6 +76,9 @@ public class RealCollaboratorReifierTest {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = mock(Object.class);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
+
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Real real = mock(Real.class);
@@ -83,6 +89,7 @@ public class RealCollaboratorReifierTest {
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getReal()).willReturn(foundReal);
         given(fieldDescriptor.getType()).willReturn(fieldType);
@@ -104,6 +111,8 @@ public class RealCollaboratorReifierTest {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = mock(Object.class);
+        SutDescriptor sutDescriptor = mock(SutDescriptor.class);
+        Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Real real = mock(Real.class);
@@ -114,6 +123,7 @@ public class RealCollaboratorReifierTest {
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getReal()).willReturn(foundReal);
         given(fieldDescriptor.getType()).willReturn(fieldType);
@@ -129,5 +139,5 @@ public class RealCollaboratorReifierTest {
         verify(fieldDescriptor).getValue(testInstance);
         verify(fieldDescriptor).setValue(eq(testInstance), any(fieldType));
     }
-    
+
 }

@@ -24,13 +24,11 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.DataProvider;
-import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
@@ -79,7 +77,7 @@ public class DefaultVirtualResourceProviderTest {
         TestContext testContext = null;
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
 
-        sut.start(testContext, serviceInstance);
+        sut.start(testContext);
     }
 
     @Test
@@ -93,7 +91,7 @@ public class DefaultVirtualResourceProviderTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
 
-        sut.start(testContext, serviceInstance);
+        sut.start(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
@@ -145,16 +143,14 @@ public class DefaultVirtualResourceProviderTest {
         given(reflectionUtil.newInstance(dataProviderType)).willReturn(dataProvider);
         given(virtualResourceInstance.getFqn()).willReturn(fqn);
         given(virtualResourceInstance.getProperties()).willReturn(properties);
-        willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
-        sut.start(testContext, serviceInstance);
+        sut.start(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
         verify(testDescriptor).getVirtualResources();
         verify(virtualResource).provider();
         verify(serviceLocatorUtil).getOne(provider);
-        verify(serviceInstance).inject(virtualResourceProvider);
         verify(virtualResource).configKey();
         verify(testContext).getPropertiesReader(configKey);
         verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
@@ -165,13 +161,11 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceProvider).load(testContext, virtualResource, virtualResourceInstance, dataFiles);
         verify(virtualResource).dataProvider();
         verify(reflectionUtil).newInstance(dataProviderType);
-        verify(serviceInstance).inject(dataProvider);
         verify(dataProvider).load(testContext, dataFiles, virtualResourceInstance);
         verify(virtualResourceInstance).getFqn();
         verify(virtualResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
         verify(testContext).addListElement(eq(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES), eq(resourceInstance));
-        verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor, serviceInstance);
     }
@@ -220,16 +214,14 @@ public class DefaultVirtualResourceProviderTest {
         given(reflectionUtil.newInstance(dataProviderType)).willReturn(dataProvider);
         given(virtualResourceInstance.getFqn()).willReturn(fqn);
         given(virtualResourceInstance.getProperties()).willReturn(properties);
-        willDoNothing().given(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
-        sut.start(testContext, serviceInstance);
+        sut.start(testContext);
 
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestConfigurer();
         verify(testDescriptor).getVirtualResources();
         verify(virtualResource).provider();
         verify(reflectionUtil).newInstance(provider);
-        verify(serviceInstance).inject(virtualResourceProvider);
         verify(virtualResource).configKey();
         verify(testContext).getPropertiesReader(configKey);
         verify(virtualResourceProvider).configure(testContext, virtualResource, configReader);
@@ -240,68 +232,13 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceProvider).load(testContext, virtualResource, virtualResourceInstance, dataFiles);
         verify(virtualResource).dataProvider();
         verify(reflectionUtil).newInstance(dataProviderType);
-        verify(serviceInstance).inject(dataProvider);
         verify(dataProvider).load(testContext, dataFiles, virtualResourceInstance);
         verify(virtualResourceInstance).getFqn();
         verify(virtualResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
         verify(testContext).addListElement(eq(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES), eq(resourceInstance));
-        verify(sut).processInstance(virtualResource, virtualResourceInstance, serviceInstance);
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor, serviceInstance);
-    }
-
-    @Test
-    public void callToProcessIntanceWithNoConfigurationShouldStart() throws Exception {
-        VirtualResource virtualResource = mock(VirtualResource.class);
-        VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
-        ServiceInstance serviceInstance = mock(ServiceInstance.class);
-
-        String fqn = "fqn";
-        String name = "";
-        Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-        String resourceInstanceName = "resource:/" + fqn;
-
-        Instance<Object> resourceInstance = mock(Instance.class);
-
-        given(virtualResourceInstance.getFqn()).willReturn(fqn);
-        given(virtualResource.name()).willReturn(name);
-        given(virtualResourceInstance.getResource()).willReturn(resourceInstance);
-
-        sut.processInstance(virtualResource, virtualResourceInstance, serviceInstance);
-
-        verify(virtualResource).name();
-        verify(virtualResourceInstance).getFqn();
-        verify(virtualResourceInstance).getResource();
-        verify(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
-        verify(serviceInstance).replace(resourceInstance);
-
-        verifyNoMoreInteractions(virtualResource, virtualResourceInstance, serviceInstance);
-    }
-
-    @Test
-    public void callToProcessInstanceWithConfigurationShouldStart() throws Exception {
-        VirtualResource virtualResource = mock(VirtualResource.class);
-        VirtualResourceInstance<Object> virtualResourceInstance = mock(VirtualResourceInstance.class);
-        ServiceInstance serviceInstance = mock(ServiceInstance.class);
-
-        String name = "name";
-        Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-        String resourceInstanceName = "resource:/" + name;
-
-        Instance<Object> resourceInstance = mock(Instance.class);
-
-        given(virtualResource.name()).willReturn(name);
-        given(virtualResourceInstance.getResource()).willReturn(resourceInstance);
-
-        sut.processInstance(virtualResource, virtualResourceInstance, serviceInstance);
-
-        verify(virtualResource).name();
-        verify(virtualResourceInstance).getResource();
-        verify(serviceInstance).addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
-        verify(serviceInstance).replace(resourceInstance);
-
-        verifyNoMoreInteractions(virtualResource, virtualResourceInstance, serviceInstance);
     }
 
     @Test

@@ -26,10 +26,16 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
+import org.testifyproject.Instance;
+import org.testifyproject.ServiceInstance;
+import org.testifyproject.ServiceProvider;
 import org.testifyproject.SutDescriptor;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
@@ -38,9 +44,11 @@ import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
+import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
+import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  *
@@ -76,6 +84,7 @@ public class UnitTestRunnerTest {
     public void givenTestContextStartShouldStartTest() {
         TestContext testContext = mock(TestContext.class);
         Object testInstance = new Object();
+        TestConfigurer testConfigurer = mock(TestConfigurer.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
 
         PreVerifier configurationVerifier = mock(PreVerifier.class);
@@ -106,11 +115,30 @@ public class UnitTestRunnerTest {
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
+        Hint hint = mock(Hint.class);
+        Optional<Hint> foundHint = Optional.of(hint);
+        ServiceProvider serviceProvider = mock(ServiceProvider.class);
+        Object serviceContext = mock(Object.class);
+        ServiceInstance serviceInstance = mock(ServiceInstance.class);
+        TestResourcesProvider testResourcesProvider = mock(TestResourcesProvider.class);
+        PreInstanceProvider instanceProvider = mock(PreInstanceProvider.class);
+        List<PreInstanceProvider> instanceProviders = ImmutableList.of(instanceProvider);
+        Instance instance = mock(Instance.class);
+        List<Instance> instances = ImmutableList.of(instance);
+
         given(testContext.getTestInstance()).willReturn(testInstance);
+        given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
         given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines, UnitCategory.class))
                 .willReturn(configurationVerifiers);
+        given(testDescriptor.getHint()).willReturn(foundHint);
+        given(serviceLocatorUtil.getOne(ServiceProvider.class, DefaultServiceProvider.class)).willReturn(serviceProvider);
+        given(serviceProvider.create(testContext)).willReturn(serviceContext);
+        given(serviceProvider.configure(testContext, serviceContext)).willReturn(serviceInstance);
+        given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
+        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, UnitCategory.class)).willReturn(instanceProviders);
+        given(instanceProvider.get(testContext)).willReturn(instances);
         given(serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitCategory.class))
                 .willReturn(sutReifiers);
         given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
@@ -156,6 +184,7 @@ public class UnitTestRunnerTest {
         PostVerifier postVerifier = mock(PostVerifier.class);
         List<PostVerifier> postVerifiers = ImmutableList.of(postVerifier);
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
+        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(TestResourcesProvider.class);
 
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
         given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, guidelines, UnitCategory.class))
@@ -172,6 +201,7 @@ public class UnitTestRunnerTest {
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
         verify(sutDescriptor).destroy(testInstance);
+        verify(testResourcesProvider).stop(testContext);
 
     }
 }

@@ -34,7 +34,6 @@ import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.Instance;
-import org.testifyproject.InstanceProvider;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
@@ -59,6 +58,7 @@ import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.level.system.fixture.TestClientProvider;
 import org.testifyproject.level.system.fixture.TestServerProvider;
+import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  *
@@ -119,8 +119,8 @@ public class SystemTestRunnerTest {
 
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
         Optional<ServiceInstance> foundServiceInstance = Optional.of(serviceInstance);
-        InstanceProvider instanceProvider = mock(InstanceProvider.class);
-        List<InstanceProvider> instanceProviders = ImmutableList.of(instanceProvider);
+        PreInstanceProvider instanceProvider = mock(PreInstanceProvider.class);
+        List<PreInstanceProvider> instanceProviders = ImmutableList.of(instanceProvider);
         TestResourcesProvider testResourcesProvider = mock(TestResourcesProvider.class);
 
         FinalReifier testReifier = mock(FinalReifier.class);
@@ -145,7 +145,7 @@ public class SystemTestRunnerTest {
         given(serverInstance.getBaseURI()).willReturn(baseURI);
         willReturn(clientInstance).given(sut).createClient(testContext, application, testConfigurer, baseURI);
         given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
-        given(serviceLocatorUtil.findAllWithFilter(InstanceProvider.class, SystemCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, SystemCategory.class))
                 .willReturn(instanceProviders);
         given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
@@ -163,9 +163,9 @@ public class SystemTestRunnerTest {
         verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines, SystemCategory.class);
         verify(sut).createServer(testContext, application, testConfigurer);
         verify(sut).createClient(testContext, application, testConfigurer, baseURI);
-        verify(serviceLocatorUtil).findAllWithFilter(InstanceProvider.class, SystemCategory.class);
+        //verify(serviceLocatorUtil).findAllWithFilter(PreInstanceProvider.class, SystemCategory.class);
         verify(serviceLocatorUtil).getOne(TestResourcesProvider.class);
-        verify(testResourcesProvider).start(testContext, serviceInstance);
+        verify(testResourcesProvider).start(testContext);
         verify(serviceInstance).init();
         verify(testContext).getSutDescriptor();
         verify(sut).createSut(sutDescriptor, clientInstance, serviceInstance, testInstance);
@@ -218,9 +218,10 @@ public class SystemTestRunnerTest {
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
         verify(sutDescriptor).destroy(testInstance);
-        verify(testResourcesProvider).stop(testContext, serviceInstance);
+        verify(testResourcesProvider).stop(testContext);
         verify(clientProvider).destroy(clientInstance);
         verify(serverProvider).stop(serverInstance);
+        verify(testResourcesProvider).stop(testContext);
     }
 
     @Test

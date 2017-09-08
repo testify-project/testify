@@ -52,11 +52,11 @@ import org.testifyproject.core.util.AnalyzerUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.core.util.SettingUtil;
-import org.testifyproject.guava.common.base.Throwables;
-import org.testifyproject.mock.MockitoMockProvider;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.guava.common.base.Throwables;
+import org.testifyproject.mock.MockitoMockProvider;
 
 /**
  * Base class for all Testify Unit Runners. This class analyzes the test class,

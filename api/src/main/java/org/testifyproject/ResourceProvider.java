@@ -28,9 +28,8 @@ public interface ResourceProvider {
      * instance.
      *
      * @param testContext the test context
-     * @param serviceInstance the service instance to use
      */
-    void start(TestContext testContext, ServiceInstance serviceInstance);
+    void start(TestContext testContext);
 
     /**
      * Stop all the resources.
