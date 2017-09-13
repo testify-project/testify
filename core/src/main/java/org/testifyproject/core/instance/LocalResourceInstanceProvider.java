@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.instance;
 
+import java.util.Collection;
 import java.util.List;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
@@ -24,12 +25,12 @@ import org.testifyproject.TestContext;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.NamingUtil;
+import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  * An implementation of PreInstanceProvider that provides local resource instances.
@@ -46,24 +47,23 @@ public class LocalResourceInstanceProvider implements PreInstanceProvider {
     public List<Instance> get(TestContext testContext) {
         ImmutableList.Builder<Instance> builder = ImmutableList.builder();
 
-        List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> localResourceInstances
+        Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> localResourceInstances
                 = testContext.getLocalResourceInstances();
 
-        localResourceInstances.forEach(resource -> {
-            LocalResourceInstance<Object, Object> localResource = resource.getValue();
-            LocalResource annotation = resource.getAnnotation();
-
+        localResourceInstances.forEach(resourceInstance -> {
+            LocalResourceInstance<Object, Object> value = resourceInstance.getValue();
+            LocalResource annotation = resourceInstance.getAnnotation();
             String name = annotation.name();
 
             if (name.isEmpty()) {
-                name = NamingUtil.INSTANCE.createResourceName(localResource.getFqn());
+                name = NamingUtil.INSTANCE.createResourceName(value.getFqn());
             } else {
                 name = NamingUtil.INSTANCE.createResourceName(name);
             }
 
-            builder.add(DefaultInstance.of(localResource, name, LocalResourceInstance.class));
-            builder.add(localResource.getResource());
-            localResource.getClient().ifPresent(builder::add);
+            builder.add(DefaultInstance.of(value, name, LocalResourceInstance.class));
+            builder.add(value.getResource());
+            value.getClient().ifPresent(builder::add);
         });
 
         return builder.build();

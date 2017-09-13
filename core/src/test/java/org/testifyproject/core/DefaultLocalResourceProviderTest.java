@@ -159,7 +159,7 @@ public class DefaultLocalResourceProviderTest {
         verify(localResourceInstance).getFqn();
         verify(localResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
-        verify(testContext).addListElement(eq(TestContextProperties.LOCAL_RESOURCE_INSTANCES), eq(resourceInstance));
+        verify(testContext).addCollectionElement(eq(TestContextProperties.LOCAL_RESOURCE_INSTANCES), eq(resourceInstance));
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
     }
@@ -177,7 +177,7 @@ public class DefaultLocalResourceProviderTest {
 
         List<Object> resourceInstances = ImmutableList.of(resourceInstance);
 
-        given(testContext.findList(TestContextProperties.LOCAL_RESOURCE_INSTANCES)).willReturn(resourceInstances);
+        given(testContext.findCollection(TestContextProperties.LOCAL_RESOURCE_INSTANCES)).willReturn(resourceInstances);
 
         sut.stop(testContext);
 

@@ -54,7 +54,7 @@ public class BundleInspector implements AnnotationInspector<Bundle> {
                     if (typeHandled.isAssignableFrom(annotationClass)) {
                         Annotation foundAnnotation = annotatedType.getDeclaredAnnotation(annotationClass);
                         inspector.inspect(testDescriptor, annotatedType, foundAnnotation);
-                        testDescriptor.addListElement(TestDescriptorProperties.INSPECTED_ANNOTATIONS, foundAnnotation);
+                        testDescriptor.addCollectionElement(TestDescriptorProperties.INSPECTED_ANNOTATIONS, foundAnnotation);
                     } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
                         Annotation foundAnnotation = annotationClass.getDeclaredAnnotation(Bundle.class);
                         inspector.inspect(testDescriptor, annotationClass, foundAnnotation);

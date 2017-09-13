@@ -56,7 +56,7 @@ public class ErrorClientResponseFilter implements ClientResponseFilter {
 
                 String resposneBody = output.toString(UTF_8.name());
 
-                ExceptionUtil.INSTANCE.raise(
+                throw ExceptionUtil.INSTANCE.propagate(
                         "Resource {} request failed due to '{} ({})':\n{}",
                         uri.getPath(),
                         statusInfo.getReasonPhrase(),
@@ -64,7 +64,7 @@ public class ErrorClientResponseFilter implements ClientResponseFilter {
                         resposneBody
                 );
             } else {
-                ExceptionUtil.INSTANCE.raise(
+                throw ExceptionUtil.INSTANCE.propagate(
                         "Resource '{}' request failed due to '{} ({})'",
                         uri.getPath(),
                         statusInfo.getReasonPhrase(),

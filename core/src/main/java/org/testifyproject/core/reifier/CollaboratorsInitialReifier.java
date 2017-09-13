@@ -18,7 +18,6 @@ package org.testifyproject.core.reifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.testifyproject.FieldDescriptor;
@@ -93,8 +92,7 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             //if the collaborator provider has a method that returns a collection or an array
             //of collaborators that match the types of the factory method then use it to
             //create an instance of the sut.
-            List<MethodDescriptor> collaboratorProviders
-                    = testDescriptor.getCollaboratorProviders();
+            Collection<MethodDescriptor> collaboratorProviders = testDescriptor.getCollaboratorProviders();
 
             for (MethodDescriptor collaboratorProvider : collaboratorProviders) {
                 if (collaboratorProvider.hasReturnType(Object[].class)
@@ -136,7 +134,7 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             Object testInstance) {
         //if method factory is not specified then find collaborator methods that provide
         //an array or collection and see if they can be used to reify the sut
-        List<MethodDescriptor> collaboratorProviders = testDescriptor.getCollaboratorProviders();
+        Collection<MethodDescriptor> collaboratorProviders = testDescriptor.getCollaboratorProviders();
 
         for (MethodDescriptor collaboratorProvider : collaboratorProviders) {
             if (collaboratorProvider.hasReturnType(Object[].class)

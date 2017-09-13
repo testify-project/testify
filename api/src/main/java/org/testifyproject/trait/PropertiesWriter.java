@@ -15,10 +15,10 @@
  */
 package org.testifyproject.trait;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * <p>
@@ -57,10 +57,11 @@ public interface PropertiesWriter extends PropertiesTrait {
      * @param key the properties map key
      * @param element the element that will be added
      */
-    default <E> void addListElement(String key, E element) {
-        Map<String, List<E>> properties = getProperties();
+    default <E> void addCollectionElement(String key, E element) {
+        Map<String, Collection<E>> properties = getProperties();
 
-        List<E> result = properties.computeIfAbsent(key, p -> new LinkedList<>());
+        Collection<E> result = properties.computeIfAbsent(key, p -> new ConcurrentLinkedQueue<>());
+
         result.add(element);
     }
 

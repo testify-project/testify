@@ -84,7 +84,7 @@ public class CollaboratorProviderInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(eq(TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
+        verify(testDescriptor).addCollectionElement(eq(TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
         verify(testDescriptor).addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, annotation);
         verifyNoMoreInteractions(testDescriptor);
     }
@@ -100,7 +100,7 @@ public class CollaboratorProviderInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor, times(2)).addListElement(eq(TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
+        verify(testDescriptor, times(2)).addCollectionElement(eq(TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
         verify(testDescriptor, times(2)).addProperty(eq(TestDescriptorProperties.COLLABORATOR_PROVIDER), any(CollaboratorProvider.class));
         verifyNoMoreInteractions(testDescriptor);
     }

@@ -45,8 +45,4 @@ public class DefaultServiceProvider implements ServiceProvider<Map<ServiceKey, O
         return new DefaultServiceInstance(serviceContext);
     }
 
-    @Override
-    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
-    }
-
 }

@@ -17,7 +17,6 @@ package org.testifyproject.core;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import org.testifyproject.DataProvider;
 import org.testifyproject.LocalResourceInstance;
@@ -111,7 +110,7 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
                         localResourceProvider,
                         localResourceInstance);
 
-                testContext.addListElement(TestContextProperties.LOCAL_RESOURCE_INSTANCES, resourceInstance);
+                testContext.addCollectionElement(TestContextProperties.LOCAL_RESOURCE_INSTANCES, resourceInstance);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' local resource", e, value);
             }
@@ -120,8 +119,8 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
 
     @Override
     public void stop(TestContext testContext) {
-        List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances
-                = testContext.findList(TestContextProperties.LOCAL_RESOURCE_INSTANCES);
+        Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances
+                = testContext.findCollection(TestContextProperties.LOCAL_RESOURCE_INSTANCES);
 
         resourceInstances.forEach(resourceInstance -> {
             try {

@@ -17,7 +17,7 @@ package org.testifyproject.di.guice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import java.util.List;
+import java.util.Collection;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
@@ -50,7 +50,7 @@ public class GuiceServiceProvider implements ServiceProvider<Injector> {
     @Override
     public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        List<Module> modules = testDescriptor.getModules();
+        Collection<Module> modules = testDescriptor.getModules();
 
         if (!modules.isEmpty()) {
             modules.stream().forEach(serviceInstance::addModules);

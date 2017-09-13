@@ -16,7 +16,7 @@
 package org.testifyproject.core.verifier;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -49,7 +49,7 @@ public class GuidelinePreVerifier implements PreVerifier {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         String testClassName = testDescriptor.getTestClassName();
 
-        List<Class<? extends Annotation>> foundGuidelines = testDescriptor.getGuidelines();
+        Collection<Class<? extends Annotation>> foundGuidelines = testDescriptor.getGuidelines();
 
         ExceptionUtil.INSTANCE.raise(foundGuidelines.size() > 1,
                 "Test class '{}' has multiple multiple guideline annotations ({}). "

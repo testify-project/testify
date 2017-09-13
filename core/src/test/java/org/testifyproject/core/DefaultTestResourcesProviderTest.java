@@ -16,9 +16,6 @@
 package org.testifyproject.core;
 
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.BDDMockito.given;
@@ -37,14 +34,12 @@ public class DefaultTestResourcesProviderTest {
 
     DefaultTestResourcesProvider sut;
     ServiceLocatorUtil serviceLocatorUtil;
-    Queue resourceProviders;
 
     @Before
     public void init() {
         serviceLocatorUtil = mock(ServiceLocatorUtil.class);
-        resourceProviders = new ConcurrentLinkedQueue();
 
-        sut = new DefaultTestResourcesProvider(serviceLocatorUtil, resourceProviders);
+        sut = new DefaultTestResourcesProvider(serviceLocatorUtil);
     }
 
     @Test
@@ -69,8 +64,21 @@ public class DefaultTestResourcesProviderTest {
 
         sut.start(testContext);
 
-        assertThat(resourceProviders).contains(resourceProvider);
         verify(resourceProvider).start(testContext);
+        verify(testContext).addCollectionElement(TestContextProperties.RESOURCE_PROVIDERS, resourceProvider);
+    }
+
+    @Test
+    public void givenTestContextStopShouldStopResourceProviders() {
+        TestContext testContext = mock(TestContext.class);
+        ResourceProvider resourceProvider = mock(ResourceProvider.class);
+        List<ResourceProvider> foundResourceProviders = ImmutableList.of(resourceProvider);
+
+        given(testContext.<ResourceProvider>findCollection(TestContextProperties.RESOURCE_PROVIDERS)).willReturn(foundResourceProviders);
+
+        sut.stop(testContext);
+
+        verify(resourceProvider).stop(testContext);
     }
 
 }

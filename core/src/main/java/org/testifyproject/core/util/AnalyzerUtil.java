@@ -22,9 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.asm.ClassReader;
-import org.testifyproject.core.analyzer.SutClassAnalyzer;
 import org.testifyproject.core.analyzer.DefaultSutDescriptor;
 import org.testifyproject.core.analyzer.DefaultTestDescriptor;
+import org.testifyproject.core.analyzer.SutClassAnalyzer;
 import org.testifyproject.core.analyzer.TestClassAnalyzer;
 
 /**

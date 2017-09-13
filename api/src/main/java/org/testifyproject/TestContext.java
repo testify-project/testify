@@ -15,7 +15,7 @@
  */
 package org.testifyproject;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import org.testifyproject.annotation.LocalResource;
@@ -146,22 +146,22 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
     /**
      * Get the local resource instances associated with the test.
      *
-     * @return a list of local resource instances, empty list otherwise
+     * @return a collection of local resource instances, empty list otherwise
      */
-    List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> getLocalResourceInstances();
+    Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> getLocalResourceInstances();
 
     /**
      * Get the virtual resource instances associated with the test.
      *
-     * @return a list of virtual resource instances, empty list otherwise
+     * @return a collection of virtual resource instances, empty list otherwise
      */
-    List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> getVirtualResourceInstances();
+    Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> getVirtualResourceInstances();
 
     /**
      * Get the remote resource instances associated with the test.
      *
-     * @return a list of remote resource instances, empty list otherwise
+     * @return a collection of remote resource instances, empty list otherwise
      */
-    List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> getRemoteResourceInstances();
+    Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> getRemoteResourceInstances();
 
 }

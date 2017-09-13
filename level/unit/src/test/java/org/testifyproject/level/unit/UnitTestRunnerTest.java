@@ -41,6 +41,7 @@ import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
@@ -48,7 +49,6 @@ import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  *

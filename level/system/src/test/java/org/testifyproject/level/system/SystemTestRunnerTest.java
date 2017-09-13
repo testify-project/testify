@@ -51,6 +51,7 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.Strict;
@@ -58,7 +59,6 @@ import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.level.system.fixture.TestClientProvider;
 import org.testifyproject.level.system.fixture.TestServerProvider;
-import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  *
@@ -77,6 +77,13 @@ public class SystemTestRunnerTest {
         reflectionUtil = mock(ReflectionUtil.class);
 
         sut = spy(new SystemTestRunner(serviceLocatorUtil, reflectionUtil));
+    }
+
+    @Test
+    public void callToDefaultConstructorShouldReturnNewInstance() {
+        sut = new SystemTestRunner();
+
+        assertThat(sut).isNotNull();
     }
 
     @Test

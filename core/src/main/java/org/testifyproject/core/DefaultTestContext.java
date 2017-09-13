@@ -15,7 +15,7 @@
  */
 package org.testifyproject.core;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -141,18 +141,18 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> getLocalResourceInstances() {
-        return findList(TestContextProperties.LOCAL_RESOURCE_INSTANCES);
+    public Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> getLocalResourceInstances() {
+        return findCollection(TestContextProperties.LOCAL_RESOURCE_INSTANCES);
     }
 
     @Override
-    public List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> getRemoteResourceInstances() {
-        return findList(TestContextProperties.REMOTE_RESOURCE_INSTANCES);
+    public Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> getRemoteResourceInstances() {
+        return findCollection(TestContextProperties.REMOTE_RESOURCE_INSTANCES);
     }
 
     @Override
-    public List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> getVirtualResourceInstances() {
-        return findList(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
+    public Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> getVirtualResourceInstances() {
+        return findCollection(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
     }
 
     void setResourceStartStrategy(StartStrategy resourceStartStrategy) {

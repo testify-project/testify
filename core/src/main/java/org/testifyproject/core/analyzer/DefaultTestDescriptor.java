@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
@@ -118,38 +117,38 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<Module> getModules() {
-        return findList(TestDescriptorProperties.MODULES);
+    public Collection<Module> getModules() {
+        return findCollection(TestDescriptorProperties.MODULES);
     }
 
     @Override
-    public List<Scan> getScans() {
-        return findList(TestDescriptorProperties.SCANS);
+    public Collection<Scan> getScans() {
+        return findCollection(TestDescriptorProperties.SCANS);
     }
 
     @Override
-    public List<LocalResource> getLocalResources() {
-        return findList(TestDescriptorProperties.LOCAL_RESOURCES);
+    public Collection<LocalResource> getLocalResources() {
+        return findCollection(TestDescriptorProperties.LOCAL_RESOURCES);
     }
 
     @Override
-    public List<VirtualResource> getVirtualResources() {
-        return findList(TestDescriptorProperties.VIRTUAL_RESOURCES);
+    public Collection<VirtualResource> getVirtualResources() {
+        return findCollection(TestDescriptorProperties.VIRTUAL_RESOURCES);
     }
 
     @Override
-    public List<RemoteResource> getRemoteResources() {
-        return findList(TestDescriptorProperties.REMOTE_RESOURCES);
+    public Collection<RemoteResource> getRemoteResources() {
+        return findCollection(TestDescriptorProperties.REMOTE_RESOURCES);
     }
 
     @Override
-    public List<Annotation> getInspectedAnnotations() {
-        return findList(TestDescriptorProperties.INSPECTED_ANNOTATIONS);
+    public Collection<Annotation> getInspectedAnnotations() {
+        return findCollection(TestDescriptorProperties.INSPECTED_ANNOTATIONS);
     }
 
     @Override
-    public List<Class<? extends Annotation>> getGuidelines() {
-        return findList(TestDescriptorProperties.GUIDELINE_ANNOTATIONS);
+    public Collection<Class<? extends Annotation>> getGuidelines() {
+        return findCollection(TestDescriptorProperties.GUIDELINE_ANNOTATIONS);
     }
 
     @Override
@@ -163,8 +162,8 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<MethodDescriptor> getCollaboratorProviders() {
-        return findList(TestDescriptorProperties.COLLABORATOR_PROVIDERS);
+    public Collection<MethodDescriptor> getCollaboratorProviders() {
+        return findCollection(TestDescriptorProperties.COLLABORATOR_PROVIDERS);
     }
 
     @Override
@@ -173,13 +172,13 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<MethodDescriptor> getConfigHandlers() {
-        return findList(TestDescriptorProperties.CONFIG_HANDLERS);
+    public Collection<MethodDescriptor> getConfigHandlers() {
+        return findCollection(TestDescriptorProperties.CONFIG_HANDLERS);
     }
 
     @Override
     public Collection<FieldDescriptor> getFieldDescriptors() {
-        return findList(TestDescriptorProperties.FIELD_DESCRIPTORS);
+        return findCollection(TestDescriptorProperties.FIELD_DESCRIPTORS);
     }
 
     @Override

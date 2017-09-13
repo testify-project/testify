@@ -48,7 +48,7 @@ public class GuidelineInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, type);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, type);
     }
 
 }

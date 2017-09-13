@@ -37,7 +37,7 @@ public class GuidelineInspector implements AnnotationInspector<Annotation> {
 
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Annotation annotation) {
-        testDescriptor.addListElement(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, annotation.annotationType());
+        testDescriptor.addCollectionElement(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, annotation.annotationType());
     }
 
 }

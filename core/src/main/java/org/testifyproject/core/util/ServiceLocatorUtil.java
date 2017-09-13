@@ -17,6 +17,7 @@ package org.testifyproject.core.util;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -74,7 +75,7 @@ public class ServiceLocatorUtil {
      * @return a list that contains all implementations, empty list otherwise
      */
     public <T> List<T> findAllWithFilter(Class<T> type,
-            List<Class<? extends Annotation>> guidelines,
+            Collection<Class<? extends Annotation>> guidelines,
             Class<? extends Annotation>... filters) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(type);
 

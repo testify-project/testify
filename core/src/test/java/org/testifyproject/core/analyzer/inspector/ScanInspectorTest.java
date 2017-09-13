@@ -44,7 +44,7 @@ public class ScanInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.SCANS, annotation);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.SCANS, annotation);
     }
 
 }

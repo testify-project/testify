@@ -159,7 +159,7 @@ public class DefaultRemoteResourceProviderTest {
         verify(remoteResourceInstance).getFqn();
         verify(remoteResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
-        verify(testContext).addListElement(eq(TestContextProperties.REMOTE_RESOURCE_INSTANCES), eq(resourceInstance));
+        verify(testContext).addCollectionElement(eq(TestContextProperties.REMOTE_RESOURCE_INSTANCES), eq(resourceInstance));
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
     }
@@ -177,7 +177,7 @@ public class DefaultRemoteResourceProviderTest {
 
         List<Object> resourceInstances = ImmutableList.of(resourceInstance);
 
-        given(testContext.findList(TestContextProperties.REMOTE_RESOURCE_INSTANCES)).willReturn(resourceInstances);
+        given(testContext.findCollection(TestContextProperties.REMOTE_RESOURCE_INSTANCES)).willReturn(resourceInstances);
 
         sut.stop(testContext);
 

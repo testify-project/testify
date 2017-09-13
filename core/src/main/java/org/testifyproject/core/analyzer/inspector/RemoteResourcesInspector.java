@@ -35,7 +35,7 @@ public class RemoteResourcesInspector implements AnnotationInspector<RemoteResou
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, RemoteResources annotation) {
         for (RemoteResource remoteResource : annotation.value()) {
-            testDescriptor.addListElement(TestDescriptorProperties.REMOTE_RESOURCES, remoteResource);
+            testDescriptor.addCollectionElement(TestDescriptorProperties.REMOTE_RESOURCES, remoteResource);
         }
     }
 

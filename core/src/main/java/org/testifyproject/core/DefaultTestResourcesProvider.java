@@ -16,8 +16,6 @@
 package org.testifyproject.core;
 
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestResourcesProvider;
@@ -33,15 +31,12 @@ import org.testifyproject.tools.Discoverable;
 public class DefaultTestResourcesProvider implements TestResourcesProvider {
 
     private ServiceLocatorUtil serviceLocatorUtil;
-    private Queue<ResourceProvider> resourceProviders;
 
     public DefaultTestResourcesProvider() {
-        this(ServiceLocatorUtil.INSTANCE, new ConcurrentLinkedQueue<>());
+        this(ServiceLocatorUtil.INSTANCE);
     }
 
-    DefaultTestResourcesProvider(ServiceLocatorUtil serviceLocatorUtil,
-            Queue<ResourceProvider> resourceProviders) {
-        this.resourceProviders = resourceProviders;
+    DefaultTestResourcesProvider(ServiceLocatorUtil serviceLocatorUtil) {
         this.serviceLocatorUtil = serviceLocatorUtil;
     }
 
@@ -51,13 +46,14 @@ public class DefaultTestResourcesProvider implements TestResourcesProvider {
 
         foundResourceProviders.parallelStream().forEach(resourceProvider -> {
             resourceProvider.start(testContext);
-            resourceProviders.add(resourceProvider);
+            testContext.addCollectionElement(TestContextProperties.RESOURCE_PROVIDERS, resourceProvider);
         });
     }
 
     @Override
     public void stop(TestContext testContext) {
-        resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
+        testContext.<ResourceProvider>findCollection(TestContextProperties.RESOURCE_PROVIDERS)
+                .forEach(resourceProvider -> resourceProvider.stop(testContext));
     }
 
 }

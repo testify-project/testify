@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.instance;
 
+import java.util.Collection;
 import java.util.List;
 import org.testifyproject.Instance;
 import org.testifyproject.ResourceInstance;
@@ -24,12 +25,12 @@ import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.NamingUtil;
+import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  * An implementation of PreInstanceProvider that provides virtual resource
@@ -47,7 +48,7 @@ public class VirtualResourceInstanceProvider implements PreInstanceProvider {
     public List<Instance> get(TestContext testContext) {
         ImmutableList.Builder<Instance> builder = ImmutableList.builder();
 
-        List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> virtualResourceInstances
+        Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> virtualResourceInstances
                 = testContext.getVirtualResourceInstances();
 
         virtualResourceInstances.forEach(resource -> {

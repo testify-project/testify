@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4.system;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -87,7 +87,7 @@ public class SpringSystemInterceptor {
 
         return testContextHolder.execute(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
-            List<Module> modules = testDescriptor.getModules();
+            Collection<Module> modules = testDescriptor.getModules();
 
             Stream<Class<?>> testModules = modules.stream().map(Module::value);
             Stream<Class<?>> productionModules = Stream.empty();

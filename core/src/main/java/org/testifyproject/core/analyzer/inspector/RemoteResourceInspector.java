@@ -33,7 +33,7 @@ public class RemoteResourceInspector implements AnnotationInspector<RemoteResour
 
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, RemoteResource remoteResource) {
-        testDescriptor.addListElement(TestDescriptorProperties.REMOTE_RESOURCES, remoteResource);
+        testDescriptor.addCollectionElement(TestDescriptorProperties.REMOTE_RESOURCES, remoteResource);
     }
 
 }

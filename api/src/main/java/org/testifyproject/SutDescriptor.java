@@ -20,10 +20,10 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.trait.FieldAnnotationTrait;
 import org.testifyproject.trait.FieldTrait;
 import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
-import org.testifyproject.trait.FieldAnnotationTrait;
 
 /**
  * A contract that defines methods to access properties of or perform operations

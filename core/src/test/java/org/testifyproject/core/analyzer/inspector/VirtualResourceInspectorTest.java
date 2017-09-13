@@ -44,7 +44,7 @@ public class VirtualResourceInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.VIRTUAL_RESOURCES, annotation);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES, annotation);
     }
 
 }

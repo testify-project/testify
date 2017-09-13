@@ -33,13 +33,15 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
+import org.testifyproject.extension.InstanceProvider;
+import org.testifyproject.extension.PostInstanceProvider;
 import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  * A class used to run a integration test.
@@ -103,7 +105,17 @@ public class IntegrationTestRunner implements TestRunner {
                     .stream()
                     .flatMap(p -> p.get(testContext).stream())
                     .forEach(serviceInstance::replace);
+
+            serviceLocatorUtil.findAllWithFilter(InstanceProvider.class)
+                    .stream()
+                    .flatMap(p -> p.get(testContext).stream())
+                    .forEach(serviceInstance::replace);
         }
+
+        serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class, IntegrationCategory.class)
+                .stream()
+                .flatMap(p -> p.get(testContext).stream())
+                .forEach(serviceInstance::replace);
 
         //XXX: Some DI framework (i.e. Spring) require that the service instance
         //context be initialized. We need to do the initialization after the

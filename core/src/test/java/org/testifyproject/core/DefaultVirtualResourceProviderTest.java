@@ -165,7 +165,7 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceInstance).getFqn();
         verify(virtualResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
-        verify(testContext).addListElement(eq(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES), eq(resourceInstance));
+        verify(testContext).addCollectionElement(eq(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES), eq(resourceInstance));
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor, serviceInstance);
     }
@@ -236,7 +236,7 @@ public class DefaultVirtualResourceProviderTest {
         verify(virtualResourceInstance).getFqn();
         verify(virtualResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
-        verify(testContext).addListElement(eq(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES), eq(resourceInstance));
+        verify(testContext).addCollectionElement(eq(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES), eq(resourceInstance));
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor, serviceInstance);
     }
@@ -255,7 +255,7 @@ public class DefaultVirtualResourceProviderTest {
 
         List<Object> resourceInstances = ImmutableList.of(resourceInstance);
 
-        given(testContext.findList(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES)).willReturn(resourceInstances);
+        given(testContext.findCollection(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES)).willReturn(resourceInstances);
 
         sut.stop(testContext);
 

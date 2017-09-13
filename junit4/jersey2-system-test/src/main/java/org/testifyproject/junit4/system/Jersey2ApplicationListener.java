@@ -26,6 +26,7 @@ import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.PreInstanceProvider;
 
 /**
@@ -55,6 +56,11 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
                                 .ifPresent(serviceInstance -> {
                                     //add constant instances
                                     ServiceLocatorUtil.INSTANCE.findAllWithFilter(PreInstanceProvider.class)
+                                            .stream()
+                                            .flatMap(p -> p.get(testContext).stream())
+                                            .forEach(serviceInstance::replace);
+
+                                    ServiceLocatorUtil.INSTANCE.findAllWithFilter(InstanceProvider.class)
                                             .stream()
                                             .flatMap(p -> p.get(testContext).stream())
                                             .forEach(serviceInstance::replace);

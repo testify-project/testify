@@ -28,14 +28,14 @@ public class NamingUtil {
     public static final NamingUtil INSTANCE = new NamingUtil();
 
     public String createResourceName(String first, String... more) {
-        return createName("resource:/", first, more);
+        return createName("resource", first, more);
     }
 
     public String createApplicationName(String first, String... more) {
-        return createName("application:/", first, more);
+        return createName("application", first, more);
     }
 
     public String createName(String scheme, String first, String... more) {
-        return Paths.get(scheme + first, more).normalize().toString();
+        return Paths.get(scheme + ":/" + first, more).normalize().toString();
     }
 }

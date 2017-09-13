@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
+import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -40,7 +41,10 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
+import org.testifyproject.extension.InstanceProvider;
+import org.testifyproject.extension.PostInstanceProvider;
 import org.testifyproject.extension.PostVerifier;
+import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.Hint;
@@ -49,7 +53,6 @@ import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.level.fixture.TestServiceProvider;
-import org.testifyproject.extension.PreInstanceProvider;
 
 /**
  *
@@ -103,9 +106,11 @@ public class IntegrationTestRunnerTest {
 
         Object serviceContext = new Object();
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
-        PreInstanceProvider instanceProvider = mock(PreInstanceProvider.class);
-        List<PreInstanceProvider> instanceProviders = ImmutableList.of(instanceProvider);
         TestResourcesProvider testResourcesProvider = mock(TestResourcesProvider.class);
+        List<PreInstanceProvider> preInstanceProviders = ImmutableList.of();
+        List<InstanceProvider> instanceProviders = ImmutableList.of();
+        List<PostInstanceProvider> postInstanceProviders = ImmutableList.of();
+
         Set<Class<? extends Annotation>> nameQualifiers = ImmutableSet.of();
         Set<Class<? extends Annotation>> customQualifiers = ImmutableSet.of();
         Class sutType = Object.class;
@@ -139,6 +144,10 @@ public class IntegrationTestRunnerTest {
         given(serviceProvider.create(testContext)).willReturn(serviceContext);
         given(serviceProvider.configure(testContext, serviceContext)).willReturn(serviceInstance);
         given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
+        given(testContext.getResourceStartStrategy()).willReturn(StartStrategy.EAGER);
+        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, IntegrationCategory.class)).willReturn(preInstanceProviders);
+        given(serviceLocatorUtil.findAllWithFilter(InstanceProvider.class)).willReturn(instanceProviders);
+        given(serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class, IntegrationCategory.class)).willReturn(postInstanceProviders);
         given(serviceInstance.getNameQualifers()).willReturn(nameQualifiers);
         given(serviceInstance.getCustomQualifiers()).willReturn(customQualifiers);
         given(sutDescriptor.getType()).willReturn(sutType);
@@ -166,12 +175,13 @@ public class IntegrationTestRunnerTest {
         verify(serviceProvider).create(testContext);
         verify(serviceProvider).configure(testContext, serviceContext);
         verify(testContext).addProperty(SERVICE_INSTANCE, serviceInstance);
-        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, IntegrationCategory.class))
-                .willReturn(instanceProviders);
         verify(serviceProvider).postConfigure(testContext, serviceInstance);
         verify(testConfigurer).configure(testContext, serviceContext);
         verify(serviceLocatorUtil).getOne(TestResourcesProvider.class);
         verify(testResourcesProvider).start(testContext);
+        verify(serviceLocatorUtil).findAllWithFilter(PreInstanceProvider.class, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(InstanceProvider.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PostInstanceProvider.class, IntegrationCategory.class);
         verify(serviceInstance).init();
         verify(serviceInstance).getNameQualifers();
         verify(serviceInstance).getCustomQualifiers();

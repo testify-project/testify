@@ -15,8 +15,8 @@
  */
 package org.testifyproject.trait;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
@@ -60,13 +60,13 @@ public class PropertiesWriterTest {
     }
 
     @Test
-    public void givenKeyAddListElementShouldReturnElement() {
+    public void givenKeyaddCollectionElementShouldReturnElement() {
         String key = "key";
         String element = "element";
 
-        sut.addListElement(key, element);
+        sut.addCollectionElement(key, element);
 
-        List<String> result = (List) properties.get(key);
+        Collection<String> result = (Collection) properties.get(key);
 
         assertThat(result).containsExactly(element);
     }

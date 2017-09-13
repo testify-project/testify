@@ -54,7 +54,7 @@ public class CollaboratorProviderInspector implements AnnotationInspector<Collab
                     method.setAccessible(true);
 
                     MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, providerInstance);
-                    testDescriptor.addListElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
+                    testDescriptor.addCollectionElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
                 }
             }
 

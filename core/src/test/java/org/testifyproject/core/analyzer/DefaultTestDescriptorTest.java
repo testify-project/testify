@@ -38,6 +38,7 @@ import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -122,7 +123,7 @@ public class DefaultTestDescriptorTest {
         Module value = mock(Module.class);
         properties.put(TestDescriptorProperties.MODULES, ImmutableList.of(value));
 
-        List<Module> result = sut.getModules();
+        Collection<Module> result = sut.getModules();
 
         assertThat(result).containsExactly(value);
     }
@@ -132,7 +133,7 @@ public class DefaultTestDescriptorTest {
         Scan value = mock(Scan.class);
         properties.put(TestDescriptorProperties.SCANS, ImmutableList.of(value));
 
-        List<Scan> result = sut.getScans();
+        Collection<Scan> result = sut.getScans();
 
         assertThat(result).containsExactly(value);
     }
@@ -142,7 +143,7 @@ public class DefaultTestDescriptorTest {
         LocalResource value = mock(LocalResource.class);
         properties.put(TestDescriptorProperties.LOCAL_RESOURCES, ImmutableList.of(value));
 
-        List<LocalResource> result = sut.getLocalResources();
+        Collection<LocalResource> result = sut.getLocalResources();
 
         assertThat(result).containsExactly(value);
     }
@@ -152,7 +153,7 @@ public class DefaultTestDescriptorTest {
         VirtualResource value = mock(VirtualResource.class);
         properties.put(TestDescriptorProperties.VIRTUAL_RESOURCES, ImmutableList.of(value));
 
-        List<VirtualResource> result = sut.getVirtualResources();
+        Collection<VirtualResource> result = sut.getVirtualResources();
 
         assertThat(result).containsExactly(value);
     }
@@ -162,7 +163,7 @@ public class DefaultTestDescriptorTest {
         RemoteResource value = mock(RemoteResource.class);
         properties.put(TestDescriptorProperties.REMOTE_RESOURCES, ImmutableList.of(value));
 
-        List<RemoteResource> result = sut.getRemoteResources();
+        Collection<RemoteResource> result = sut.getRemoteResources();
 
         assertThat(result).containsExactly(value);
     }
@@ -172,7 +173,7 @@ public class DefaultTestDescriptorTest {
         RemoteResource value = mock(RemoteResource.class);
         properties.put(TestDescriptorProperties.INSPECTED_ANNOTATIONS, ImmutableList.of(value));
 
-        List<Annotation> result = sut.getInspectedAnnotations();
+        Collection<Annotation> result = sut.getInspectedAnnotations();
 
         assertThat(result).containsExactly(value);
     }
@@ -182,14 +183,21 @@ public class DefaultTestDescriptorTest {
         Class<Strict> value = Strict.class;
         properties.put(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, ImmutableList.of(value));
 
-        List<Class<? extends Annotation>> result = sut.getGuidelines();
+        Collection<Class<? extends Annotation>> result = sut.getGuidelines();
 
         assertThat(result).containsExactly(value);
     }
 
     @Test
+    public void callToGetHintShouldReturn() {
+        Optional<Hint> result = sut.getHint();
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     public void callToGetCollaboratorProviderShouldReturn() {
-        List<MethodDescriptor> result = sut.getCollaboratorProviders();
+        Collection<MethodDescriptor> result = sut.getCollaboratorProviders();
 
         assertThat(result).isNotNull();
     }
@@ -199,7 +207,7 @@ public class DefaultTestDescriptorTest {
         MethodDescriptor value = mock(MethodDescriptor.class);
         properties.put(TestDescriptorProperties.CONFIG_HANDLERS, ImmutableList.of(value));
 
-        List<MethodDescriptor> result = sut.getConfigHandlers();
+        Collection<MethodDescriptor> result = sut.getConfigHandlers();
 
         assertThat(result).containsExactly(value);
     }

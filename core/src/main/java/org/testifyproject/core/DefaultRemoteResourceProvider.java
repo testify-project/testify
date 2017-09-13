@@ -17,7 +17,6 @@ package org.testifyproject.core;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import org.testifyproject.DataProvider;
 import org.testifyproject.RemoteResourceInstance;
@@ -111,7 +110,7 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
                         remoteResourceProvider,
                         remoteResourceInstance);
 
-                testContext.addListElement(TestContextProperties.REMOTE_RESOURCE_INSTANCES, resourceInstance);
+                testContext.addCollectionElement(TestContextProperties.REMOTE_RESOURCE_INSTANCES, resourceInstance);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' remote resource", e, value);
             }
@@ -120,8 +119,8 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
 
     @Override
     public void stop(TestContext testContext) {
-        List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances
-                = testContext.findList(TestContextProperties.REMOTE_RESOURCE_INSTANCES);
+        Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances
+                = testContext.findCollection(TestContextProperties.REMOTE_RESOURCE_INSTANCES);
 
         resourceInstances.forEach(resourceInstance -> {
             try {

@@ -17,14 +17,14 @@ package org.testifyproject.core.reifier;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies the test class.

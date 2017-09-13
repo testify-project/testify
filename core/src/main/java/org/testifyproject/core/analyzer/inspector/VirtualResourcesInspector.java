@@ -35,7 +35,7 @@ public class VirtualResourcesInspector implements AnnotationInspector<VirtualRes
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, VirtualResources annotation) {
         for (VirtualResource virtualResource : annotation.value()) {
-            testDescriptor.addListElement(TestDescriptorProperties.VIRTUAL_RESOURCES, virtualResource);
+            testDescriptor.addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES, virtualResource);
         }
     }
 

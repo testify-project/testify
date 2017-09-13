@@ -35,7 +35,7 @@ public class LocalResourcesInspector implements AnnotationInspector<LocalResourc
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, LocalResources annotation) {
         for (LocalResource localResource : annotation.value()) {
-            testDescriptor.addListElement(TestDescriptorProperties.LOCAL_RESOURCES, localResource);
+            testDescriptor.addCollectionElement(TestDescriptorProperties.LOCAL_RESOURCES, localResource);
         }
     }
 

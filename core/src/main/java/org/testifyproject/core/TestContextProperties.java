@@ -87,6 +87,10 @@ public class TestContextProperties {
      * The remote resource instances property key.
      */
     public static final String REMOTE_RESOURCE_INSTANCES = "remoteResourceInstances";
+    /**
+     * The resource providers property key.
+     */
+    public static final String RESOURCE_PROVIDERS = "resourceProviders";
 
     private TestContextProperties() {
     }

@@ -49,7 +49,7 @@ public class LocalResourcesInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.LOCAL_RESOURCES, element);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.LOCAL_RESOURCES, element);
     }
 
 }

@@ -15,8 +15,8 @@
  */
 package org.testifyproject.core;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -182,7 +182,7 @@ public class DefaultTestContextTest {
 
     @Test
     public void callToGetLocalResourceInstancesShouldReturn() {
-        List<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> result
+        Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> result
                 = sut.getLocalResourceInstances();
 
         assertThat(result).isEmpty();
@@ -190,7 +190,7 @@ public class DefaultTestContextTest {
 
     @Test
     public void callToGetVirtualResourceInstancesShouldReturn() {
-        List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> result
+        Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> result
                 = sut.getVirtualResourceInstances();
 
         assertThat(result).isEmpty();
@@ -198,7 +198,7 @@ public class DefaultTestContextTest {
 
     @Test
     public void callToGetRemoteResourceInstancesShouldReturn() {
-        List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> result
+        Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> result
                 = sut.getRemoteResourceInstances();
 
         assertThat(result).isEmpty();

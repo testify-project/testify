@@ -27,9 +27,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.PreInstanceProvider;
 
 /**
@@ -91,12 +93,18 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
 
         beanFactory.addBeanPostProcessor(new SpringReifierPostProcessor(testContext));
 
-        //add constant instances
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(PreInstanceProvider.class)
-                .stream()
-                .flatMap(p -> p.get(testContext).stream())
-                .forEach(serviceInstance::replace);
+        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
+            //add constant instances
+            ServiceLocatorUtil.INSTANCE.findAllWithFilter(PreInstanceProvider.class)
+                    .stream()
+                    .flatMap(p -> p.get(testContext).stream())
+                    .forEach(serviceInstance::replace);
 
+            ServiceLocatorUtil.INSTANCE.findAllWithFilter(InstanceProvider.class)
+                    .stream()
+                    .flatMap(p -> p.get(testContext).stream())
+                    .forEach(serviceInstance::replace);
+        }
     }
 
     void processPrimary(DefaultListableBeanFactory beanFactory, BeanDefinition beanDefinition, String beanName, Class<?> beanType) {

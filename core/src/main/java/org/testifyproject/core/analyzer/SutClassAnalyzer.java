@@ -25,9 +25,9 @@ import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import static java.util.stream.Stream.of;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.asm.ClassVisitor;
 import org.testifyproject.asm.FieldVisitor;
 import org.testifyproject.asm.MethodVisitor;
@@ -109,7 +109,7 @@ public class SutClassAnalyzer extends ClassVisitor {
 
         sutDescriptor.addMapEntry(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
         sutDescriptor.addMapEntry(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
-        sutDescriptor.addListElement(SutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+        sutDescriptor.addCollectionElement(SutDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
     }
 
     void saveParamter(Parameter parameter, int index) {
@@ -123,7 +123,7 @@ public class SutClassAnalyzer extends ClassVisitor {
 
         sutDescriptor.addMapEntry(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeKey, paramterDescriptor);
         sutDescriptor.addMapEntry(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, typeAndNameKey, paramterDescriptor);
-        sutDescriptor.addListElement(SutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
+        sutDescriptor.addCollectionElement(SutDescriptorProperties.PARAMETER_DESCRIPTORS, paramterDescriptor);
     }
 
     Class<?> getClass(org.testifyproject.asm.Type type) {

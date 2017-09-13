@@ -49,7 +49,7 @@ public class ModulesInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.MODULES, element);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.MODULES, element);
     }
 
 }

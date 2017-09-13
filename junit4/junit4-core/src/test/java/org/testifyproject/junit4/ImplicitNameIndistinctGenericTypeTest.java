@@ -24,8 +24,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.ImplicitNameIndistinctGenericType;
 import org.testifyproject.junit4.fixture.common.Hello;
 

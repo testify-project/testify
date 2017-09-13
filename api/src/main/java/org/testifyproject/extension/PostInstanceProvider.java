@@ -20,8 +20,8 @@ import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method to provider instances that be added to a
- * {@link org.testifyproject.ServiceInstance} last (after to
+ * A contract that defines a method to provider instances that will be added to
+ * a {@link org.testifyproject.ServiceInstance} after instances provided by
  * {@link PreInstanceProvider}.
  *
  * @author saden

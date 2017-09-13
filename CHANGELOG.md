@@ -17,10 +17,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 ### Added
 - Added new `@Name` annotation that can be used to associate a custom name with a field, method or method parameter
 - Added the ability to find and inject collaborator method arguments by name
-- Added `MethodDescriptor#getDefinedName()` to return the name of the method
+- Added `MethodDescriptor#getDeclaredName()` to return the name of the method based on the name of the method or the one specified by `@Name` annotation
 - Added the ability to find collaborator method by name and return type to `TestDescriptor`
 - Added the ability to compose collaborator providers by allowing `@CollaboratorProvder` to be annotated with `@CollaboratorProvder`
-- Added `PreInstanceProvider` and `PostInstanceProvider` contracts to enable the addition of custom constants to the `ServiceInstance`
+- Added `PreInstanceProvider`, `InstanceProvider`, `PostInstanceProvider` contracts to enable the addition of custom constants to the `ServiceInstance`
 - Added `@Hint` annotation to provide hints during test execution (i.e. `ServiceProvider` implementation)
 - Added `ClientInstanceBuilder` class to build client instances.
 - Added the ability to get local, virtual and remote resources from the `TestContext`
@@ -33,6 +33,8 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Changed `configure` and `create` methods in `ClientProvider` contract by adding `@Applicaiton` annotation parameter
 - Changed stop method in `ClientProvider` contract by adding `ClientInstance` parameter
 - Changed ClientInstance contract to return client and clientProvider instances. Also added methods to get `fqn` and `annotation`.
+- Renamed `PropertiesWriter#addListElement` and `PropertiesReader#findList`
+- Changed return types of methods that return `List` to `Collection` 
 
 ### Removed
 - Removed `name` attribute from `@Fake`, `@Virtual` and `@Real`. `@Named` can be used on the field as a replacement.

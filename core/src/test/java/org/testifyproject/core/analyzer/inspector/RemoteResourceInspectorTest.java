@@ -44,7 +44,7 @@ public class RemoteResourceInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.REMOTE_RESOURCES, annotation);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.REMOTE_RESOURCES, annotation);
     }
 
 }

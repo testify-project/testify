@@ -53,7 +53,7 @@ public class ConfigHandlerInspector implements AnnotationInspector<ConfigHandler
                     method.setAccessible(true);
 
                     MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, handlerInstance);
-                    testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+                    testDescriptor.addCollectionElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
                 }
             }
         }

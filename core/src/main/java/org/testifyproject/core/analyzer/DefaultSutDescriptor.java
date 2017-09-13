@@ -121,7 +121,7 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
 
     @Override
     public Collection<FieldDescriptor> getFieldDescriptors() {
-        return findList(SutDescriptorProperties.FIELD_DESCRIPTORS);
+        return findCollection(SutDescriptorProperties.FIELD_DESCRIPTORS);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
 
     @Override
     public Collection<ParameterDescriptor> getParameterDescriptors() {
-        return findList(SutDescriptorProperties.PARAMETER_DESCRIPTORS);
+        return findCollection(SutDescriptorProperties.PARAMETER_DESCRIPTORS);
     }
 
 }

@@ -33,7 +33,7 @@ public class VirtualResourceInspector implements AnnotationInspector<VirtualReso
 
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, VirtualResource virtualResource) {
-        testDescriptor.addListElement(TestDescriptorProperties.VIRTUAL_RESOURCES, virtualResource);
+        testDescriptor.addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES, virtualResource);
     }
 
 }

@@ -67,7 +67,7 @@ public class ConfigHandlerInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(eq(TestDescriptorProperties.CONFIG_HANDLERS), any(MethodDescriptor.class));
+        verify(testDescriptor).addCollectionElement(eq(TestDescriptorProperties.CONFIG_HANDLERS), any(MethodDescriptor.class));
         verify(testDescriptor).addProperty(TestDescriptorProperties.CONFIG_HANDLER, annotation);
         verifyNoMoreInteractions(testDescriptor);
     }

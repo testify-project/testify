@@ -48,6 +48,8 @@ public interface ServiceProvider<T> {
      * @param testContext the test context
      * @param serviceInstance the service instance
      */
-    void postConfigure(TestContext testContext, ServiceInstance serviceInstance);
+    default void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
+
+    }
 
 }

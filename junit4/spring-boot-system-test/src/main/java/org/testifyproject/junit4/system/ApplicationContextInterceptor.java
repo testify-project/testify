@@ -21,6 +21,7 @@ import javax.servlet.ServletContext;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
@@ -31,7 +32,6 @@ import org.testifyproject.core.TestContextHolder;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
 import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTEXT;
 import org.testifyproject.core.util.LoggingUtil;
-import org.testifyproject.TestConfigurer;
 
 /**
  * A class that intercepts methods of classes that extend or implement

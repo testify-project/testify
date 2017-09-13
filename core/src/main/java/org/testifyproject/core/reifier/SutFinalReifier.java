@@ -18,10 +18,10 @@ package org.testifyproject.core.reifier;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies test classes with virtual sut.

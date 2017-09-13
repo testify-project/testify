@@ -17,7 +17,6 @@ package org.testifyproject.core;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import org.testifyproject.DataProvider;
 import org.testifyproject.ResourceInstance;
@@ -125,7 +124,7 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
                         virtualResourceProvider,
                         virtualResourceInstance);
 
-                testContext.addListElement(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES, resourceInstance);
+                testContext.addCollectionElement(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES, resourceInstance);
             } catch (Exception e) {
                 throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' virtual resource",
                         e, virtualResource.value());
@@ -135,8 +134,8 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
 
     @Override
     public void stop(TestContext testContext) {
-        List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances
-                = testContext.findList(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
+        Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances
+                = testContext.findCollection(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
 
         resourceInstances.forEach(resourceInstance -> {
             try {

@@ -156,7 +156,7 @@ public class TestClassAnalyzer extends ClassVisitor {
 
         testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
         testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
-        testDescriptor.addListElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+        testDescriptor.addCollectionElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
     }
 
     void saveMethod(String name, Class[] parameterTypes) {
@@ -166,12 +166,12 @@ public class TestClassAnalyzer extends ClassVisitor {
 
             if (method.getDeclaredAnnotation(ConfigHandler.class) != null) {
                 MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+                testDescriptor.addCollectionElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
                 testDescriptor.addProperty(TestDescriptorProperties.CONFIG_HANDLER,
                         method.getDeclaredAnnotation(ConfigHandler.class));
             } else if (method.getDeclaredAnnotation(CollaboratorProvider.class) != null) {
                 MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                testDescriptor.addListElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
+                testDescriptor.addCollectionElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
                 testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER,
                         method.getDeclaredAnnotation(CollaboratorProvider.class));
             }

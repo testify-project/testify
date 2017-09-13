@@ -49,7 +49,7 @@ public class VirtualResourcesInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.VIRTUAL_RESOURCES, element);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES, element);
     }
 
 }

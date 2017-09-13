@@ -119,7 +119,7 @@ public class ErrorClientResponseFilterTest {
         given(statusInfo.getStatusCode()).willReturn(statusCode);
         given(responseContext.hasEntity()).willReturn(true);
         given(responseContext.getEntityStream()).willReturn(entityStream);
-        
+
         try {
             sut.filter(requestContext, responseContext);
         } catch (TestifyException e) {
@@ -132,7 +132,7 @@ public class ErrorClientResponseFilterTest {
             verify(statusInfo).getStatusCode();
             verify(responseContext).getEntityStream();
             verifyNoMoreInteractions(requestContext, responseContext, statusInfo);
-            
+
             throw e;
         }
     }
