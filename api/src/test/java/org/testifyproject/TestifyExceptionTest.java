@@ -16,8 +16,9 @@
 package org.testifyproject;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
 import static org.mockito.Mockito.mock;
+
+import org.junit.Test;
 
 /**
  *
@@ -32,7 +33,7 @@ public class TestifyExceptionTest {
         TestifyException result = TestifyException.of(cause);
         assertThat(result).isNotNull();
     }
-    
+
     @Test
     public void givenMessageOfShouldCreateTestifyException() {
         String message = "error";
@@ -40,7 +41,7 @@ public class TestifyExceptionTest {
         TestifyException result = TestifyException.of(message);
         assertThat(result).isNotNull();
     }
-    
+
     @Test
     public void givenMessageAndCauseOfShouldCreateTestifyException() {
         Throwable cause = mock(Throwable.class);

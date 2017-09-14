@@ -16,6 +16,7 @@
 package org.testifyproject.fixture.resource;
 
 import java.util.Set;
+
 import org.testifyproject.DataProvider;
 import org.testifyproject.TestContext;
 

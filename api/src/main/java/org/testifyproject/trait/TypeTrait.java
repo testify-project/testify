@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import org.testifyproject.TestifyException;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
@@ -111,10 +112,10 @@ public interface TypeTrait {
                 T result = (T) method.invoke(instance, methodArgs);
 
                 return Optional.ofNullable(result);
-            } catch (SecurityException
-                    | IllegalAccessException
-                    | IllegalArgumentException
-                    | InvocationTargetException e) {
+            } catch (SecurityException |
+                    IllegalAccessException |
+                    IllegalArgumentException |
+                    InvocationTargetException e) {
                 throw TestifyException.of(e);
             }
         });
@@ -145,9 +146,8 @@ public interface TypeTrait {
     }
 
     /**
-     * Find a method with the given name. Note that this method will find the
-     * first method that matches the given name without consideration for method
-     * parameters.
+     * Find a method with the given name. Note that this method will find the first method that
+     * matches the given name without consideration for method parameters.
      *
      * @param methodName the method name
      * @return found method or throws {@link IllegalStateException}

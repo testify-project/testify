@@ -56,7 +56,8 @@ public class PropertyFinalReifier implements FinalReifier {
                 Object value = testContext.getProperty(propertyValue);
 
                 if (value == null && property.expression()) {
-                    value = expressionUtil.evaluateExpression(propertyValue, testContext.getProperties());
+                    value = expressionUtil.evaluateExpression(propertyValue, testContext
+                            .getProperties());
                 }
 
                 fieldDescriptor.setValue(testInstance, value);

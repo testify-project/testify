@@ -15,32 +15,31 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation that can be placed on a test class or test class method to
- * configure various functions before each integration and system test run (i.e.
- * HK2 ServiceLocator, Spring Application Context, resources, etc). Note that if
- * the annotation is placed on:
+ * An annotation that can be placed on a test class or test class method to configure various
+ * functions before each integration and system test run (i.e. HK2 ServiceLocator, Spring
+ * Application Context, resources, etc). Note that if the annotation is placed on:
  * </p>
  * <ul>
  * <li>
- * a test class method then this configuration method will be called to perform
- * pre-test run configuration.
+ * a test class method then this configuration method will be called to perform pre-test run
+ * configuration.
  * </li>
  * <li>
- * the test class and {@link ConfigHandler#value() } is specified then a
- * configuration method within {@link ConfigHandler#value() } class will be
- * called to perform pre-test run configuration. This is useful for sharing
- * configuration method handlers between test classes and avoid repetitive
- * declaration of configuration methods in each test class.
+ * the test class and {@link ConfigHandler#value() } is specified then a configuration method within {@link ConfigHandler#value()
+ * } class will be called to perform pre-test run configuration. This is useful for sharing
+ * configuration method handlers between test classes and avoid repetitive declaration of
+ * configuration methods in each test class.
  * </li>
  * </ul>
  *

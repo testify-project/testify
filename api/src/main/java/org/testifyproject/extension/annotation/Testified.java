@@ -15,18 +15,18 @@
  */
 package org.testifyproject.extension.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.TYPE;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used to mark source code or byte code that has been generated
- * or altered (sub-classed, redefined, rebased) for testing purpose and to
- * differentiate it from user written code. When used, the value element must
- * have the name of the code generator. The recommended convention is to use the
- * fully qualified name of the code generator in the value field (i.e.
+ * An annotation used to mark source code or byte code that has been generated or altered
+ * (sub-classed, redefined, rebased) for testing purpose and to differentiate it from user written
+ * code. When used, the value element must have the name of the code generator. The recommended
+ * convention is to use the fully qualified name of the code generator in the value field (i.e.
  * com.acme.generator.CodeGen).
  *
  * @author saden
@@ -37,17 +37,15 @@ import java.lang.annotation.Target;
 public @interface Testified {
 
     /**
-     * The value element MUST have the name of the code generator. The
-     * recommended convention is to use the fully qualified name of the code
-     * generator (i.e. com.acme.generator.CodeGen).
+     * The value element MUST have the name of the code generator. The recommended convention is to
+     * use the fully qualified name of the code generator (i.e. com.acme.generator.CodeGen).
      *
      * @return the name of the code generator
      */
     String value();
 
     /**
-     * Any comments that the code generator may want to include in the generated
-     * code.
+     * Any comments that the code generator may want to include in the generated code.
      *
      * @return code comments.
      */

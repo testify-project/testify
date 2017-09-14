@@ -17,6 +17,7 @@ package org.testifyproject.di.hk2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -58,11 +59,14 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
     }
 
     @Override
-    public ServiceInstance configure(TestContext testContext, ServiceLocator serviceLocator) {
-        HK2ServiceInstance serviceInstance = new HK2ServiceInstance(testContext, serviceLocator);
+    public ServiceInstance configure(TestContext testContext,
+            ServiceLocator serviceLocator) {
+        HK2ServiceInstance serviceInstance = new HK2ServiceInstance(testContext,
+                serviceLocator);
 
         ServiceLocatorImpl serviceLocatorImpl = (ServiceLocatorImpl) serviceLocator;
-        HK2InjectionResolver hK2InjectionResolver = new HK2InjectionResolver(testContext, serviceLocatorImpl);
+        HK2InjectionResolver hK2InjectionResolver = new HK2InjectionResolver(testContext,
+                serviceLocatorImpl);
         ServiceLocatorUtilities.addOneConstant(serviceLocator, hK2InjectionResolver);
 
         return serviceInstance;
@@ -84,15 +88,17 @@ public class HK2ServiceProvider implements ServiceProvider<ServiceLocator> {
 
         try {
             Class<?> extrasUtilitiesClass = Class.forName(className);
-            Method method = extrasUtilitiesClass.getMethod(methodName, ServiceLocator.class);
+            Method method = extrasUtilitiesClass.getMethod(methodName,
+                    ServiceLocator.class);
             method.invoke(null, serviceLocator);
-        } catch (ClassNotFoundException
-                | NoSuchMethodException
-                | SecurityException
-                | IllegalAccessException
-                | IllegalArgumentException
-                | InvocationTargetException e) {
-            LoggingUtil.INSTANCE.debug("Method '{}' not found in class {}", methodName, className, e);
+        } catch (ClassNotFoundException |
+                NoSuchMethodException |
+                SecurityException |
+                IllegalAccessException |
+                IllegalArgumentException |
+                InvocationTargetException e) {
+            LoggingUtil.INSTANCE.debug("Method '{}' not found in class {}", methodName,
+                    className, e);
         }
     }
 }

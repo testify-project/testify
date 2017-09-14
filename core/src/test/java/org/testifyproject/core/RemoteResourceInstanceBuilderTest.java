@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.Instance;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.annotation.RemoteResource;
@@ -83,7 +85,8 @@ public class RemoteResourceInstanceBuilderTest {
         given(remoteResource.resourceName()).willReturn(customName);
         given(remoteResource.resourceContract()).willReturn(customContract);
 
-        RemoteResourceInstance<Object> result = sut.resource(resourceValue).build(fqn, remoteResource);
+        RemoteResourceInstance<Object> result = sut.resource(resourceValue).build(fqn,
+                remoteResource);
 
         assertThat(result).isNotNull();
 
@@ -103,7 +106,8 @@ public class RemoteResourceInstanceBuilderTest {
         given(remoteResource.resourceName()).willReturn(customName);
         given(remoteResource.resourceContract()).willReturn(customContract);
 
-        RemoteResourceInstance<Object> result = sut.resource(resourceValue).build(fqn, remoteResource);
+        RemoteResourceInstance<Object> result = sut.resource(resourceValue).build(fqn,
+                remoteResource);
 
         assertThat(result).isNotNull();
 
@@ -119,7 +123,8 @@ public class RemoteResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        RemoteResourceInstance<Object> result = sut.property(key, value).build(fqn, remoteResource);
+        RemoteResourceInstance<Object> result = sut.property(key, value).build(fqn,
+                remoteResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -131,7 +136,8 @@ public class RemoteResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(key, value);
 
-        RemoteResourceInstance<Object> result = sut.properties(properties).build(fqn, remoteResource);
+        RemoteResourceInstance<Object> result = sut.properties(properties)
+                .build(fqn, remoteResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);

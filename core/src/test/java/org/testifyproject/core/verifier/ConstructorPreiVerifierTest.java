@@ -15,14 +15,16 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.SutDescriptor;
@@ -58,7 +60,8 @@ public class ConstructorPreiVerifierTest {
         Object testInstance = new Object();
         String testClassName = "TestClass";
         CollaboratorProvider collaboratorProvider = mock(CollaboratorProvider.class);
-        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(collaboratorProvider);
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(
+                collaboratorProvider);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -108,7 +111,8 @@ public class ConstructorPreiVerifierTest {
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         String sutClassName = "SutClass";
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
-        Collection<ParameterDescriptor> parameterDescriptors = ImmutableList.of(parameterDescriptor);
+        Collection<ParameterDescriptor> parameterDescriptors = ImmutableList.of(
+                parameterDescriptor);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Type fieldDescriptorType = String.class;
@@ -154,7 +158,8 @@ public class ConstructorPreiVerifierTest {
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         String sutClassName = "SutClass";
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
-        Collection<ParameterDescriptor> parameterDescriptors = ImmutableList.of(parameterDescriptor);
+        Collection<ParameterDescriptor> parameterDescriptors = ImmutableList.of(
+                parameterDescriptor);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
         Type fieldDescriptorType = String.class;

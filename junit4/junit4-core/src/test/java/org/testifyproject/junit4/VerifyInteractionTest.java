@@ -16,12 +16,13 @@
 package org.testifyproject.junit4;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.ImplicitType;

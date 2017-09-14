@@ -15,23 +15,26 @@
  */
 package org.testifyproject.core;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.DataProvider;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.RemoteResourceProvider;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.ResourceInfo;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -106,7 +109,8 @@ public class DefaultRemoteResourceProviderTest {
         RemoteResourceProvider remoteResourceProvider = mock(RemoteResourceProvider.class);
         Object configuration = mock(Object.class);
         TestConfigurer testConfigurer = mock(TestConfigurer.class);
-        RemoteResourceInstance<Object> remoteResourceInstance = mock(RemoteResourceInstance.class);
+        RemoteResourceInstance<Object> remoteResourceInstance = mock(
+                RemoteResourceInstance.class);
         String[] dataFilePatterns = {"test.class"};
         Set<Path> dataFiles = mock(Set.class);
         Class dataProviderType = TestDataProvider.class;
@@ -118,8 +122,9 @@ public class DefaultRemoteResourceProviderTest {
         String configKey = "test";
         PropertiesReader configReader = mock(PropertiesReader.class);
 
-        ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance> resourceInstance
-                = DefaultResourceInstance.of(remoteResource, remoteResourceProvider, remoteResourceInstance);
+        ResourceInfo<RemoteResource, RemoteResourceProvider, RemoteResourceInstance> resourceInstance =
+                DefaultRemoteResourceInfo.of(remoteResource, remoteResourceProvider,
+                        remoteResourceInstance);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
@@ -128,9 +133,13 @@ public class DefaultRemoteResourceProviderTest {
         given(reflectionUtil.newInstance(value)).willReturn(remoteResourceProvider);
         given(remoteResource.configKey()).willReturn(configKey);
         given(testContext.getPropertiesReader(configKey)).willReturn(configReader);
-        given(remoteResourceProvider.configure(testContext, remoteResource, configReader)).willReturn(configuration);
-        given(testConfigurer.configure(testContext, configuration)).willReturn(configuration);
-        given(remoteResourceProvider.start(testContext, remoteResource, configuration)).willReturn(remoteResourceInstance);
+        given(remoteResourceProvider.configure(testContext, remoteResource, configReader))
+                .willReturn(configuration);
+        given(testConfigurer.configure(testContext, configuration)).willReturn(
+                configuration);
+        given(remoteResourceProvider.start(testContext, remoteResource, configuration))
+                .willReturn(
+                        remoteResourceInstance);
         given(remoteResource.dataFiles()).willReturn(dataFilePatterns);
         given(fileSystemUtil.findClasspathFiles(dataFilePatterns)).willReturn(dataFiles);
         given(remoteResource.dataProvider()).willReturn(dataProviderType);
@@ -147,41 +156,50 @@ public class DefaultRemoteResourceProviderTest {
         verify(reflectionUtil).newInstance(value);
         verify(remoteResource).configKey();
         verify(testContext).getPropertiesReader(configKey);
-        verify(remoteResourceProvider).configure(testContext, remoteResource, configReader);
+        verify(remoteResourceProvider)
+                .configure(testContext, remoteResource, configReader);
         verify(testConfigurer).configure(testContext, configuration);
         verify(remoteResourceProvider).start(testContext, remoteResource, configuration);
         verify(remoteResource).dataFiles();
         verify(fileSystemUtil).findClasspathFiles(dataFilePatterns);
-        verify(remoteResourceProvider).load(testContext, remoteResource, remoteResourceInstance, dataFiles);
+        verify(remoteResourceProvider).load(testContext, remoteResource,
+                remoteResourceInstance,
+                dataFiles);
         verify(remoteResource).dataProvider();
         verify(reflectionUtil).newInstance(dataProviderType);
         verify(dataProvider).load(testContext, dataFiles, remoteResourceInstance);
         verify(remoteResourceInstance).getFqn();
         verify(remoteResourceInstance).getProperties();
         verify(testContext).addProperty(fqn, properties);
-        verify(testContext).addCollectionElement(eq(TestContextProperties.REMOTE_RESOURCE_INSTANCES), eq(resourceInstance));
+        verify(testContext)
+                .addCollectionElement(eq(TestContextProperties.REMOTE_RESOURCE_INSTANCES),
+                        eq(
+                                resourceInstance));
 
         verifyNoMoreInteractions(testContext, testDescriptor, serviceInstance);
     }
 
     @Test
-    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() throws Exception {
+    public void callToStopWithElementsStopShouldStopVirtualResourceProvider() throws
+            Exception {
         TestContext testContext = mock(TestContext.class);
         RemoteResource remoteResource = mock(RemoteResource.class);
         RemoteResourceProvider remoteResourceProvider = mock(RemoteResourceProvider.class);
         RemoteResourceInstance remoteResourceInstance = mock(RemoteResourceInstance.class);
-        ResourceInstance resourceInstance = DefaultResourceInstance.of(
-                remoteResource,
-                remoteResourceProvider,
-                remoteResourceInstance);
+        RemoteResourceInfo resourceInstance =
+                DefaultRemoteResourceInfo.of(
+                        remoteResource,
+                        remoteResourceProvider,
+                        remoteResourceInstance);
 
-        List<Object> resourceInstances = ImmutableList.of(resourceInstance);
+        List<RemoteResourceInfo> resourceInstances = ImmutableList.of(resourceInstance);
 
-        given(testContext.findCollection(TestContextProperties.REMOTE_RESOURCE_INSTANCES)).willReturn(resourceInstances);
+        given(testContext.getRemoteResources()).willReturn(resourceInstances);
 
         sut.stop(testContext);
 
-        verify(remoteResourceProvider).stop(testContext, remoteResource, remoteResourceInstance);
+        verify(remoteResourceProvider).stop(testContext, remoteResource,
+                remoteResourceInstance);
         verifyNoMoreInteractions(remoteResourceProvider);
     }
 

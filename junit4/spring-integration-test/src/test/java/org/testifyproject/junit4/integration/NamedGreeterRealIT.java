@@ -15,8 +15,10 @@
  */
 package org.testifyproject.junit4.integration;
 
-import javax.inject.Named;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import javax.inject.Named;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

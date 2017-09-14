@@ -15,20 +15,23 @@
  */
 package org.testifyproject.di.spring;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.inject.Provider;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.springframework.beans.PropertyValues;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
@@ -219,7 +222,8 @@ public class SpringReifierPostProcessorTest {
         Object bean = new Object();
         String beanName = "beanName";
 
-        PropertyValues result = sut.postProcessPropertyValues(propertyValues, pds, bean, beanName);
+        PropertyValues result = sut.postProcessPropertyValues(propertyValues, pds, bean,
+                beanName);
 
         assertThat(result).isSameAs(propertyValues);
     }
@@ -254,7 +258,8 @@ public class SpringReifierPostProcessorTest {
 
     @Test
     public void givenMapProviderGetRawTypeTokenShouldReturnRawType() {
-        TypeToken<Map<Integer, String>> typeToken = new TypeToken<Map<Integer, String>>() {
+        TypeToken<Map<Integer, String>> typeToken =
+                new TypeToken<Map<Integer, String>>() {
         };
         TypeToken result = sut.getRawTypeToken(typeToken.getType());
 

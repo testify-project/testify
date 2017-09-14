@@ -15,16 +15,18 @@
  */
 package org.testifyproject.core.reifier;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.SutDescriptor;
@@ -65,7 +67,9 @@ public class DefaultFinalReifierTest {
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(testFieldDescriptor.isInjectable()).willReturn(true);
-        willDoNothing().given(sut).processTestField(testContext, testFieldDescriptor, sutDescriptor, sutInstance);
+        willDoNothing().given(sut).processTestField(testContext, testFieldDescriptor,
+                sutDescriptor,
+                sutInstance);
 
         sut.reify(testContext);
 
@@ -95,8 +99,11 @@ public class DefaultFinalReifierTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testFieldDescriptor.getDeclaredName()).willReturn(testFieldName);
         given(testFieldDescriptor.getGenericType()).willReturn(testFieldGenericType);
-        given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(foundMatchingField);
-        willDoNothing().given(sut).processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
+        given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName))
+                .willReturn(
+                        foundMatchingField);
+        willDoNothing().given(sut).processSutField(testFieldDescriptor, sutFieldDescriptor,
+                testInstance, sutInstance, mockProvder);
 
         sut.processTestField(testContext, testFieldDescriptor, sutDescriptor, sutInstance);
 
@@ -126,9 +133,13 @@ public class DefaultFinalReifierTest {
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testFieldDescriptor.getDeclaredName()).willReturn(testFieldName);
         given(testFieldDescriptor.getGenericType()).willReturn(testFieldGenericType);
-        given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName)).willReturn(unfoundMatchingField);
-        given(sutDescriptor.findFieldDescriptor(testFieldGenericType)).willReturn(foundMatchingField);
-        willDoNothing().given(sut).processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
+        given(sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName))
+                .willReturn(
+                        unfoundMatchingField);
+        given(sutDescriptor.findFieldDescriptor(testFieldGenericType))
+                .willReturn(foundMatchingField);
+        willDoNothing().given(sut).processSutField(testFieldDescriptor, sutFieldDescriptor,
+                testInstance, sutInstance, mockProvder);
 
         sut.processTestField(testContext, testFieldDescriptor, sutDescriptor, sutInstance);
 
@@ -161,7 +172,8 @@ public class DefaultFinalReifierTest {
         given(testFieldDescriptor.getVirtual()).willReturn(foundVirtual);
         given(mockProvder.createVirtual(testFieldType, sutValue)).willReturn(value);
 
-        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
+        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance,
+                mockProvder);
 
         verify(testFieldDescriptor).getType();
         verify(testFieldDescriptor).getValue(testInstance);
@@ -194,7 +206,8 @@ public class DefaultFinalReifierTest {
         given(testFieldDescriptor.getVirtual()).willReturn(foundVirtual);
         given(testFieldDescriptor.getReal()).willReturn(foundReal);
 
-        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
+        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance,
+                mockProvder);
 
         verify(testFieldDescriptor).getType();
         verify(testFieldDescriptor).getValue(testInstance);
@@ -221,7 +234,8 @@ public class DefaultFinalReifierTest {
         given(testFieldDescriptor.getValue(testInstance)).willReturn(testFieldValue);
         given(sutFieldDescriptor.getValue(sutInstance)).willReturn(sutFieldValue);
 
-        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance, mockProvder);
+        sut.processSutField(testFieldDescriptor, sutFieldDescriptor, testInstance, sutInstance,
+                mockProvder);
 
         verify(testFieldDescriptor).getType();
         verify(testFieldDescriptor).getValue(testInstance);

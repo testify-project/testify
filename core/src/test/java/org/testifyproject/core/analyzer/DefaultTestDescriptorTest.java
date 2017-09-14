@@ -15,6 +15,11 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -22,12 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
@@ -229,7 +231,8 @@ public class DefaultTestDescriptorTest {
         Class<Object> type = Object.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Optional<FieldDescriptor> result = sut.findFieldDescriptor(type);
@@ -242,7 +245,8 @@ public class DefaultTestDescriptorTest {
         Class<CharSequence> type = CharSequence.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Class<String> searchType = String.class;
@@ -259,7 +263,8 @@ public class DefaultTestDescriptorTest {
         String name = "name";
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Optional<FieldDescriptor> result = sut.findFieldDescriptor(type, name);
@@ -283,7 +288,8 @@ public class DefaultTestDescriptorTest {
     public void givenReturnTypeFindCollaboratorProviderShouldReturnFoundMethods() {
         Class<Object> returnType = Object.class;
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
-        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(methodDescriptor));
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(
+                methodDescriptor));
 
         given(methodDescriptor.hasAnyAnnotations(Name.class)).willReturn(false);
         given(methodDescriptor.hasReturnType(returnType)).willReturn(true);
@@ -298,7 +304,8 @@ public class DefaultTestDescriptorTest {
         Class<Object> returnType = Object.class;
         String name = "test";
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
-        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(methodDescriptor));
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(
+                methodDescriptor));
         Name nameAnnotation = mock(Name.class);
         Optional<Name> foundName = Optional.of(nameAnnotation);
 
@@ -316,7 +323,8 @@ public class DefaultTestDescriptorTest {
         Class<Object> returnType = Object.class;
         String name = "test";
         MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
-        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(methodDescriptor));
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(
+                methodDescriptor));
         Optional<Name> foundName = Optional.empty();
 
         given(methodDescriptor.getAnnotation(Name.class)).willReturn(foundName);

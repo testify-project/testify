@@ -15,17 +15,18 @@
  */
 package org.testifyproject.core.instance;
 
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.RemoteResourceInstance;
-import org.testifyproject.RemoteResourceProvider;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -46,16 +47,15 @@ public class RemoteResourceInstanceProviderTest {
     @Test
     public void givenTestContextWithRemoteResourceInstancesWithoutNameGetShouldReturnInstnaces() {
         TestContext testContext = mock(TestContext.class);
-        ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance> resourceInstance
-                = mock(ResourceInstance.class);
-        List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> remoteResourcesInstances
-                = ImmutableList.of(resourceInstance);
+        RemoteResourceInfo resourceInstance = mock(RemoteResourceInfo.class);
+        List<RemoteResourceInfo> remoteResourcesInstances =
+                ImmutableList.of(resourceInstance);
         RemoteResourceInstance value = mock(RemoteResourceInstance.class);
         RemoteResource annotation = mock(RemoteResource.class, Answers.RETURNS_MOCKS);
         String fqn = "test";
         Instance resource = mock(Instance.class);
 
-        given(testContext.getRemoteResourceInstances()).willReturn(remoteResourcesInstances);
+        given(testContext.getRemoteResources()).willReturn(remoteResourcesInstances);
         given(resourceInstance.getValue()).willReturn(value);
         given(resourceInstance.getAnnotation()).willReturn(annotation);
         given(annotation.name()).willReturn("");
@@ -70,15 +70,14 @@ public class RemoteResourceInstanceProviderTest {
     @Test
     public void givenTestContextWithRemoteResourceInstancesWithNameGetShouldReturnInstnaces() {
         TestContext testContext = mock(TestContext.class);
-        ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance> resourceInstance
-                = mock(ResourceInstance.class);
-        List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> remoteResourcesInstances
-                = ImmutableList.of(resourceInstance);
+        RemoteResourceInfo resourceInstance = mock(RemoteResourceInfo.class);
+        List<RemoteResourceInfo> remoteResourcesInstances =
+                ImmutableList.of(resourceInstance);
         RemoteResourceInstance value = mock(RemoteResourceInstance.class);
         RemoteResource annotation = mock(RemoteResource.class, Answers.RETURNS_MOCKS);
         Instance resource = mock(Instance.class);
 
-        given(testContext.getRemoteResourceInstances()).willReturn(remoteResourcesInstances);
+        given(testContext.getRemoteResources()).willReturn(remoteResourcesInstances);
         given(resourceInstance.getValue()).willReturn(value);
         given(resourceInstance.getAnnotation()).willReturn(annotation);
         given(annotation.name()).willReturn("test");

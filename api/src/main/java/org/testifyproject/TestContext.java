@@ -18,15 +18,13 @@ package org.testifyproject;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import org.testifyproject.annotation.LocalResource;
-import org.testifyproject.annotation.RemoteResource;
-import org.testifyproject.annotation.VirtualResource;
+
 import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
 
 /**
- * A small context class that contains reference to the test testInstance, the
- * test testDescriptor, and helper methods.
+ * A small context class that contains reference to the test testInstance, the test
+ * testDescriptor, and helper methods.
  *
  * @author saden
  */
@@ -125,19 +123,18 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
     Optional<ServiceInstance> getServiceInstance();
 
     /**
-     * Get dependencies required to run the tests. The fully qualified name of
-     * the class required in the classpath is the key and human readable
-     * description is the value.
+     * Get dependencies required to run the tests. The fully qualified name of the class
+     * required in the classpath is the key and human readable description is the value.
      *
      * @return a map that contains required dependencies
      */
     Map<String, String> getDependencies();
 
     /**
-     * Indicates whether test resources should be eagerly started. Note that
-     * during integration tests resources can be started right before the test
-     * case is executed but in system tests the start of resources must be
-     * delayed until the application server is running.
+     * Indicates whether test resources should be eagerly started. Note that during
+     * integration tests resources can be started right before the test case is executed
+     * but in system tests the start of resources must be delayed until the application
+     * server is running.
      *
      * @return resource start strategy
      */
@@ -148,20 +145,20 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
      *
      * @return a collection of local resource instances, empty list otherwise
      */
-    Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> getLocalResourceInstances();
+    Collection<LocalResourceInfo> getLocalResources();
 
     /**
      * Get the virtual resource instances associated with the test.
      *
      * @return a collection of virtual resource instances, empty list otherwise
      */
-    Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> getVirtualResourceInstances();
+    Collection<VirtualResourceInfo> getVirtualResources();
 
     /**
      * Get the remote resource instances associated with the test.
      *
      * @return a collection of remote resource instances, empty list otherwise
      */
-    Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> getRemoteResourceInstances();
+    Collection<RemoteResourceInfo> getRemoteResources();
 
 }

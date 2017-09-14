@@ -33,11 +33,13 @@ import org.testifyproject.tools.Discoverable;
 @IntegrationCategory
 @SystemCategory
 @Discoverable
-public class SpringServiceProvider implements ServiceProvider<ConfigurableApplicationContext> {
+public class SpringServiceProvider implements
+        ServiceProvider<ConfigurableApplicationContext> {
 
     @Override
     public ConfigurableApplicationContext create(TestContext testContext) {
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+        AnnotationConfigApplicationContext applicationContext =
+                new AnnotationConfigApplicationContext();
 
         applicationContext.setId(testContext.getName());
         applicationContext.setDisplayName(testContext.getName());
@@ -48,11 +50,13 @@ public class SpringServiceProvider implements ServiceProvider<ConfigurableApplic
     }
 
     @Override
-    public ServiceInstance configure(TestContext testContext, ConfigurableApplicationContext applicationContext) {
-        SpringServiceInstance serviceInstance = new SpringServiceInstance(applicationContext);
+    public ServiceInstance configure(TestContext testContext,
+            ConfigurableApplicationContext applicationContext) {
+        SpringServiceInstance serviceInstance = new SpringServiceInstance(
+                applicationContext);
 
-        SpringBeanFactoryPostProcessor postProcessor
-                = new SpringBeanFactoryPostProcessor(testContext, serviceInstance);
+        SpringBeanFactoryPostProcessor postProcessor =
+                new SpringBeanFactoryPostProcessor(testContext, serviceInstance);
 
         applicationContext.setId(testContext.getName());
         applicationContext.addBeanFactoryPostProcessor(postProcessor);

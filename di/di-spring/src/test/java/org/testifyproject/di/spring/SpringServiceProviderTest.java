@@ -15,14 +15,16 @@
  */
 package org.testifyproject.di.spring;
 
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
@@ -61,7 +63,8 @@ public class SpringServiceProviderTest {
     @Test
     public void callToConfigureShouldReturnServiceInstance() {
         TestContext testContext = mock(TestContext.class);
-        ConfigurableApplicationContext applicationContext = mock(ConfigurableApplicationContext.class);
+        ConfigurableApplicationContext applicationContext = mock(
+                ConfigurableApplicationContext.class);
         String testName = "testName";
 
         given(testContext.getName()).willReturn(testName);
@@ -69,9 +72,11 @@ public class SpringServiceProviderTest {
         ServiceInstance result = sut.configure(testContext, applicationContext);
 
         assertThat(result).isNotNull();
-        assertThat((ConfigurableApplicationContext) result.getContext()).isEqualTo(applicationContext);
+        assertThat((ConfigurableApplicationContext) result.getContext()).isEqualTo(
+                applicationContext);
         verify(applicationContext).setId(testName);
-        verify(applicationContext).addBeanFactoryPostProcessor(any(SpringBeanFactoryPostProcessor.class));
+        verify(applicationContext).addBeanFactoryPostProcessor(any(
+                SpringBeanFactoryPostProcessor.class));
     }
 
     @Test

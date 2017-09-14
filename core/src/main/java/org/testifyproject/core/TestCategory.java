@@ -16,6 +16,7 @@
 package org.testifyproject.core;
 
 import java.util.List;
+
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
@@ -72,24 +73,23 @@ public interface TestCategory {
     }
 
     /**
-     * An enumeration class that dynamic test categories based on test class
-     * properties.
+     * An enumeration class that dynamic test categories based on test class properties.
      */
     enum Dynamic {
 
         /**
-         * LOCAL test category. Note that classes that require local resources
-         * belong in this category.
+         * LOCAL test category. Note that classes that require local resources belong in this
+         * category.
          */
         LOCAL,
         /**
-         * VIRTUAL test category. Note that classes that require virtual
-         * resources belong in this category.
+         * VIRTUAL test category. Note that classes that require virtual resources belong in
+         * this category.
          */
         VIRTUAL,
         /**
-         * REMOTE test category. Note that classes that require remote resources
-         * belong in this category.
+         * REMOTE test category. Note that classes that require remote resources belong in this
+         * category.
          */
         REMOTE;
 

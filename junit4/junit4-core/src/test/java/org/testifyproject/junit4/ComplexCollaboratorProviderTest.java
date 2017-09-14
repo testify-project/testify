@@ -16,6 +16,7 @@
 package org.testifyproject.junit4;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.CollaboratorProvider;

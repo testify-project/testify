@@ -15,18 +15,20 @@
  */
 package org.testifyproject.trait;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.fixture.PrimaryTestService;
 import org.testifyproject.fixture.TestAnnotation;
@@ -187,7 +189,8 @@ public class AnnotationTraitTest {
 
     @Test
     public void givenExistingAnnotationCollectionHasAnyAnnotationsShouldReturnEmptyArray() {
-        Collection<Class<? extends Annotation>> annotationTypes = ImmutableList.of(TestAnnotation.class);
+        Collection<Class<? extends Annotation>> annotationTypes = ImmutableList.of(
+                TestAnnotation.class);
 
         boolean result = sut.hasAnyAnnotations(annotationTypes);
 

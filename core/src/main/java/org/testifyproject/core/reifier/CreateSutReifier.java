@@ -36,8 +36,8 @@ public class CreateSutReifier implements SutReifier {
         testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
             Object testInstance = testContext.getTestInstance();
 
-            Object sutValue = sutDescriptor.getValue(testInstance).orElseGet(()
-                    -> ReflectionUtil.INSTANCE.newInstance(sutDescriptor.getType())
+            Object sutValue = sutDescriptor.getValue(testInstance).orElseGet(() ->
+                    ReflectionUtil.INSTANCE.newInstance(sutDescriptor.getType())
             );
 
             sutDescriptor.setValue(testInstance, sutValue);

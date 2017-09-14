@@ -16,6 +16,7 @@
 package org.testifyproject.extension;
 
 import java.lang.annotation.Annotation;
+
 import org.testifyproject.TestDescriptor;
 
 /**

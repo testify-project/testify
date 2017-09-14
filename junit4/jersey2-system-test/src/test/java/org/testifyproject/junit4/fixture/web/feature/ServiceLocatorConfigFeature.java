@@ -16,11 +16,13 @@
 package org.testifyproject.junit4.fixture.web.feature;
 
 import java.io.IOException;
+
 import javax.inject.Inject;
 import javax.ws.rs.ConstrainedTo;
 import javax.ws.rs.RuntimeType;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
+
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.DynamicConfigurationService;
 import org.glassfish.hk2.api.Populator;
@@ -38,7 +40,7 @@ public class ServiceLocatorConfigFeature implements Feature {
     private final DynamicConfigurationService dcs;
 
     @Inject
-    ServiceLocatorConfigFeature( DynamicConfigurationService dcs) {
+    ServiceLocatorConfigFeature(DynamicConfigurationService dcs) {
         this.dcs = dcs;
     }
 

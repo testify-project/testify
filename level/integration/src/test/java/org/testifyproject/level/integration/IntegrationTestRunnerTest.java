@@ -15,17 +15,20 @@
  */
 package org.testifyproject.level.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
@@ -36,7 +39,6 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.annotation.CollaboratorProvider;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
@@ -94,7 +96,8 @@ public class IntegrationTestRunnerTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
 
         CollaboratorReifier collaboratorReifier = mock(CollaboratorReifier.class);
-        List<CollaboratorReifier> collaboratorReifiers = ImmutableList.of(collaboratorReifier);
+        List<CollaboratorReifier> collaboratorReifiers = ImmutableList.of(
+                collaboratorReifier);
 
         PreVerifier configurationVerifier = mock(PreVerifier.class);
         List<PreVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
@@ -117,10 +120,12 @@ public class IntegrationTestRunnerTest {
         Annotation[] sutQualifiers = {};
         Object sutInstance = new Object();
         CollaboratorProvider collaboratorProvider = mock(CollaboratorProvider.class);
-        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(collaboratorProvider);
+        Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(
+                collaboratorProvider);
 
         InitialReifier collaboratorsReifier = mock(InitialReifier.class);
-        List<InitialReifier> collaboratorsReifiers = ImmutableList.of(collaboratorsReifier);
+        List<InitialReifier> collaboratorsReifiers = ImmutableList
+                .of(collaboratorsReifier);
 
         FinalReifier testReifier = mock(FinalReifier.class);
         List<FinalReifier> testReifiers = ImmutableList.of(testReifier);
@@ -134,31 +139,44 @@ public class IntegrationTestRunnerTest {
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
-        given(serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class,
+                IntegrationCategory.class))
                 .willReturn(collaboratorReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines,
+                IntegrationCategory.class))
                 .willReturn(configurationVerifiers);
         given(testDescriptor.getHint()).willReturn(foundHint);
         given(hint.serviceProvider()).willReturn(hintServiceProvider);
-        given(serviceLocatorUtil.getOne(ServiceProvider.class, hintServiceProvider)).willReturn(serviceProvider);
+        given(serviceLocatorUtil.getOne(ServiceProvider.class, hintServiceProvider))
+                .willReturn(serviceProvider);
         given(serviceProvider.create(testContext)).willReturn(serviceContext);
-        given(serviceProvider.configure(testContext, serviceContext)).willReturn(serviceInstance);
-        given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
+        given(serviceProvider.configure(testContext, serviceContext)).willReturn(
+                serviceInstance);
+        given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(
+                testResourcesProvider);
         given(testContext.getResourceStartStrategy()).willReturn(StartStrategy.EAGER);
-        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, IntegrationCategory.class)).willReturn(preInstanceProviders);
-        given(serviceLocatorUtil.findAllWithFilter(InstanceProvider.class)).willReturn(instanceProviders);
-        given(serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class, IntegrationCategory.class)).willReturn(postInstanceProviders);
+        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class,
+                IntegrationCategory.class)).willReturn(preInstanceProviders);
+        given(serviceLocatorUtil.findAllWithFilter(InstanceProvider.class)).willReturn(
+                instanceProviders);
+        given(serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class,
+                IntegrationCategory.class)).willReturn(postInstanceProviders);
         given(serviceInstance.getNameQualifers()).willReturn(nameQualifiers);
         given(serviceInstance.getCustomQualifiers()).willReturn(customQualifiers);
         given(sutDescriptor.getType()).willReturn(sutType);
-        given(sutDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers)).willReturn(sutQualifiers);
+        given(sutDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers))
+                .willReturn(sutQualifiers);
         given(serviceInstance.getService(sutType, sutQualifiers)).willReturn(sutInstance);
-        given(testDescriptor.getCollaboratorProvider()).willReturn(foundCollaboratorProvider);
-        given(serviceLocatorUtil.findAllWithFilter(InitialReifier.class, IntegrationCategory.class))
+        given(testDescriptor.getCollaboratorProvider()).willReturn(
+                foundCollaboratorProvider);
+        given(serviceLocatorUtil.findAllWithFilter(InitialReifier.class,
+                IntegrationCategory.class))
                 .willReturn(collaboratorsReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class,
+                IntegrationCategory.class))
                 .willReturn(testReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, guidelines, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, guidelines,
+                IntegrationCategory.class))
                 .willReturn(wiringVerifiers);
 
         sut.start(testContext);
@@ -167,8 +185,10 @@ public class IntegrationTestRunnerTest {
         verify(testContext).getTestConfigurer();
         verify(testContext).getSutDescriptor();
         verify(testContext).getTestDescriptor();
-        verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class, IntegrationCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class,
+                IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines,
+                IntegrationCategory.class);
         verify(testDescriptor).getHint();
         verify(hint).serviceProvider();
         verify(serviceLocatorUtil).getOne(ServiceProvider.class, hintServiceProvider);
@@ -179,9 +199,11 @@ public class IntegrationTestRunnerTest {
         verify(testConfigurer).configure(testContext, serviceContext);
         verify(serviceLocatorUtil).getOne(TestResourcesProvider.class);
         verify(testResourcesProvider).start(testContext);
-        verify(serviceLocatorUtil).findAllWithFilter(PreInstanceProvider.class, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreInstanceProvider.class,
+                IntegrationCategory.class);
         verify(serviceLocatorUtil).findAllWithFilter(InstanceProvider.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PostInstanceProvider.class, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PostInstanceProvider.class,
+                IntegrationCategory.class);
         verify(serviceInstance).init();
         verify(serviceInstance).getNameQualifers();
         verify(serviceInstance).getCustomQualifiers();
@@ -190,15 +212,19 @@ public class IntegrationTestRunnerTest {
         verify(serviceInstance).getService(sutType, sutQualifiers);
         verify(sutDescriptor).setValue(testInstance, sutInstance);
         verify(testDescriptor).getCollaboratorProvider();
-        verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class, IntegrationCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class, IntegrationCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, guidelines, IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class,
+                IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class,
+                IntegrationCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, guidelines,
+                IntegrationCategory.class);
     }
 
     @Test
     public void callToStopShouldStopTest() {
         TestContext testContext = mock(TestContext.class);
-        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(TestResourcesProvider.class);
+        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(
+                TestResourcesProvider.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
         Optional<ServiceInstance> foundServiceInstance = Optional.of(serviceInstance);
 
@@ -214,13 +240,15 @@ public class IntegrationTestRunnerTest {
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
-        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, guidelines, IntegrationCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, guidelines,
+                IntegrationCategory.class))
                 .willReturn(postVerifiers);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
-        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
+        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(
+                foundServiceInstance);
 
         sut.stop(testContext);
 

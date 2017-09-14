@@ -16,10 +16,11 @@
 package org.testifyproject.junit4;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.junit4.fixture.ImplicitType;

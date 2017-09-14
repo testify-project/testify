@@ -15,6 +15,8 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static java.util.Optional.ofNullable;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -24,10 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
 import java.util.stream.Collectors;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
@@ -42,6 +42,9 @@ import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.extension.annotation.Hint;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * A descriptor class used to access or perform operations on a test class.
@@ -183,8 +186,8 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors =
+                findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);
@@ -204,8 +207,8 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors =
+                findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);

@@ -15,10 +15,12 @@
  */
 package org.testifyproject.fixture.analyzer;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Map;
 import java.util.UUID;
+
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.Fake;

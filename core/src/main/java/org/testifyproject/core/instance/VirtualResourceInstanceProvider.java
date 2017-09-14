@@ -17,11 +17,11 @@ package org.testifyproject.core.instance;
 
 import java.util.Collection;
 import java.util.List;
+
 import org.testifyproject.Instance;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.TestContext;
+import org.testifyproject.VirtualResourceInfo;
 import org.testifyproject.VirtualResourceInstance;
-import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.NamingUtil;
@@ -33,8 +33,7 @@ import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An implementation of PreInstanceProvider that provides virtual resource
- instances.
+ * An implementation of PreInstanceProvider that provides virtual resource instances.
  *
  * @author saden
  */
@@ -48,8 +47,8 @@ public class VirtualResourceInstanceProvider implements PreInstanceProvider {
     public List<Instance> get(TestContext testContext) {
         ImmutableList.Builder<Instance> builder = ImmutableList.builder();
 
-        Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> virtualResourceInstances
-                = testContext.getVirtualResourceInstances();
+        Collection<VirtualResourceInfo> virtualResourceInstances =
+                testContext.getVirtualResources();
 
         virtualResourceInstances.forEach(resource -> {
             VirtualResourceInstance<Object> virtualResource = resource.getValue();
@@ -63,7 +62,9 @@ public class VirtualResourceInstanceProvider implements PreInstanceProvider {
                 name = NamingUtil.INSTANCE.createResourceName(name);
             }
 
-            builder.add(DefaultInstance.of(virtualResource, name, VirtualResourceInstance.class));
+            builder
+                    .add(DefaultInstance
+                            .of(virtualResource, name, VirtualResourceInstance.class));
             builder.add(virtualResource.getResource());
         });
 

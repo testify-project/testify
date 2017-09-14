@@ -22,10 +22,10 @@ import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 
 /**
- * A JUnit HK2 integration test class runner. This class is the main entry point
- * for running Spring integration test using {@link org.junit.runner.RunWith}.
- * It provides means of creating your system under test, faking certain
- * collaborators or using real collaborators in the Spring application context.
+ * A JUnit HK2 integration test class runner. This class is the main entry point for
+ * running Spring integration test using {@link org.junit.runner.RunWith}. It provides
+ * means of creating your system under test, faking certain collaborators or using real
+ * collaborators in the Spring application context.
  *
  * @author saden
  */

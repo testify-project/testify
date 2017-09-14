@@ -15,11 +15,12 @@
  */
 package org.testifyproject;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  *

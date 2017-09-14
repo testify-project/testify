@@ -16,6 +16,7 @@
 package org.testifyproject.fixture.reflection;
 
 import java.util.concurrent.Callable;
+
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
@@ -29,7 +30,8 @@ public class GreeterInterceptor {
 
     @RuntimeType
     @BindingPriority(Integer.MAX_VALUE)
-    public Object _default(@SuperCall Callable<?> zuper, @AllArguments Object[] args) throws Exception {
+    public Object _default(@SuperCall Callable<?> zuper, @AllArguments Object[] args) throws
+            Exception {
         return zuper.call();
     }
 

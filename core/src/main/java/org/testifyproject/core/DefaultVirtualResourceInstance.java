@@ -16,15 +16,17 @@
 package org.testifyproject.core;
 
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.VirtualResource;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * An implementation of {@link VirtualResourceInstance SPI Contract} that
- * provides information about running container.
+ * An implementation of {@link VirtualResourceInstance SPI Contract} that provides information
+ * about running container.
  *
  * @author saden
  * @param <R> the underlying virtual resource type

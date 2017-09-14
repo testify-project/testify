@@ -15,23 +15,26 @@
  */
 package org.testifyproject.di.hk2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.glassfish.hk2.api.InjectionResolver.SYSTEM_RESOLVER_NAME;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
+
 import javax.inject.Provider;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
-import static org.glassfish.hk2.api.InjectionResolver.SYSTEM_RESOLVER_NAME;
 import org.glassfish.hk2.api.IterableProvider;
 import org.glassfish.hk2.api.ServiceHandle;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.SutDescriptor;
@@ -82,7 +85,8 @@ public class HK2InjectionResolverTest {
         Object serviceInstance = new Object();
 
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
-        given(serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME)).willReturn(threeThirtyResolver);
+        given(serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME))
+                .willReturn(threeThirtyResolver);
         given(threeThirtyResolver.resolve(injectee, root)).willReturn(serviceInstance);
 
         Object result = sut.resolve(injectee, root);
@@ -203,7 +207,8 @@ public class HK2InjectionResolverTest {
         given(injectee.getRequiredType()).willReturn(requiredType);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(fieldDescriptor.getFake()).willReturn(foundFake);
-        given(serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME)).willReturn(threeThirtyResolver);
+        given(serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME))
+                .willReturn(threeThirtyResolver);
         given(threeThirtyResolver.resolve(injectee, root)).willReturn(serviceInstance);
 
         Object result = sut.resolve(injectee, root);
@@ -222,7 +227,8 @@ public class HK2InjectionResolverTest {
 
     @Test
     public void givenIterableProviderGetRawTypeTokenShouldReturnRawType() {
-        TypeToken<IterableProvider<String>> typeToken = new TypeToken<IterableProvider<String>>() {
+        TypeToken<IterableProvider<String>> typeToken =
+                new TypeToken<IterableProvider<String>>() {
         };
         TypeToken result = sut.getRawTypeToken(typeToken.getType());
 

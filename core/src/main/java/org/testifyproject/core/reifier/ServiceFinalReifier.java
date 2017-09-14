@@ -17,6 +17,7 @@ package org.testifyproject.core.reifier;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.extension.FinalReifier;
@@ -41,18 +42,21 @@ public class ServiceFinalReifier implements FinalReifier {
         testContext.getServiceInstance().ifPresent(serviceInstance -> {
             Object testInstance = testContext.getTestInstance();
             Set<Class<? extends Annotation>> nameQualifers = serviceInstance.getNameQualifers();
-            Set<Class<? extends Annotation>> customQualifiers = serviceInstance.getCustomQualifiers();
+            Set<Class<? extends Annotation>> customQualifiers = serviceInstance
+                    .getCustomQualifiers();
 
             //if there are any fields on the test class that are not collaborators
             //of the sut class and are annotated with DI supported injection
             //annotations then get the services and initialize the test fields.
             testContext.getTestDescriptor().getFieldDescriptors().parallelStream()
-                    .filter(fieldDescriptor -> !fieldDescriptor.getValue(testInstance).isPresent())
+                    .filter(fieldDescriptor -> !fieldDescriptor.getValue(testInstance)
+                            .isPresent())
                     .filter(fieldDescriptor -> fieldDescriptor.hasAnyAnnotations(Real.class))
                     .forEach(fieldDescriptor -> {
                         Class fieldType = fieldDescriptor.getType();
-                        Annotation[] fieldQualifiers
-                                = fieldDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
+                        Annotation[] fieldQualifiers =
+                                fieldDescriptor.getMetaAnnotations(nameQualifers,
+                                        customQualifiers);
 
                         Object value = serviceInstance.getService(fieldType, fieldQualifiers);
 

@@ -17,10 +17,10 @@ package org.testifyproject.core.instance;
 
 import java.util.Collection;
 import java.util.List;
+
 import org.testifyproject.Instance;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.RemoteResourceInstance;
-import org.testifyproject.RemoteResourceProvider;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.core.DefaultInstance;
@@ -33,8 +33,7 @@ import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An implementation of PreInstanceProvider that provides remote resource
- instances.
+ * An implementation of PreInstanceProvider that provides remote resource instances.
  *
  * @author saden
  */
@@ -48,8 +47,8 @@ public class RemoteResourceInstanceProvider implements PreInstanceProvider {
     public List<Instance> get(TestContext testContext) {
         ImmutableList.Builder<Instance> builder = ImmutableList.builder();
 
-        Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> remoteResourceInstances
-                = testContext.getRemoteResourceInstances();
+        Collection<RemoteResourceInfo> remoteResourceInstances =
+                testContext.getRemoteResources();
 
         remoteResourceInstances.forEach(resource -> {
             RemoteResourceInstance<Object> remoteResource = resource.getValue();
@@ -63,7 +62,8 @@ public class RemoteResourceInstanceProvider implements PreInstanceProvider {
                 name = NamingUtil.INSTANCE.createResourceName(name);
             }
 
-            builder.add(DefaultInstance.of(remoteResource, name, RemoteResourceInstance.class));
+            builder.add(DefaultInstance.of(remoteResource, name,
+                    RemoteResourceInstance.class));
             builder.add(remoteResource.getResource());
         });
 

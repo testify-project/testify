@@ -15,6 +15,8 @@
  */
 package org.testifyproject.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,9 +39,9 @@ public class SettingUtilTest {
     SettingUtil sut;
 
     @Rule
-    public ProvideSystemProperty provideSystemProperty 
-            = new ProvideSystemProperty("testify.categories", "unit,integration");
-    
+    public ProvideSystemProperty provideSystemProperty =
+            new ProvideSystemProperty("testify.categories", "unit,integration");
+
     @Before
     public void init() {
         sut = new SettingUtil();

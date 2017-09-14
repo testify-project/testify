@@ -15,10 +15,12 @@
  */
 package org.testifyproject.di.spring;
 
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+
 import java.util.HashSet;
 import java.util.Set;
+
 import org.springframework.beans.factory.config.BeanDefinition;
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -35,8 +37,8 @@ import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.PreInstanceProvider;
 
 /**
- * A class that is called after the application context is refreshed to
- * initialize the test as well as start and stop test resources.
+ * A class that is called after the application context is refreshed to initialize the
+ * test as well as start and stop test resources.
  *
  * @author saden
  */
@@ -45,7 +47,8 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
 
-    public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance) {
+    public SpringBeanFactoryPostProcessor(TestContext testContext,
+            ServiceInstance serviceInstance) {
         this.testContext = testContext;
         this.serviceInstance = serviceInstance;
     }
@@ -56,8 +59,10 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableListableBeanFactory;
+    public void postProcessBeanFactory(
+            ConfigurableListableBeanFactory configurableListableBeanFactory) {
+        DefaultListableBeanFactory beanFactory =
+                (DefaultListableBeanFactory) configurableListableBeanFactory;
         Set<String> replacedBeanNames = new HashSet<>();
 
         for (String beanName : beanFactory.getBeanDefinitionNames()) {
@@ -77,7 +82,8 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
                 Configuration configuration = beanType.getAnnotation(Configuration.class);
 
                 if (configuration == null) {
-                    processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
+                    processConfiguration(beanFactory, beanDefinition, beanType, beanName,
+                            replacedBeanNames);
                 }
 
                 //by default spring eagerly initilizes singleton scoped beans
@@ -107,7 +113,8 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
         }
     }
 
-    void processPrimary(DefaultListableBeanFactory beanFactory, BeanDefinition beanDefinition, String beanName, Class<?> beanType) {
+    void processPrimary(DefaultListableBeanFactory beanFactory,
+            BeanDefinition beanDefinition, String beanName, Class<?> beanType) {
         String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
 
         if (beanNamesForType.length > 1) {
@@ -117,10 +124,12 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
                 } else {
                     beanFactory.removeBeanDefinition(beanNameForType);
 
-                    GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
+                    GenericBeanDefinition replacementBeanDefinition =
+                            new GenericBeanDefinition(beanDefinition);
                     replacementBeanDefinition.setPrimary(false);
                     replacementBeanDefinition.setLazyInit(true);
-                    beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
+                    beanFactory.registerBeanDefinition(beanNameForType,
+                            replacementBeanDefinition);
                 }
             }
         }
@@ -149,7 +158,8 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
         //in the bean annotated with fixture and thus replacying
         //all production beans with test fixture beans
         if (fixture != null) {
-            processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
+            processFixture(beanFactory, beanDefinition, beanType, beanName, fixture,
+                    replacedBeanNames);
         }
     }
 
@@ -166,7 +176,8 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
                 beanFactory.removeBeanDefinition(beanNameForType);
             } else {
                 beanFactory.removeBeanDefinition(beanNameForType);
-                GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
+                GenericBeanDefinition replacementBeanDefinition =
+                        new GenericBeanDefinition(beanDefinition);
 
                 if (!fixture.init().isEmpty()) {
                     replacementBeanDefinition.setInitMethodName(fixture.init());
@@ -178,7 +189,8 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
 
                 replacementBeanDefinition.setPrimary(false);
                 replacementBeanDefinition.setLazyInit(true);
-                beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
+                beanFactory.registerBeanDefinition(beanNameForType,
+                        replacementBeanDefinition);
                 replacedBeanNames.add(beanNameForType);
             }
         }

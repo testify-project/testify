@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.bad;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;

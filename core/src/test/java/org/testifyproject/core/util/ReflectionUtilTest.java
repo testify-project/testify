@@ -15,14 +15,16 @@
  */
 package org.testifyproject.core.util;
 
-import java.util.concurrent.Callable;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.concurrent.Callable;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.bytebuddy.dynamic.DynamicType;
 import org.testifyproject.fixture.reflection.CustomAnnotation;
 import org.testifyproject.fixture.reflection.CustomConstructorService;
@@ -76,7 +78,8 @@ public class ReflectionUtilTest {
 
     @Test
     public void givenClassWithCustomConstrsutorAndArgsNewInstanceShouldReturnInstance() {
-        CustomConstructorService result = sut.newInstance(CustomConstructorService.class, "Hello!");
+        CustomConstructorService result = sut.newInstance(CustomConstructorService.class,
+                "Hello!");
 
         assertThat(result).isNotNull();
     }
@@ -84,7 +87,8 @@ public class ReflectionUtilTest {
     @Test
     public void givenClassAndInterceptRebaseShouldRebaseTheClass()
             throws Exception {
-        GreeterInterceptor interceptor = mock(GreeterInterceptor.class, delegatesTo(new GreeterInterceptor()));
+        GreeterInterceptor interceptor = mock(GreeterInterceptor.class, delegatesTo(
+                new GreeterInterceptor()));
         String className = "org.testifyproject.fixture.reflection.RebasedGreeter";
         ClassLoader classLoader = this.getClass().getClassLoader();
 
@@ -102,11 +106,13 @@ public class ReflectionUtilTest {
     @Test
     public void givenClassAndInterceptSubclassShouldSubclassTheClass()
             throws Exception {
-        GreeterInterceptor interceptor = mock(GreeterInterceptor.class, delegatesTo(new GreeterInterceptor()));
+        GreeterInterceptor interceptor = mock(GreeterInterceptor.class, delegatesTo(
+                new GreeterInterceptor()));
         Class<SubclassedGreeter> classType = SubclassedGreeter.class;
         ClassLoader classLoader = this.getClass().getClassLoader();
 
-        Class<? extends SubclassedGreeter> result = sut.subclass(classType, classLoader, interceptor);
+        Class<? extends SubclassedGreeter> result = sut
+                .subclass(classType, classLoader, interceptor);
 
         assertThat(result).isNotNull();
 

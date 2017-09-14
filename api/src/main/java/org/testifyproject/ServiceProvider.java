@@ -32,8 +32,7 @@ public interface ServiceProvider<T> {
     T create(TestContext testContext);
 
     /**
-     * Configure a service instance using the given test context and service
-     * context.
+     * Configure a service instance using the given test context and service context.
      *
      * @param testContext the test context
      * @param serviceContext the service instance context
@@ -42,8 +41,7 @@ public interface ServiceProvider<T> {
     ServiceInstance configure(TestContext testContext, T serviceContext);
 
     /**
-     * Initialize a service instance using the given test context and service
-     * context.
+     * Initialize a service instance using the given test context and service context.
      *
      * @param testContext the test context
      * @param serviceInstance the service instance

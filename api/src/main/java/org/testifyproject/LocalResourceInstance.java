@@ -16,14 +16,14 @@
 package org.testifyproject;
 
 import java.util.Optional;
+
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * A contract that defines methods to get information about a local resource
- * instance. A local resource instance consists of a resource, an optional
- * client that can be used to communicate with the local resource, and
- * properties associated with the local resource instance.
+ * A contract that defines methods to get information about a local resource instance. A local
+ * resource instance consists of a resource, an optional client that can be used to communicate with
+ * the local resource, and properties associated with the local resource instance.
  *
  * @author saden
  * @param <R> the underlying local resource type
@@ -40,8 +40,7 @@ public interface LocalResourceInstance<R, C> extends PropertiesReader {
     String getFqn();
 
     /**
-     * Get the local resource annotation associated with the local resource
-     * instance.
+     * Get the local resource annotation associated with the local resource instance.
      *
      * @return the local resource annotation
      */

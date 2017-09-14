@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.Instance;
 import org.testifyproject.annotation.Application;
@@ -124,7 +126,8 @@ public class ClientInstanceBuilderTest {
         given(application.clientProviderName()).willReturn(customName);
         given(application.clientProviderContract()).willReturn(customContract);
 
-        ClientInstance<Object> result = sut.clientProvider(clientProviderValue, clientProviderContract)
+        ClientInstance<Object> result = sut.clientProvider(clientProviderValue,
+                clientProviderContract)
                 .build(fqn, application);
 
         assertThat(result).isNotNull();
@@ -147,7 +150,8 @@ public class ClientInstanceBuilderTest {
         given(application.clientProviderName()).willReturn(customName);
         given(application.clientProviderContract()).willReturn(customContract);
 
-        ClientInstance<Object> result = sut.clientProvider(clientProviderValue).build(fqn, application);
+        ClientInstance<Object> result = sut.clientProvider(clientProviderValue).build(fqn,
+                application);
 
         assertThat(result).isNotNull();
         assertThat(result.getClientProvider()).isPresent();
@@ -169,7 +173,8 @@ public class ClientInstanceBuilderTest {
         given(application.clientProviderName()).willReturn(customName);
         given(application.clientProviderContract()).willReturn(customContract);
 
-        ClientInstance<Object> result = sut.clientProvider(clientProviderValue).build(fqn, application);
+        ClientInstance<Object> result = sut.clientProvider(clientProviderValue).build(fqn,
+                application);
 
         assertThat(result).isNotNull();
         assertThat(result.getClientProvider()).isPresent();

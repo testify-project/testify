@@ -16,6 +16,7 @@
 package org.testifyproject.di.fixture.autowired;
 
 import javax.inject.Inject;
+
 import org.springframework.stereotype.Component;
 
 /**

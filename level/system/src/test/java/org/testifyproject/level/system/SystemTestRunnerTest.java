@@ -15,14 +15,7 @@
  */
 package org.testifyproject.level.system;
 
-import java.lang.annotation.Annotation;
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willReturn;
@@ -30,6 +23,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.testifyproject.core.TestContextProperties.APP_CLIENT_INSTANCE;
+import static org.testifyproject.core.TestContextProperties.APP_SERVER_INSTANCE;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
+import java.lang.annotation.Annotation;
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.FieldDescriptor;
@@ -43,9 +48,6 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.annotation.Application;
-import static org.testifyproject.core.TestContextProperties.APP_CLIENT_INSTANCE;
-import static org.testifyproject.core.TestContextProperties.APP_SERVER_INSTANCE;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
@@ -116,7 +118,8 @@ public class SystemTestRunnerTest {
         Object testInstance = new Object();
 
         CollaboratorReifier collaboratorReifier = mock(CollaboratorReifier.class);
-        List<CollaboratorReifier> collaboratorReifiers = ImmutableList.of(collaboratorReifier);
+        List<CollaboratorReifier> collaboratorReifiers = ImmutableList.of(
+                collaboratorReifier);
 
         PreVerifier configurationVerifier = mock(PreVerifier.class);
         List<PreVerifier> configurationVerifiers = ImmutableList.of(configurationVerifier);
@@ -144,30 +147,42 @@ public class SystemTestRunnerTest {
         given(testDescriptor.getApplication()).willReturn(foundApplication);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
-        given(serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class, SystemCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class,
+                SystemCategory.class))
                 .willReturn(collaboratorReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines, SystemCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines,
+                SystemCategory.class))
                 .willReturn(configurationVerifiers);
-        willReturn(serverInstance).given(sut).createServer(testContext, application, testConfigurer);
+        willReturn(serverInstance).given(sut).createServer(testContext, application,
+                testConfigurer);
         given(serverInstance.getBaseURI()).willReturn(baseURI);
-        willReturn(clientInstance).given(sut).createClient(testContext, application, testConfigurer, baseURI);
-        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
-        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class, SystemCategory.class))
+        willReturn(clientInstance).given(sut).createClient(testContext, application,
+                testConfigurer, baseURI);
+        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(
+                foundServiceInstance);
+        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class,
+                SystemCategory.class))
                 .willReturn(instanceProviders);
-        given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(testResourcesProvider);
+        given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(
+                testResourcesProvider);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
-        willDoNothing().given(sut).createSut(sutDescriptor, clientInstance, serviceInstance, testInstance);
-        given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class, SystemCategory.class))
+        willDoNothing().given(sut).createSut(sutDescriptor, clientInstance,
+                serviceInstance, testInstance);
+        given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class,
+                SystemCategory.class))
                 .willReturn(testReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, guidelines, SystemCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, guidelines,
+                SystemCategory.class))
                 .willReturn(wiringVerifiers);
         sut.start(testContext);
 
         verify(testContext).getTestConfigurer();
         verify(testContext).getTestDescriptor();
         verify(testDescriptor).getApplication();
-        verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class, SystemCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines, SystemCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class,
+                SystemCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines,
+                SystemCategory.class);
         verify(sut).createServer(testContext, application, testConfigurer);
         verify(sut).createClient(testContext, application, testConfigurer, baseURI);
         //verify(serviceLocatorUtil).findAllWithFilter(PreInstanceProvider.class, SystemCategory.class);
@@ -175,9 +190,12 @@ public class SystemTestRunnerTest {
         verify(testResourcesProvider).start(testContext);
         verify(serviceInstance).init();
         verify(testContext).getSutDescriptor();
-        verify(sut).createSut(sutDescriptor, clientInstance, serviceInstance, testInstance);
-        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class, SystemCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, guidelines, SystemCategory.class);
+        verify(sut)
+                .createSut(sutDescriptor, clientInstance, serviceInstance, testInstance);
+        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class,
+                SystemCategory.class);
+        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, guidelines,
+                SystemCategory.class);
     }
 
     @Test
@@ -186,7 +204,8 @@ public class SystemTestRunnerTest {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         Object testInstance = new Object();
 
-        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(TestResourcesProvider.class);
+        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(
+                TestResourcesProvider.class);
         ClientProvider clientProvider = sut.clientProvider = mock(ClientProvider.class);
         ServerProvider serverProvider = sut.serverProvider = mock(ServerProvider.class);
         ServerInstance serverInstance = mock(ServerInstance.class);
@@ -207,16 +226,20 @@ public class SystemTestRunnerTest {
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
-        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, guidelines, SystemCategory.class))
+        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, guidelines,
+                SystemCategory.class))
                 .willReturn(postVerifiers);
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
-        given(testContext.<ClientInstance>findProperty(APP_CLIENT_INSTANCE)).willReturn(foundClientInstance);
-        given(testContext.<ServerInstance>findProperty(APP_SERVER_INSTANCE)).willReturn(foundServerInstance);
-        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(foundServiceInstance);
+        given(testContext.<ClientInstance>findProperty(APP_CLIENT_INSTANCE)).willReturn(
+                foundClientInstance);
+        given(testContext.<ServerInstance>findProperty(APP_SERVER_INSTANCE)).willReturn(
+                foundServerInstance);
+        given(testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)).willReturn(
+                foundServiceInstance);
 
         sut.stop(testContext);
 
@@ -296,8 +319,10 @@ public class SystemTestRunnerTest {
         given(application.serverProvider()).willReturn(serverProviderType);
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
-        given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(testContext, application, serverConfig)).willReturn(serverInstance);
+        given(testConfigurer.configure(testContext, serverConfig))
+                .willReturn(serverConfig);
+        given(serverProvider.start(testContext, application, serverConfig)).willReturn(
+                serverInstance);
 
         ServerInstance result = sut.createServer(testContext, application, testConfigurer);
 
@@ -322,8 +347,10 @@ public class SystemTestRunnerTest {
         given(application.serverProvider()).willReturn(serverProviderType);
         given(reflectionUtil.newInstance(serverProviderType)).willReturn(serverProvider);
         given(serverProvider.configure(testContext)).willReturn(serverConfig);
-        given(testConfigurer.configure(testContext, serverConfig)).willReturn(serverConfig);
-        given(serverProvider.start(testContext, application, serverConfig)).willReturn(serverInstance);
+        given(testConfigurer.configure(testContext, serverConfig))
+                .willReturn(serverConfig);
+        given(serverProvider.start(testContext, application, serverConfig)).willReturn(
+                serverInstance);
 
         ServerInstance result = sut.createServer(testContext, application, testConfigurer);
 
@@ -349,11 +376,15 @@ public class SystemTestRunnerTest {
 
         given(application.clientProvider()).willReturn(clientProviderType);
         given(serviceLocatorUtil.getOne(clientProviderType)).willReturn(clientProvider);
-        given(clientProvider.configure(testContext, application, baseURI)).willReturn(clientConfig);
-        given(testConfigurer.configure(testContext, clientConfig)).willReturn(clientConfig);
-        given(clientProvider.create(testContext, application, baseURI, clientConfig)).willReturn(clientInstance);
+        given(clientProvider.configure(testContext, application, baseURI)).willReturn(
+                clientConfig);
+        given(testConfigurer.configure(testContext, clientConfig))
+                .willReturn(clientConfig);
+        given(clientProvider.create(testContext, application, baseURI, clientConfig))
+                .willReturn(clientInstance);
 
-        ClientInstance result = sut.createClient(testContext, application, testConfigurer, baseURI);
+        ClientInstance result = sut.createClient(testContext, application, testConfigurer,
+                baseURI);
 
         assertThat(result).isEqualTo(clientInstance);
         verify(application).clientProvider();
@@ -377,11 +408,15 @@ public class SystemTestRunnerTest {
 
         given(application.clientProvider()).willReturn(clientProviderType);
         given(reflectionUtil.newInstance(clientProviderType)).willReturn(clientProvider);
-        given(clientProvider.configure(testContext, application, baseURI)).willReturn(clientConfig);
-        given(testConfigurer.configure(testContext, clientConfig)).willReturn(clientConfig);
-        given(clientProvider.create(testContext, application, baseURI, clientConfig)).willReturn(clientInstance);
+        given(clientProvider.configure(testContext, application, baseURI)).willReturn(
+                clientConfig);
+        given(testConfigurer.configure(testContext, clientConfig))
+                .willReturn(clientConfig);
+        given(clientProvider.create(testContext, application, baseURI, clientConfig))
+                .willReturn(clientInstance);
 
-        ClientInstance result = sut.createClient(testContext, application, testConfigurer, baseURI);
+        ClientInstance result = sut.createClient(testContext, application, testConfigurer,
+                baseURI);
 
         assertThat(result).isEqualTo(clientInstance);
         verify(application).clientProvider();

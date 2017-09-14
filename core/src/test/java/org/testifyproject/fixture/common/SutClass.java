@@ -22,8 +22,8 @@ import org.testifyproject.annotation.Sut;
  * @author saden
  */
 public class SutClass {
-    
+
     @Sut
     CollaboratorClass sut;
-    
+
 }

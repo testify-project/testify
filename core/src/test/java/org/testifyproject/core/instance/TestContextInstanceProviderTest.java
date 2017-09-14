@@ -15,11 +15,13 @@
  */
 package org.testifyproject.core.instance;
 
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.DefaultInstance;

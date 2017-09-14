@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture.common;
 
 import javax.inject.Named;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

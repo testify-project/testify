@@ -15,17 +15,19 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static java.util.Optional.ofNullable;
+
 import java.lang.reflect.Method;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.annotation.Name;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * A descriptor class used to access or perform operations on test class
- * methods.
+ * A descriptor class used to access or perform operations on test class methods.
  *
  * @author saden
  */
@@ -52,8 +54,7 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
     }
 
     /**
-     * Create a new method descriptor instance from the given method and
-     * instance.
+     * Create a new method descriptor instance from the given method and instance.
      *
      * @param method the underlying method
      * @param instance the instance associated with the method

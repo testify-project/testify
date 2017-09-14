@@ -16,12 +16,13 @@
 package org.testifyproject.extension;
 
 import java.util.List;
+
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method to provider instances that will be added to
- * a {@link org.testifyproject.ServiceInstance} after instances provided by
+ * A contract that defines a method to provider instances that will be added to a
+ * {@link org.testifyproject.ServiceInstance} after instances provided by
  * {@link PreInstanceProvider}.
  *
  * @author saden

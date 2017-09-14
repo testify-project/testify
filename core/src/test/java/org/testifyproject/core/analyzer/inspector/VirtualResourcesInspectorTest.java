@@ -15,11 +15,12 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.annotation.VirtualResources;
@@ -49,7 +50,8 @@ public class VirtualResourcesInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES, element);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES,
+                element);
     }
 
 }

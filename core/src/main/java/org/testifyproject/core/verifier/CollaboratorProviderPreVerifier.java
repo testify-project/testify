@@ -16,6 +16,7 @@
 package org.testifyproject.core.verifier;
 
 import java.util.List;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -46,18 +47,21 @@ public class CollaboratorProviderPreVerifier implements PreVerifier {
     public void verify(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        testDescriptor.getCollaboratorProviders().parallelStream().forEach(collaboratorProvider -> {
-            List<Class> parameterTypes = collaboratorProvider.getParameterTypes();
-            int size = parameterTypes.size();
-            String name = collaboratorProvider.getName();
-            String declaringClassName = collaboratorProvider.getDeclaringClassName();
-            Class returnType = collaboratorProvider.getReturnType();
+        testDescriptor.getCollaboratorProviders().parallelStream()
+                .forEach(collaboratorProvider -> {
+                    List<Class> parameterTypes = collaboratorProvider.getParameterTypes();
+                    int size = parameterTypes.size();
+                    String name = collaboratorProvider.getName();
+                    String declaringClassName = collaboratorProvider
+                            .getDeclaringClassName();
+                    Class returnType = collaboratorProvider.getReturnType();
 
-            ExceptionUtil.INSTANCE.raise(void.class.equals(returnType) || Void.class.equals(returnType),
-                    "Collaborator Provider method '{}' in class '{}' has void return type."
-                    + "Please insure the collaborator provider returns a non-void type.",
-                    name, declaringClassName);
-        });
+                    ExceptionUtil.INSTANCE.raise(void.class.equals(returnType)
+                            || Void.class.equals(returnType),
+                            "Collaborator Provider method '{}' in class '{}' has void return type."
+                            + "Please insure the collaborator provider returns a non-void type.",
+                            name, declaringClassName);
+                });
     }
 
 }

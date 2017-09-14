@@ -15,61 +15,60 @@
  */
 package org.testifyproject.core;
 
-import java.lang.annotation.Annotation;
+import org.testifyproject.RemoteResourceInfo;
+import org.testifyproject.RemoteResourceInstance;
+import org.testifyproject.RemoteResourceProvider;
+import org.testifyproject.annotation.RemoteResource;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.testifyproject.ResourceInstance;
 
 /**
- * Default implementation of {@link ResourceInstance} contract.
+ * Remote resource implementation of {@link RemoteResourceInfo} contract.
  *
  * @author saden
- * @param <A> the resource annotation type
- * @param <P> the resource provider type
- * @param <I> the resource instance type
  */
 @ToString
 @EqualsAndHashCode
-public class DefaultResourceInstance<A extends Annotation, P, I> implements ResourceInstance<A, P, I> {
+public class DefaultRemoteResourceInfo implements RemoteResourceInfo {
 
-    private final A annotation;
-    private final P provider;
-    private final I value;
+    private final RemoteResource annotation;
+    private final RemoteResourceProvider provider;
+    private final RemoteResourceInstance value;
 
-    DefaultResourceInstance(A resource, P provider, I value) {
+    DefaultRemoteResourceInfo(RemoteResource resource, RemoteResourceProvider provider,
+            RemoteResourceInstance value) {
         this.annotation = resource;
         this.provider = provider;
         this.value = value;
     }
 
     /**
-     * Create a new resource instance based on the given parameters.
+     * Create a new resource info instance based on the given parameters.
      *
-     * @param <A> the resource annotation type
-     * @param <P> the resource provider type
-     * @param <I> the resource instance type
      * @param annotation the resource annotation
      * @param provider the resource provider
      * @param value the underlying resource instance
-     * @return a new ResourceInstance
+     * @return a new ResourceInfo
      */
-    public static <A extends Annotation, P, I> ResourceInstance of(A annotation, P provider, I value) {
-        return new DefaultResourceInstance(annotation, provider, value);
+    public static RemoteResourceInfo of(RemoteResource annotation,
+            RemoteResourceProvider provider,
+            RemoteResourceInstance value) {
+        return new DefaultRemoteResourceInfo(annotation, provider, value);
     }
 
     @Override
-    public A getAnnotation() {
+    public RemoteResource getAnnotation() {
         return annotation;
     }
 
     @Override
-    public P getProvider() {
+    public RemoteResourceProvider getProvider() {
         return provider;
     }
 
     @Override
-    public I getValue() {
+    public RemoteResourceInstance getValue() {
         return value;
     }
-
 }

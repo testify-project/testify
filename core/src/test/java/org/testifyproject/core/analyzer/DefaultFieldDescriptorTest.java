@@ -15,9 +15,11 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
@@ -75,7 +77,8 @@ public class DefaultFieldDescriptorTest {
     }
 
     @Test
-    public void callToGetDeclaredNameWithoutNameShouldReturnFieldName() throws NoSuchFieldException {
+    public void callToGetDeclaredNameWithoutNameShouldReturnFieldName() throws
+            NoSuchFieldException {
         String name = "named";
         field = TestFieldService.class.getDeclaredField(name);
         sut = new DefaultFieldDescriptor(field);

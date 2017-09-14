@@ -17,6 +17,7 @@ package org.testifyproject.core;
 
 import java.nio.file.Paths;
 import java.util.Map;
+
 import org.testifyproject.ClientInstance;
 import org.testifyproject.Instance;
 import org.testifyproject.annotation.Application;
@@ -72,8 +73,7 @@ public class ClientInstanceBuilder<C> {
     }
 
     /**
-     * Set the underlying client clientProvider to the given client
-     * clientProvider.
+     * Set the underlying client clientProvider to the given client clientProvider.
      *
      * @param <P> the underlying client clientProvider
      * @param clientProvider the underlying client clientProvider
@@ -86,8 +86,7 @@ public class ClientInstanceBuilder<C> {
     }
 
     /**
-     * Set the underlying client clientProvider to the given client
-     * clientProvider and contract.
+     * Set the underlying client clientProvider to the given client clientProvider and contract.
      *
      * @param <P> the underlying client clientProvider
      * @param clientProvider the underlying client clientProvider
@@ -102,8 +101,7 @@ public class ClientInstanceBuilder<C> {
     }
 
     /**
-     * Associate the specified value with the specified key in the resource
-     * resource.
+     * Associate the specified value with the specified key in the resource resource.
      *
      * @param key the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
@@ -128,8 +126,8 @@ public class ClientInstanceBuilder<C> {
     }
 
     /**
-     * Build and return a client instance based on the builder state and given
-     * application annotation.
+     * Build and return a client instance based on the builder state and given application
+     * annotation.
      *
      * @param fqn the fully qualified name of the local resource
      * @param application the application annotation
@@ -177,7 +175,8 @@ public class ClientInstanceBuilder<C> {
         if ("".equals(application.clientProviderName())) {
             resourceName = Paths.get("application:/", fqn, "clientProvider").toString();
         } else {
-            resourceName = Paths.get("application:/", fqn, application.clientProviderName()).toString();
+            resourceName = Paths.get("application:/", fqn, application.clientProviderName())
+                    .toString();
         }
 
         if (!void.class.equals(application.clientProviderContract())) {

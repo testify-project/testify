@@ -21,7 +21,9 @@ import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.inject.Provider;
+
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.testifyproject.FieldDescriptor;
@@ -30,8 +32,8 @@ import org.testifyproject.TestContext;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A custom Spring bean post processor used to get and createFake service
- * instances and reify the test class fields.
+ * A custom Spring bean post processor used to get and createFake service instances and
+ * reify the test class fields.
  *
  * @author saden
  */
@@ -48,7 +50,8 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
         return testContext.getSutDescriptor().map(sutDescriptor -> {
             MockProvider mockProvider = testContext.getMockProvider();
 
-            for (FieldDescriptor fieldDescriptor : testContext.getTestDescriptor().getFieldDescriptors()) {
+            for (FieldDescriptor fieldDescriptor : testContext.getTestDescriptor()
+                    .getFieldDescriptors()) {
                 if (!fieldDescriptor.getFake().isPresent()) {
                     continue;
                 }
@@ -58,7 +61,8 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
                 TypeToken rawTypeToken = getRawTypeToken(fieldType);
 
                 if (fieldTypeToken.isSupertypeOf(beanClass)) {
-                    Optional<Object> foundValue = fieldDescriptor.getValue(testContext.getTestInstance());
+                    Optional<Object> foundValue = fieldDescriptor.getValue(testContext
+                            .getTestInstance());
 
                     if (foundValue.isPresent()) {
                         return foundValue.get();
@@ -120,16 +124,19 @@ public class SpringReifierPostProcessor implements InstantiationAwareBeanPostPro
         Class rawType = typeToken.getRawType();
 
         if (typeToken.isSubtypeOf(Provider.class)) {
-            TypeVariable<Class<Provider>> paramType = Provider.class.getTypeParameters()[0];
+            TypeVariable<Class<Provider>> paramType =
+                    Provider.class.getTypeParameters()[0];
             rawType = typeToken.resolveType(paramType).getRawType();
         } else if (typeToken.isSubtypeOf(Optional.class)) {
-            TypeVariable<Class<Optional>> paramType = Optional.class.getTypeParameters()[0];
+            TypeVariable<Class<Optional>> paramType =
+                    Optional.class.getTypeParameters()[0];
             rawType = typeToken.resolveType(paramType).getRawType();
         } else if (typeToken.isSubtypeOf(Map.class)) {
             TypeVariable<Class<Map>> valueType = Map.class.getTypeParameters()[1];
             rawType = typeToken.resolveType(valueType).getRawType();
         } else if (typeToken.isSubtypeOf(Collection.class)) {
-            TypeVariable<Class<Collection>> valueType = Collection.class.getTypeParameters()[0];
+            TypeVariable<Class<Collection>> valueType = Collection.class
+                    .getTypeParameters()[0];
             rawType = typeToken.resolveType(valueType).getRawType();
         }
 

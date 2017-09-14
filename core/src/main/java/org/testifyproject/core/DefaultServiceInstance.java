@@ -15,13 +15,15 @@
  */
 package org.testifyproject.core;
 
+import static java.util.stream.Collectors.toList;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import static java.util.stream.Collectors.toList;
+
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.annotation.Name;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -68,7 +70,8 @@ public class DefaultServiceInstance implements ServiceInstance {
             instance = serviceContext.get(ServiceKey.of(type));
 
             if (instance == null) {
-                instance = serviceContext.get(ServiceKey.of(TypeToken.of(type).getRawType()));
+                instance = serviceContext.get(ServiceKey.of(TypeToken.of(type)
+                        .getRawType()));
             }
 
             if (instance == null) {
@@ -78,8 +81,10 @@ public class DefaultServiceInstance implements ServiceInstance {
                         .filter(p -> TypeToken.of(type).isSupertypeOf(p.getClass()))
                         .collect(toList());
 
-                ExceptionUtil.INSTANCE.raise(foundMatches.size() > 1,
-                        "Found {} matches for type {}. Please specify a @Name qualifier on the field.",
+                ExceptionUtil.INSTANCE.raise(
+                        foundMatches.size() > 1,
+                        "Found {} matches for type {}. Please specify a @Name qualifier "
+                        + "on the field.",
                         foundMatches.size(), type.getTypeName());
 
                 instance = foundMatches.get(0);

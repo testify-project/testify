@@ -32,7 +32,8 @@ import org.testifyproject.tools.Discoverable;
 public class ApplicationInspector implements AnnotationInspector<Application> {
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Application application) {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType,
+            Application application) {
         testDescriptor.addProperty(TestDescriptorProperties.APPLICATION, application);
     }
 

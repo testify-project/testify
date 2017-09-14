@@ -15,33 +15,32 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation used to specifying a provider of the system under test's
- * collaborators. This annotation can be placed on a test class or method within
- * a test class. This is useful for configuring a system under test whose
- * collaborator(s) can not be faked or virtualized (i.e. a {@link java.net.URL}
- * collaborator which is a final class). Note that if this annotation is placed
+ * An annotation used to specifying a provider of the system under test's collaborators. This
+ * annotation can be placed on a test class or method within a test class. This is useful for
+ * configuring a system under test whose collaborator(s) can not be faked or virtualized (i.e. a
+ * {@link java.net.URL} collaborator which is a final class). Note that if this annotation is placed
  * on:
  * </p>
  * <ul>
  * <li>
- * a test class method then this method will be called to provide the system
- * under test's collaborators.
+ * a test class method then this method will be called to provide the system under test's
+ * collaborators.
  * </li>
  * <li>
- * the test class and {@link CollaboratorProvider#value() } is specified then a
- * method within {@link CollaboratorProvider#value() } class will be called to
- * provide collaborators for the system under test.
+ * the test class and {@link CollaboratorProvider#value() } is specified then a method within {@link CollaboratorProvider#value()
+ * } class will be called to provide collaborators for the system under test.
  * </li>
  * </ul>
  *
@@ -53,8 +52,8 @@ import java.lang.annotation.Target;
 public @interface CollaboratorProvider {
 
     /**
-     * Specifies a list of classes that contain methods that provide
-     * collaborator for the system under test.
+     * Specifies a list of classes that contain methods that provide collaborator for the system
+     * under test.
      *
      * @return a list of collaborator provider classes.
      */

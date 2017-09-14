@@ -16,8 +16,8 @@
 package org.testifyproject.junit4;
 
 /**
- * This is a dummy class info to satisfy SonaType rules requiring artifacts to
- * have javadoc/source attachment.
+ * This is a dummy class info to satisfy SonaType rules requiring artifacts to have
+ * javadoc/source attachment.
  *
  * @author saden
  */

@@ -15,11 +15,13 @@
  */
 package org.testifyproject.core;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.StartStrategy;

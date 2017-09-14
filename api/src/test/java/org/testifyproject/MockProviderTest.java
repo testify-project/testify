@@ -16,20 +16,21 @@
 package org.testifyproject;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Answers;
 
 /**
  *
  * @author saden
  */
 public class MockProviderTest {
-    
+
     MockProvider sut;
 
     @Before
@@ -42,9 +43,9 @@ public class MockProviderTest {
         Class type = Object.class;
         Object delegate = new Object();
         Object virtualInstance = new Object();
-        
+
         given(sut.createVirtual(type, delegate)).willReturn(virtualInstance);
-        
+
         Object result = sut.createVirtualSut(type, delegate);
 
         assertThat(result).isEqualTo(virtualInstance);
@@ -52,5 +53,5 @@ public class MockProviderTest {
         verify(sut).createVirtual(type, delegate);
         verifyNoMoreInteractions(sut);
     }
-    
+
 }

@@ -22,13 +22,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * <p>
- * A contracts that specifies methods for writing property values. Note that
- * property keys are immutable (added if they absent). Elements and entries can
- * still be added to list and map elements.
+ * A contracts that specifies methods for writing property values. Note that property keys are
+ * immutable (added if they absent). Elements and entries can still be added to list and map
+ * elements.
  * </p>
  * <p>
- * Note that with respect to null keys and values the behavior the methods in
- * contract are dependent on the {@link Map} implementation returned by {@link #getProperties()
+ * Note that with respect to null keys and values the behavior the methods in contract are dependent
+ * on the {@link Map} implementation returned by {@link #getProperties()
  * }
  * </p>
  *
@@ -50,8 +50,7 @@ public interface PropertiesWriter extends PropertiesTrait {
     }
 
     /**
-     * Add the given element to a collection entry in the properties map with
-     * the given key.
+     * Add the given element to a collection entry in the properties map with the given key.
      *
      * @param <E> the element type
      * @param key the properties map key
@@ -66,8 +65,8 @@ public interface PropertiesWriter extends PropertiesTrait {
     }
 
     /**
-     * Add the given entryKey/entryValue pair to a map entry in the properties
-     * map with the given key.
+     * Add the given entryKey/entryValue pair to a map entry in the properties map with the given
+     * key.
      *
      * @param <K> the entry key type
      * @param <V> the entry value type

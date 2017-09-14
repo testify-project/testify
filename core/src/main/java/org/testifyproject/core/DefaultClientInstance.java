@@ -15,14 +15,17 @@
  */
 package org.testifyproject.core;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Map;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.ClientInstance;
 import org.testifyproject.Instance;
 import org.testifyproject.annotation.Application;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Default implementation of {@link ClientInstance} contract.

@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.annotation.Name;

@@ -23,8 +23,7 @@ import org.junit.runners.model.MultipleFailureException;
 import org.testifyproject.core.util.LoggingUtil;
 
 /**
- * A JUnit test run notifier to handle logging and notification test lifecycle
- * events.
+ * A JUnit test run notifier to handle logging and notification test lifecycle events.
  *
  * @author saden
  */
@@ -45,7 +44,8 @@ public class TestifyJUnit4RunNotifier extends RunNotifier {
      * @param testDescription the test description
      * @return a test notifier instance
      */
-    public static TestifyJUnit4RunNotifier of(RunNotifier runNotifier, Description testDescription) {
+    public static TestifyJUnit4RunNotifier of(RunNotifier runNotifier,
+            Description testDescription) {
         return new TestifyJUnit4RunNotifier(runNotifier, testDescription);
     }
 

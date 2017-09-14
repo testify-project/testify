@@ -15,14 +15,17 @@
  */
 package org.testifyproject.di.spring;
 
-import java.lang.annotation.Annotation;
-import javax.inject.Named;
-import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.lang.annotation.Annotation;
+
+import javax.inject.Named;
+import javax.inject.Provider;
+
+import org.junit.Test;
 import org.testifyproject.ServiceInstance;
 
 /**

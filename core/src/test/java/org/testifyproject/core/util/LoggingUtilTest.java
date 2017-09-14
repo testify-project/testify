@@ -16,12 +16,14 @@
 package org.testifyproject.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestContext;
+
 import slf4jtest.LogLevel;
 import slf4jtest.TestLogger;
 import slf4jtest.TestLoggerFactory;
@@ -236,7 +238,7 @@ public class LoggingUtilTest {
         given(testContext.getMethodName()).willReturn(methodName);
 
         sut.setTextContext(testContext);
-        
+
         verify(testContext).getTestName();
         verify(testContext).getMethodName();
     }

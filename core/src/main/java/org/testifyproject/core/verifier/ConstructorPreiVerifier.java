@@ -15,10 +15,12 @@
  */
 package org.testifyproject.core.verifier;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import static java.util.stream.Collectors.toList;
+
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -32,8 +34,8 @@ import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure that the system under test constructor parameters are defined as
- * collaborators on the test class.
+ * Insure that the system under test constructor parameters are defined as collaborators
+ * on the test class.
  *
  * @author saden
  */
@@ -50,30 +52,41 @@ public class ConstructorPreiVerifier implements PreiVerifier {
         Object testInstance = testContext.getTestInstance();
         String testClassName = testDescriptor.getTestClassName();
 
-        Optional<CollaboratorProvider> foundCollaboratorProvider = testDescriptor.getCollaboratorProvider();
+        Optional<CollaboratorProvider> foundCollaboratorProvider = testDescriptor
+                .getCollaboratorProvider();
 
         if (!foundCollaboratorProvider.isPresent()) {
             testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
                 String sutClassName = sutDescriptor.getTypeName();
-                Collection<ParameterDescriptor> paramDescriptors = sutDescriptor.getParameterDescriptors();
+                Collection<ParameterDescriptor> paramDescriptors = sutDescriptor
+                        .getParameterDescriptors();
 
-                List<ParameterDescriptor> undeclared = paramDescriptors.stream().collect(toList());
+                List<ParameterDescriptor> undeclared = paramDescriptors.stream().collect(
+                        toList());
 
-                paramDescriptors.stream().forEach(parameterDescriptor
-                        -> testDescriptor.getFieldDescriptors().stream()
-                                .filter(fieldDescriptor -> parameterDescriptor.isSubtypeOf(fieldDescriptor.getGenericType()))
-                                .filter(fieldDescriptor -> fieldDescriptor.getValue(testInstance).isPresent())
-                                .forEach(fieldDescriptor -> undeclared.remove(parameterDescriptor))
+                paramDescriptors.stream().forEach(parameterDescriptor ->
+                        testDescriptor.getFieldDescriptors().stream()
+                                .filter(fieldDescriptor -> parameterDescriptor
+                                        .isSubtypeOf(
+                                                fieldDescriptor.getGenericType()))
+                                .filter(fieldDescriptor -> fieldDescriptor.getValue(
+                                        testInstance)
+                                        .isPresent())
+                                .forEach(fieldDescriptor -> undeclared.remove(
+                                        parameterDescriptor))
                 );
 
                 undeclared.stream()
                         .map(ParameterDescriptor::getTypeName)
-                        .forEach(paramTypeName
-                                -> LoggingUtil.INSTANCE.warn(
-                                "System under test '{}' defined in '{}' has a collaborator "
-                                + "of type '{}' but test class '{}' does not define a field of "
-                                + "type '{}' annotated with @Fake, @Real, or @Virtual.",
-                                sutClassName, testClassName, paramTypeName, testClassName, paramTypeName));
+                        .forEach(paramTypeName ->
+                                LoggingUtil.INSTANCE.warn(
+                                        "System under test '{}' defined in '{}' has a "
+                                        + "collaborator of type '{}' but test class '{}' "
+                                        + "does not define a field of type '{}' annotated "
+                                        + "with @Fake, @Real, or @Virtual.",
+                                        sutClassName, testClassName, paramTypeName,
+                                        testClassName,
+                                        paramTypeName));
             });
         }
     }

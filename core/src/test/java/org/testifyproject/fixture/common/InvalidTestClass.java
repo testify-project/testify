@@ -20,5 +20,5 @@ package org.testifyproject.fixture.common;
  * @author saden
  */
 public class InvalidTestClass {
-    
+
 }

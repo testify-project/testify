@@ -15,17 +15,17 @@
  */
 package org.testifyproject.extension.annotation;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
-import static java.lang.annotation.ElementType.TYPE;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on a class to donate it as capable of
- * handing a specific type of annotations. This is useful for writing custom
- * inspectors that handles a specific annotations.
+ * An annotation that can be placed on a class to donate it as capable of handing a specific type of
+ * annotations. This is useful for writing custom inspectors that handles a specific annotations.
  *
  * @author saden
  */

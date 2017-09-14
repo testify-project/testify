@@ -15,8 +15,10 @@
  */
 package org.testifyproject.core.annotation;
 
-import java.lang.annotation.Annotation;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.annotation.Annotation;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.annotation.Module;

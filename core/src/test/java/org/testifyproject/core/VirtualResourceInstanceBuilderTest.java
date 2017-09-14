@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.VirtualResource;
@@ -83,7 +85,8 @@ public class VirtualResourceInstanceBuilderTest {
         given(virtualResource.resourceName()).willReturn(customName);
         given(virtualResource.resourceContract()).willReturn(customContract);
 
-        VirtualResourceInstance<Object> result = sut.resource(resourceValue).build(fqn, virtualResource);
+        VirtualResourceInstance<Object> result = sut.resource(resourceValue).build(fqn,
+                virtualResource);
 
         assertThat(result).isNotNull();
 
@@ -103,7 +106,8 @@ public class VirtualResourceInstanceBuilderTest {
         given(virtualResource.resourceName()).willReturn(customName);
         given(virtualResource.resourceContract()).willReturn(customContract);
 
-        VirtualResourceInstance<Object> result = sut.resource(resourceValue).build(fqn, virtualResource);
+        VirtualResourceInstance<Object> result = sut.resource(resourceValue).build(fqn,
+                virtualResource);
 
         assertThat(result).isNotNull();
 
@@ -119,7 +123,8 @@ public class VirtualResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        VirtualResourceInstance<Object> result = sut.property(key, value).build(fqn, virtualResource);
+        VirtualResourceInstance<Object> result = sut.property(key, value)
+                .build(fqn, virtualResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -131,7 +136,8 @@ public class VirtualResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(key, value);
 
-        VirtualResourceInstance<Object> result = sut.properties(properties).build(fqn, virtualResource);
+        VirtualResourceInstance<Object> result = sut.properties(properties).build(fqn,
+                virtualResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);

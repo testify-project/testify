@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture.common.impl;
 
 import javax.inject.Named;
+
 import org.jvnet.hk2.annotations.Service;
 import org.testifyproject.junit4.fixture.common.Greeting;
 

@@ -32,7 +32,8 @@ public class TestServerProvider implements ServerProvider {
     }
 
     @Override
-    public ServerInstance start(TestContext testContext, Application application, Object configuration) {
+    public ServerInstance start(TestContext testContext, Application application,
+            Object configuration) {
         return null;
     }
 

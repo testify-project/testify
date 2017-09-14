@@ -15,23 +15,22 @@
  */
 package org.testifyproject.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import org.testifyproject.LocalResourceInstance;
-import org.testifyproject.LocalResourceProvider;
+import org.testifyproject.LocalResourceInfo;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
-import org.testifyproject.RemoteResourceInstance;
-import org.testifyproject.RemoteResourceProvider;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
@@ -39,11 +38,7 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
-import org.testifyproject.VirtualResourceInstance;
-import org.testifyproject.VirtualResourceProvider;
-import org.testifyproject.annotation.LocalResource;
-import org.testifyproject.annotation.RemoteResource;
-import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.VirtualResourceInfo;
 
 /**
  *
@@ -182,24 +177,21 @@ public class DefaultTestContextTest {
 
     @Test
     public void callToGetLocalResourceInstancesShouldReturn() {
-        Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> result
-                = sut.getLocalResourceInstances();
+        Collection<LocalResourceInfo> result = sut.getLocalResources();
 
         assertThat(result).isEmpty();
     }
 
     @Test
     public void callToGetVirtualResourceInstancesShouldReturn() {
-        Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> result
-                = sut.getVirtualResourceInstances();
+        Collection<VirtualResourceInfo> result = sut.getVirtualResources();
 
         assertThat(result).isEmpty();
     }
 
     @Test
     public void callToGetRemoteResourceInstancesShouldReturn() {
-        Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> result
-                = sut.getRemoteResourceInstances();
+        Collection<RemoteResourceInfo> result = sut.getRemoteResources();
 
         assertThat(result).isEmpty();
     }
@@ -276,6 +268,8 @@ public class DefaultTestContextTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultTestContext", "resourceStartStrategy", "testDescriptor", "methodDescriptor");
+        assertThat(result).contains("DefaultTestContext", "resourceStartStrategy",
+                "testDescriptor",
+                "methodDescriptor");
     }
 }

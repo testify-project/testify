@@ -16,13 +16,19 @@
 package org.testifyproject.core.analyzer;
 
 import static java.lang.Class.forName;
+import static java.security.AccessController.doPrivileged;
+import static java.util.stream.Stream.of;
+
+import static org.testifyproject.asm.Opcodes.ASM5;
+import static org.testifyproject.asm.Type.getMethodType;
+import static org.testifyproject.asm.Type.getType;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 import java.util.List;
-import static java.util.stream.Stream.of;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
@@ -34,10 +40,7 @@ import org.testifyproject.asm.AnnotationVisitor;
 import org.testifyproject.asm.ClassVisitor;
 import org.testifyproject.asm.FieldVisitor;
 import org.testifyproject.asm.MethodVisitor;
-import static org.testifyproject.asm.Opcodes.ASM5;
 import org.testifyproject.asm.Type;
-import static org.testifyproject.asm.Type.getMethodType;
-import static org.testifyproject.asm.Type.getType;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
@@ -68,7 +71,8 @@ public class TestClassAnalyzer extends ClassVisitor {
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         Type type = getType(desc);
         Class annotationClass = getClass(type.getClassName());
-        List<AnnotationInspector> inspectors = ServiceLocatorUtil.INSTANCE.getAll(AnnotationInspector.class);
+        List<AnnotationInspector> inspectors = ServiceLocatorUtil.INSTANCE.getAll(
+                AnnotationInspector.class);
 
         return doPrivileged((PrivilegedAction<AnnotationVisitor>) () -> {
             //if the annotation class is annotated with Bundle meta annotation
@@ -81,9 +85,12 @@ public class TestClassAnalyzer extends ClassVisitor {
                     for (Class<? extends Annotation> typeHandled : typesHandled) {
 
                         if (typeHandled.isAssignableFrom(annotationClass)) {
-                            inspector.inspect(testDescriptor, testClass, testClass.getDeclaredAnnotation(annotationClass));
-                        } else if (typeHandled.equals(Bundle.class) && annotationClass.isAnnotationPresent(Bundle.class)) {
-                            inspector.inspect(testDescriptor, annotationClass, annotationClass.getDeclaredAnnotation(Bundle.class));
+                            inspector.inspect(testDescriptor, testClass, testClass
+                                    .getDeclaredAnnotation(annotationClass));
+                        } else if (typeHandled.equals(Bundle.class) && annotationClass
+                                .isAnnotationPresent(Bundle.class)) {
+                            inspector.inspect(testDescriptor, annotationClass, annotationClass
+                                    .getDeclaredAnnotation(Bundle.class));
                         }
                     }
                 }
@@ -94,7 +101,8 @@ public class TestClassAnalyzer extends ClassVisitor {
     }
 
     @Override
-    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+    public FieldVisitor visitField(int access, String name, String desc, String signature,
+            Object value) {
         return doPrivileged((PrivilegedAction<FieldVisitor>) () -> {
             try {
                 Field field = testClass.getDeclaredField(name);
@@ -121,7 +129,8 @@ public class TestClassAnalyzer extends ClassVisitor {
     }
 
     @Override
-    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature,
+            String[] exceptions) {
         if (CONSTRUCTOR_NAME.equals(name) || STATIC_NAME.equals(name)) {
             return null;
         }
@@ -154,9 +163,13 @@ public class TestClassAnalyzer extends ClassVisitor {
         DescriptorKey typeKey = DescriptorKey.of(fieldType);
         DescriptorKey typeAndNameKey = DescriptorKey.of(fieldType, fieldName);
 
-        testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey, fieldDescriptor);
-        testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeAndNameKey, fieldDescriptor);
-        testDescriptor.addCollectionElement(TestDescriptorProperties.FIELD_DESCRIPTORS, fieldDescriptor);
+        testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, typeKey,
+                fieldDescriptor);
+        testDescriptor.addMapEntry(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE,
+                typeAndNameKey,
+                fieldDescriptor);
+        testDescriptor.addCollectionElement(TestDescriptorProperties.FIELD_DESCRIPTORS,
+                fieldDescriptor);
     }
 
     void saveMethod(String name, Class[] parameterTypes) {
@@ -166,12 +179,15 @@ public class TestClassAnalyzer extends ClassVisitor {
 
             if (method.getDeclaredAnnotation(ConfigHandler.class) != null) {
                 MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                testDescriptor.addCollectionElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+                testDescriptor.addCollectionElement(TestDescriptorProperties.CONFIG_HANDLERS,
+                        methodDescriptor);
                 testDescriptor.addProperty(TestDescriptorProperties.CONFIG_HANDLER,
                         method.getDeclaredAnnotation(ConfigHandler.class));
             } else if (method.getDeclaredAnnotation(CollaboratorProvider.class) != null) {
                 MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method);
-                testDescriptor.addCollectionElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
+                testDescriptor.addCollectionElement(
+                        TestDescriptorProperties.COLLABORATOR_PROVIDERS,
+                        methodDescriptor);
                 testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER,
                         method.getDeclaredAnnotation(CollaboratorProvider.class));
             }
@@ -186,7 +202,8 @@ public class TestClassAnalyzer extends ClassVisitor {
         try {
             return forName(className);
         } catch (ClassNotFoundException e) {
-            throw ExceptionUtil.INSTANCE.propagate("Class '{}' not found in the classpath.", e, className);
+            throw ExceptionUtil.INSTANCE.propagate("Class '{}' not found in the classpath.", e,
+                    className);
         }
     }
 

@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture.collaborator;
 
 import java.util.Collection;
+
 import org.testifyproject.guava.common.collect.ImmutableList;
 import org.testifyproject.junit4.fixture.common.Hello;
 import org.testifyproject.junit4.fixture.common.World;

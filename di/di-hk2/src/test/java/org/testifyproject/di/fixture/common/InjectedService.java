@@ -16,6 +16,7 @@
 package org.testifyproject.di.fixture.common;
 
 import javax.inject.Inject;
+
 import org.testifyproject.di.fixture.autowired.impl.Hello;
 
 /**

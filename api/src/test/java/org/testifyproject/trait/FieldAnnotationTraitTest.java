@@ -15,14 +15,16 @@
  */
 package org.testifyproject.trait;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.lang.reflect.Field;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.annotation.Property;
@@ -88,7 +90,8 @@ public class FieldAnnotationTraitTest {
     }
 
     @Test
-    public void givenNonVirtualFieldGetVirtualShouldReturnEmptyOptional() throws NoSuchFieldException {
+    public void givenNonVirtualFieldGetVirtualShouldReturnEmptyOptional() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("non");
 
         given(sut.getMember()).willReturn(field);
@@ -110,7 +113,8 @@ public class FieldAnnotationTraitTest {
     }
 
     @Test
-    public void givenNonPropertyFieldGetPropertyShouldReturnEmptyOptional() throws NoSuchFieldException {
+    public void givenNonPropertyFieldGetPropertyShouldReturnEmptyOptional() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("non");
 
         given(sut.getMember()).willReturn(field);
@@ -132,7 +136,8 @@ public class FieldAnnotationTraitTest {
     }
 
     @Test
-    public void givenNonFixtureFieldGetFixtureShouldReturnEmptyOptional() throws NoSuchFieldException {
+    public void givenNonFixtureFieldGetFixtureShouldReturnEmptyOptional() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("non");
 
         given(sut.getMember()).willReturn(field);

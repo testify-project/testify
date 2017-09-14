@@ -15,13 +15,16 @@
  */
 package org.testifyproject.core.util;
 
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileVisitResult;
-import static java.nio.file.FileVisitResult.CONTINUE;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
@@ -31,9 +34,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toSet;
 import java.util.stream.Stream;
+
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.collect.ImmutableSortedSet;
 import org.testifyproject.guava.common.io.Resources;
@@ -48,8 +50,8 @@ public class FileSystemUtil {
     public static final FileSystemUtil INSTANCE = new FileSystemUtil();
 
     /**
-     * Converts a path string, or a sequence of strings that when joined form a
-     * normalized path string.
+     * Converts a path string, or a sequence of strings that when joined form a normalized path
+     * string.
      *
      * @param first the path string or initial part of the path string
      * @param more additional strings to be joined to form the path string
@@ -63,7 +65,8 @@ public class FileSystemUtil {
         ImmutableSortedSet.Builder<Path> builder = ImmutableSortedSet.naturalOrder();
 
         try {
-            URL classesURI = FileSystemUtil.class.getProtectionDomain().getCodeSource().getLocation();
+            URL classesURI = FileSystemUtil.class.getProtectionDomain().getCodeSource()
+                    .getLocation();
             builder.addAll(findFiles(Paths.get(classesURI.toURI()), patterns));
 
             URL testClassesURL = Resources.getResource("");
@@ -79,8 +82,7 @@ public class FileSystemUtil {
     }
 
     /**
-     * Recursively find files in the given directory path with the given
-     * patterns.
+     * Recursively find files in the given directory path with the given patterns.
      *
      * @param dir the directory path that will be searched
      * @param patterns file paths or {@link PathMatcher glob file patterns}
@@ -127,9 +129,9 @@ public class FileSystemUtil {
     }
 
     /**
-     * Recreate the given directory. Recreating a directory entails deleting the
-     * content of the directory and then recreating the directory. If the
-     * directory does not exist it will simply be created.
+     * Recreate the given directory. Recreating a directory entails deleting the content of the
+     * directory and then recreating the directory. If the directory does not exist it will
+     * simply be created.
      *
      * @param directoryPath the directory that will be recreated
      * @return a file instance representing the recreated directory
@@ -148,8 +150,7 @@ public class FileSystemUtil {
     }
 
     /**
-     * A File Visitor implementation that walks through a directory and deletes
-     * its content.
+     * A File Visitor implementation that walks through a directory and deletes its content.
      *
      * @author saden
      */
@@ -162,7 +163,8 @@ public class FileSystemUtil {
         }
 
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws
+                IOException {
             Files.delete(file);
 
             return CONTINUE;
@@ -181,8 +183,8 @@ public class FileSystemUtil {
     }
 
     /**
-     * A File Visitor implementation that walks through a directory and finds
-     * paths that match specific path patterns.
+     * A File Visitor implementation that walks through a directory and finds paths that match
+     * specific path patterns.
      *
      * @author saden
      */
@@ -197,7 +199,8 @@ public class FileSystemUtil {
         }
 
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws
+                IOException {
             pathMatchers.parallelStream()
                     .filter(p -> p.matches(file))
                     .forEach(p -> matches.add(file));
