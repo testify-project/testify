@@ -24,19 +24,19 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation that can be placed on unit, integration and system test class fields to denote the
- * fields as a fake collaborators. Fake collaborators are mock instance of collaborators and allow
- * us to mock functionality and verify interaction between the System Under Test and the
- * collaborator in isolation. Note that if the value of the test class field is already initialized
- * with:
+ * An annotation that can be placed on unit, integration and system test class fields to denote
+ * the fields as a fake collaborators. Fake collaborators are mock instance of collaborators and
+ * allow us to mock functionality and verify interaction between the System Under Test and the
+ * collaborator in isolation. Note that if the value of the test class field is already
+ * initialized with:
  * </p>
  * <ul>
- * <li>a mock instance of the collaborator then this mock instance will be used and injected into
- * the system under test.
+ * <li>a mock instance of the collaborator then this mock instance will be used and injected
+ * into the system under test.
  * </li>
  * <li>
- * a concrete instance of the collaborator then a mock instances that delegates to the field value
- * will be created and injected into the system under test.
+ * a concrete instance of the collaborator then a mock instances that delegates to the field
+ * value will be created and injected into the system under test.
  * </li>
  * </ul>
  *

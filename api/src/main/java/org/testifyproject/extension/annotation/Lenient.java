@@ -24,7 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed a test class to indicate that verifications should be lenient.
+ * An annotation that can be placed a test class to indicate that verifications should be
+ * lenient.
  *
  * @author saden
  */

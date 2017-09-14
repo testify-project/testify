@@ -180,7 +180,8 @@ public class AnnotationTraitTest {
 
     @Test
     public void givenNonExistentAnnotationCollectionHasAnyAnnotationsShouldReturnEmptyArray() {
-        Collection<Class<? extends Annotation>> annotationTypes = ImmutableList.of(Documented.class);
+        Collection<Class<? extends Annotation>> annotationTypes = ImmutableList.of(
+                Documented.class);
 
         boolean result = sut.hasAnyAnnotations(annotationTypes);
 

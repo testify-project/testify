@@ -42,9 +42,9 @@ public @interface Scan {
      * A value that represents a resource in the classpath that should be scanned and loaded.
      * </p>
      * <p>
-     * Please note that to encourage simplicity and modular design scanning of resources is limited
-     * to a single resource. If you absolutely need to scan and load multiple resources Scan
-     * annotation is {@link Scans repeatable}.
+     * Please note that to encourage simplicity and modular design scanning of resources is
+     * limited to a single resource. If you absolutely need to scan and load multiple resources
+     * Scan annotation is {@link Scans repeatable}.
      * </p>
      *
      * @return a resource name.

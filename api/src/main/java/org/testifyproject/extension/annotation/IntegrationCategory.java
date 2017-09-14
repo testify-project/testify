@@ -23,8 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on a class to categorize it as part of integration test family
- * of tests.
+ * An annotation that can be placed on a class to categorize it as part of integration test
+ * family of tests.
  *
  * @author saden
  */

@@ -20,9 +20,9 @@ import static java.util.Optional.empty;
 import java.util.Optional;
 
 /**
- * A contract that defines an instance object. An instance represents the properties of an object in
- * the dependency injection framework in use and how the object is made available for injection into
- * test classes and fixtures.
+ * A contract that defines an instance object. An instance represents the properties of an
+ * object in the dependency injection framework in use and how the object is made available for
+ * injection into test classes and fixtures.
  *
  * @author saden
  * @param <T> the instance object type

@@ -39,9 +39,9 @@ import org.testifyproject.core.util.LoggingUtil;
 /**
  * A class that intercepts methods of classes that extend or implement
  * {@link org.springframework.boot.SpringApplication} and
- * {@link org.springframework.boot.context.embedded.EmbeddedWebApplicationContext}. This
- * class is responsible for configuring the Spring Boot application as well as extracting
- * information useful for test reification.
+ * {@link org.springframework.boot.context.embedded.EmbeddedWebApplicationContext}. This class
+ * is responsible for configuring the Spring Boot application as well as extracting information
+ * useful for test reification.
  *
  * @author saden
  */

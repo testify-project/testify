@@ -127,7 +127,8 @@ public class FieldTraitTest {
     }
 
     @Test
-    public void givenAutoCloseableInstanceDestroyShouldChangeMessage() throws NoSuchFieldException {
+    public void givenAutoCloseableInstanceDestroyShouldChangeMessage() throws
+            NoSuchFieldException {
         Field field = FieldService.class.getDeclaredField("secondary");
         Class type = field.getType();
         Type genericType = field.getGenericType();

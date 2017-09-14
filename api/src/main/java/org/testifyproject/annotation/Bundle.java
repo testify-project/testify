@@ -24,9 +24,9 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * A meta-annotation that identifies an annotation as test group. A test group annotation provide
- * the ability to define, group, and use one or more Testify annotations in a reusable manner in
- * your test classes and avoid annotation bloat.
+ * A meta-annotation that identifies an annotation as test group. A test group annotation
+ * provide the ability to define, group, and use one or more Testify annotations in a reusable
+ * manner in your test classes and avoid annotation bloat.
  * </p>
  * <pre>
  * <code>

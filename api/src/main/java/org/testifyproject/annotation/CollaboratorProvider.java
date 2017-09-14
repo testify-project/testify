@@ -30,8 +30,8 @@ import java.lang.annotation.Target;
  * An annotation used to specifying a provider of the system under test's collaborators. This
  * annotation can be placed on a test class or method within a test class. This is useful for
  * configuring a system under test whose collaborator(s) can not be faked or virtualized (i.e. a
- * {@link java.net.URL} collaborator which is a final class). Note that if this annotation is placed
- * on:
+ * {@link java.net.URL} collaborator which is a final class). Note that if this annotation is
+ * placed on:
  * </p>
  * <ul>
  * <li>

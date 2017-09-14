@@ -50,9 +50,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * A Spring DI implementation of {@link ServiceInstance} SPI contract. This class provides
- * the ability to work with Spring {@link ConfigurableApplicationContext} to create,
- * locate, and manage services.
+ * A Spring DI implementation of {@link ServiceInstance} SPI contract. This class provides the
+ * ability to work with Spring {@link ConfigurableApplicationContext} to create, locate, and
+ * manage services.
  *
  * @author saden
  */

@@ -31,8 +31,8 @@ import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.PreInstanceProvider;
 
 /**
- * A Jersey 2 application event listeners that listens for application events to
- * initialize, start and stop test resources.
+ * A Jersey 2 application event listeners that listens for application events to initialize,
+ * start and stop test resources.
  *
  * @author saden
  */

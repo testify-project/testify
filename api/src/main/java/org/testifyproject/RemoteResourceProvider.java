@@ -37,8 +37,8 @@ public interface RemoteResourceProvider<T, C> {
      * </p>
      * <ul>
      * <li>Implementation of this method should not do any work beyond returning configuration
-     * object. It should be stateless and should not perform instantiation of the remote resource as
-     * that should be handled in
+     * object. It should be stateless and should not perform instantiation of the remote
+     * resource as that should be handled in
      * {@link #start(org.testifyproject.TestContext, org.testifyproject.annotation.RemoteResource, java.lang.Object)}
      * method.
      * </li>
@@ -48,8 +48,8 @@ public interface RemoteResourceProvider<T, C> {
      * {@link RemoteResource#configKey()}.
      * </li>
      * <li>
-     * The configuration object returned by this method is simply default configuration. It can be
-     * updated or replaced with entirely new configuration object by the
+     * The configuration object returned by this method is simply default configuration. It can
+     * be updated or replaced with entirely new configuration object by the
      * {@link org.testifyproject.annotation.ConfigHandler} method before it is passed to
      * {@link #start(org.testifyproject.TestContext, org.testifyproject.annotation.RemoteResource, java.lang.Object)}
      * method
@@ -78,8 +78,8 @@ public interface RemoteResourceProvider<T, C> {
             throws Exception;
 
     /**
-     * Load the given list of data file into the local resource prior to the resource being used.
-     * Note that by default this method does not have to be implemented.
+     * Load the given list of data file into the local resource prior to the resource being
+     * used. Note that by default this method does not have to be implemented.
      *
      * @param testContext the test context
      * @param remoteResource test class remote resource annotation

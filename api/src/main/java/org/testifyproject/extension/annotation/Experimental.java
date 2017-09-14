@@ -28,8 +28,8 @@ import java.lang.annotation.Target;
 
 /**
  * Indicates API bearing this annotation is experimental. Types annotated with the
- * {@literal @Experimental} annotation are considered unstable and subject to change or removal. Use
- * with caution.
+ * {@literal @Experimental} annotation are considered unstable and subject to change or removal.
+ * Use with caution.
  *
  * @author saden
  */

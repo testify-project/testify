@@ -40,8 +40,8 @@ import org.testifyproject.di.hk2.HK2ServiceProvider;
 /**
  * A class that intercepts methods of classes that extend or implement
  * {@link org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory} This class is
- * responsible for configuring the Jersey 2 application as well as extracting information
- * useful for test reification.
+ * responsible for configuring the Jersey 2 application as well as extracting information useful
+ * for test reification.
  *
  * @author saden
  */

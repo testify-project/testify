@@ -64,7 +64,8 @@ public class SutDescriptorTest {
     }
 
     @Test
-    public void callToIsVirtualSutOnVirtualSutFieldShouldReturnFalse() throws NoSuchFieldException {
+    public void callToIsVirtualSutOnVirtualSutFieldShouldReturnFalse() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("virtualSut");
 
         given(sut.getMember()).willReturn(field);

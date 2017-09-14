@@ -34,8 +34,8 @@ import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure that the system under test constructor parameters are defined as collaborators
- * on the test class.
+ * Insure that the system under test constructor parameters are defined as collaborators on the
+ * test class.
  *
  * @author saden
  */

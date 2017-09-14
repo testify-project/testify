@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * elements.
  * </p>
  * <p>
- * Note that with respect to null keys and values the behavior the methods in contract are dependent
- * on the {@link Map} implementation returned by {@link #getProperties()
+ * Note that with respect to null keys and values the behavior the methods in contract are
+ * dependent on the {@link Map} implementation returned by {@link #getProperties()
  * }
  * </p>
  *
@@ -59,14 +59,15 @@ public interface PropertiesWriter extends PropertiesTrait {
     default <E> void addCollectionElement(String key, E element) {
         Map<String, Collection<E>> properties = getProperties();
 
-        Collection<E> result = properties.computeIfAbsent(key, p -> new ConcurrentLinkedQueue<>());
+        Collection<E> result = properties.computeIfAbsent(key, p ->
+                new ConcurrentLinkedQueue<>());
 
         result.add(element);
     }
 
     /**
-     * Add the given entryKey/entryValue pair to a map entry in the properties map with the given
-     * key.
+     * Add the given entryKey/entryValue pair to a map entry in the properties map with the
+     * given key.
      *
      * @param <K> the entry key type
      * @param <V> the entry value type

@@ -38,8 +38,8 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A custom HK2 injection resolve used to get and createFake service instances and reify
- * the test class fields.
+ * A custom HK2 injection resolve used to get and createFake service instances and reify the
+ * test class fields.
  *
  * @author saden
  */

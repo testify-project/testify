@@ -23,8 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on integration and system test class fields to denote the field
- * as a real collaborator of the System Under Test.
+ * An annotation that can be placed on integration and system test class fields to denote the
+ * field as a real collaborator of the System Under Test.
  *
  * @author saden
  */

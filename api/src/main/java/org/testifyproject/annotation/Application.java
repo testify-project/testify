@@ -27,9 +27,9 @@ import org.testifyproject.ClientProvider;
 import org.testifyproject.ServerProvider;
 
 /**
- * An annotation that can be placed on system test to specify an application that should be loaded,
- * configured, started, and stopped before and after each test run (i.e. Jersey 2, Spring Boot,
- * Spring MVC, etc).
+ * An annotation that can be placed on system test to specify an application that should be
+ * loaded, configured, started, and stopped before and after each test run (i.e. Jersey 2,
+ * Spring Boot, Spring MVC, etc).
  *
  * @author saden
  */
@@ -39,16 +39,16 @@ import org.testifyproject.ServerProvider;
 public @interface Application {
 
     /**
-     * The class of the application under test that will be configured, started and stopped before
-     * and after each test run.
+     * The class of the application under test that will be configured, started and stopped
+     * before and after each test run.
      *
      * @return the application class.
      */
     Class<?> value();
 
     /**
-     * Specifies the class that provides {@link ClientProvider client provider implementation}. If a
-     * provider is not specified one will be discovered in the class path.
+     * Specifies the class that provides {@link ClientProvider client provider implementation}.
+     * If a provider is not specified one will be discovered in the class path.
      *
      * @return client provider implementation class.
      */
@@ -56,8 +56,8 @@ public @interface Application {
 
     /**
      * <p>
-     * Specifies the client name. This useful for giving the client instance a unique name that can
-     * be used to qualify and distinguish it from other similar services.
+     * Specifies the client name. This useful for giving the client instance a unique name that
+     * can be used to qualify and distinguish it from other similar services.
      * </p>
      * <p>
      * Note that the default client name is "applicationClient".
@@ -69,8 +69,8 @@ public @interface Application {
 
     /**
      * <p>
-     * Specifies the contract implemented by the client. This useful for getting the client instance
-     * by its contract.
+     * Specifies the contract implemented by the client. This useful for getting the client
+     * instance by its contract.
      * </p>
      * <p>
      * Note that if the client contract class is not specified the client instance will be
@@ -96,12 +96,12 @@ public @interface Application {
 
     /**
      * <p>
-     * Specifies the contract implemented by the client provider. This useful for getting the client
-     * provider instance by its contract.
+     * Specifies the contract implemented by the client provider. This useful for getting the
+     * client provider instance by its contract.
      * </p>
      * <p>
-     * Note that if the client provider contract class is not specified the client provider instance
-     * will be injectable by its implementation class only.
+     * Note that if the client provider contract class is not specified the client provider
+     * instance will be injectable by its implementation class only.
      * </p>
      *
      * @return the client provider contract class
@@ -109,8 +109,8 @@ public @interface Application {
     Class clientProviderContract() default void.class;
 
     /**
-     * Specifies the class that provides {@link ServerProvider server provider implementation}. If a
-     * provider is not specified one will be discovered in the class path.
+     * Specifies the class that provides {@link ServerProvider server provider implementation}.
+     * If a provider is not specified one will be discovered in the class path.
      *
      * @return server provider implementation class.
      */
@@ -118,8 +118,8 @@ public @interface Application {
 
     /**
      * <p>
-     * Specifies the server name. This useful for giving the server instance a unique name that can
-     * be used to qualify and distinguish it from other similar services.
+     * Specifies the server name. This useful for giving the server instance a unique name that
+     * can be used to qualify and distinguish it from other similar services.
      * </p>
      * <p>
      * Note that the default server name is "applicationServer".
@@ -131,8 +131,8 @@ public @interface Application {
 
     /**
      * <p>
-     * Specifies the contract implemented by the server. This useful for getting the server instance
-     * by its contract.
+     * Specifies the contract implemented by the server. This useful for getting the server
+     * instance by its contract.
      * </p>
      * <p>
      * Note that if the server contract class is not specified the server instance will be

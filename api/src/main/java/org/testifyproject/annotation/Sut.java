@@ -23,9 +23,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used on single test class field to denote the field as the System Under Test (SUT).
- * Please note that what constitutes the system under test depends on the context of what we are
- * testing. It refer to a class, a service, or a client used to communicate with an application.
+ * An annotation used on single test class field to denote the field as the System Under Test
+ * (SUT). Please note that what constitutes the system under test depends on the context of what
+ * we are testing. It refer to a class, a service, or a client used to communicate with an
+ * application.
  *
  * @author saden
  */
@@ -36,9 +37,9 @@ public @interface Sut {
 
     /**
      * <p>
-     * Indicates whether the system under test instance is a virtual instance (delegated mock). This
-     * is useful if you wish to stub or verify package private methods of the system under test or
-     * verify certain interactions.
+     * Indicates whether the system under test instance is a virtual instance (delegated mock).
+     * This is useful if you wish to stub or verify package private methods of the system under
+     * test or verify certain interactions.
      * </p>
      * <p>
      * By default the SUT is not a virtual instance.
@@ -49,8 +50,8 @@ public @interface Sut {
     boolean value() default false;
 
     /**
-     * Indicates the method in the system under test that should be used to create an instance of
-     * the system under test.
+     * Indicates the method in the system under test that should be used to create an instance
+     * of the system under test.
      *
      * @return the factory method name.
      */
@@ -58,8 +59,8 @@ public @interface Sut {
 
     /**
      * <p>
-     * Indicates whether all interaction between system under test and its collaborators should be
-     * verified.
+     * Indicates whether all interaction between system under test and its collaborators should
+     * be verified.
      * </p>
      * <p>
      * By default verification is not performed.

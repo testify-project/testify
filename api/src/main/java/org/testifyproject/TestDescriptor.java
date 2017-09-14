@@ -39,7 +39,8 @@ import org.testifyproject.trait.PropertiesWriter;
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesReader, PropertiesWriter, AnnotationTrait<Class> {
+public interface TestDescriptor extends PropertiesReader, PropertiesWriter,
+        AnnotationTrait<Class> {
 
     /**
      * The name of the test class.

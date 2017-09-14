@@ -52,8 +52,8 @@ public class SpringDefaultProvider implements Provider {
     }
 
     /**
-     * Create a new provider instance with the given service instance, service type, and
-     * service qualifiers.
+     * Create a new provider instance with the given service instance, service type, and service
+     * qualifiers.
      *
      * @param serviceInstance the underlying service instance
      * @param type the service type

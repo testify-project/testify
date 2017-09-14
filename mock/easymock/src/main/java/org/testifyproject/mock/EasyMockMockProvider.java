@@ -65,9 +65,9 @@ public class EasyMockMockProvider implements MockProvider {
             replay(instance);
 
             return instance;
-        } catch (IllegalAccessException
-                | IllegalArgumentException
-                | InvocationTargetException e) {
+        } catch (IllegalAccessException |
+                IllegalArgumentException |
+                InvocationTargetException e) {
             throw new IllegalArgumentException("Could not delegate method calls", e);
         }
     }

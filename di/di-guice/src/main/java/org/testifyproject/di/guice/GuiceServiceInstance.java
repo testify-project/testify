@@ -46,9 +46,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * A Google Guice DI implementation of the {@link ServiceInstance} spi contract. This
- * class provides the ability to work with Google Guice {@link Injector} to create,
- * locate, and manage services.
+ * A Google Guice DI implementation of the {@link ServiceInstance} spi contract. This class
+ * provides the ability to work with Google Guice {@link Injector} to create, locate, and manage
+ * services.
  *
  * @author saden
  */

@@ -32,8 +32,8 @@ import org.testifyproject.TestContext;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A custom Spring bean post processor used to get and createFake service instances and
- * reify the test class fields.
+ * A custom Spring bean post processor used to get and createFake service instances and reify
+ * the test class fields.
  *
  * @author saden
  */

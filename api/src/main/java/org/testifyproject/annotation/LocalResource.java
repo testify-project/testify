@@ -29,13 +29,13 @@ import org.testifyproject.LocalResourceProvider;
 
 /**
  * <p>
- * An annotation that can be placed on integration and system tests to specify resources that must
- * be loaded, configured, started, stopped before and after each test case (i.e. an in-memory
- * database).
+ * An annotation that can be placed on integration and system tests to specify resources that
+ * must be loaded, configured, started, stopped before and after each test case (i.e. an
+ * in-memory database).
  * </p>
  * <p>
- * Note that an local resource consists of a server component and client component (optional). For
- * example, if a test class requires an in-memory database then the database
+ * Note that an local resource consists of a server component and client component (optional).
+ * For example, if a test class requires an in-memory database then the database
  * {@link javax.sql.DataSource} can be thought of as the server component and the
  * {@link java.sql.Connection} to the DataSource as the client component.
  * </p>
@@ -63,8 +63,8 @@ public @interface LocalResource {
      * </p>
      * <p>
      * Note that if a test class requires multiple resources that provide similar resources then
-     * name must be specified to resolve ambiguity as to which resource instance should be injected
-     * into your test code.
+     * name must be specified to resolve ambiguity as to which resource instance should be
+     * injected into your test code.
      * </p>
      *
      * @return the resource instance name.
@@ -79,17 +79,17 @@ public @interface LocalResource {
     String configKey() default "";
 
     /**
-     * A list of classpath data files that should be loaded into the local resource prior to being
-     * used. Note that {@link java.nio.file.FileSystem#getPathMatcher(java.lang.String)} glob
-     * patterns are supported
+     * A list of classpath data files that should be loaded into the local resource prior to
+     * being used. Note that {@link java.nio.file.FileSystem#getPathMatcher(java.lang.String)}
+     * glob patterns are supported
      *
      * @return an array of data file names or patterns.
      */
     String[] dataFiles() default {};
 
     /**
-     * Specifies a data provider implementations that loads data into the resource prior to it being
-     * used.
+     * Specifies a data provider implementations that loads data into the resource prior to it
+     * being used.
      *
      * @return the data provider implementation class.
      */
@@ -97,8 +97,9 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the underlying local resource name. This useful for giving the underlying resource
-     * a unique name that can be used to qualify and distinguish it from other similar services.
+     * Specifies the underlying local resource name. This useful for giving the underlying
+     * resource a unique name that can be used to qualify and distinguish it from other similar
+     * services.
      * </p>
      * <p>
      * Note that if the name is not specified the name provided by the local resource provider
@@ -111,12 +112,12 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the contract implemented by the underlying local resource. This useful for getting
-     * the underlying resource by its contract.
+     * Specifies the contract implemented by the underlying local resource. This useful for
+     * getting the underlying resource by its contract.
      * </p>
      * <p>
-     * Note that if the underlying resource contract is not specified the underlying resource will
-     * be injectable by its implementation class only.
+     * Note that if the underlying resource contract is not specified the underlying resource
+     * will be injectable by its implementation class only.
      * </p>
      *
      * @return the contract implemented by the underlying local resource.
@@ -125,8 +126,8 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the resource's client name. This useful for giving the client resource instance a
-     * unique name that can be used to qualify and distinguish it from other similar services.
+     * Specifies the resource's client name. This useful for giving the client resource instance
+     * a unique name that can be used to qualify and distinguish it from other similar services.
      * </p>
      * <p>
      * Note that if the name is not specified the name provided by the required resource
@@ -139,8 +140,8 @@ public @interface LocalResource {
 
     /**
      * <p>
-     * Specifies the contract implemented by the resource client. This useful for getting the client
-     * resource by its contract.
+     * Specifies the contract implemented by the resource client. This useful for getting the
+     * client resource by its contract.
      * </p>
      * <p>
      * Note that if the client contract is not specified the client resource instance will be

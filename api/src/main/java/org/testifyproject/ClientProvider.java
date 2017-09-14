@@ -40,7 +40,8 @@ public interface ClientProvider<T, C> {
     T configure(TestContext testContext, Application application, URI baseURI);
 
     /**
-     * Create and initialize the client instance using the given base URI and configuration object.
+     * Create and initialize the client instance using the given base URI and configuration
+     * object.
      *
      * @param testContext the test context
      * @param application the application annotation

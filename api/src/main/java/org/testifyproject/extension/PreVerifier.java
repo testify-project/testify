@@ -18,8 +18,8 @@ package org.testifyproject.extension;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method to verify that the test class is configured correctly before it
- * is executed. Note test class verification is executed in the following order:
+ * A contract that defines a method to verify that the test class is configured correctly before
+ * it is executed. Note test class verification is executed in the following order:
  * <ul>
  * <li><b>{@link PreVerifier}</b> - Verify test class is configured correctly before is
  * executed</li>

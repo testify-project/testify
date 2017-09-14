@@ -36,7 +36,8 @@ import java.lang.annotation.Target;
  * configuration.
  * </li>
  * <li>
- * the test class and {@link ConfigHandler#value() } is specified then a configuration method within {@link ConfigHandler#value()
+ * the test class and {@link ConfigHandler#value() } is specified then a configuration method
+ * within {@link ConfigHandler#value()
  * } class will be called to perform pre-test run configuration. This is useful for sharing
  * configuration method handlers between test classes and avoid repetitive declaration of
  * configuration methods in each test class.

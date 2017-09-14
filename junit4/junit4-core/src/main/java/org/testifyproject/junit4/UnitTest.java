@@ -22,9 +22,9 @@ import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 
 /**
- * A JUnit unit test runner. This class is the main entry point for running a unit test
- * using {@link org.junit.runner.RunWith} and provides means of creating your system under
- * test and substituting mock instances of its collaborators.
+ * A JUnit unit test runner. This class is the main entry point for running a unit test using
+ * {@link org.junit.runner.RunWith} and provides means of creating your system under test and
+ * substituting mock instances of its collaborators.
  *
  * @author saden
  */

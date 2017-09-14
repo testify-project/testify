@@ -30,8 +30,8 @@ import org.testifyproject.core.ClientInstanceBuilder;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A Jersey Client implementation of the ClientProvider SPI contract that provides a
- * usable {@link WebTarget} instance.
+ * A Jersey Client implementation of the ClientProvider SPI contract that provides a usable
+ * {@link WebTarget} instance.
  *
  * @author saden
  */

@@ -16,8 +16,8 @@
 package org.testifyproject;
 
 /**
- * A generic testify runtime exception. This useful for converting checked exceptions into unchecked
- * runtime exception.
+ * A generic testify runtime exception. This useful for converting checked exceptions into
+ * unchecked runtime exception.
  *
  * @author saden
  */

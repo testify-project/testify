@@ -18,8 +18,8 @@ package org.testifyproject.extension;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method to perform final reification of the test class. Note test class
- * reification is executed in the following order:
+ * A contract that defines a method to perform final reification of the test class. Note test
+ * class reification is executed in the following order:
  * <ul>
  * <li>{@link InitialReifier} - Perform initial initialization of test class collaborator
  * fields</li>

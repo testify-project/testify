@@ -53,9 +53,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class provides
- * the ability to work with HK2 {@link ServiceLocator} to create, locate, and manage
- * services.
+ * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class provides the
+ * ability to work with HK2 {@link ServiceLocator} to create, locate, and manage services.
  *
  * @author saden
  */

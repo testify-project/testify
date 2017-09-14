@@ -27,8 +27,8 @@ import java.util.Optional;
  * A contracts that specifies methods for reading property values. class.
  * </p>
  * <p>
- * Note that with respect to null keys and values the behavior the methods in contract are dependent
- * on the {@link Map} implementation returned by {@link #getProperties()
+ * Note that with respect to null keys and values the behavior the methods in contract are
+ * dependent on the {@link Map} implementation returned by {@link #getProperties()
  * }
  * </p>
  *

@@ -24,11 +24,11 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation that can be placed on unit, integration and system test class fields to denote the
- * fields as a virtual collaborator. Virtual collaborators are mock instances that delegate to a
- * real instance of the collaborator of the System Under Test and are useful if you wish to mock
- * certain functionality (i.e. a method that calls a third-party service to process a credit card
- * charge) and delegate other functionality to the real collaborator instance.
+ * An annotation that can be placed on unit, integration and system test class fields to denote
+ * the fields as a virtual collaborator. Virtual collaborators are mock instances that delegate
+ * to a real instance of the collaborator of the System Under Test and are useful if you wish to
+ * mock certain functionality (i.e. a method that calls a third-party service to process a
+ * credit card charge) and delegate other functionality to the real collaborator instance.
  * </p>
  *
  * @author saden

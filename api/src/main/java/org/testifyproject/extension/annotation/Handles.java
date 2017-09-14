@@ -24,8 +24,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on a class to donate it as capable of handing a specific type of
- * annotations. This is useful for writing custom inspectors that handles a specific annotations.
+ * An annotation that can be placed on a class to donate it as capable of handing a specific
+ * type of annotations. This is useful for writing custom inspectors that handles a specific
+ * annotations.
  *
  * @author saden
  */

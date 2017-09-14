@@ -26,8 +26,8 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation that can be placed on test related classes or test class fields to denote them as
- * test fixture. Note that if this annotation is placed on:
+ * An annotation that can be placed on test related classes or test class fields to denote them
+ * as test fixture. Note that if this annotation is placed on:
  * </p>
  * <ul>
  * <li>
@@ -47,9 +47,9 @@ import java.lang.annotation.Target;
  * </pre>
  * </li>
  * <li>
- * a module class the services defined in the module will take precedence over services defined in
- * other modules. This is useful if you wish to substitute certain services for testing purpose
- * (i.e. load a different DataSource than the one for production during test runs):
+ * a module class the services defined in the module will take precedence over services defined
+ * in other modules. This is useful if you wish to substitute certain services for testing
+ * purpose (i.e. load a different DataSource than the one for production during test runs):
  * <pre>
  * <code>
  * {@literal @}Fixture
@@ -88,12 +88,13 @@ public @interface Fixture {
 
     /**
      * <p>
-     * Indicates whether fixtures that implement {@link java.lang.AutoCloseable} interfaces should
-     * be closed automatically after the test run.
+     * Indicates whether fixtures that implement {@link java.lang.AutoCloseable} interfaces
+     * should be closed automatically after the test run.
      * </p>
      * <p>
-     * By default this is enabled. If the fixture does not implement {@link java.lang.AutoCloseable}
-     * interface you can explicitly specify the method to call by setting {@link #destroy() }
+     * By default this is enabled. If the fixture does not implement
+     * {@link java.lang.AutoCloseable} interface you can explicitly specify the method to call
+     * by setting {@link #destroy() }
      * </p>
      *
      * @return true if auto destroy is enabled, false otherwise

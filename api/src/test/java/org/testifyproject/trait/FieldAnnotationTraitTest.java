@@ -102,7 +102,8 @@ public class FieldAnnotationTraitTest {
     }
 
     @Test
-    public void givenVirutalFieldGetVirtualShouldReturnEmptyOptional() throws NoSuchFieldException {
+    public void givenVirutalFieldGetVirtualShouldReturnEmptyOptional() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("virtual");
 
         given(sut.getMember()).willReturn(field);
@@ -125,7 +126,8 @@ public class FieldAnnotationTraitTest {
     }
 
     @Test
-    public void givenPropertyFieldGetPropertyShouldReturnEmptyOptional() throws NoSuchFieldException {
+    public void givenPropertyFieldGetPropertyShouldReturnEmptyOptional() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("property");
 
         given(sut.getMember()).willReturn(field);
@@ -148,7 +150,8 @@ public class FieldAnnotationTraitTest {
     }
 
     @Test
-    public void givenFixtureFieldGetFixtureShouldReturnEmptyOptional() throws NoSuchFieldException {
+    public void givenFixtureFieldGetFixtureShouldReturnEmptyOptional() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("real");
 
         given(sut.getMember()).willReturn(field);

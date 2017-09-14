@@ -22,8 +22,8 @@ import org.testifyproject.trait.PropertiesReader;
 
 /**
  * A contract that defines methods to get information about a local resource instance. A local
- * resource instance consists of a resource, an optional client that can be used to communicate with
- * the local resource, and properties associated with the local resource instance.
+ * resource instance consists of a resource, an optional client that can be used to communicate
+ * with the local resource, and properties associated with the local resource instance.
  *
  * @author saden
  * @param <R> the underlying local resource type

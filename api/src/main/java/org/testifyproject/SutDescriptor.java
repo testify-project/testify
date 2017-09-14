@@ -27,8 +27,8 @@ import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
 
 /**
- * A contract that defines methods to access properties of or perform operations on a system under
- * test (SUT).
+ * A contract that defines methods to access properties of or perform operations on a system
+ * under test (SUT).
  *
  * @author saden
  */
@@ -52,15 +52,16 @@ public interface SutDescriptor extends FieldTrait, FieldAnnotationTrait, Propert
     Constructor getConstructor();
 
     /**
-     * Get a list of field descriptors for all the fields associated with the system under test .
+     * Get a list of field descriptors for all the fields associated with the system under test
+     * .
      *
      * @return a list with field descriptor, empty list otherwise
      */
     Collection<FieldDescriptor> getFieldDescriptors();
 
     /**
-     * Get a list of parameter descriptors for all the parameters associated with the system under
-     * test's constructor.
+     * Get a list of parameter descriptors for all the parameters associated with the system
+     * under test's constructor.
      *
      * @return a list with parameter descriptor, empty list otherwise
      */
@@ -84,8 +85,8 @@ public interface SutDescriptor extends FieldTrait, FieldAnnotationTrait, Propert
     Optional<FieldDescriptor> findFieldDescriptor(Type type);
 
     /**
-     * Find the descriptor for a constructor parameter with the given type and name on the system
-     * under test.
+     * Find the descriptor for a constructor parameter with the given type and name on the
+     * system under test.
      *
      * @param type the parameter type
      * @param name the parameter name
@@ -94,7 +95,8 @@ public interface SutDescriptor extends FieldTrait, FieldAnnotationTrait, Propert
     Optional<ParameterDescriptor> findParameterDescriptor(Type type, String name);
 
     /**
-     * Find the descriptor for a constructor parameter with the given type on the system under test.
+     * Find the descriptor for a constructor parameter with the given type on the system under
+     * test.
      *
      * @param type the parameter type
      * @return an optional with a parameter descriptor, empty optional otherwise

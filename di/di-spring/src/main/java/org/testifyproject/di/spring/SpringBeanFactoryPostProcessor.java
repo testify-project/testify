@@ -37,8 +37,8 @@ import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.PreInstanceProvider;
 
 /**
- * A class that is called after the application context is refreshed to initialize the
- * test as well as start and stop test resources.
+ * A class that is called after the application context is refreshed to initialize the test as
+ * well as start and stop test resources.
  *
  * @author saden
  */
