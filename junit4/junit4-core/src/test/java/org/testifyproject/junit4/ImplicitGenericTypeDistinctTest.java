@@ -15,17 +15,19 @@
  */
 package org.testifyproject.junit4;
 
-import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Sut;
+
+import java.util.function.Supplier;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.ImplicitGenericTypeDistinct;
 import org.testifyproject.junit4.fixture.common.Hello;
 import org.testifyproject.junit4.fixture.common.World;

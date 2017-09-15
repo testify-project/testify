@@ -15,13 +15,13 @@
  */
 package org.testifyproject;
 
+import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * A contract that defines methods to get information about a remote resource
- * instance. A remote instance consists of a client that can be used to
- * communicate with the remote resource and properties associated with the
- * remote resource instance.
+ * A contract that defines methods to get information about a remote resource instance. A remote
+ * instance consists of a client that can be used to communicate with the remote resource and
+ * properties associated with the remote resource instance.
  *
  * @author saden
  * @param <R> the underlying remote resource type
@@ -34,6 +34,13 @@ public interface RemoteResourceInstance<R> extends PropertiesReader {
      * @return the remote resource's fully qualified name
      */
     String getFqn();
+
+    /**
+     * Get the remote resource annotation associated with the remote resource instance.
+     *
+     * @return the remote resource annotation
+     */
+    RemoteResource getRemoteResource();
 
     /**
      * Get the resource instance associated with the remote resource.

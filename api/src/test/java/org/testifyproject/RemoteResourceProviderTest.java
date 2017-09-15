@@ -15,13 +15,15 @@
  */
 package org.testifyproject;
 
-import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Answers;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Answers;
 import org.testifyproject.annotation.RemoteResource;
 
 /**

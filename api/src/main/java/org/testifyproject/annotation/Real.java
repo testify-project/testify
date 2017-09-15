@@ -15,15 +15,16 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.FIELD;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on integration and system test class fields
- * to denote the field as a real collaborator of the System Under Test.
+ * An annotation that can be placed on integration and system test class fields to denote the
+ * field as a real collaborator of the System Under Test.
  *
  * @author saden
  */
@@ -32,20 +33,4 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface Real {
 
-    /**
-     * <p>
-     * This value represents the field name of the system under test associated
-     * with the test field. Please note that name based auto detection only
-     * works if your code is compiled with parameter names or debug information
-     * (javac -parameters or javac -g:vars).
-     * </p>
-     * <p>
-     * By default this value is set to "" to enable auto detection. If you wish
-     * to not rely on auto detection you can explicitly specify the name of the
-     * system under test field associated with the test field.
-     * </p>
-     *
-     * @return the system under test field name.
-     */
-    String value() default "";
 }

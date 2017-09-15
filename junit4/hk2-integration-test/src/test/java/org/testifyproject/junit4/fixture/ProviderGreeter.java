@@ -17,6 +17,7 @@ package org.testifyproject.junit4.fixture;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+
 import org.jvnet.hk2.annotations.Service;
 import org.testifyproject.junit4.fixture.common.impl.Hello;
 

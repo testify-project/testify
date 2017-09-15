@@ -20,12 +20,13 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
 
 /**
- * A contract that defines methods for working with various dependency injection
- * frameworks to add services and modules as well as retrieve services.
+ * A contract that defines methods for working with various dependency injection frameworks to
+ * add services and modules as well as retrieve services.
  *
  * @author saden
  */
@@ -62,66 +63,85 @@ public interface ServiceInstance {
     /**
      * Add a constant with the given name and contract.
      *
-     * @param instance the constant instance
+     * @param value the constant value
      * @param name the name associated with the constant
      * @param contract the contract associated with the constant
      */
-    void addConstant(Object instance, String name, Class contract);
+    void addConstant(Object value, String name, Class contract);
 
     /**
-     * Replace all services that implement the given contract with the given
-     * name and instance. If services that implement the contract are not found
-     * this method should behave like
+     * Add the given instance as a constant.
+     *
+     * @param <T> the instance type
+     * @param instance the instance
+     */
+    default <T> void addConstant(Instance<T> instance) {
+        T value = instance.getValue();
+        String name = null;
+        Class contract = null;
+
+        Optional<String> foundName = instance.getName();
+
+        if (foundName.isPresent()) {
+            name = foundName.get();
+        }
+
+        Optional<Class<? extends T>> foundContract = instance.getContract();
+
+        if (foundContract.isPresent()) {
+            contract = foundContract.get();
+        }
+
+        addConstant(value, name, contract);
+    }
+
+    /**
+     * Replace all services that implement the given contract with the given name and instance.
+     * If services that implement the contract are not found this method should behave like
      * {@link #addConstant(java.lang.Object, java.lang.String, java.lang.Class)}.
      *
-     * @param instance the service instance
+     * @param value the service value
      * @param name the name of the service
      * @param contract the contract implemented by the instance
      *
      */
-    void replace(Object instance, String name, Class contract);
+    void replace(Object value, String name, Class contract);
 
     /**
      * Add the given module(s) to the service instance.
      *
      * @param modules an array of modules
      */
-    void addModules(Module... modules);
+    default void addModules(Module... modules) {
+    }
 
     /**
-     * Replace all services that implement the given {@link Instance} as well as
-     * override the name and/or contract defined in the instance with the given
-     * overrideName and overrideContract. Note that if overrideName is used if
-     * it is not null or empty and overrideConctract is used if it is not null
-     * or equal to Class.class.
+     * Replace all services that implement the given {@link Instance} as well as override the
+     * name and/or contract defined in the instance with the given overrideName and
+     * overrideContract. Note that if overrideName is used if it is not null or empty and
+     * overrideConctract is used if it is not null or equal to Class.class.
      *
      * @param <T> the instance type
      * @param instance the instance
-     * @param overrideName the override name
-     * @param overrideContract the override contract
      */
-    default <T> void replace(Instance<T> instance, String overrideName, Class overrideContract) {
-        T constant = instance.getValue();
-        Optional<String> foundName = instance.getName();
-        Optional<Class<? extends T>> foundContract = instance.getContract();
-
+    default <T> void replace(Instance<T> instance) {
+        T value = instance.getValue();
         String name = null;
+        Class contract = null;
 
-        if (overrideName != null && !overrideName.isEmpty()) {
-            name = overrideName;
-        } else if (foundName.isPresent()) {
+        Optional<String> foundName = instance.getName();
+
+        if (foundName.isPresent()) {
             name = foundName.get();
         }
 
-        Class<? extends T> contract = null;
+        Optional<Class<? extends T>> foundContract = instance.getContract();
 
-        if (overrideContract != null && !void.class.equals(overrideContract)) {
-            contract = overrideContract;
-        } else if (foundContract.isPresent()) {
+        if (foundContract.isPresent()) {
             contract = foundContract.get();
         }
 
-        replace(constant, name, contract);
+        replace(value, name, contract);
     }
 
     /**
@@ -152,8 +172,8 @@ public interface ServiceInstance {
      * Add the given scans to the service instance.
      * </p>
      * <p>
-     * Please note that for some DI a resource might be a package (Spring) and
-     * for others it might be service descriptor file (HK2).
+     * Please note that for some DI a resource might be a package (Spring) and for others it
+     * might be service descriptor file (HK2).
      * </p>
      *
      * @param scans an array of scans
@@ -171,8 +191,7 @@ public interface ServiceInstance {
     }
 
     /**
-     * Get all the name qualifier annotation classes supported by the service
-     * locator.
+     * Get all the name qualifier annotation classes supported by the service locator.
      *
      * @return a set containing name qualifier annotation classes.
      */
@@ -181,8 +200,7 @@ public interface ServiceInstance {
     }
 
     /**
-     * Get all the custom qualifier annotations classes supported by the service
-     * locator.
+     * Get all the custom qualifier annotations classes supported by the service locator.
      *
      * @return a set containing custom qualifier annotation classes.
      */

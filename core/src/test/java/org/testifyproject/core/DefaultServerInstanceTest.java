@@ -15,14 +15,17 @@
  */
 package org.testifyproject.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import java.net.URI;
 import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
+import org.testifyproject.annotation.Application;
 
 /**
  *
@@ -32,6 +35,7 @@ public class DefaultServerInstanceTest {
 
     ServerInstance<Object> sut;
     String fqn;
+    Application application;
     URI baseURI;
     Instance<Object> server;
     Class<Object> contract;
@@ -40,11 +44,12 @@ public class DefaultServerInstanceTest {
     @Before
     public void init() {
         fqn = "fqn";
+        application = mock(Application.class);
         baseURI = URI.create("uri://test.server");
         server = mock(Instance.class);
         properties = mock(Map.class);
 
-        sut = DefaultServerInstance.of(fqn, baseURI, server, properties);
+        sut = DefaultServerInstance.of(fqn, application, baseURI, server, properties);
     }
 
     @Test
@@ -72,7 +77,7 @@ public class DefaultServerInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ServerInstance<Object> uneuqual = DefaultServerInstance.of(fqn, null, null, null);
+        ServerInstance<Object> uneuqual = DefaultServerInstance.of(fqn, null, null, null, null);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -86,7 +91,9 @@ public class DefaultServerInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ServerInstance<Object> equal = DefaultServerInstance.of(fqn, baseURI, server, properties);
+        ServerInstance<Object> equal = DefaultServerInstance.of(fqn, application, baseURI,
+                server,
+                properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());

@@ -17,9 +17,11 @@ package org.testifyproject;
 
 import java.net.URI;
 
+import org.testifyproject.annotation.Application;
+
 /**
- * A contract that defines methods for configuring, initializing and destroying
- * a client used to communicate with the server.
+ * A contract that defines methods for configuring, initializing and destroying a client used to
+ * communicate with the server.
  *
  * @author saden
  * @param <T> the client configuration type
@@ -31,25 +33,30 @@ public interface ClientProvider<T, C> {
      * Configure the client using the given server instance.
      *
      * @param testContext the test context
+     * @param application the application annotation
      * @param baseURI the base server URI
      * @return client configuration object
      */
-    T configure(TestContext testContext, URI baseURI);
+    T configure(TestContext testContext, Application application, URI baseURI);
 
     /**
-     * Create and initialize the client instance using the given base URI and
-     * configuration object.
+     * Create and initialize the client instance using the given base URI and configuration
+     * object.
      *
      * @param testContext the test context
+     * @param application the application annotation
      * @param baseURI the base server URI
      * @param configuration client configuration object
      * @return a client instance.
      */
-    ClientInstance<C> create(TestContext testContext, URI baseURI, T configuration);
+    ClientInstance<C> create(TestContext testContext, Application application, URI baseURI,
+            T configuration);
 
     /**
-     * Destroy the client.
+     * This method will dispose of client instance that was created.
+     *
+     * @param clientInstance the client instance to dispose of
      */
-    void destroy();
+    void destroy(ClientInstance<C> clientInstance);
 
 }

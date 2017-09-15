@@ -15,10 +15,11 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
@@ -44,7 +45,7 @@ public class ScanInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.SCANS, annotation);
+        verify(testDescriptor).addCollectionElement(TestDescriptorProperties.SCANS, annotation);
     }
 
 }

@@ -15,17 +15,19 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static java.util.Optional.ofNullable;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.util.stream.Collectors;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
@@ -34,9 +36,15 @@ import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.core.util.LoggingUtil;
+import org.testifyproject.extension.annotation.Hint;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * A descriptor class used to access or perform operations on a test class.
@@ -112,38 +120,43 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<Module> getModules() {
-        return findList(TestDescriptorProperties.MODULES);
+    public Collection<Module> getModules() {
+        return findCollection(TestDescriptorProperties.MODULES);
     }
 
     @Override
-    public List<Scan> getScans() {
-        return findList(TestDescriptorProperties.SCANS);
+    public Collection<Scan> getScans() {
+        return findCollection(TestDescriptorProperties.SCANS);
     }
 
     @Override
-    public List<LocalResource> getLocalResources() {
-        return findList(TestDescriptorProperties.LOCAL_RESOURCES);
+    public Collection<LocalResource> getLocalResources() {
+        return findCollection(TestDescriptorProperties.LOCAL_RESOURCES);
     }
 
     @Override
-    public List<VirtualResource> getVirtualResources() {
-        return findList(TestDescriptorProperties.VIRTUAL_RESOURCES);
+    public Collection<VirtualResource> getVirtualResources() {
+        return findCollection(TestDescriptorProperties.VIRTUAL_RESOURCES);
     }
 
     @Override
-    public List<RemoteResource> getRemoteResources() {
-        return findList(TestDescriptorProperties.REMOTE_RESOURCES);
+    public Collection<RemoteResource> getRemoteResources() {
+        return findCollection(TestDescriptorProperties.REMOTE_RESOURCES);
     }
 
     @Override
-    public List<Annotation> getInspectedAnnotations() {
-        return findList(TestDescriptorProperties.INSPECTED_ANNOTATIONS);
+    public Collection<Annotation> getInspectedAnnotations() {
+        return findCollection(TestDescriptorProperties.INSPECTED_ANNOTATIONS);
     }
 
     @Override
-    public List<Class<? extends Annotation>> getGuidelines() {
-        return findList(TestDescriptorProperties.GUIDELINE_ANNOTATIONS);
+    public Collection<Class<? extends Annotation>> getGuidelines() {
+        return findCollection(TestDescriptorProperties.GUIDELINE_ANNOTATIONS);
+    }
+
+    @Override
+    public Optional<Hint> getHint() {
+        return findProperty(TestDescriptorProperties.HINT_ANNOTATION);
     }
 
     @Override
@@ -152,8 +165,8 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<MethodDescriptor> getCollaboratorProviders() {
-        return findList(TestDescriptorProperties.COLLABORATOR_PROVIDERS);
+    public Collection<MethodDescriptor> getCollaboratorProviders() {
+        return findCollection(TestDescriptorProperties.COLLABORATOR_PROVIDERS);
     }
 
     @Override
@@ -162,19 +175,19 @@ public class DefaultTestDescriptor implements TestDescriptor {
     }
 
     @Override
-    public List<MethodDescriptor> getConfigHandlers() {
-        return findList(TestDescriptorProperties.CONFIG_HANDLERS);
+    public Collection<MethodDescriptor> getConfigHandlers() {
+        return findCollection(TestDescriptorProperties.CONFIG_HANDLERS);
     }
 
     @Override
     public Collection<FieldDescriptor> getFieldDescriptors() {
-        return findList(TestDescriptorProperties.FIELD_DESCRIPTORS);
+        return findCollection(TestDescriptorProperties.FIELD_DESCRIPTORS);
     }
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors =
+                findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);
@@ -194,8 +207,8 @@ public class DefaultTestDescriptor implements TestDescriptor {
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors =
+                findMap(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor foundFieldDescriptor = fieldDescriptors.get(descriptorKey);
@@ -215,8 +228,38 @@ public class DefaultTestDescriptor implements TestDescriptor {
     public Optional<MethodDescriptor> findCollaboratorProvider(Type returnType) {
         return getCollaboratorProviders()
                 .parallelStream()
+                .filter(methodDescriptor -> !methodDescriptor.hasAnyAnnotations(Name.class))
                 .filter(methodDescriptor -> methodDescriptor.hasReturnType(returnType))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<MethodDescriptor> findCollaboratorProvider(Type returnType, String name) {
+        Deque<MethodDescriptor> methodDescriptors = new LinkedList<>();
+
+        getCollaboratorProviders().forEach(methodDescriptor -> {
+            Optional<Name> nameAnnotation = methodDescriptor.getAnnotation(Name.class);
+
+            if (nameAnnotation.isPresent()
+                    && nameAnnotation.get().value().equals(name)
+                    && methodDescriptor.hasReturnType(returnType)) {
+                methodDescriptors.addFirst(methodDescriptor);
+            } else if (methodDescriptor.hasReturnType(returnType)
+                    && methodDescriptor.getName().equals(name)) {
+                methodDescriptors.addLast(methodDescriptor);
+            }
+        });
+
+        if (methodDescriptors.size() > 1) {
+            LoggingUtil.INSTANCE.warn("Multiple canidate methods found with return type '{}'"
+                    + " and name '{}':\n{}",
+                    returnType.getTypeName(),
+                    name, methodDescriptors.stream()
+                            .map(Object::toString)
+                            .collect(Collectors.joining(", ")));
+        }
+
+        return methodDescriptors.stream().findFirst();
     }
 
 }

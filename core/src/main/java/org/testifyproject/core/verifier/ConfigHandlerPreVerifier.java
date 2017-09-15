@@ -16,6 +16,7 @@
 package org.testifyproject.core.verifier;
 
 import java.util.List;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -58,12 +59,14 @@ public class ConfigHandlerPreVerifier implements PreVerifier {
 
             Class paramterType = parameterTypes.get(0);
 
-            ExceptionUtil.INSTANCE.raise(!(returnType.equals(void.class)
-                    || returnType.equals(Void.class)
+            ExceptionUtil.INSTANCE.raise(!(void.class.equals(returnType)
+                    || Void.class.equals(returnType)
                     || returnType.isAssignableFrom(paramterType)),
                     "Configuration Handler method '{}' in class '{}' has return type returns '{}'."
-                    + "Please insure the configuration handler returns a void or a super type of '{}'.",
-                    name, declaringClassName, returnType.getSimpleName(), paramterType.getSimpleName());
+                    + "Please insure the configuration handler returns a void or a super type of "
+                    + "'{}'.",
+                    name, declaringClassName, returnType.getSimpleName(), paramterType
+                    .getSimpleName());
         });
     }
 

@@ -15,16 +15,19 @@
  */
 package org.testifyproject.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.Mockito.mock;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
+import org.testifyproject.annotation.LocalResource;
 
 /**
  *
@@ -34,26 +37,28 @@ public class DefaultLocalResourceInstanceTest {
 
     LocalResourceInstance<Object, Object> sut;
 
-    String name;
+    String fqn;
+    LocalResource localResource;
     Instance<Object> resource;
     Instance<Object> client;
     Map<String, Object> properties;
 
     @Before
     public void init() {
-        name = "name";
+        fqn = "name";
+        localResource = mock(LocalResource.class);
         resource = mock(Instance.class);
         client = mock(Instance.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        sut = DefaultLocalResourceInstance.of(name, resource, client, properties);
+        sut = DefaultLocalResourceInstance.of(fqn, localResource, resource, client, properties);
     }
 
     @Test
     public void callToGetNameShouldReturnName() {
         String result = sut.getFqn();
 
-        assertThat(result).isEqualTo(name);
+        assertThat(result).isEqualTo(fqn);
     }
 
     @Test
@@ -87,8 +92,8 @@ public class DefaultLocalResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        LocalResourceInstance<Object, Object> uneuqual
-                = DefaultLocalResourceInstance.of(name, resource, null, properties);
+        LocalResourceInstance<Object, Object> uneuqual =
+                DefaultLocalResourceInstance.of(fqn, localResource, resource, null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -101,8 +106,9 @@ public class DefaultLocalResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        LocalResourceInstance<Object, Object> equal
-                = DefaultLocalResourceInstance.of(name, resource, client, properties);
+        LocalResourceInstance<Object, Object> equal =
+                DefaultLocalResourceInstance
+                        .of(fqn, localResource, resource, client, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -112,7 +118,12 @@ public class DefaultLocalResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultLocalResourceInstance", "name", "resource", "client", "properties");
+        assertThat(result).contains("DefaultLocalResourceInstance",
+                "localResource",
+                "fqn",
+                "resource",
+                "client",
+                "properties");
     }
 
 }

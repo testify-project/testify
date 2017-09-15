@@ -15,8 +15,9 @@
  */
 package org.testifyproject.fixture.inspector;
 
-import java.util.Map;
 import static org.mockito.Mockito.mock;
+
+import java.util.Map;
 
 /**
  *

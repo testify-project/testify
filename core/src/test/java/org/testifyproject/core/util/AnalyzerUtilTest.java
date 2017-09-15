@@ -15,9 +15,11 @@
  */
 package org.testifyproject.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.reflect.Field;
 import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.SutDescriptor;
@@ -53,8 +55,8 @@ public class AnalyzerUtilTest {
         assertThat(result.getConfigHandlers()).isNotEmpty();
         assertThat(result.getFieldDescriptors())
                 .allMatch(p -> p.getName().equals("store")
-                && p.getType().isAssignableFrom(Map.class)
-                && p.getFake().isPresent());
+                        && p.getType().isAssignableFrom(Map.class)
+                        && p.getFake().isPresent());
         assertThat(result.getModules())
                 .allMatch(p -> p.value().equals(AnalyzedModule.class));
         assertThat(result.getScans())
@@ -70,7 +72,8 @@ public class AnalyzerUtilTest {
     }
 
     @Test
-    public void givenSutFieldAnalyzeSutClassShouldReturnSutDescriptor() throws NoSuchFieldException {
+    public void givenSutFieldAnalyzeSutClassShouldReturnSutDescriptor() throws
+            NoSuchFieldException {
         Field sutField = AnalyzedTestClass.class.getDeclaredField("sut");
         SutDescriptor result = sut.analyzeSutField(sutField);
 

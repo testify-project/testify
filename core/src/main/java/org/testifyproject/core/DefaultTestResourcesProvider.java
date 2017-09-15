@@ -16,11 +16,8 @@
 package org.testifyproject.core;
 
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.testifyproject.ResourceProvider;
-import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.core.util.ServiceLocatorUtil;
@@ -35,34 +32,31 @@ import org.testifyproject.tools.Discoverable;
 public class DefaultTestResourcesProvider implements TestResourcesProvider {
 
     private ServiceLocatorUtil serviceLocatorUtil;
-    private Queue<ResourceProvider> resourceProviders;
 
     public DefaultTestResourcesProvider() {
-        this(ServiceLocatorUtil.INSTANCE, new ConcurrentLinkedQueue<>());
+        this(ServiceLocatorUtil.INSTANCE);
     }
 
-    DefaultTestResourcesProvider(ServiceLocatorUtil serviceLocatorUtil, Queue<ResourceProvider> resourceProviders) {
-        this.resourceProviders = resourceProviders;
+    DefaultTestResourcesProvider(ServiceLocatorUtil serviceLocatorUtil) {
         this.serviceLocatorUtil = serviceLocatorUtil;
     }
 
     @Override
-    public void start(TestContext testContext, ServiceInstance serviceInstance) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
-            List<ResourceProvider> foundResourceProviders = serviceLocatorUtil.findAll(ResourceProvider.class);
+    public void start(TestContext testContext) {
+        List<ResourceProvider> foundResourceProviders = serviceLocatorUtil.findAll(
+                ResourceProvider.class);
 
-            foundResourceProviders.parallelStream().forEach(resourceProvider -> {
-                resourceProvider.start(testContext, serviceInstance);
-                resourceProviders.add(resourceProvider);
-            });
-        }
+        foundResourceProviders.parallelStream().forEach(resourceProvider -> {
+            resourceProvider.start(testContext);
+            testContext.addCollectionElement(TestContextProperties.RESOURCE_PROVIDERS,
+                    resourceProvider);
+        });
     }
 
     @Override
-    public void stop(TestContext testContext, ServiceInstance serviceInstance) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
-            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
-        }
+    public void stop(TestContext testContext) {
+        testContext.<ResourceProvider>findCollection(TestContextProperties.RESOURCE_PROVIDERS)
+                .forEach(resourceProvider -> resourceProvider.stop(testContext));
     }
 
 }

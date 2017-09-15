@@ -15,15 +15,17 @@
  */
 package org.testifyproject.di.hk2;
 
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.util.List;
+
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -59,7 +61,8 @@ public class HK2ServiceProviderTest {
     @Test
     public void givenTestContextAndServiceLocatorConfigureShouldReturnServiceLocator() {
         TestContext testContext = mock(TestContext.class);
-        ServiceLocator serviceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+        ServiceLocator serviceLocator = ServiceLocatorUtilities
+                .createAndPopulateServiceLocator();
 
         ServiceInstance result = sut.configure(testContext, serviceLocator);
 

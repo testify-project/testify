@@ -15,24 +15,30 @@
  */
 package org.testifyproject.core;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.SutDescriptor;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.testifyproject.LocalResourceInfo;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
+import org.testifyproject.SutDescriptor;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
-import org.testifyproject.TestConfigurer;
+import org.testifyproject.VirtualResourceInfo;
 
 /**
  *
@@ -170,6 +176,27 @@ public class DefaultTestContextTest {
     }
 
     @Test
+    public void callToGetLocalResourceInstancesShouldReturn() {
+        Collection<LocalResourceInfo> result = sut.getLocalResources();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void callToGetVirtualResourceInstancesShouldReturn() {
+        Collection<VirtualResourceInfo> result = sut.getVirtualResources();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void callToGetRemoteResourceInstancesShouldReturn() {
+        Collection<RemoteResourceInfo> result = sut.getRemoteResources();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     public void callToGetServiceInstanceShouldReturn() {
         Optional<ServiceInstance> result = sut.getServiceInstance();
 
@@ -241,6 +268,8 @@ public class DefaultTestContextTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultTestContext", "resourceStartStrategy", "testDescriptor", "methodDescriptor");
+        assertThat(result).contains("DefaultTestContext", "resourceStartStrategy",
+                "testDescriptor",
+                "methodDescriptor");
     }
 }

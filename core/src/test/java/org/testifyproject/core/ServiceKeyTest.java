@@ -16,51 +16,52 @@
 package org.testifyproject.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
-import org.testifyproject.LocalResourceInstance;
-import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.ResourceInstance;
-import org.testifyproject.annotation.LocalResource;
 
 /**
  *
  * @author saden
  */
-public class DefaultResourceInstanceTest {
+public class ServiceKeyTest {
 
-    ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance> sut;
+    ServiceKey sut;
 
-    LocalResource annotation;
-    LocalResourceProvider provider;
-    LocalResourceInstance value;
+    Class type;
+    String name;
 
     @Before
     public void init() {
-        annotation = mock(LocalResource.class);
-        provider = mock(LocalResourceProvider.class);
-        value = mock(LocalResourceInstance.class);
+        type = Object.class;
+        name = "name";
 
-        sut = DefaultResourceInstance.of(annotation, provider, value);
+        sut = ServiceKey.of(type, name);
     }
 
     @Test
-    public void validateSutInstance() {
+    public void validateSut() {
         assertThat(sut).isNotNull();
-        assertThat(sut.getAnnotation()).isEqualTo(annotation);
-        assertThat(sut.getProvider()).isEqualTo(provider);
-        assertThat(sut.getValue()).isEqualTo(value);
+        assertThat(sut.getType()).isEqualTo(type);
+        assertThat(sut.getName()).isEqualTo(name);
     }
 
     @Test
-    public void givenInstanceOfShouldReturn() {
-        sut = DefaultResourceInstance.of(annotation, provider, value);
+    public void givenServiceKeyOfTypeShouldReturn() {
+        sut = ServiceKey.of(type);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getAnnotation()).isEqualTo(annotation);
-        assertThat(sut.getProvider()).isEqualTo(provider);
-        assertThat(sut.getValue()).isEqualTo(value);
+        assertThat(sut.getType()).isEqualTo(type);
+        assertThat(sut.getName()).isNull();
+    }
+
+    @Test
+    public void givenServiceKeyOfTypeAndNameShouldReturn() {
+        sut = ServiceKey.of(type, name);
+
+        assertThat(sut).isNotNull();
+        assertThat(sut.getType()).isEqualTo(type);
+        assertThat(sut.getName()).isEqualTo(name);
     }
 
     @Test
@@ -78,7 +79,7 @@ public class DefaultResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ResourceInstance unequal = DefaultResourceInstance.of(annotation, provider, null);
+        ServiceKey unequal = ServiceKey.of(type, null);
 
         assertThat(sut).isNotEqualTo(unequal);
         assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -91,7 +92,7 @@ public class DefaultResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ResourceInstance equal = DefaultResourceInstance.of(annotation, provider, value);
+        ServiceKey equal = ServiceKey.of(type, name);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -101,7 +102,7 @@ public class DefaultResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultResourceInstance", "annotation", "provider", "value");
+        assertThat(result).contains("ServiceKey", "type", "name");
     }
 
 }

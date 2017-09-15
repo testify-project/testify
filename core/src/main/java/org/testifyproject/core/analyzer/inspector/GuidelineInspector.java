@@ -16,6 +16,7 @@
 package org.testifyproject.core.analyzer.inspector;
 
 import java.lang.annotation.Annotation;
+
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.extension.AnnotationInspector;
@@ -26,8 +27,8 @@ import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An annotation inspector that processes {@link Strict}, {@link Lenient}, and
- * {@link Loose} annotations.
+ * An annotation inspector that processes {@link Strict}, {@link Lenient}, and {@link Loose}
+ * annotations.
  *
  * @author saden
  */
@@ -36,8 +37,10 @@ import org.testifyproject.tools.Discoverable;
 public class GuidelineInspector implements AnnotationInspector<Annotation> {
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Annotation annotation) {
-        testDescriptor.addListElement(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, annotation.annotationType());
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType,
+            Annotation annotation) {
+        testDescriptor.addCollectionElement(TestDescriptorProperties.GUIDELINE_ANNOTATIONS,
+                annotation.annotationType());
     }
 
 }

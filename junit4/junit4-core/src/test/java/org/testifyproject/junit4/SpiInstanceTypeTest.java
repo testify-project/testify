@@ -16,11 +16,12 @@
 package org.testifyproject.junit4;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.SpiInstanceType;
 import org.testifyproject.junit4.fixture.common.Hello;
 import org.testifyproject.junit4.fixture.common.World;

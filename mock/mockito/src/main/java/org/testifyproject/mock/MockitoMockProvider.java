@@ -15,12 +15,13 @@
  */
 package org.testifyproject.mock;
 
-import org.mockito.AdditionalAnswers;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.withSettings;
+
+import org.mockito.AdditionalAnswers;
 import org.testifyproject.MockProvider;
 import org.testifyproject.tools.Discoverable;
 

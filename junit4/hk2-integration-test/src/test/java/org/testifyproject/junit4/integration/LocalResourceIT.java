@@ -15,10 +15,14 @@
  */
 package org.testifyproject.junit4.integration;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
+
 import java.sql.Connection;
 import java.util.Optional;
+
 import javax.sql.DataSource;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.Instance;
@@ -26,7 +30,6 @@ import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
-import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 
 /**

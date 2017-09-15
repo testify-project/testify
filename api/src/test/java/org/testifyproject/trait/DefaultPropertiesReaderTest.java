@@ -15,8 +15,10 @@
  */
 package org.testifyproject.trait;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.guava.common.collect.ImmutableMap;

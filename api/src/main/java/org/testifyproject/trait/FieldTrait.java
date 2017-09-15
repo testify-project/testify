@@ -15,11 +15,13 @@
  */
 package org.testifyproject.trait;
 
-import java.lang.reflect.Field;
 import static java.security.AccessController.doPrivileged;
+import static java.util.Optional.ofNullable;
+
+import java.lang.reflect.Field;
 import java.security.PrivilegedAction;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
+
 import org.testifyproject.TestifyException;
 import org.testifyproject.annotation.Fixture;
 
@@ -54,9 +56,9 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
                 field.set(instance, value);
 
                 return null;
-            } catch (SecurityException
-                    | IllegalAccessException
-                    | IllegalArgumentException e) {
+            } catch (SecurityException |
+                    IllegalAccessException |
+                    IllegalArgumentException e) {
                 throw TestifyException.of(e);
             }
         });
@@ -76,17 +78,16 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
                 field.setAccessible(true);
 
                 return ofNullable((T) field.get(instance));
-            } catch (SecurityException
-                    | IllegalAccessException
-                    | IllegalArgumentException e) {
+            } catch (SecurityException |
+                    IllegalAccessException |
+                    IllegalArgumentException e) {
                 throw TestifyException.of(e);
             }
         });
     }
 
     /**
-     * Initialize the field for the given instance if it is annotated with
-     * {@link Fixture}.
+     * Initialize the field for the given instance if it is annotated with {@link Fixture}.
      *
      * @param instance the instance whose field value will be retrieved
      */
@@ -108,8 +109,7 @@ public interface FieldTrait extends TypeTrait, MemberTrait<Field>, AnnotationTra
     }
 
     /**
-     * Destroy the field for the given instance if it is annotated with
-     * {@link Fixture}.
+     * Destroy the field for the given instance if it is annotated with {@link Fixture}.
      *
      * @param instance the instance whose field value will be retrieved
      */

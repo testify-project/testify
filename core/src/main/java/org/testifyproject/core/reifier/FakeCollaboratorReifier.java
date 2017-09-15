@@ -18,15 +18,14 @@ package org.testifyproject.core.reifier;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.tools.Discoverable;
+import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.extension.CollaboratorReifier;
+import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies test fields annotated with
- * {@link  org.testifyproject.annotation.Fake}.
+ * A class that reifies test fields annotated with {@link  org.testifyproject.annotation.Fake}.
  *
  * @author saden
  */

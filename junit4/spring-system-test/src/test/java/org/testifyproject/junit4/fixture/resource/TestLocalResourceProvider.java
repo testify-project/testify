@@ -15,9 +15,12 @@
  */
 package org.testifyproject.junit4.fixture.resource;
 
-import java.sql.Connection;
-import javax.sql.DataSource;
 import static org.mockito.Mockito.mock;
+
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
 import org.testifyproject.TestContext;
@@ -30,10 +33,12 @@ import org.testifyproject.trait.PropertiesReader;
  *
  * @author saden
  */
-public class TestLocalResourceProvider implements LocalResourceProvider<Void, DataSource, Connection> {
+public class TestLocalResourceProvider implements
+        LocalResourceProvider<Void, DataSource, Connection> {
 
     @Override
-    public Void configure(TestContext testContext, LocalResource localResource, PropertiesReader configReader) {
+    public Void configure(TestContext testContext, LocalResource localResource,
+            PropertiesReader configReader) {
         return null;
     }
 
@@ -45,7 +50,7 @@ public class TestLocalResourceProvider implements LocalResourceProvider<Void, Da
         return LocalResourceInstanceBuilder.builder()
                 .resource(mock(DataSource.class), DataSource.class)
                 .client(mock(Connection.class), Connection.class)
-                .build("local.test.resource");
+                .build("local.test.resource", localResource);
     }
 
     @Override

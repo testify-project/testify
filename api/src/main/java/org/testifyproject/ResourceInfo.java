@@ -18,15 +18,15 @@ package org.testifyproject;
 import java.lang.annotation.Annotation;
 
 /**
- * A contract that defines a resource instance which consists of a resource
- * annotation, resource provider and resource instance.
+ * A contract that defines a resource instance which consists of a resource annotation, resource
+ * provider and resource instance.
  *
  * @author saden
  * @param <A> the resource annotation type
  * @param <P> the resource provider type
  * @param <I> the resource instance type
  */
-public interface ResourceInstance<A extends Annotation, P, I> {
+public interface ResourceInfo<A extends Annotation, P, I> {
 
     /**
      * Get the resource annotation.

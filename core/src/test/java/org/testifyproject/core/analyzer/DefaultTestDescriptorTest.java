@@ -15,6 +15,11 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -22,21 +27,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -121,7 +125,7 @@ public class DefaultTestDescriptorTest {
         Module value = mock(Module.class);
         properties.put(TestDescriptorProperties.MODULES, ImmutableList.of(value));
 
-        List<Module> result = sut.getModules();
+        Collection<Module> result = sut.getModules();
 
         assertThat(result).containsExactly(value);
     }
@@ -131,7 +135,7 @@ public class DefaultTestDescriptorTest {
         Scan value = mock(Scan.class);
         properties.put(TestDescriptorProperties.SCANS, ImmutableList.of(value));
 
-        List<Scan> result = sut.getScans();
+        Collection<Scan> result = sut.getScans();
 
         assertThat(result).containsExactly(value);
     }
@@ -141,7 +145,7 @@ public class DefaultTestDescriptorTest {
         LocalResource value = mock(LocalResource.class);
         properties.put(TestDescriptorProperties.LOCAL_RESOURCES, ImmutableList.of(value));
 
-        List<LocalResource> result = sut.getLocalResources();
+        Collection<LocalResource> result = sut.getLocalResources();
 
         assertThat(result).containsExactly(value);
     }
@@ -151,7 +155,7 @@ public class DefaultTestDescriptorTest {
         VirtualResource value = mock(VirtualResource.class);
         properties.put(TestDescriptorProperties.VIRTUAL_RESOURCES, ImmutableList.of(value));
 
-        List<VirtualResource> result = sut.getVirtualResources();
+        Collection<VirtualResource> result = sut.getVirtualResources();
 
         assertThat(result).containsExactly(value);
     }
@@ -161,7 +165,7 @@ public class DefaultTestDescriptorTest {
         RemoteResource value = mock(RemoteResource.class);
         properties.put(TestDescriptorProperties.REMOTE_RESOURCES, ImmutableList.of(value));
 
-        List<RemoteResource> result = sut.getRemoteResources();
+        Collection<RemoteResource> result = sut.getRemoteResources();
 
         assertThat(result).containsExactly(value);
     }
@@ -171,7 +175,7 @@ public class DefaultTestDescriptorTest {
         RemoteResource value = mock(RemoteResource.class);
         properties.put(TestDescriptorProperties.INSPECTED_ANNOTATIONS, ImmutableList.of(value));
 
-        List<Annotation> result = sut.getInspectedAnnotations();
+        Collection<Annotation> result = sut.getInspectedAnnotations();
 
         assertThat(result).containsExactly(value);
     }
@@ -181,14 +185,21 @@ public class DefaultTestDescriptorTest {
         Class<Strict> value = Strict.class;
         properties.put(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, ImmutableList.of(value));
 
-        List<Class<? extends Annotation>> result = sut.getGuidelines();
+        Collection<Class<? extends Annotation>> result = sut.getGuidelines();
 
         assertThat(result).containsExactly(value);
     }
 
     @Test
+    public void callToGetHintShouldReturn() {
+        Optional<Hint> result = sut.getHint();
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     public void callToGetCollaboratorProviderShouldReturn() {
-        List<MethodDescriptor> result = sut.getCollaboratorProviders();
+        Collection<MethodDescriptor> result = sut.getCollaboratorProviders();
 
         assertThat(result).isNotNull();
     }
@@ -198,7 +209,7 @@ public class DefaultTestDescriptorTest {
         MethodDescriptor value = mock(MethodDescriptor.class);
         properties.put(TestDescriptorProperties.CONFIG_HANDLERS, ImmutableList.of(value));
 
-        List<MethodDescriptor> result = sut.getConfigHandlers();
+        Collection<MethodDescriptor> result = sut.getConfigHandlers();
 
         assertThat(result).containsExactly(value);
     }
@@ -220,7 +231,8 @@ public class DefaultTestDescriptorTest {
         Class<Object> type = Object.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Optional<FieldDescriptor> result = sut.findFieldDescriptor(type);
@@ -233,7 +245,8 @@ public class DefaultTestDescriptorTest {
         Class<CharSequence> type = CharSequence.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Class<String> searchType = String.class;
@@ -250,7 +263,8 @@ public class DefaultTestDescriptorTest {
         String name = "name";
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(TestDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Optional<FieldDescriptor> result = sut.findFieldDescriptor(type, name);
@@ -268,6 +282,58 @@ public class DefaultTestDescriptorTest {
         Optional<MethodDescriptor> result = sut.findConfigHandler(parameterType);
 
         assertThat(result).contains(value);
+    }
+
+    @Test
+    public void givenReturnTypeFindCollaboratorProviderShouldReturnFoundMethods() {
+        Class<Object> returnType = Object.class;
+        MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(
+                methodDescriptor));
+
+        given(methodDescriptor.hasAnyAnnotations(Name.class)).willReturn(false);
+        given(methodDescriptor.hasReturnType(returnType)).willReturn(true);
+
+        Optional<MethodDescriptor> result = sut.findCollaboratorProvider(returnType);
+
+        assertThat(result).contains(methodDescriptor);
+    }
+
+    @Test
+    public void givenCollaboratorWithNameFindCollaboratorProviderShouldReturnFoundMethods() {
+        Class<Object> returnType = Object.class;
+        String name = "test";
+        MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(
+                methodDescriptor));
+        Name nameAnnotation = mock(Name.class);
+        Optional<Name> foundName = Optional.of(nameAnnotation);
+
+        given(methodDescriptor.getAnnotation(Name.class)).willReturn(foundName);
+        given(nameAnnotation.value()).willReturn(name);
+        given(methodDescriptor.hasReturnType(returnType)).willReturn(true);
+
+        Optional<MethodDescriptor> result = sut.findCollaboratorProvider(returnType, name);
+
+        assertThat(result).contains(methodDescriptor);
+    }
+
+    @Test
+    public void givenCollaboratorWithoutNameFindCollaboratorProviderShouldReturnFoundMethods() {
+        Class<Object> returnType = Object.class;
+        String name = "test";
+        MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
+        properties.put(TestDescriptorProperties.COLLABORATOR_PROVIDERS, ImmutableList.of(
+                methodDescriptor));
+        Optional<Name> foundName = Optional.empty();
+
+        given(methodDescriptor.getAnnotation(Name.class)).willReturn(foundName);
+        given(methodDescriptor.getName()).willReturn(name);
+        given(methodDescriptor.hasReturnType(returnType)).willReturn(true);
+
+        Optional<MethodDescriptor> result = sut.findCollaboratorProvider(returnType, name);
+
+        assertThat(result).contains(methodDescriptor);
     }
 
     @Test

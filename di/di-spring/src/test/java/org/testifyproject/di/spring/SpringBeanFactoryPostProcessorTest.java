@@ -15,12 +15,7 @@
  */
 package org.testifyproject.di.spring;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -28,21 +23,23 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import org.springframework.beans.factory.config.BeanDefinition;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.event.ContextClosedEvent;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.di.fixture.common.ControllerService;
 import org.testifyproject.di.fixture.module.TestModule;
-import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  *
@@ -138,7 +135,8 @@ public class SpringBeanFactoryPostProcessorTest {
                 any(Fixture.class),
                 eq(replacedBeanNames));
 
-        sut.processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
+        sut.processConfiguration(beanFactory, beanDefinition, beanType, beanName,
+                replacedBeanNames);
 
         verify(beanDefinition).getFactoryBeanName();
     }
@@ -164,7 +162,8 @@ public class SpringBeanFactoryPostProcessorTest {
                 any(Fixture.class),
                 eq(replacedBeanNames));
 
-        sut.processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
+        sut.processConfiguration(beanFactory, beanDefinition, beanType, beanName,
+                replacedBeanNames);
 
         verify(beanDefinition).getFactoryBeanName();
         verify(beanFactory).getType(factoryBeanName);
@@ -183,7 +182,8 @@ public class SpringBeanFactoryPostProcessorTest {
 
         given(beanFactory.getBeanNamesForType(beanType)).willReturn(beanNamesForType);
 
-        sut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
+        sut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture,
+                replacedBeanNames);
 
         verify(beanFactory).getBeanNamesForType(beanType);
         verify(beanFactory).removeBeanDefinition(beanNameForType);
@@ -204,28 +204,14 @@ public class SpringBeanFactoryPostProcessorTest {
         given(fixture.init()).willReturn("init");
         given(fixture.destroy()).willReturn("destroy");
 
-        sut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
+        sut.processFixture(beanFactory, beanDefinition, beanType, beanName, fixture,
+                replacedBeanNames);
 
         assertThat(replacedBeanNames).isNotEmpty();
         verify(beanFactory).getBeanNamesForType(beanType);
         verify(beanFactory).removeBeanDefinition(beanNameForType);
-        verify(beanFactory).registerBeanDefinition(eq(beanNameForType), any(GenericBeanDefinition.class));
-    }
-
-    @Test
-    public void callToOnApplicationEventWithLazyStartStrategyShouldStartResources() {
-        StartStrategy resourceStartStrategy = StartStrategy.LAZY;
-        ResourceProvider resourceProvider = mock(ResourceProvider.class);
-        List<ResourceProvider> resourceProviders = ImmutableList.of(resourceProvider);
-
-        sut.resourceProviders = resourceProviders;
-        given(testContext.getResourceStartStrategy()).willReturn(resourceStartStrategy);
-        ContextClosedEvent event = mock(ContextClosedEvent.class);
-
-        sut.onApplicationEvent(event);
-
-        verify(testContext).getResourceStartStrategy();
-        verify(resourceProvider).stop(testContext);
+        verify(beanFactory).registerBeanDefinition(eq(beanNameForType), any(
+                GenericBeanDefinition.class));
     }
 
 }

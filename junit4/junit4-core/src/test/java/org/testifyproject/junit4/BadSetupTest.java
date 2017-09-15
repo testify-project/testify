@@ -15,8 +15,10 @@
  */
 package org.testifyproject.junit4;
 
-import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;

@@ -15,13 +15,15 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -60,8 +62,7 @@ public class ConfigHandlerPreVerifierTest {
 
         try {
             sut.verify(testContext);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getConfigHandlers();
             verify(configHandler).getParameterTypes();
@@ -84,8 +85,7 @@ public class ConfigHandlerPreVerifierTest {
 
         try {
             sut.verify(testContext);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getConfigHandlers();
             verify(configHandler).getParameterTypes();
@@ -143,8 +143,7 @@ public class ConfigHandlerPreVerifierTest {
 
         try {
             sut.verify(testContext);
-        }
-        catch (TestifyException e) {
+        } catch (TestifyException e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getConfigHandlers();
             verify(configHandler).getParameterTypes();

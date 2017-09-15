@@ -15,9 +15,10 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
+import static org.mockito.Mockito.mock;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Bundle;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;

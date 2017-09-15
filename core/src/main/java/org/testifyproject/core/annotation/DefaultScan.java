@@ -16,6 +16,7 @@
 package org.testifyproject.core.annotation;
 
 import java.lang.annotation.Annotation;
+
 import org.testifyproject.annotation.Scan;
 
 /**

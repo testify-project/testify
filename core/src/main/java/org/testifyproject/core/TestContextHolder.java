@@ -18,11 +18,11 @@ package org.testifyproject.core;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
 import org.testifyproject.TestContext;
 
 /**
- * A utility class for holding inheritable thread local instances of a
- * {@link TestContext}.
+ * A utility class for holding inheritable thread local instances of a {@link TestContext}.
  *
  * @author saden
  */
@@ -33,7 +33,8 @@ public class TestContextHolder {
     /**
      * An instance of the TestContextHolder.
      */
-    public static final TestContextHolder INSTANCE = new TestContextHolder(new InheritableThreadLocal<>());
+    public static final TestContextHolder INSTANCE = new TestContextHolder(
+            new InheritableThreadLocal<>());
 
     TestContextHolder(InheritableThreadLocal<TestContext> inheritableThreadLocal) {
         this.inheritableThreadLocal = inheritableThreadLocal;
@@ -45,7 +46,8 @@ public class TestContextHolder {
      * @param inheritableThreadLocal the underlying thread local instance holder
      * @return a new instance
      */
-    public static TestContextHolder of(InheritableThreadLocal<TestContext> inheritableThreadLocal) {
+    public static TestContextHolder of(
+            InheritableThreadLocal<TestContext> inheritableThreadLocal) {
         return new TestContextHolder(inheritableThreadLocal);
     }
 
@@ -75,8 +77,7 @@ public class TestContextHolder {
     }
 
     /**
-     * Execute the given consumer function if the the current thread has a test
-     * context.
+     * Execute the given consumer function if the the current thread has a test context.
      *
      * @param consumer the consumer function
      */

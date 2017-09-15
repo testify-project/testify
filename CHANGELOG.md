@@ -13,6 +13,37 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [0.9.9] - 2017-09-15
+### Added
+- Added new `@Name` annotation that can be used to associate a custom name with a field, method or method parameter
+- Added the ability to find and inject collaborator method arguments by name
+- Added `MethodDescriptor#getDeclaredName()` to return the name of the method based on the name of the method or the one specified by `@Name` annotation
+- Added the ability to find collaborator method by name and return type to `TestDescriptor`
+- Added the ability to compose collaborator providers by allowing `@CollaboratorProvder` to be annotated with `@CollaboratorProvder`
+- Added `PreInstanceProvider`, `InstanceProvider`, `PostInstanceProvider` contracts to enable the addition of custom constants to the `ServiceInstance`
+- Added `@Hint` annotation to provide hints during test execution (i.e. `ServiceProvider` implementation)
+- Added `ClientInstanceBuilder` class to build client instances.
+- Added the ability to get local, virtual and remote resources from the `TestContext`
+- Added a method to get application annotation from `ServerInstance` contract
+- Added a default implementation `DefaultServiceInstance` of `ServiceInstance` contract that can be used in unit tests
+- Added `RemoteResourceInfo`, `LocalResourceInfo`, and `VirtualResourceInfo` contracts
+- Added methods to `TestContext` to get local, remote, and virtual resources.
+- Added `DefaultRemoteResourceInfo`, `DefaultLocalResourceInfo`, and `DefaultVirtualResourceInfo` implementations to replace `DefaultResourceInstance`
+
+### Changed
+- Renamed `getDefinedName` method `FieldDescriptor` and `MethodDescriptor` to `getDeclaredName`
+- Changed `configure` and `start` methods in `ServerProvider` contract by adding `@Applicaiton` annotation parameter
+- Changed `configure` and `create` methods in `ClientProvider` contract by adding `@Applicaiton` annotation parameter
+- Changed stop method in `ClientProvider` contract by adding `ClientInstance` parameter
+- Changed ClientInstance contract to return client and clientProvider instances. Also added methods to get `fqn` and `annotation`.
+- Renamed `PropertiesWriter#addListElement` and `PropertiesReader#findList`
+- Changed return types of methods that return `List` to `Collection` 
+- Renamed `ResourceInstance` contract to `ResourceInfo`
+
+### Removed
+- Removed `name` attribute from `@Fake`, `@Virtual` and `@Real`. `@Named` can be used on the field as a replacement.
+- Removed `DefaultResourceInstance`
+
 ## [0.9.8] - 2017-08-12
 ### Added
 - Added the ability to create SUT using a factory method within the SUT class

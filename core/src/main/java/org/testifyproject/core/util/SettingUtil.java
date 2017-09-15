@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+
 import org.testifyproject.snakeyaml.Yaml;
 
 /**
@@ -35,9 +36,8 @@ public class SettingUtil {
 
     /**
      * Retrieve the {@code .testiy.yml} settings file from
-     * {@code System.getProperty("user.dir")} directory. If one is not found
-     * then look in the parent directory until
-     * {@code System.getProperty("user.home")} directory is reached.
+     * {@code System.getProperty("user.dir")} directory. If one is not found then look in the
+     * parent directory until {@code System.getProperty("user.home")} directory is reached.
      *
      * @return the .testify.yml file as a Map, empty map otherwise
      */
@@ -72,8 +72,8 @@ public class SettingUtil {
     }
 
     /**
-     * Gets the {@code testify.categories} system property, split it by comma
-     * separator and return it as an array of strings.
+     * Gets the {@code testify.categories} system property, split it by comma separator and
+     * return it as an array of strings.
      *
      * @return testify.categories system properties
      */

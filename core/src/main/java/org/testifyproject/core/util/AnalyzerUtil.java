@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.asm.ClassReader;
-import org.testifyproject.core.analyzer.SutClassAnalyzer;
 import org.testifyproject.core.analyzer.DefaultSutDescriptor;
 import org.testifyproject.core.analyzer.DefaultTestDescriptor;
+import org.testifyproject.core.analyzer.SutClassAnalyzer;
 import org.testifyproject.core.analyzer.TestClassAnalyzer;
 
 /**
@@ -44,7 +45,8 @@ public class AnalyzerUtil {
             try {
 
                 TestDescriptor testDescriptor = DefaultTestDescriptor.of(testClass);
-                TestClassAnalyzer testClassAnalyzer = new TestClassAnalyzer(testClass, testDescriptor);
+                TestClassAnalyzer testClassAnalyzer = new TestClassAnalyzer(testClass,
+                        testDescriptor);
 
                 ClassReader testReader = new ClassReader(testClass.getName());
                 testReader.accept(testClassAnalyzer, ClassReader.SKIP_DEBUG);

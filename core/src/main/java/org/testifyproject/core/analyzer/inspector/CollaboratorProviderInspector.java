@@ -16,6 +16,7 @@
 package org.testifyproject.core.analyzer.inspector;
 
 import java.lang.reflect.Method;
+
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.CollaboratorProvider;
@@ -28,8 +29,7 @@ import org.testifyproject.extension.annotation.Handles;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An annotation inspector that processes {@link CollaboratorProvider}
- * annotation.
+ * An annotation inspector that processes {@link CollaboratorProvider} annotation.
  *
  * @author saden
  */
@@ -38,7 +38,8 @@ import org.testifyproject.tools.Discoverable;
 public class CollaboratorProviderInspector implements AnnotationInspector<CollaboratorProvider> {
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, CollaboratorProvider collaboratorProvider) {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType,
+            CollaboratorProvider collaboratorProvider) {
         Class<?>[] providers = collaboratorProvider.value();
 
         ExceptionUtil.INSTANCE.raise(providers.length == 0,
@@ -53,13 +54,24 @@ public class CollaboratorProviderInspector implements AnnotationInspector<Collab
                 if (!method.isSynthetic()) {
                     method.setAccessible(true);
 
-                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, providerInstance);
-                    testDescriptor.addListElement(TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method,
+                            providerInstance);
+                    testDescriptor.addCollectionElement(
+                            TestDescriptorProperties.COLLABORATOR_PROVIDERS, methodDescriptor);
                 }
+            }
+
+            //capture collaborator provider on the collaborator provider
+            CollaboratorProvider providerCollaboratorProvider =
+                    providerClass.getDeclaredAnnotation(CollaboratorProvider.class);
+
+            if (providerCollaboratorProvider != null) {
+                inspect(testDescriptor, providerClass, providerCollaboratorProvider);
             }
         }
 
-        testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, collaboratorProvider);
+        testDescriptor.addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER,
+                collaboratorProvider);
     }
 
 }

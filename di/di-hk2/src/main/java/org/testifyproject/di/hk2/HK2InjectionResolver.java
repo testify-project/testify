@@ -15,15 +15,18 @@
  */
 package org.testifyproject.di.hk2;
 
+import static org.glassfish.hk2.api.InjectionResolver.SYSTEM_RESOLVER_NAME;
+
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
-import static org.glassfish.hk2.api.InjectionResolver.SYSTEM_RESOLVER_NAME;
 import org.glassfish.hk2.api.IterableProvider;
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.api.ServiceHandle;
@@ -35,8 +38,8 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
- * A custom HK2 injection resolve used to get and createFake service instances
- * and reify the test class fields.
+ * A custom HK2 injection resolve used to get and createFake service instances and reify the
+ * test class fields.
  *
  * @author saden
  */
@@ -66,10 +69,12 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
                     Type fieldType = fieldDescriptor.getGenericType();
                     Optional<Object> foundValue = fieldDescriptor.getValue(testInstance);
 
-                    if (TypeToken.of(fieldType).isSupertypeOf(requiredType) && foundValue.isPresent()) {
+                    if (TypeToken.of(fieldType).isSupertypeOf(requiredType) && foundValue
+                            .isPresent()) {
                         return foundValue.get();
                     } else if (getRawTypeToken(fieldType).isSupertypeOf(requiredType)) {
-                        return mockProvider.createFake(TypeToken.of(requiredType).getRawType());
+                        return mockProvider.createFake(TypeToken.of(requiredType)
+                                .getRawType());
                     }
                 }
             }
@@ -83,8 +88,8 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
         //TODO: we need to be able to get the asutal injectee resolver for types
         //other than @Inject. HK2 no longer provides ability to do that via API
         //will file a bug.
-        InjectionResolver threeThirtyResolver
-                = serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME);
+        InjectionResolver threeThirtyResolver =
+                serviceLocator.getService(InjectionResolver.class, SYSTEM_RESOLVER_NAME);
 
         return threeThirtyResolver.resolve(injectee, root);
     }
@@ -110,10 +115,12 @@ public class HK2InjectionResolver implements InjectionResolver<Inject> {
         Class rawType = typeToken.getRawType();
 
         if (typeToken.isSubtypeOf(IterableProvider.class)) {
-            TypeVariable<Class<IterableProvider>> paramType = IterableProvider.class.getTypeParameters()[0];
+            TypeVariable<Class<IterableProvider>> paramType = IterableProvider.class
+                    .getTypeParameters()[0];
             rawType = typeToken.resolveType(paramType).getRawType();
         } else if (typeToken.isSubtypeOf(Provider.class)) {
-            TypeVariable<Class<Provider>> paramType = Provider.class.getTypeParameters()[0];
+            TypeVariable<Class<Provider>> paramType =
+                    Provider.class.getTypeParameters()[0];
             rawType = typeToken.resolveType(paramType).getRawType();
         }
 

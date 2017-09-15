@@ -15,8 +15,13 @@
  */
 package org.testifyproject.junit4.system;
 
+import static org.testifyproject.core.TestContextProperties.APP;
+import static org.testifyproject.core.TestContextProperties.APP_ARGUMENTS;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
 import java.util.concurrent.Callable;
 import java.util.function.Function;
+
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -30,17 +35,15 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
-import static org.testifyproject.core.TestContextProperties.APP;
-import static org.testifyproject.core.TestContextProperties.APP_ARGUMENTS;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.di.spring.SpringServiceProvider;
 
 /**
  * A class that intercepts methods of classes that extend or implement
  * {@link org.springframework.boot.SpringApplication} and
- * {@link org.springframework.boot.context.embedded.EmbeddedWebApplicationContext}.
- * This class is responsible for configuring the Spring Boot application as well
- * as extracting information useful for test reification.
+ * {@link org.springframework.boot.context.embedded.EmbeddedWebApplicationContext}. This class
+ * is responsible for configuring the Spring Boot application as well as extracting information
+ * useful for test reification.
  *
  * @author saden
  */
@@ -66,8 +69,8 @@ public class SpringApplicationInterceptor {
             @SuperCall Callable<ConfigurableApplicationContext> zuper,
             @This Object object,
             @AllArguments Object[] args) throws Exception {
-        AnnotationConfigEmbeddedWebApplicationContext applicationContext
-                = (AnnotationConfigEmbeddedWebApplicationContext) zuper.call();
+        AnnotationConfigEmbeddedWebApplicationContext applicationContext =
+                (AnnotationConfigEmbeddedWebApplicationContext) zuper.call();
 
         testContextHolder.execute(testContext -> {
             testContext.addProperty(APP, object);
@@ -80,15 +83,21 @@ public class SpringApplicationInterceptor {
         return applicationContext;
     }
 
-    public void refresh(@SuperCall Callable<Void> zuper, ApplicationContext applicationContext)
+    public void refresh(@SuperCall Callable<Void> zuper,
+            ApplicationContext applicationContext)
             throws Exception {
-        ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
+        ConfigurableApplicationContext configurableApplicationContext =
+                (ConfigurableApplicationContext) applicationContext;
         //TODO: should the service provider be set up front and available from the test context?
-        ServiceProvider serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
+        ServiceProvider serviceProvider =
+                ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
+                        SpringServiceProvider.class);
 
-        ServiceInstance serviceInstance
-                = testContextHolder.execute((Function<TestContext, ServiceInstance>) testContext
-                        -> serviceProvider.configure(testContext, configurableApplicationContext)
+        ServiceInstance serviceInstance =
+                testContextHolder.execute(
+                        (Function<TestContext, ServiceInstance>) testContext ->
+                        serviceProvider.configure(testContext,
+                                configurableApplicationContext)
                 );
 
         zuper.call();

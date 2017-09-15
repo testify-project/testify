@@ -15,8 +15,10 @@
  */
 package org.testifyproject.trait;
 
-import java.util.Optional;
 import static java.util.Optional.ofNullable;
+
+import java.util.Optional;
+
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.annotation.Property;
@@ -76,8 +78,7 @@ public interface FieldAnnotationTrait extends FieldTrait {
     }
 
     /**
-     * Determine if the member is annotated with {@link Fake} or {@link Virtual}
-     * annotation.
+     * Determine if the member is annotated with {@link Fake} or {@link Virtual} annotation.
      *
      * @return true if the member is a mock, false otherwise
      */
@@ -87,8 +88,8 @@ public interface FieldAnnotationTrait extends FieldTrait {
     }
 
     /**
-     * Determine if the member is annotated with {@link Fake}, {@link Virtual},
-     * or {@link Real} annotation.
+     * Determine if the member is annotated with {@link Fake}, {@link Virtual}, or {@link Real}
+     * annotation.
      *
      * @return true if the member is injectable, false otherwise
      */

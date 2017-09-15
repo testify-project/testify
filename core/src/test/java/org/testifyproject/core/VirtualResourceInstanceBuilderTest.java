@@ -15,13 +15,17 @@
  */
 package org.testifyproject.core;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
@@ -32,50 +36,86 @@ public class VirtualResourceInstanceBuilderTest {
 
     VirtualResourceInstanceBuilder sut;
     String fqn;
+    VirtualResource virtualResource;
 
     @Before
     public void init() {
         fqn = "test";
+        virtualResource = mock(VirtualResource.class);
         sut = VirtualResourceInstanceBuilder.builder();
     }
 
     @Test
-    public void givenFqnBuildShouldSetName() {
-        VirtualResourceInstance result = sut.build(fqn);
+    public void givenFqnAndVirtualResourceBuildShouldCreateInstance() {
+        VirtualResourceInstance<Object> result = sut.build(fqn, virtualResource);
 
         assertThat(result).isNotNull();
         assertThat(result.getFqn()).isEqualTo(fqn);
+        assertThat(result.getVirtualResource()).isEqualTo(virtualResource);
     }
 
     @Test
-    public void givenResourceBuildShouldSetResource() {
-        Object resource = mock(Object.class);
+    public void givenResourceAndContractWithoutCustomNameAndContractBuildShouldAddResource() {
+        String customName = "";
+        Class customContract = void.class;
+        Object resourceValue = mock(Object.class);
+        Class resourceContract = Object.class;
 
-        VirtualResourceInstance result = sut.resource(resource).build(fqn);
+        given(virtualResource.resourceName()).willReturn(customName);
+        given(virtualResource.resourceContract()).willReturn(customContract);
+
+        VirtualResourceInstance<Object> result = sut.resource(resourceValue, resourceContract)
+                .build(fqn, virtualResource);
 
         assertThat(result).isNotNull();
 
-        Instance<Object> resourceInstance = result.getResource();
-
-        assertThat(resourceInstance).isNotNull();
-        assertThat(resourceInstance.getValue()).isEqualTo(resource);
-        assertThat(resourceInstance.getContract()).isEmpty();
+        Instance instance = result.getResource();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getName()).contains("resource:/test/resource");
+        assertThat(instance.getContract()).contains(resourceContract);
+        assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
     @Test
-    public void givenResourceWithContractBuildShouldSetResource() {
-        Object resource = mock(Object.class);
-        Class contract = Object.class;
+    public void givenResourceWithoutCustomNameAndContractBuildShouldAddResource() {
+        String customName = "";
+        Class customContract = void.class;
+        Object resourceValue = mock(Object.class);
 
-        VirtualResourceInstance result = sut.resource(resource, contract).build(fqn);
+        given(virtualResource.resourceName()).willReturn(customName);
+        given(virtualResource.resourceContract()).willReturn(customContract);
+
+        VirtualResourceInstance<Object> result = sut.resource(resourceValue).build(fqn,
+                virtualResource);
 
         assertThat(result).isNotNull();
 
-        Instance<Object> resourceInstance = result.getResource();
+        Instance instance = result.getResource();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getName()).contains("resource:/test/resource");
+        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getValue()).isEqualTo(resourceValue);
+    }
 
-        assertThat(resourceInstance).isNotNull();
-        assertThat(resourceInstance.getValue()).isEqualTo(resource);
-        assertThat(resourceInstance.getContract()).contains(contract);
+    @Test
+    public void givenResourceWithCustomNameAndContractBuildShouldAddResource() {
+        String customName = "resourceName";
+        Class customContract = Object.class;
+        Object resourceValue = mock(Object.class);
+
+        given(virtualResource.resourceName()).willReturn(customName);
+        given(virtualResource.resourceContract()).willReturn(customContract);
+
+        VirtualResourceInstance<Object> result = sut.resource(resourceValue).build(fqn,
+                virtualResource);
+
+        assertThat(result).isNotNull();
+
+        Instance instance = result.getResource();
+        assertThat(instance).isNotNull();
+        assertThat(instance.getName()).contains("resource:/test/resourceName");
+        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
     @Test
@@ -83,7 +123,8 @@ public class VirtualResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        VirtualResourceInstance result = sut.property(key, value).build(fqn);
+        VirtualResourceInstance<Object> result = sut.property(key, value)
+                .build(fqn, virtualResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -91,13 +132,15 @@ public class VirtualResourceInstanceBuilderTest {
 
     @Test
     public void givenPropertiesBuildShouldAddProperties() {
-        String name = "name";
+        String key = "name";
         String value = "value";
-        Map<String, Object> properties = ImmutableMap.of(name, value);
+        Map<String, Object> properties = ImmutableMap.of(key, value);
 
-        VirtualResourceInstance result = sut.properties(properties).build(fqn);
+        VirtualResourceInstance<Object> result = sut.properties(properties).build(fqn,
+                virtualResource);
 
         assertThat(result).isNotNull();
-        assertThat(result.findProperty(name)).contains(value);
+        assertThat(result.findProperty(key)).contains(value);
     }
+
 }

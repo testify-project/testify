@@ -16,6 +16,7 @@
 package org.testifyproject.fixture.resource;
 
 import static org.mockito.Mockito.mock;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
@@ -31,17 +32,21 @@ import org.testifyproject.trait.PropertiesReader;
 public class ValidVirtualResourceProvider implements VirtualResourceProvider<Void> {
 
     @Override
-    public Void configure(TestContext testContext, VirtualResource virtualResource, PropertiesReader configReader) {
+    public Void configure(TestContext testContext, VirtualResource virtualResource,
+            PropertiesReader configReader) {
         return null;
     }
 
     @Override
-    public VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, Void configuration) {
+    public VirtualResourceInstance start(TestContext testContext,
+            VirtualResource virtualResource,
+            Void configuration) {
         return mock(VirtualResourceInstance.class);
     }
 
     @Override
-    public void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance) {
+    public void stop(TestContext testContext, VirtualResource virtualResource,
+            VirtualResourceInstance instance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

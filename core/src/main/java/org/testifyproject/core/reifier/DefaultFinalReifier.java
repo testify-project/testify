@@ -17,14 +17,15 @@ package org.testifyproject.core.reifier;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
-import org.testifyproject.SutDescriptor;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies the test class.
@@ -41,15 +42,15 @@ public class DefaultFinalReifier implements FinalReifier {
         testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
             Object testInstance = testContext.getTestInstance();
 
-            sutDescriptor.getValue(testInstance).ifPresent(sutInstance
-                    -> testContext.getTestDescriptor().getFieldDescriptors().stream()
+            sutDescriptor.getValue(testInstance).ifPresent(sutInstance ->
+                    testContext.getTestDescriptor().getFieldDescriptors().stream()
                             .filter(FieldDescriptor::isInjectable)
-                            .forEach(testFieldDescriptor
-                                    -> processTestField(
-                                    testContext,
-                                    testFieldDescriptor,
-                                    sutDescriptor,
-                                    sutInstance)
+                            .forEach(testFieldDescriptor ->
+                                    processTestField(
+                                            testContext,
+                                            testFieldDescriptor,
+                                            sutDescriptor,
+                                            sutInstance)
                             )
             );
 
@@ -62,18 +63,18 @@ public class DefaultFinalReifier implements FinalReifier {
             Object sutInstance) {
         MockProvider mockProvider = testContext.getMockProvider();
         Object testInstance = testContext.getTestInstance();
-        String testFieldName = testFieldDescriptor.getDefinedName();
+        String testFieldName = testFieldDescriptor.getDeclaredName();
         Type testFieldGenericType = testFieldDescriptor.getGenericType();
 
-        Optional<FieldDescriptor> foundMatchingField
-                = sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName);
+        Optional<FieldDescriptor> foundMatchingField =
+                sutDescriptor.findFieldDescriptor(testFieldGenericType, testFieldName);
 
         if (!foundMatchingField.isPresent()) {
             foundMatchingField = sutDescriptor.findFieldDescriptor(testFieldGenericType);
         }
 
-        foundMatchingField.ifPresent(sutFieldDescriptor
-                -> processSutField(testFieldDescriptor,
+        foundMatchingField.ifPresent(sutFieldDescriptor ->
+                processSutField(testFieldDescriptor,
                         sutFieldDescriptor,
                         testInstance,
                         sutInstance,

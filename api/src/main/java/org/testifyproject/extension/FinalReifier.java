@@ -18,17 +18,15 @@ package org.testifyproject.extension;
 import org.testifyproject.TestContext;
 
 /**
- * A contract that defines a method to perform final reification of the test
- * class. Note test class reification is executed in the following order:
+ * A contract that defines a method to perform final reification of the test class. Note test
+ * class reification is executed in the following order:
  * <ul>
- * <li>{@link InitialReifier} - Perform initial initialization of test class
- * collaborator fields</li>
- * <li>{@link CollaboratorReifier} - Perform standard initialization of test class
- * collaborator fields</li>
- * <li>{@link SutReifier} - Perform initialization of of the system under test
- * (SUT) field</li>
- * <li><b>{@link FinalReifier}</b> - Perform final initialization of test class
+ * <li>{@link InitialReifier} - Perform initial initialization of test class collaborator
  * fields</li>
+ * <li>{@link CollaboratorReifier} - Perform standard initialization of test class collaborator
+ * fields</li>
+ * <li>{@link SutReifier} - Perform initialization of of the system under test (SUT) field</li>
+ * <li><b>{@link FinalReifier}</b> - Perform final initialization of test class fields</li>
  * </ul>
  *
  * @author saden

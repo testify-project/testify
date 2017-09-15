@@ -15,32 +15,29 @@
  */
 package org.testifyproject.junit4.system;
 
-import java.util.List;
-import java.util.Optional;
-import org.glassfish.jersey.server.monitoring.ApplicationEvent;
-import static org.glassfish.jersey.server.monitoring.ApplicationEvent.Type.DESTROY_FINISHED;
 import static org.glassfish.jersey.server.monitoring.ApplicationEvent.Type.INITIALIZATION_FINISHED;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
+import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
-import org.testifyproject.TestContext;
 import org.testifyproject.core.TestContextHolder;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.InstanceProvider;
+import org.testifyproject.extension.PreInstanceProvider;
 
 /**
- * A Jersey 2 application event listeners that listens for application events to
- * initialize, start and stop test resources.
+ * A Jersey 2 application event listeners that listens for application events to initialize,
+ * start and stop test resources.
  *
  * @author saden
  */
 public class Jersey2ApplicationListener implements ApplicationEventListener {
 
-    private List<ResourceProvider> resourceProviders;
     private final TestContextHolder testContextHolder;
 
     Jersey2ApplicationListener(TestContextHolder testContextHolder) {
@@ -52,10 +49,27 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
         testContextHolder.execute(testContext -> {
             ApplicationEvent.Type eventType = event.getType();
 
-            if (eventType == INITIALIZATION_FINISHED) {
-                init(testContext);
-            } else if (eventType == DESTROY_FINISHED) {
-                destroy(testContext);
+            switch (eventType) {
+                case INITIALIZATION_FINISHED:
+                    LoggingUtil.INSTANCE.setTextContext(testContext);
+                    if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
+                        testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
+                                .ifPresent(serviceInstance -> {
+                                    //add constant instances
+                                    ServiceLocatorUtil.INSTANCE.findAllWithFilter(
+                                            PreInstanceProvider.class)
+                                            .stream()
+                                            .flatMap(p -> p.get(testContext).stream())
+                                            .forEach(serviceInstance::replace);
+
+                                    ServiceLocatorUtil.INSTANCE.findAllWithFilter(
+                                            InstanceProvider.class)
+                                            .stream()
+                                            .flatMap(p -> p.get(testContext).stream())
+                                            .forEach(serviceInstance::replace);
+                                });
+                    }
+                    break;
             }
         });
     }
@@ -63,24 +77,6 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
     @Override
     public RequestEventListener onRequest(RequestEvent requestEvent) {
         return null;
-    }
-
-    void init(TestContext testContext) {
-        LoggingUtil.INSTANCE.setTextContext(testContext);
-
-        Optional<ServiceInstance> foundInstance = testContext.findProperty(SERVICE_INSTANCE);
-        foundInstance.ifPresent(serviceInstance -> {
-            if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-                resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
-                resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
-            }
-        });
-    }
-
-    void destroy(TestContext testContext) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
-        }
     }
 
 }

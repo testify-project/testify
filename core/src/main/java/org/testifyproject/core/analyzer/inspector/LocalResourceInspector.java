@@ -32,8 +32,10 @@ import org.testifyproject.tools.Discoverable;
 public class LocalResourceInspector implements AnnotationInspector<LocalResource> {
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, LocalResource localResource) {
-        testDescriptor.addListElement(TestDescriptorProperties.LOCAL_RESOURCES, localResource);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType,
+            LocalResource localResource) {
+        testDescriptor.addCollectionElement(TestDescriptorProperties.LOCAL_RESOURCES,
+                localResource);
     }
 
 }

@@ -16,9 +16,11 @@
 package org.testifyproject.level.system.fixture;
 
 import java.net.URI;
+
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Application;
 
 /**
  *
@@ -27,17 +29,19 @@ import org.testifyproject.TestContext;
 public class TestClientProvider implements ClientProvider {
 
     @Override
-    public Object configure(TestContext testContext, URI baseURI) {
+    public Object configure(TestContext testContext, Application application, URI baseURI) {
         return null;
     }
 
     @Override
-    public ClientInstance create(TestContext testContext, URI baseURI, Object configuration) {
+    public ClientInstance create(TestContext testContext, Application application,
+            URI baseURI, Object configuration) {
         return null;
     }
 
     @Override
-    public void destroy() {
+    public void destroy(ClientInstance clientInstance) {
+
     }
 
 }

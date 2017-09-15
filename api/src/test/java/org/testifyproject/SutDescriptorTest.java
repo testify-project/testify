@@ -15,13 +15,15 @@
  */
 package org.testifyproject;
 
-import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.lang.reflect.Field;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.fixture.InjectableFieldService;
 
@@ -50,7 +52,8 @@ public class SutDescriptorTest {
     }
 
     @Test
-    public void callToIsVirtualSutOnNonVirtualSutFieldShouldReturnFalse() throws NoSuchFieldException {
+    public void callToIsVirtualSutOnNonVirtualSutFieldShouldReturnFalse() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("sut");
 
         given(sut.getMember()).willReturn(field);
@@ -61,7 +64,8 @@ public class SutDescriptorTest {
     }
 
     @Test
-    public void callToIsVirtualSutOnVirtualSutFieldShouldReturnFalse() throws NoSuchFieldException {
+    public void callToIsVirtualSutOnVirtualSutFieldShouldReturnFalse() throws
+            NoSuchFieldException {
         Field field = InjectableFieldService.class.getDeclaredField("virtualSut");
 
         given(sut.getMember()).willReturn(field);

@@ -15,7 +15,8 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.List;
+import java.util.Collection;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
@@ -29,8 +30,7 @@ import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure that integration test classes are annotated with {@link Module} or
- * {@link Scan}.
+ * Insure that integration test classes are annotated with {@link Module} or {@link Scan}.
  *
  * @author saden
  */
@@ -46,8 +46,8 @@ public class ModulePreVerifier implements PreVerifier {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         String testClassName = testDescriptor.getTestClassName();
 
-        List<Module> foundModules = testDescriptor.getModules();
-        List<Scan> foundScans = testDescriptor.getScans();
+        Collection<Module> foundModules = testDescriptor.getModules();
+        Collection<Scan> foundScans = testDescriptor.getScans();
 
         ExceptionUtil.INSTANCE.raise(foundModules.isEmpty() && foundScans.isEmpty(),
                 "Test class '{}' must be annotated with @Module or @Scan annotation.",

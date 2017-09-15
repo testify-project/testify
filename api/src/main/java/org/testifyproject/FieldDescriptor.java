@@ -15,12 +15,11 @@
  */
 package org.testifyproject;
 
-import org.testifyproject.trait.FieldTrait;
 import org.testifyproject.trait.FieldAnnotationTrait;
+import org.testifyproject.trait.FieldTrait;
 
 /**
- * A contract that defines methods to access properties of or perform operations
- * on a field.
+ * A contract that defines methods to access properties of or perform operations on a field.
  *
  * @author saden
  */
@@ -28,21 +27,18 @@ public interface FieldDescriptor extends FieldTrait, FieldAnnotationTrait {
 
     /**
      * <p>
-     * Get the explicitly defined field name. Please note that field names are
-     * explicitly defined by annotating the field with and specifying:
+     * Get the explicitly defined field name. Please note that field names are explicitly
+     * defined by annotating the field with {@link org.testifyproject.annotation.Name}.
      * </p>
-     * <ul>
-     * <li>{@link org.testifyproject.annotation.Fake#value()}</li>
-     * <li>{@link org.testifyproject.annotation.Real#value()}</li>
-     * <li>{@link org.testifyproject.annotation.Virtual#value()}</li>
-     * </ul>
      * <p>
-     * In the event a field name is not explicitly defined the value returned by
-     * calling {@link java.lang.reflect.Field#getName()} will be returned.
+     * In the event a field name is not explicitly defined the value returned by calling
+     * {@link java.lang.reflect.Field#getName()} will be returned. Please note that name
+     * detection only works if your code is compiled with parameter names or debug information
+     * (javac -parameters or javac -g:vars).
      * </p>
      *
      * @return the field name
      */
-    String getDefinedName();
+    String getDeclaredName();
 
 }

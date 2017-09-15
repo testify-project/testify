@@ -16,13 +16,14 @@
 package org.testifyproject.junit4.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.testifyproject.junit4.core.TestifyJUnit4CategoryFilter.FILTER_DESCRIPTION;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.core.TestCategory;
-import static org.testifyproject.junit4.core.TestifyJUnit4CategoryFilter.FILTER_DESCRIPTION;
 import org.testifyproject.junit4.fixture.common.TestClass;
 import org.testifyproject.junit4.fixture.filter.LocalResourceTestClass;
 import org.testifyproject.junit4.fixture.filter.VirtualResourceTestClass;
@@ -34,7 +35,7 @@ import org.testifyproject.junit4.fixture.filter.VirtualResourceTestClass;
 public class TestifyJUnit4CategoryFilterTest {
 
     TestifyJUnit4CategoryFilter sut;
-    
+
     @Before
     public void init() {
         sut = TestifyJUnit4CategoryFilter.of(TestCategory.Level.INTEGRATION, null);

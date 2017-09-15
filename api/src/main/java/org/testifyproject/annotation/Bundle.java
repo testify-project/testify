@@ -15,18 +15,18 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
  * <p>
- * A meta-annotation that identifies an annotation as test group. A test group
- * annotation provide the ability to define, group, and use one or more Testify
- * annotations in a reusable manner in your test classes and avoid annotation
- * bloat.
+ * A meta-annotation that identifies an annotation as test group. A test group annotation
+ * provide the ability to define, group, and use one or more Testify annotations in a reusable
+ * manner in your test classes and avoid annotation bloat.
  * </p>
  * <pre>
  * <code>

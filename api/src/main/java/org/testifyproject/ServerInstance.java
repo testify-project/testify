@@ -16,11 +16,12 @@
 package org.testifyproject;
 
 import java.net.URI;
+
+import org.testifyproject.annotation.Application;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * A contract that defines methods for retrieving information about the running
- * server.
+ * A contract that defines methods for retrieving information about the running server.
  *
  * @author saden
  * @param <T> the underlying server instance type.
@@ -33,6 +34,13 @@ public interface ServerInstance<T> extends PropertiesReader {
      * @return the server instance's fully qualified name
      */
     String getFqn();
+
+    /**
+     * Get the application annotation associated with the server instance.
+     *
+     * @return the application annotation
+     */
+    Application getApplication();
 
     /**
      * The server base URI.

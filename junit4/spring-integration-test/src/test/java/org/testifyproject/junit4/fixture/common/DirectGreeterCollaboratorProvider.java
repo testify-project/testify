@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture.common;
 
 import static org.mockito.Mockito.mock;
+
 import org.testifyproject.junit4.fixture.common.impl.Hello;
 
 /**

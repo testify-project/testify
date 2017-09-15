@@ -15,21 +15,27 @@
  */
 package org.testifyproject.di.guice;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import java.util.List;
+import java.util.Collection;
+
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * A Google Guice implementation of the {@link ServiceProvider} contract.
  *
  * @author saden
  */
+@IntegrationCategory
+@SystemCategory
 @Discoverable
 public class GuiceServiceProvider implements ServiceProvider<Injector> {
 
@@ -46,7 +52,7 @@ public class GuiceServiceProvider implements ServiceProvider<Injector> {
     @Override
     public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        List<Module> modules = testDescriptor.getModules();
+        Collection<Module> modules = testDescriptor.getModules();
 
         if (!modules.isEmpty()) {
             modules.stream().forEach(serviceInstance::addModules);

@@ -15,8 +15,10 @@
  */
 package org.testifyproject.core.analyzer;
 
-import java.lang.reflect.Method;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Method;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
@@ -69,6 +71,23 @@ public class DefaultMethodDescriptorTest {
     @Test
     public void givenNullInstancesShouldNotBeEqual() {
         assertThat(sut).isNotEqualTo(null);
+    }
+
+    @Test
+    public void givenDefinedNameGetNameShouldReturnMethodName() throws NoSuchMethodException {
+        method = MethodTestService.class.getDeclaredMethod("destroy");
+        sut = DefaultMethodDescriptor.of(method, instance);
+
+        assertThat(sut).isNotNull();
+        assertThat(sut.getDeclaredName()).isEqualTo("kill");
+    }
+
+    @Test
+    public void givenUndefinedNameGetNameShouldReturnMethodName() {
+        sut = DefaultMethodDescriptor.of(method, instance);
+
+        assertThat(sut).isNotNull();
+        assertThat(sut.getDeclaredName()).isEqualTo(method.getName());
     }
 
     @Test

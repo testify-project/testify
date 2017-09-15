@@ -15,14 +15,15 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
@@ -67,7 +68,9 @@ public class ConfigHandlerInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(eq(TestDescriptorProperties.CONFIG_HANDLERS), any(MethodDescriptor.class));
+        verify(testDescriptor)
+                .addCollectionElement(eq(TestDescriptorProperties.CONFIG_HANDLERS),
+                        any(MethodDescriptor.class));
         verify(testDescriptor).addProperty(TestDescriptorProperties.CONFIG_HANDLER, annotation);
         verifyNoMoreInteractions(testDescriptor);
     }

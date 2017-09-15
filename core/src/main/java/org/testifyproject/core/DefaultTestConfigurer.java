@@ -46,7 +46,8 @@ public class DefaultTestConfigurer implements TestConfigurer {
                     //otherwise we insure the result is of the same type as the configuration
                     //type and return it instead.
                     return (T) configHandler.getInstance()
-                            .map(configInstance -> configHandler.invoke(configInstance, configuration))
+                            .map(configInstance -> configHandler.invoke(configInstance,
+                                    configuration))
                             .orElseGet(() -> configHandler.invoke(testInstance, configuration))
                             .map(value -> value)
                             .orElse(configuration);

@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
@@ -63,8 +65,7 @@ public class ModulePreVerifierTest {
 
         try {
             sut.verify(testContext);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getTestClassName();
             verify(testDescriptor).getModules();
@@ -94,7 +95,7 @@ public class ModulePreVerifierTest {
         verify(testDescriptor).getModules();
         verify(testDescriptor).getScans();
     }
-    
+
     @Test
     public void givenScansTestContextVerifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);

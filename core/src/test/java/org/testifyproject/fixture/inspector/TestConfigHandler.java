@@ -22,6 +22,6 @@ package org.testifyproject.fixture.inspector;
 public class TestConfigHandler {
 
     void handler(Object handler) {
-       
+
     }
 }

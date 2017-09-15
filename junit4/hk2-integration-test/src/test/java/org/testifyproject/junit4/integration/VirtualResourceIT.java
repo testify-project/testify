@@ -15,8 +15,11 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.net.InetAddress;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
+
+import java.net.InetAddress;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.Instance;
@@ -24,7 +27,6 @@ import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
-import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 
 /**
  *

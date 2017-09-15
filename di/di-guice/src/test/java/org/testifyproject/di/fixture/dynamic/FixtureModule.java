@@ -15,9 +15,10 @@
  */
 package org.testifyproject.di.fixture.dynamic;
 
+import org.testifyproject.annotation.Fixture;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import org.testifyproject.annotation.Fixture;
 
 /**
  *

@@ -15,16 +15,19 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.Collection;
-import java.util.Optional;
 import static java.util.Optional.empty;
-import org.junit.Before;
-import org.junit.Test;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import org.testifyproject.SutDescriptor;
+
+import java.util.Collection;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;

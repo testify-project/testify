@@ -15,20 +15,21 @@
  */
 package org.testifyproject.extension.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.CLASS;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Indicates API bearing this annotation is experimental. Types annotated with
- * the {@literal @Experimental} annotation are considered unstable and subject
- * to change or removal. Use with caution.
+ * Indicates API bearing this annotation is experimental. Types annotated with the
+ * {@literal @Experimental} annotation are considered unstable and subject to change or removal.
+ * Use with caution.
  *
  * @author saden
  */

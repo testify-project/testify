@@ -17,10 +17,13 @@ package org.testifyproject.core;
 
 import java.net.URI;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
+import org.testifyproject.annotation.Application;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Default implementation of {@link ServerInstance} contract.
@@ -33,12 +36,18 @@ import org.testifyproject.ServerInstance;
 public class DefaultServerInstance<T> implements ServerInstance<T> {
 
     private final String fqn;
+    private final Application application;
     private final URI baseURI;
     private final Instance<T> server;
     private final Map<String, Object> properties;
 
-    DefaultServerInstance(String fqn, URI baseURI, Instance<T> server, Map<String, Object> properties) {
+    DefaultServerInstance(String fqn,
+            Application application,
+            URI baseURI,
+            Instance<T> server,
+            Map<String, Object> properties) {
         this.fqn = fqn;
+        this.application = application;
         this.baseURI = baseURI;
         this.server = server;
         this.properties = properties;
@@ -49,18 +58,28 @@ public class DefaultServerInstance<T> implements ServerInstance<T> {
      *
      * @param <T> the underlying server type
      * @param fqn the instance's fully qualified name
+     * @param application the application annotation
      * @param baseURI the server's base uri
      * @param server the underlying server instance
      * @param properties the properties associated with the instance
      * @return a server instance
      */
-    public static <T> ServerInstance<T> of(String fqn, URI baseURI, Instance<T> server, Map<String, Object> properties) {
-        return new DefaultServerInstance<>(fqn, baseURI, server, properties);
+    public static <T> ServerInstance<T> of(String fqn,
+            Application application,
+            URI baseURI,
+            Instance<T> server,
+            Map<String, Object> properties) {
+        return new DefaultServerInstance<>(fqn, application, baseURI, server, properties);
     }
 
     @Override
     public String getFqn() {
         return fqn;
+    }
+
+    @Override
+    public Application getApplication() {
+        return application;
     }
 
     @Override

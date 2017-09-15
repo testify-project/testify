@@ -15,9 +15,14 @@
  */
 package org.testifyproject.di.hk2;
 
-import java.lang.annotation.Annotation;
-import javax.inject.Provider;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.lang.annotation.Annotation;
+
+import javax.inject.Provider;
+
 import org.glassfish.hk2.api.IterableProvider;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
@@ -26,8 +31,6 @@ import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.annotation.DefaultModule;
@@ -119,7 +122,8 @@ public class HK2ServiceInstanceTest {
 
         sut.addConstant(constant, name, contract);
 
-        TypeToken<GenericContract<String>> type = new TypeToken<GenericContract<String>>() {
+        TypeToken<GenericContract<String>> type =
+                new TypeToken<GenericContract<String>>() {
         };
 
         GenericContract<String> result = sut.getService(type.getType());
@@ -135,7 +139,8 @@ public class HK2ServiceInstanceTest {
 
         sut.addConstant(constant, name, contract);
 
-        TypeToken<GenericContract<String>> type = new TypeToken<GenericContract<String>>() {
+        TypeToken<GenericContract<String>> type =
+                new TypeToken<GenericContract<String>>() {
         };
 
         Annotation[] qualifiers = new Annotation[]{new NamedImpl(name)};
@@ -273,7 +278,8 @@ public class HK2ServiceInstanceTest {
 
     @Test
     public void givenMapGetServiceShouldReturnMap() {
-        TypeToken<IterableProvider<Greeting>> type = new TypeToken<IterableProvider<Greeting>>() {
+        TypeToken<IterableProvider<Greeting>> type =
+                new TypeToken<IterableProvider<Greeting>>() {
         };
         IterableProvider<Greeting> result = sut.getService(type.getType());
         assertThat(result).isNotEmpty();

@@ -49,7 +49,8 @@ public class TestifyJUnit4CategoryFilter extends Filter {
      * @param categories testify categories associated with the filter
      * @return a filter instance.
      */
-    public static final TestifyJUnit4CategoryFilter of(TestCategory.Level level, String[] categories) {
+    public static final TestifyJUnit4CategoryFilter of(TestCategory.Level level,
+            String[] categories) {
         return new TestifyJUnit4CategoryFilter(level, categories);
     }
 
@@ -65,7 +66,8 @@ public class TestifyJUnit4CategoryFilter extends Filter {
                     .addAll(TestCategory.find(TestCategory.Dynamic.class, categories))
                     .build();
 
-            ImmutableList.Builder<Enum> applicableCategoriesBuilder = ImmutableList.<Enum>builder()
+            ImmutableList.Builder<Enum> applicableCategoriesBuilder = ImmutableList
+                    .<Enum>builder()
                     .add(level);
 
             if (!testDescriptor.getLocalResources().isEmpty()) {

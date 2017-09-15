@@ -16,11 +16,13 @@
 package org.testifyproject.core.setting;
 
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * A class that encapsulates test settings.

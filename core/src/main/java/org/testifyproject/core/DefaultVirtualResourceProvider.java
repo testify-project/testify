@@ -16,19 +16,16 @@
 package org.testifyproject.core;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
+
 import org.testifyproject.DataProvider;
-import org.testifyproject.Instance;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.ResourceInfo;
 import org.testifyproject.ResourceProvider;
-import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.VirtualResourceInfo;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
@@ -41,9 +38,8 @@ import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * An implementation of {@link ResourceProvider} that manages the starting and
- * stopping of {@link VirtualResourceProvider} implementations required by the
- * test class.
+ * An implementation of {@link ResourceProvider} that manages the starting and stopping of
+ * {@link VirtualResourceProvider} implementations required by the test class.
  *
  * @author saden
  * @see org.testifyproject.VirtualResourceProvider
@@ -55,33 +51,30 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
     private ReflectionUtil reflectionUtil;
     private FileSystemUtil fileSystemUtil;
     private ServiceLocatorUtil serviceLocatorUtil;
-    private List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances;
 
     public DefaultVirtualResourceProvider() {
         this(
                 ReflectionUtil.INSTANCE,
                 FileSystemUtil.INSTANCE,
-                ServiceLocatorUtil.INSTANCE,
-                new LinkedList<>()
+                ServiceLocatorUtil.INSTANCE
         );
     }
 
     DefaultVirtualResourceProvider(ReflectionUtil reflectionUtil,
             FileSystemUtil fileSystemUtil,
-            ServiceLocatorUtil serviceLocatorUtil,
-            List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> resourceInstances) {
+            ServiceLocatorUtil serviceLocatorUtil) {
         this.reflectionUtil = reflectionUtil;
         this.fileSystemUtil = fileSystemUtil;
         this.serviceLocatorUtil = serviceLocatorUtil;
-        this.resourceInstances = resourceInstances;
     }
 
     @Override
-    public void start(TestContext testContext, ServiceInstance serviceInstance) {
+    public void start(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
-        Collection<VirtualResource> virtualResources = testDescriptor.getVirtualResources();
+        Collection<VirtualResource> virtualResources = testDescriptor
+                .getVirtualResources();
 
         //get container resource annotations from the test class and for each
         //container resource create a new instance, configure and start a
@@ -92,105 +85,80 @@ public class DefaultVirtualResourceProvider implements ResourceProvider {
             VirtualResourceProvider virtualResourceProvider;
 
             if (VirtualResourceProvider.class.equals(provider)) {
-                virtualResourceProvider = serviceLocatorUtil.getOne(VirtualResourceProvider.class);
+                virtualResourceProvider = serviceLocatorUtil.getOne(
+                        VirtualResourceProvider.class);
             } else {
                 virtualResourceProvider = reflectionUtil.newInstance(provider);
             }
 
-            serviceInstance.inject(virtualResourceProvider);
             String configKey = virtualResource.configKey();
             PropertiesReader configReader = testContext.getPropertiesReader(configKey);
-            Object configuration = virtualResourceProvider.configure(testContext, virtualResource, configReader);
+            Object configuration = virtualResourceProvider.configure(testContext,
+                    virtualResource,
+                    configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
-                VirtualResourceInstance<Object> virtualResourceInstance
-                        = virtualResourceProvider.start(testContext, virtualResource, configuration);
+                VirtualResourceInstance<Object> virtualResourceInstance =
+                        virtualResourceProvider.start(testContext, virtualResource,
+                                configuration);
 
                 //determine if there are data files and load the data into te resource
                 String[] dataFilePatterns = virtualResource.dataFiles();
 
                 if (dataFilePatterns.length != 0) {
                     //load the data using the resource provider load method
-                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
-                    virtualResourceProvider.load(testContext, virtualResource, virtualResourceInstance, dataFiles);
+                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(
+                            dataFilePatterns);
+                    virtualResourceProvider.load(testContext, virtualResource,
+                            virtualResourceInstance, dataFiles);
 
                     //if there is data provider defined then create an instance of
                     //it and load data using the data provider as well
-                    Class<? extends DataProvider> dataProviderType = virtualResource.dataProvider();
+                    Class<? extends DataProvider> dataProviderType = virtualResource
+                            .dataProvider();
 
                     if (!DataProvider.class.equals(dataProviderType)) {
-                        DataProvider dataProvider = reflectionUtil.newInstance(dataProviderType);
-                        serviceInstance.inject(dataProvider);
+                        DataProvider dataProvider = reflectionUtil.newInstance(
+                                dataProviderType);
                         dataProvider.load(testContext, dataFiles, virtualResourceInstance);
                     }
                 }
 
                 //add resource properties to the test context with its fqn as its key
-                testContext.addProperty(virtualResourceInstance.getFqn(), virtualResourceInstance.getProperties());
-
-                //process the the resource instance
-                processInstance(virtualResource, virtualResourceInstance, serviceInstance);
+                testContext.addProperty(virtualResourceInstance.getFqn(),
+                        virtualResourceInstance
+                                .getProperties());
 
                 //track the resource so it can be stopped later
-                ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                ResourceInfo resourceInstance = DefaultVirtualResourceInfo.of(
                         virtualResource,
                         virtualResourceProvider,
                         virtualResourceInstance);
 
-                resourceInstances.add(resourceInstance);
+                testContext.addCollectionElement(
+                        TestContextProperties.VIRTUAL_RESOURCE_INSTANCES,
+                        resourceInstance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' virtual resource",
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Could not start '{}' virtual resource",
                         e, virtualResource.value());
             }
         });
     }
 
-    void processInstance(VirtualResource virtualResource,
-            VirtualResourceInstance<Object> virtualResourceInstance,
-            ServiceInstance serviceInstance) {
-        String name = virtualResource.name();
-
-        String resourceInstanceName;
-        Class<VirtualResourceInstance> resourceInstanceContract = VirtualResourceInstance.class;
-
-        if (name.isEmpty()) {
-            resourceInstanceName = Paths.get("resource:/", virtualResourceInstance.getFqn()).normalize().toString();
-        } else {
-            resourceInstanceName = Paths.get("resource:/", name).normalize().toString();
-        }
-
-        serviceInstance.addConstant(virtualResourceInstance, resourceInstanceName, resourceInstanceContract);
-
-        processResource(resourceInstanceName, virtualResource, virtualResourceInstance, serviceInstance);
-    }
-
-    void processResource(String resourceInstanceName,
-            VirtualResource virtualResource,
-            VirtualResourceInstance<Object> virtualResourceInstance,
-            ServiceInstance serviceInstance) {
-        String resourceName = virtualResource.resourceName();
-        Class<?> resourceContract = virtualResource.resourceContract();
-        Instance resourceInstance = virtualResourceInstance.getResource();
-
-        if (resourceName.isEmpty()) {
-            resourceName = Paths.get(resourceInstanceName, "resource").toString();
-        } else {
-            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
-        }
-
-        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
-    }
-
     @Override
-    public void stop(TestContext testContex) {
+    public void stop(TestContext testContext) {
+        Collection<VirtualResourceInfo> resourceInstances = testContext
+                .getVirtualResources();
+
         resourceInstances.forEach(resourceInstance -> {
             try {
                 VirtualResourceProvider provider = resourceInstance.getProvider();
                 VirtualResource virtualResource = resourceInstance.getAnnotation();
                 VirtualResourceInstance instance = resourceInstance.getValue();
 
-                provider.stop(testContex, virtualResource, instance);
+                provider.stop(testContext, virtualResource, instance);
             } catch (Exception e) {
                 LoggingUtil.INSTANCE.error("Could not stop '{}' virtual resource",
                         resourceInstance.getAnnotation().value(), e);

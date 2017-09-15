@@ -15,28 +15,29 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+
 import org.testifyproject.DataProvider;
 import org.testifyproject.RemoteResourceProvider;
 
 /**
  * <p>
- * An annotation that can be placed on integration and system tests to specify
- * resources that must be loaded, configured, started, stopped before and after
- * each test case (i.e. an in-memory database).
+ * An annotation that can be placed on integration and system tests to specify resources that
+ * must be loaded, configured, started, stopped before and after each test case (i.e. an
+ * in-memory database).
  * </p>
  * <p>
- * Note that an remote resource consists of a server component and client
- * component (optional). For example, if a test class requires an in-memory
- * database then the database {@link javax.sql.DataSource} can be thought of as
- * the server component and the {@link java.sql.Connection} to the DataSource as
- * the client component.
+ * Note that an remote resource consists of a server component and client component (optional).
+ * For example, if a test class requires an in-memory database then the database
+ * {@link javax.sql.DataSource} can be thought of as the server component and the
+ * {@link java.sql.Connection} to the DataSource as the client component.
  * </p>
  *
  *
@@ -57,14 +58,13 @@ public @interface RemoteResource {
 
     /**
      * <p>
-     * Specifies the name of the
-     * {@link org.testifyproject.RemoteResourceInstance} provided by {@link #value()
+     * Specifies the name of the {@link org.testifyproject.RemoteResourceInstance} provided by {@link #value()
      * }.
      * </p>
      * <p>
-     * Note that if a test class requires multiple resources that provide
-     * similar resources then name must be specified to resolve ambiguity as to
-     * which resource instance should be injected into your test code.
+     * Note that if a test class requires multiple resources that provide similar resources then
+     * name must be specified to resolve ambiguity as to which resource instance should be
+     * injected into your test code.
      * </p>
      *
      * @return the resource instance name.
@@ -72,26 +72,24 @@ public @interface RemoteResource {
     String name() default "";
 
     /**
-     * The configuration section key in <i>.testify.yml</i> associated with the
-     * remote resource.
+     * The configuration section key in <i>.testify.yml</i> associated with the remote resource.
      *
      * @return the configKey section key.
      */
     String configKey() default "";
 
     /**
-     * A list of classpath data files that should be loaded by the remote
-     * resource prior to being used. Note that
-     * {@link java.nio.file.FileSystem#getPathMatcher(java.lang.String)} glob
-     * patterns are supported
+     * A list of classpath data files that should be loaded by the remote resource prior to
+     * being used. Note that {@link java.nio.file.FileSystem#getPathMatcher(java.lang.String)}
+     * glob patterns are supported
      *
      * @return an array of data file names or patterns.
      */
     String[] dataFiles() default {};
 
     /**
-     * Specifies a data provider implementations that loads data into the
-     * resource prior to it being used.
+     * Specifies a data provider implementations that loads data into the resource prior to it
+     * being used.
      *
      * @return the data provider implementation class.
      */
@@ -99,13 +97,12 @@ public @interface RemoteResource {
 
     /**
      * <p>
-     * Specifies the remote resource's name. This useful for giving the resource
-     * instance a unique name that can be used to qualify and distinguish it
-     * from other similar resources.
+     * Specifies the remote resource's name. This useful for giving the resource instance a
+     * unique name that can be used to qualify and distinguish it from other similar resources.
      * </p>
      * <p>
-     * Note that if the name is not specified the name provided by the remote
-     * resource provider implementation will be used.
+     * Note that if the name is not specified the name provided by the remote resource provider
+     * implementation will be used.
      * </p>
      *
      * @return the remote resource's name.
@@ -114,16 +111,16 @@ public @interface RemoteResource {
 
     /**
      * <p>
-     * Specifies the virtual resource's contract. This useful for getting the
-     * resource by its contract.
+     * Specifies the virtual resource's contract. This useful for getting the resource by its
+     * contract.
      * </p>
      * <p>
-     * Note that if the contract is not specified the resource instance will be
-     * injectable by its implementation class only.
+     * Note that if the contract is not specified the resource instance will be injectable by
+     * its implementation class only.
      * </p>
      *
      * @return the remote resource's contract type.
      */
-    Class<?> resourceContract() default void.class;
+    Class resourceContract() default void.class;
 
 }

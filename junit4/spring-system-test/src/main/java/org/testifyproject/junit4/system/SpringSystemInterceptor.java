@@ -15,9 +15,12 @@
  */
 package org.testifyproject.junit4.system;
 
-import java.util.List;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
+
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.testifyproject.ServiceInstance;
@@ -32,14 +35,14 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.di.spring.SpringServiceProvider;
 
 /**
  * A class that intercepts methods of classes that extend
  * {@link org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer}.
- * This class is responsible for configuring the Spring application as well as
- * extracting information useful for test scaffolding.
+ * This class is responsible for configuring the Spring application as well as extracting
+ * information useful for test scaffolding.
  *
  * @author saden
  */
@@ -62,17 +65,22 @@ public class SpringSystemInterceptor {
     }
 
     @RuntimeType
-    public void configureAndRefreshWebApplicationContext(@SuperCall Callable<ConfigurableWebApplicationContext> zuper,
-            @Argument(0) ConfigurableWebApplicationContext applicationContext) throws Exception {
+    public void configureAndRefreshWebApplicationContext(
+            @SuperCall Callable<ConfigurableWebApplicationContext> zuper,
+            @Argument(0) ConfigurableWebApplicationContext applicationContext) throws
+            Exception {
 
         testContextHolder.execute(testContext -> {
             TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
-            ConfigurableWebApplicationContext configuredApplicationContext
-                    = testConfigurer.configure(testContext, applicationContext);
+            ConfigurableWebApplicationContext configuredApplicationContext =
+                    testConfigurer.configure(testContext, applicationContext);
 
-            ServiceProvider<ConfigurableApplicationContext> serviceProvider = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class);
-            ServiceInstance serviceInstance = serviceProvider.configure(testContext, configuredApplicationContext);
+            ServiceProvider<ConfigurableApplicationContext> serviceProvider =
+                    ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
+                            SpringServiceProvider.class);
+            ServiceInstance serviceInstance = serviceProvider.configure(testContext,
+                    configuredApplicationContext);
             testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
         });
 
@@ -80,12 +88,13 @@ public class SpringSystemInterceptor {
     }
 
     @RuntimeType
-    public Class<?>[] getServletConfigClasses(@SuperCall Callable<Class<?>[]> zuper, @This Object object) throws Exception {
+    public Class<?>[] getServletConfigClasses(@SuperCall Callable<Class<?>[]> zuper,
+            @This Object object) throws Exception {
         Class<?>[] result = zuper.call();
 
         return testContextHolder.execute(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
-            List<Module> modules = testDescriptor.getModules();
+            Collection<Module> modules = testDescriptor.getModules();
 
             Stream<Class<?>> testModules = modules.stream().map(Module::value);
             Stream<Class<?>> productionModules = Stream.empty();

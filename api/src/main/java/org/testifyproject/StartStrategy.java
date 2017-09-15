@@ -23,11 +23,6 @@ package org.testifyproject;
 public enum StartStrategy {
 
     /**
-     * Indicates resources start strategy is undefined and is up to the
-     * implementation.
-     */
-    UNDEFINED,
-    /**
      * Indicates resources should be started eagerly.
      */
     EAGER,

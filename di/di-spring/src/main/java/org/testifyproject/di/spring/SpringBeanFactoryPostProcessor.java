@@ -15,43 +15,40 @@
  */
 package org.testifyproject.di.spring;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.springframework.beans.factory.config.BeanDefinition;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
-import org.testifyproject.ResourceProvider;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fixture;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.InstanceProvider;
+import org.testifyproject.extension.PreInstanceProvider;
 
 /**
- * A class that is called after the application context is refreshed to
- * initialize the test as well as start and stop test resources.
+ * A class that is called after the application context is refreshed to initialize the test as
+ * well as start and stop test resources.
  *
  * @author saden
  */
-public class SpringBeanFactoryPostProcessor implements
-        BeanFactoryPostProcessor,
-        ApplicationListener<ContextClosedEvent>,
-        Ordered {
+public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {
 
     private final TestContext testContext;
     private final ServiceInstance serviceInstance;
-    List<ResourceProvider> resourceProviders;
 
-    public SpringBeanFactoryPostProcessor(TestContext testContext, ServiceInstance serviceInstance) {
+    public SpringBeanFactoryPostProcessor(TestContext testContext,
+            ServiceInstance serviceInstance) {
         this.testContext = testContext;
         this.serviceInstance = serviceInstance;
     }
@@ -62,14 +59,20 @@ public class SpringBeanFactoryPostProcessor implements
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableListableBeanFactory;
+    public void postProcessBeanFactory(
+            ConfigurableListableBeanFactory configurableListableBeanFactory) {
+        DefaultListableBeanFactory beanFactory =
+                (DefaultListableBeanFactory) configurableListableBeanFactory;
         Set<String> replacedBeanNames = new HashSet<>();
 
         for (String beanName : beanFactory.getBeanDefinitionNames()) {
             if (!replacedBeanNames.contains(beanName)) {
                 BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
                 Class<?> beanType = beanFactory.getType(beanName);
+
+                if (beanDefinition.isPrimary()) {
+                    processPrimary(beanFactory, beanDefinition, beanName, beanType);
+                }
 
                 //mark all beans as lazy beans so we don't needlessly
                 //instianticate them during testing
@@ -79,7 +82,8 @@ public class SpringBeanFactoryPostProcessor implements
                 Configuration configuration = beanType.getAnnotation(Configuration.class);
 
                 if (configuration == null) {
-                    processConfiguration(beanFactory, beanDefinition, beanType, beanName, replacedBeanNames);
+                    processConfiguration(beanFactory, beanDefinition, beanType, beanName,
+                            replacedBeanNames);
                 }
 
                 //by default spring eagerly initilizes singleton scoped beans
@@ -95,10 +99,39 @@ public class SpringBeanFactoryPostProcessor implements
 
         beanFactory.addBeanPostProcessor(new SpringReifierPostProcessor(testContext));
 
-        //start all test requires
         if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders = ServiceLocatorUtil.INSTANCE.findAll(ResourceProvider.class);
-            resourceProviders.forEach(p -> p.start(testContext, serviceInstance));
+            //add constant instances
+            ServiceLocatorUtil.INSTANCE.findAllWithFilter(PreInstanceProvider.class)
+                    .stream()
+                    .flatMap(p -> p.get(testContext).stream())
+                    .forEach(serviceInstance::replace);
+
+            ServiceLocatorUtil.INSTANCE.findAllWithFilter(InstanceProvider.class)
+                    .stream()
+                    .flatMap(p -> p.get(testContext).stream())
+                    .forEach(serviceInstance::replace);
+        }
+    }
+
+    void processPrimary(DefaultListableBeanFactory beanFactory,
+            BeanDefinition beanDefinition, String beanName, Class<?> beanType) {
+        String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
+
+        if (beanNamesForType.length > 1) {
+            for (String beanNameForType : beanNamesForType) {
+                if (beanNameForType.equals(beanName)) {
+                    beanFactory.removeBeanDefinition(beanNameForType);
+                } else {
+                    beanFactory.removeBeanDefinition(beanNameForType);
+
+                    GenericBeanDefinition replacementBeanDefinition =
+                            new GenericBeanDefinition(beanDefinition);
+                    replacementBeanDefinition.setPrimary(false);
+                    replacementBeanDefinition.setLazyInit(true);
+                    beanFactory.registerBeanDefinition(beanNameForType,
+                            replacementBeanDefinition);
+                }
+            }
         }
     }
 
@@ -125,7 +158,8 @@ public class SpringBeanFactoryPostProcessor implements
         //in the bean annotated with fixture and thus replacying
         //all production beans with test fixture beans
         if (fixture != null) {
-            processFixture(beanFactory, beanDefinition, beanType, beanName, fixture, replacedBeanNames);
+            processFixture(beanFactory, beanDefinition, beanType, beanName, fixture,
+                    replacedBeanNames);
         }
     }
 
@@ -142,7 +176,8 @@ public class SpringBeanFactoryPostProcessor implements
                 beanFactory.removeBeanDefinition(beanNameForType);
             } else {
                 beanFactory.removeBeanDefinition(beanNameForType);
-                GenericBeanDefinition replacementBeanDefinition = new GenericBeanDefinition(beanDefinition);
+                GenericBeanDefinition replacementBeanDefinition =
+                        new GenericBeanDefinition(beanDefinition);
 
                 if (!fixture.init().isEmpty()) {
                     replacementBeanDefinition.setInitMethodName(fixture.init());
@@ -154,16 +189,10 @@ public class SpringBeanFactoryPostProcessor implements
 
                 replacementBeanDefinition.setPrimary(false);
                 replacementBeanDefinition.setLazyInit(true);
-                beanFactory.registerBeanDefinition(beanNameForType, replacementBeanDefinition);
+                beanFactory.registerBeanDefinition(beanNameForType,
+                        replacementBeanDefinition);
                 replacedBeanNames.add(beanNameForType);
             }
-        }
-    }
-
-    @Override
-    public void onApplicationEvent(ContextClosedEvent event) {
-        if (testContext.getResourceStartStrategy() == StartStrategy.LAZY) {
-            resourceProviders.forEach(resourceProvider -> resourceProvider.stop(testContext));
         }
     }
 

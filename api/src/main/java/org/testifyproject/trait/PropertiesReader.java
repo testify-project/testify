@@ -15,19 +15,20 @@
  */
 package org.testifyproject.trait;
 
+import static java.util.Optional.ofNullable;
+
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
 
 /**
  * <p>
  * A contracts that specifies methods for reading property values. class.
  * </p>
  * <p>
- * Note that with respect to null keys and values the behavior the methods in
- * contract are dependent on the {@link Map} implementation returned by {@link #getProperties()
+ * Note that with respect to null keys and values the behavior the methods in contract are
+ * dependent on the {@link Map} implementation returned by {@link #getProperties()
  * }
  * </p>
  *
@@ -40,21 +41,18 @@ public interface PropertiesReader extends PropertiesTrait {
      * Get a PropertiesReader instance for the given mapKey. Note that:
      * </p>
      * <ul>
-     * <li>If the key is empty then the this PropertiesReader instance will be
-     * returned</li>
+     * <li>If the key is empty then the this PropertiesReader instance will be returned</li>
      * <li>If the key is not found then an empty map will be returned</li>
      * </ul>
-     * @param mapKey the key key associated with the map
+     * @param key the key associated with the map
      * @return an instance that wraps the found map
      */
-    default PropertiesReader getPropertiesReader(String mapKey) {
-        if (mapKey.isEmpty()) {
+    default PropertiesReader getPropertiesReader(String key) {
+        if (key.isEmpty()) {
             return this;
         }
 
-        Map<String, Object> result = findMap(mapKey);
-
-        return DefaultPropertiesReader.of(result);
+        return DefaultPropertiesReader.of(findMap(key));
     }
 
     /**
@@ -80,42 +78,32 @@ public interface PropertiesReader extends PropertiesTrait {
     }
 
     /**
-     * Find a list value associated with the given listKey. If the list is not
-     * found an {@link Collections#EMPTY_LIST} will be returned.
+     * Find a collection value associated with the given key. If the queue is not found an
+     * {@link Collections#emptyList()} will be returned.
      *
-     * @param <T> the collection element type
-     * @param listKey the key associated with the list
-     * @return the found list, empty list otherwise
+     * @param <E> the collection element type
+     * @param key the key associated with the queue
+     * @return the found collection, empty collection otherwise
      */
-    default <T> List<T> findList(String listKey) {
-        Map<String, List<T>> properties = getProperties();
-        List<T> result = properties.get(listKey);
+    default <E> Collection<E> findCollection(String key) {
+        Map<String, Collection<E>> properties = getProperties();
 
-        if (result == null) {
-            result = Collections.emptyList();
-        }
-
-        return result;
+        return properties.getOrDefault(key, Collections.emptyList());
     }
 
     /**
-     * Find a map typed associated with the given mapKey. If the map is not
-     * found an {@link Collections#EMPTY_MAP} is returned.
+     * Find a map typed associated with the given key. If the map is not found an
+     * {@link Collections#emptyMap()} is returned.
      *
      * @param <K> the map key type
      * @param <V> the map value type
-     * @param mapKey the key key associated with the map
+     * @param key the key associated with the map
      * @return the found map, empty map otherwise
      */
-    default <K, V> Map<K, V> findMap(String mapKey) {
+    default <K, V> Map<K, V> findMap(String key) {
         Map<String, Map<K, V>> properties = getProperties();
-        Map<K, V> result = properties.get(mapKey);
 
-        if (result == null) {
-            result = Collections.emptyMap();
-        }
-
-        return result;
+        return properties.getOrDefault(key, Collections.emptyMap());
     }
 
 }

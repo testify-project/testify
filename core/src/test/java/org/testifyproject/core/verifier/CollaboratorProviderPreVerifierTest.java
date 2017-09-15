@@ -15,13 +15,15 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -95,41 +97,6 @@ public class CollaboratorProviderPreVerifierTest {
     }
 
     @Test(expected = TestifyException.class)
-    public void givenCollaboratorProviderMethodWithParamterVerifyShouldThrowException() {
-        TestContext testContext = mock(TestContext.class);
-        TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        MethodDescriptor collaboratorProvider = mock(MethodDescriptor.class);
-        List<MethodDescriptor> collaboratorProviders = ImmutableList.of(collaboratorProvider);
-
-        List<Class> parameterTypes = ImmutableList.of(Object.class);
-        String name = "name";
-        String declaringClassName = "declaringClassName";
-        Class returnType = Object.class;
-
-        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testDescriptor.getCollaboratorProviders()).willReturn(collaboratorProviders);
-        given(collaboratorProvider.getParameterTypes()).willReturn(parameterTypes);
-        given(collaboratorProvider.getName()).willReturn(name);
-        given(collaboratorProvider.getDeclaringClassName()).willReturn(declaringClassName);
-        given(collaboratorProvider.getReturnType()).willReturn(returnType);
-
-        try {
-            sut.verify(testContext);
-        }
-        catch (TestifyException e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getCollaboratorProviders();
-            verify(collaboratorProvider).getParameterTypes();
-            verify(collaboratorProvider).getName();
-            verify(collaboratorProvider).getDeclaringClassName();
-            verify(collaboratorProvider).getReturnType();
-
-            verifyNoMoreInteractions(testContext, testDescriptor, collaboratorProvider);
-            throw e;
-        }
-    }
-
-    @Test(expected = TestifyException.class)
     public void givenCollaboratorProviderMethodThatReturnsVoidVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -150,8 +117,7 @@ public class CollaboratorProviderPreVerifierTest {
 
         try {
             sut.verify(testContext);
-        }
-        catch (TestifyException e) {
+        } catch (TestifyException e) {
             verify(testContext).getTestDescriptor();
             verify(testDescriptor).getCollaboratorProviders();
             verify(collaboratorProvider).getParameterTypes();

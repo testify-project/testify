@@ -15,18 +15,19 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on integration and system tests to load a
- * resources that contains services before each test run (i.e. Spring service
- * fully qualified package name, HK2 service locator descriptor classpath).
+ * An annotation that can be placed on integration and system tests to load a resources that
+ * contains services before each test run (i.e. Spring service fully qualified package name, HK2
+ * service locator descriptor classpath).
  *
  * @author saden
  */
@@ -38,13 +39,12 @@ public @interface Scan {
 
     /**
      * <p>
-     * A value that represents a resource in the classpath that should be
-     * scanned and loaded.
+     * A value that represents a resource in the classpath that should be scanned and loaded.
      * </p>
      * <p>
-     * Please note that to encourage simplicity and modular design scanning of
-     * resources is limited to a single resource. If you absolutely need to scan
-     * and load multiple resources Scan annotation is {@link Scans repeatable}.
+     * Please note that to encourage simplicity and modular design scanning of resources is
+     * limited to a single resource. If you absolutely need to scan and load multiple resources
+     * Scan annotation is {@link Scans repeatable}.
      * </p>
      *
      * @return a resource name.

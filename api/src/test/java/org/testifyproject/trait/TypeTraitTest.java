@@ -15,15 +15,17 @@
  */
 package org.testifyproject.trait;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.PrimaryTestService;
 import org.testifyproject.fixture.TestContract;
@@ -170,7 +172,8 @@ public class TypeTraitTest {
         Method method = PrimaryTestService.class.getDeclaredMethod(methodName, String.class);
 
         given(sut.invoke(instance, methodName, methodArgs)).willCallRealMethod();
-        given(sut.findMethod(PrimaryTestService.class, methodName, methodArgsTypes)).willReturn(method);
+        given(sut.findMethod(PrimaryTestService.class, methodName, methodArgsTypes)).willReturn(
+                method);
 
         sut.invoke(instance, methodName, methodArgs);
     }

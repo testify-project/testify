@@ -15,15 +15,18 @@
  */
 package org.testifyproject.trait;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.Optional;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Stream.of;
+
 import org.testifyproject.TestifyException;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
@@ -51,6 +54,15 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
      */
     default List<Class> getParameterTypes() {
         return of(getAnnotatedElement().getParameterTypes()).collect(toList());
+    }
+
+    /**
+     * Get the method parameter types.
+     *
+     * @return a list of parameter types, empty list otherwise
+     */
+    default List<Parameter> getParameters() {
+        return of(getAnnotatedElement().getParameters()).collect(toList());
     }
 
     /**
@@ -120,10 +132,10 @@ public interface MethodTrait extends MemberTrait<Method>, AnnotationTrait<Method
                 T result = (T) method.invoke(instance, args);
 
                 return Optional.ofNullable(result);
-            } catch (SecurityException
-                    | IllegalAccessException
-                    | IllegalArgumentException
-                    | InvocationTargetException e) {
+            } catch (SecurityException |
+                    IllegalAccessException |
+                    IllegalArgumentException |
+                    InvocationTargetException e) {
                 throw TestifyException.of(e);
             }
         });

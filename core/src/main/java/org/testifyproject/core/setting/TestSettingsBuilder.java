@@ -16,8 +16,8 @@
 package org.testifyproject.core.setting;
 
 import java.util.Map;
+
 import org.testifyproject.StartStrategy;
-import static org.testifyproject.StartStrategy.UNDEFINED;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.guava.common.collect.ImmutableMap;
@@ -30,7 +30,7 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
 public class TestSettingsBuilder {
 
     private Class<? extends TestRunner> testRunnerClass;
-    private StartStrategy startStrategy = UNDEFINED;
+    private StartStrategy startStrategy = StartStrategy.LAZY;
     private final ImmutableMap.Builder<String, String> dependencies = ImmutableMap.builder();
     private TestCategory.Level level;
 

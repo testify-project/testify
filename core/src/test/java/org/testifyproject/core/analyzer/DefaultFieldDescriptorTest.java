@@ -15,9 +15,11 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
@@ -68,41 +70,31 @@ public class DefaultFieldDescriptorTest {
     }
 
     @Test
-    public void callToGetDefinedNameShouldReturnFieldName() {
-        String result = sut.getDefinedName();
+    public void callToGetDeclaredNameShouldReturnFieldName() {
+        String result = sut.getDeclaredName();
 
         assertThat(result).isEqualTo(field.getName());
     }
 
     @Test
-    public void callToGetDefinedNameForRealFieldShouldReturnRealFieldName() throws NoSuchFieldException {
-        String name = "real";
+    public void callToGetDeclaredNameWithoutNameShouldReturnFieldName() throws
+            NoSuchFieldException {
+        String name = "named";
         field = TestFieldService.class.getDeclaredField(name);
         sut = new DefaultFieldDescriptor(field);
 
-        String result = sut.getDefinedName();
+        String result = sut.getDeclaredName();
 
-        assertThat(result).isEqualTo(name);
+        assertThat(result).isEqualTo("test");
     }
 
     @Test
-    public void callToGetDefinedNameForFakeFieldShouldReturnFakeFieldName() throws NoSuchFieldException {
-        String name = "fake";
+    public void callToGetDeclaredNameWithNameShouldReturnName() throws NoSuchFieldException {
+        String name = "unnamed";
         field = TestFieldService.class.getDeclaredField(name);
         sut = new DefaultFieldDescriptor(field);
 
-        String result = sut.getDefinedName();
-
-        assertThat(result).isEqualTo(name);
-    }
-
-    @Test
-    public void callToGetDefinedNameForVirtualFieldShouldReturnVirtualFieldName() throws NoSuchFieldException {
-        String name = "virtual";
-        field = TestFieldService.class.getDeclaredField(name);
-        sut = new DefaultFieldDescriptor(field);
-
-        String result = sut.getDefinedName();
+        String result = sut.getDeclaredName();
 
         assertThat(result).isEqualTo(name);
     }

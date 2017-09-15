@@ -15,13 +15,14 @@
  */
 package org.testifyproject;
 
-import java.util.Optional;
 import static java.util.Optional.empty;
 
+import java.util.Optional;
+
 /**
- * A contract that defines an instance object. An instance represents the
- * properties of an object in the dependency injection framework in use and how
- * the object is made available for injection into test classes and fixtures.
+ * A contract that defines an instance object. An instance represents the properties of an
+ * object in the dependency injection framework in use and how the object is made available for
+ * injection into test classes and fixtures.
  *
  * @author saden
  * @param <T> the instance object type
@@ -36,8 +37,8 @@ public interface Instance<T> {
     T getValue();
 
     /**
-     * Get the name of instance. If present it represents the service name
-     * associated with the instance and may be used to qualify the service.
+     * Get the name of instance. If present it represents the service name associated with the
+     * instance and may be used to qualify the service.
      *
      * @return optional with instance name, empty optional otherwise
      */
@@ -46,9 +47,8 @@ public interface Instance<T> {
     }
 
     /**
-     * The contract implemented by the instance. If present any existing
-     * implementations of the contract in the dependency injection framework
-     * will be replaced by this instance.
+     * The contract implemented by the instance. If present any existing implementations of the
+     * contract in the dependency injection framework will be replaced by this instance.
      *
      * @return optional with instance contract type, empty optional otherwise
      */

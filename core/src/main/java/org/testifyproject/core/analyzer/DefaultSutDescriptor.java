@@ -15,6 +15,8 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static java.util.Optional.ofNullable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -22,17 +24,18 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * A descriptor class used to access properties of or perform operations on an
- * analyzed system under test (SUT) class.
+ * A descriptor class used to access properties of or perform operations on an analyzed system
+ * under test (SUT) class.
  *
  * @author saden
  */
@@ -90,8 +93,8 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors =
+                findMap(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
@@ -110,8 +113,8 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
 
     @Override
     public Optional<FieldDescriptor> findFieldDescriptor(Type type, String name) {
-        Map<DescriptorKey, FieldDescriptor> fieldDescriptors
-                = findMap(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, FieldDescriptor> fieldDescriptors =
+                findMap(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor fieldDescriptor = fieldDescriptors.get(descriptorKey);
@@ -121,13 +124,13 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
 
     @Override
     public Collection<FieldDescriptor> getFieldDescriptors() {
-        return findList(SutDescriptorProperties.FIELD_DESCRIPTORS);
+        return findCollection(SutDescriptorProperties.FIELD_DESCRIPTORS);
     }
 
     @Override
     public Optional<ParameterDescriptor> findParameterDescriptor(Type type) {
-        Map<DescriptorKey, ParameterDescriptor> paramterDescriptors
-                = findMap(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, ParameterDescriptor> paramterDescriptors =
+                findMap(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         ParameterDescriptor parameterDescriptor = paramterDescriptors.get(descriptorKey);
@@ -146,8 +149,8 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
 
     @Override
     public Optional<ParameterDescriptor> findParameterDescriptor(Type type, String name) {
-        Map<DescriptorKey, ParameterDescriptor> paramterDescriptors
-                = findMap(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
+        Map<DescriptorKey, ParameterDescriptor> paramterDescriptors =
+                findMap(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE);
 
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         ParameterDescriptor parameterDescriptor = paramterDescriptors.get(descriptorKey);
@@ -157,7 +160,7 @@ public class DefaultSutDescriptor extends DefaultFieldDescriptor implements SutD
 
     @Override
     public Collection<ParameterDescriptor> getParameterDescriptors() {
-        return findList(SutDescriptorProperties.PARAMETER_DESCRIPTORS);
+        return findCollection(SutDescriptorProperties.PARAMETER_DESCRIPTORS);
     }
 
 }

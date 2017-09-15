@@ -16,6 +16,7 @@
 package org.testifyproject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 /**
@@ -26,7 +27,7 @@ public class StartStrategyTest {
 
     @Test
     public void verifyStartStrategyEnums() {
-        assertThat(StartStrategy.values()).containsExactly(StartStrategy.UNDEFINED,
+        assertThat(StartStrategy.values()).containsExactly(
                 StartStrategy.EAGER,
                 StartStrategy.LAZY
         );

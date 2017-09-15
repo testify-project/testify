@@ -15,13 +15,13 @@
  */
 package org.testifyproject.di.guice;
 
-import com.google.inject.Injector;
-import com.google.inject.name.Names;
-import java.lang.annotation.Annotation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.lang.annotation.Annotation;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.core.annotation.DefaultModule;
 import org.testifyproject.di.fixture.common.Greeting;
 import org.testifyproject.di.fixture.common.GreetingModule;
@@ -34,6 +34,9 @@ import org.testifyproject.di.fixture.dynamic.DynamicConstant;
 import org.testifyproject.di.fixture.dynamic.DynamicContract;
 import org.testifyproject.di.fixture.dynamic.DynamicModule;
 import org.testifyproject.di.fixture.dynamic.FixtureModule;
+
+import com.google.inject.Injector;
+import com.google.inject.name.Names;
 
 /**
  *
@@ -153,7 +156,8 @@ public class GuiceServiceInstanceTest {
         DynamicConstant dynamicConstant = new DynamicConstant(value);
         sut.addConstant(dynamicConstant, "constant", null);
 
-        DynamicConstant result = sut.getService(DynamicConstant.class, Names.named("constant"));
+        DynamicConstant result = sut.getService(DynamicConstant.class, Names.named(
+                "constant"));
 
         assertThat(result).isNotNull();
         assertThat(result.getValue()).isEqualTo(value);
@@ -165,7 +169,8 @@ public class GuiceServiceInstanceTest {
         DynamicConstant dynamicConstant = new DynamicConstant(value);
         sut.addConstant(dynamicConstant, "constant", DynamicContract.class);
 
-        DynamicContract result = sut.getService(DynamicContract.class, Names.named("constant"));
+        DynamicContract result = sut.getService(DynamicContract.class, Names.named(
+                "constant"));
 
         assertThat(result).isNotNull();
         assertThat(result.getValue()).isEqualTo(value);

@@ -23,9 +23,8 @@ package org.testifyproject;
 public interface TestConfigurer {
 
     /**
-     * Given a configuration object call the appropriate method on the test
-     * class annotated with {@link  org.testifyproject.annotation.ConfigHandler}
-     * annotation.
+     * Given a configuration object call the appropriate method on the test class annotated with
+     * {@link  org.testifyproject.annotation.ConfigHandler} annotation.
      *
      * @param <T> the configuration object type
      * @param testContext the test context

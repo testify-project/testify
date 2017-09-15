@@ -15,16 +15,18 @@
  */
 package org.testifyproject.core.reifier;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
@@ -124,7 +126,8 @@ public class ServiceFinalReifierTest {
         given(fieldDescriptor.getValue(testInstance)).willReturn(foundValue);
         given(fieldDescriptor.hasAnyAnnotations(Real.class)).willReturn(true);
         given(fieldDescriptor.getType()).willReturn(fieldType);
-        given(fieldDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers)).willReturn(fieldQualifiers);
+        given(fieldDescriptor.getMetaAnnotations(nameQualifiers, customQualifiers)).willReturn(
+                fieldQualifiers);
         given(serviceInstance.getService(fieldType, fieldQualifiers)).willReturn(value);
 
         sut.reify(testContext);

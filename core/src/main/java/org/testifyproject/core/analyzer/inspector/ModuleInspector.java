@@ -33,7 +33,7 @@ public class ModuleInspector implements AnnotationInspector<Module> {
 
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Module module) {
-        testDescriptor.addListElement(TestDescriptorProperties.MODULES, module);
+        testDescriptor.addCollectionElement(TestDescriptorProperties.MODULES, module);
     }
 
 }

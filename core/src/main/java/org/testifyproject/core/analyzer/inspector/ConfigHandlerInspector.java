@@ -16,6 +16,7 @@
 package org.testifyproject.core.analyzer.inspector;
 
 import java.lang.reflect.Method;
+
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.ConfigHandler;
@@ -37,7 +38,8 @@ import org.testifyproject.tools.Discoverable;
 public class ConfigHandlerInspector implements AnnotationInspector<ConfigHandler> {
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, ConfigHandler configHandler) {
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType,
+            ConfigHandler configHandler) {
         Class<?>[] handlers = configHandler.value();
 
         ExceptionUtil.INSTANCE.raise(configHandler.value().length == 0,
@@ -52,8 +54,11 @@ public class ConfigHandlerInspector implements AnnotationInspector<ConfigHandler
                 if (!method.isSynthetic()) {
                     method.setAccessible(true);
 
-                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method, handlerInstance);
-                    testDescriptor.addListElement(TestDescriptorProperties.CONFIG_HANDLERS, methodDescriptor);
+                    MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(method,
+                            handlerInstance);
+                    testDescriptor
+                            .addCollectionElement(TestDescriptorProperties.CONFIG_HANDLERS,
+                                    methodDescriptor);
                 }
             }
         }

@@ -19,8 +19,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
+
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
@@ -29,17 +29,18 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.trait.AnnotationTrait;
 import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
 
 /**
- * A contract that defines methods used to access or perform operations on a
- * test class.
+ * A contract that defines methods used to access or perform operations on a test class.
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesReader, PropertiesWriter, AnnotationTrait<Class> {
+public interface TestDescriptor extends PropertiesReader, PropertiesWriter,
+        AnnotationTrait<Class> {
 
     /**
      * The name of the test class.
@@ -70,11 +71,11 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<CollaboratorProvider> getCollaboratorProvider();
 
     /**
-     * Get the collaborator provider methods associated with the test class.
+     * Get a collection of collaborator provider methods associated with the test class.
      *
-     * @return a list of method descriptor, empty list otherwise
+     * @return a collection of method descriptor, empty list otherwise
      */
-    List<MethodDescriptor> getCollaboratorProviders();
+    Collection<MethodDescriptor> getCollaboratorProviders();
 
     /**
      * The application annotation associated with the test class.
@@ -98,74 +99,80 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<ConfigHandler> getConfigHandler();
 
     /**
-     * Get a list method handlers for all the config handlers associated with
-     * the test class.
+     * Get a collection of method handlers for all the config handlers associated with the test
+     * class.
      *
-     * @return a list with method descriptors, empty list otherwise
+     * @return a collection with method descriptors, empty list otherwise
      */
-    List<MethodDescriptor> getConfigHandlers();
+    Collection<MethodDescriptor> getConfigHandlers();
 
     /**
-     * Get a list of field descriptors for all the fields associated with the
-     * test class.
+     * Get a collection of field descriptors for all the fields associated with the test class.
      *
-     * @return a list with field descriptor, empty list otherwise
+     * @return a collection with field descriptor, empty list otherwise
      */
     Collection<FieldDescriptor> getFieldDescriptors();
 
     /**
-     * Get a list of modules associated with the test class.
+     * Get a collection of modules associated with the test class.
      *
-     * @return a list with modules, empty list otherwise
+     * @return a collection with modules, empty list otherwise
      */
-    List<Module> getModules();
+    Collection<Module> getModules();
 
     /**
-     * Get a list of scans associated with the test class.
+     * Get a collection of scans associated with the test class.
      *
-     * @return a list with scans, empty list otherwise
+     * @return a collection with scans, empty list otherwise
      */
-    List<Scan> getScans();
+    Collection<Scan> getScans();
 
     /**
-     * Get a list of local resources associated with the test class.
+     * Get a collection of local resources associated with the test class.
      *
-     * @return a list with local resources, empty list otherwise
+     * @return a collection with local resources, empty list otherwise
      */
-    List<LocalResource> getLocalResources();
+    Collection<LocalResource> getLocalResources();
 
     /**
-     * Get a list of virtual resources associated with the test class.
+     * Get a collection of virtual resources associated with the test class.
      *
-     * @return a list with virtual resources, empty list otherwise
+     * @return a collection with virtual resources, empty list otherwise
      */
-    List<VirtualResource> getVirtualResources();
+    Collection<VirtualResource> getVirtualResources();
 
     /**
-     * Get a list of remote resources associated with the test class.
+     * Get a collection of remote resources associated with the test class.
      *
-     * @return a list with remote resources, empty list otherwise
+     * @return a collection with remote resources, empty list otherwise
      */
-    List<RemoteResource> getRemoteResources();
+    Collection<RemoteResource> getRemoteResources();
 
     /**
-     * Get a list of all known and inspected annotations including those placed
-     * on {@link org.testifyproject.annotation.Bundle} annotation.
+     * Get a collection of all known and inspected annotations including those placed on
+     * {@link org.testifyproject.annotation.Bundle} annotation.
      *
-     * @return a list of inspected annotations, empty list otherwise
+     * @return a collection of inspected annotations, empty list otherwise
      */
-    List<Annotation> getInspectedAnnotations();
+    Collection<Annotation> getInspectedAnnotations();
 
     /**
      * Get guideline annotations associated with the test.
      *
-     * @return a list of guidelines, empty array otherwise
+     * @return a collection of guidelines, empty array otherwise
      */
-    List<Class<? extends Annotation>> getGuidelines();
+    Collection<Class<? extends Annotation>> getGuidelines();
 
     /**
-     * Find the config handler associated with the test class capable of
-     * configuring the given configurable type.
+     * Get hint annotation associated with the test.
+     *
+     * @return the hint annotation, empty optional otherwise
+     */
+    Optional<Hint> getHint();
+
+    /**
+     * Find the config handler associated with the test class capable of configuring the given
+     * configurable type.
      *
      * @param configurableType the configurable type
      * @return an optional with method descriptor, empty optional otherwise
@@ -181,8 +188,16 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<MethodDescriptor> findCollaboratorProvider(Type returnType);
 
     /**
-     * Find the descriptor for a field with the given type and name on the test
-     * class.
+     * Find the collaborator provider for the given name and return type.
+     *
+     * @param returnType the return type
+     * @param name the name associated with the collaborator provider method
+     * @return an optional with method descriptor, empty optional otherwise
+     */
+    Optional<MethodDescriptor> findCollaboratorProvider(Type returnType, String name);
+
+    /**
+     * Find the descriptor for a field with the given type and name on the test class.
      *
      * @param type the field type
      * @param name the field name

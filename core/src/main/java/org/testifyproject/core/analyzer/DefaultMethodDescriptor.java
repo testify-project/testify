@@ -15,12 +15,16 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static java.util.Optional.ofNullable;
+
 import java.lang.reflect.Method;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
+
+import org.testifyproject.MethodDescriptor;
+import org.testifyproject.annotation.Name;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.testifyproject.MethodDescriptor;
 
 /**
  * A descriptor class used to access or perform operations on test class methods.
@@ -68,6 +72,17 @@ public class DefaultMethodDescriptor implements MethodDescriptor {
     @Override
     public Method getMember() {
         return method;
+    }
+
+    @Override
+    public String getDeclaredName() {
+        Name name = method.getDeclaredAnnotation(Name.class);
+
+        if (name == null) {
+            return method.getName();
+        }
+
+        return name.value();
     }
 
 }

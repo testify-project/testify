@@ -16,6 +16,7 @@
 package org.testifyproject.di.fixture.module;
 
 import javax.inject.Singleton;
+
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.testifyproject.di.fixture.common.WiredContract;
 import org.testifyproject.di.fixture.common.WiredService;

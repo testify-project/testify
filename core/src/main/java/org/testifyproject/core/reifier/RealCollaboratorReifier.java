@@ -16,16 +16,16 @@
 package org.testifyproject.core.reifier;
 
 import java.util.Optional;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.tools.Discoverable;
-import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.extension.CollaboratorReifier;
+import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies test fields annotated with
- * {@link  org.testifyproject.annotation.Real}.
+ * A class that reifies test fields annotated with {@link  org.testifyproject.annotation.Real}.
  *
  * @author saden
  */
@@ -38,22 +38,25 @@ public class RealCollaboratorReifier implements CollaboratorReifier {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
-        testDescriptor.getFieldDescriptors().parallelStream()
-                .filter(p -> p.getReal().isPresent())
-                .forEach(fieldDescriptor -> {
-                    Class<?> fieldType = fieldDescriptor.getType();
-                    Object fieldValue = null;
+        testContext.getSutDescriptor().ifPresent(sut -> {
+            testDescriptor.getFieldDescriptors().parallelStream()
+                    .filter(p -> p.getReal().isPresent())
+                    .forEach(fieldDescriptor -> {
+                        Class<?> fieldType = fieldDescriptor.getType();
+                        Object fieldValue = null;
 
-                    Optional<Object> foundFieldValue = fieldDescriptor.getValue(testInstance);
+                        Optional<Object> foundFieldValue = fieldDescriptor
+                                .getValue(testInstance);
 
-                    if (foundFieldValue.isPresent()) {
-                        fieldValue = foundFieldValue.get();
-                    } else if (!fieldType.isInterface()) {
-                        fieldValue = ReflectionUtil.INSTANCE.newInstance(fieldType);
-                    }
+                        if (foundFieldValue.isPresent()) {
+                            fieldValue = foundFieldValue.get();
+                        } else if (!fieldType.isInterface()) {
+                            fieldValue = ReflectionUtil.INSTANCE.newInstance(fieldType);
+                        }
 
-                    fieldDescriptor.setValue(testInstance, fieldValue);
-                });
+                        fieldDescriptor.setValue(testInstance, fieldValue);
+                    });
+        });
     }
 
 }

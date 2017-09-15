@@ -17,11 +17,13 @@ package org.testifyproject.core;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.ApplicationInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Default implementation of {@link ApplicationInstance} contract.
@@ -36,7 +38,8 @@ public class DefaultApplicationInstance implements ApplicationInstance {
     private final Application application;
     private final Map<String, Object> properties;
 
-    DefaultApplicationInstance(TestContext testContext, Application application, Map<String, Object> properties) {
+    DefaultApplicationInstance(TestContext testContext, Application application,
+            Map<String, Object> properties) {
         this.application = application;
         this.testContext = testContext;
         this.properties = properties;

@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture.resource;
 
 import java.net.InetAddress;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
@@ -26,8 +27,7 @@ import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * An implementation of VirtualResourceProvider that provides a test virtual
- * resource.
+ * An implementation of VirtualResourceProvider that provides a test virtual resource.
  *
  * @author saden
  */
@@ -35,19 +35,22 @@ import org.testifyproject.trait.PropertiesReader;
 public class TestVirtualResourceProvider implements VirtualResourceProvider<Void> {
 
     @Override
-    public Void configure(TestContext testContext, VirtualResource virtualResource, PropertiesReader configReader) {
+    public Void configure(TestContext testContext, VirtualResource virtualResource,
+            PropertiesReader configReader) {
         return null;
     }
 
     @Override
-    public VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, Void configuration) {
+    public VirtualResourceInstance start(TestContext testContext,
+            VirtualResource virtualResource, Void configuration) {
         return VirtualResourceInstanceBuilder.builder()
                 .resource(InetAddresses.forString("127.0.0.1"), InetAddress.class)
-                .build("virtual.test.resource");
+                .build("virtual.test.resource", virtualResource);
     }
 
     @Override
-    public void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance) {
+    public void stop(TestContext testContext, VirtualResource virtualResource,
+            VirtualResourceInstance instance) {
     }
 
 }

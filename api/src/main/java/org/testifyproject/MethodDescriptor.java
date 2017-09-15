@@ -16,11 +16,11 @@
 package org.testifyproject;
 
 import java.util.Optional;
+
 import org.testifyproject.trait.MethodTrait;
 
 /**
- * A contract that defines methods to access properties of or perform operations
- * on a method.
+ * A contract that defines methods to access properties of or perform operations on a method.
  *
  * @author saden
  */
@@ -32,5 +32,21 @@ public interface MethodDescriptor extends MethodTrait {
      * @return an optional containing the instance, empty optional otherwise
      */
     Optional<Object> getInstance();
+
+    /**
+     * <p>
+     * Get the explicitly defined method name. Please note that method names are explicitly
+     * defined by annotating the method with {@link org.testifyproject.annotation.Name}.
+     * </p>
+     * <p>
+     * In the event a method name is not explicitly defined the value returned by calling
+     * {@link java.lang.reflect.Method#getName()} will be returned. Please note that name
+     * detection only works if your code is compiled with parameter names or debug information
+     * (javac -parameters or javac -g:vars).
+     * </p>
+     *
+     * @return the method name
+     */
+    String getDeclaredName();
 
 }

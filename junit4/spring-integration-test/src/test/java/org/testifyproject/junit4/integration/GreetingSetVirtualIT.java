@@ -15,13 +15,15 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Set;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.common.Greeting;

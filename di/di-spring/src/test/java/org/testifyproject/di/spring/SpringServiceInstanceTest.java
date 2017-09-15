@@ -15,13 +15,16 @@
  */
 package org.testifyproject.di.spring;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.inject.Provider;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,8 +59,10 @@ public class SpringServiceInstanceTest {
     @Before
     public void init() {
         context = new AnnotationConfigApplicationContext();
-        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner((BeanDefinitionRegistry) context);
-        BeanDefinitionDefaults beanDefinitionDefaults = scanner.getBeanDefinitionDefaults();
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(
+                (BeanDefinitionRegistry) context);
+        BeanDefinitionDefaults beanDefinitionDefaults = scanner
+                .getBeanDefinitionDefaults();
         beanDefinitionDefaults.setLazyInit(true);
 
         scanner.scan("org.testifyproject.di.fixture");

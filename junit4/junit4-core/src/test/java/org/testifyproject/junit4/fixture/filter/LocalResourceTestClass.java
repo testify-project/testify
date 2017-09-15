@@ -16,8 +16,8 @@
 package org.testifyproject.junit4.fixture.filter;
 
 import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.common.SutClass;
 
 /**

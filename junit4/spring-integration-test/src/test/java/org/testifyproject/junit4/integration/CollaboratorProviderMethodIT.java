@@ -16,14 +16,15 @@
 package org.testifyproject.junit4.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.annotation.CollaboratorProvider;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.common.DirectGreeter;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.common.impl.Hello;

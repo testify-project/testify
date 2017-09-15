@@ -16,14 +16,15 @@
 package org.testifyproject.junit4;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import org.testifyproject.annotation.Sut;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
 import org.testifyproject.junit4.fixture.common.Hello;
 import org.testifyproject.junit4.fixture.common.World;

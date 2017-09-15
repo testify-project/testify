@@ -17,8 +17,8 @@ package org.testifyproject.junit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.annotation.Sut;
 import org.testifyproject.junit4.fixture.ImplicitTypeDistinctTypes;
 import org.testifyproject.junit4.fixture.common.Hello;
 

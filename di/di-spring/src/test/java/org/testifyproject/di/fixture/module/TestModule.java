@@ -16,6 +16,7 @@
 package org.testifyproject.di.fixture.module;
 
 import javax.inject.Singleton;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.testifyproject.annotation.Fixture;

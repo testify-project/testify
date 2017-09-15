@@ -26,16 +26,14 @@ public interface TestResourcesProvider {
      * Start the test resources.
      *
      * @param testContext the test context
-     * @param serviceInstance the service instance
      */
-    void start(TestContext testContext, ServiceInstance serviceInstance);
+    void start(TestContext testContext);
 
     /**
      * Stop the test resources.
      *
      * @param testContext the test context
-     * @param serviceInstance the service instance
      */
-    void stop(TestContext testContext, ServiceInstance serviceInstance);
+    void stop(TestContext testContext);
 
 }

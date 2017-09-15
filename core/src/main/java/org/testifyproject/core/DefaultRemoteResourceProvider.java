@@ -16,18 +16,15 @@
 package org.testifyproject.core;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
+
 import org.testifyproject.DataProvider;
-import org.testifyproject.Instance;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.RemoteResourceProvider;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.ResourceInfo;
 import org.testifyproject.ResourceProvider;
-import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -40,9 +37,8 @@ import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * An implementation of {@link ResourceProvider} that manages the starting and
- * stopping of {@link RemoteResourceProvider} implementations required by the
- * test class.
+ * An implementation of {@link ResourceProvider} that manages the starting and stopping of
+ * {@link RemoteResourceProvider} implementations required by the test class.
  *
  * @author saden
  * @see org.testifyproject.ResourceProvider
@@ -53,22 +49,19 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
 
     private ReflectionUtil reflectionUtil;
     private FileSystemUtil fileSystemUtil;
-    private List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances;
 
     public DefaultRemoteResourceProvider() {
-        this(ReflectionUtil.INSTANCE, FileSystemUtil.INSTANCE, new LinkedList<>());
+        this(ReflectionUtil.INSTANCE, FileSystemUtil.INSTANCE);
     }
 
     DefaultRemoteResourceProvider(ReflectionUtil reflectionUtil,
-            FileSystemUtil fileSystemUtil,
-            List<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances) {
+            FileSystemUtil fileSystemUtil) {
         this.reflectionUtil = reflectionUtil;
         this.fileSystemUtil = fileSystemUtil;
-        this.resourceInstances = resourceInstances;
     }
 
     @Override
-    public void start(TestContext testContext, ServiceInstance serviceInstance) {
+    public void start(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
@@ -80,95 +73,72 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
         remoteResources.parallelStream().forEach(remoteResource -> {
             Class<? extends RemoteResourceProvider> value = remoteResource.value();
 
-            RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(value);
-            serviceInstance.inject(remoteResourceProvider);
+            RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(
+                    value);
             String configKey = remoteResource.configKey();
             PropertiesReader configReader = testContext.getPropertiesReader(configKey);
-            Object configuration = remoteResourceProvider.configure(testContext, remoteResource, configReader);
+            Object configuration = remoteResourceProvider.configure(testContext,
+                    remoteResource,
+                    configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
                 //start the resource
-                RemoteResourceInstance<Object> remoteResourceInstance
-                        = remoteResourceProvider.start(testContext, remoteResource, configuration);
+                RemoteResourceInstance<Object> remoteResourceInstance =
+                        remoteResourceProvider.start(testContext, remoteResource,
+                                configuration);
 
                 //determine if there are data files and load the data into te resource
                 String[] dataFilePatterns = remoteResource.dataFiles();
 
                 if (dataFilePatterns.length != 0) {
                     //load the data using the resource provider load method
-                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
-                    remoteResourceProvider.load(testContext, remoteResource, remoteResourceInstance, dataFiles);
+                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(
+                            dataFilePatterns);
+                    remoteResourceProvider.load(testContext, remoteResource,
+                            remoteResourceInstance,
+                            dataFiles);
 
                     //if there is data provider defined then create an instance of
                     //it and load data using the data provider as well
-                    Class<? extends DataProvider> dataProviderType = remoteResource.dataProvider();
+                    Class<? extends DataProvider> dataProviderType = remoteResource
+                            .dataProvider();
 
                     if (!DataProvider.class.equals(dataProviderType)) {
-                        DataProvider dataProvider = reflectionUtil.newInstance(dataProviderType);
-                        serviceInstance.inject(dataProvider);
+                        DataProvider dataProvider = reflectionUtil.newInstance(
+                                dataProviderType);
                         dataProvider.load(testContext, dataFiles, remoteResourceInstance);
                     }
                 }
 
                 //add resource properties to the test context with its fqn as its key
-                testContext.addProperty(remoteResourceInstance.getFqn(), remoteResourceInstance.getProperties());
-
-                //process the resource instance
-                processInstance(remoteResource, remoteResourceInstance, value, serviceInstance);
+                testContext.addProperty(remoteResourceInstance.getFqn(),
+                        remoteResourceInstance
+                                .getProperties());
 
                 //track the resource so it can be stopped later
-                ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                ResourceInfo resourceInstance = DefaultRemoteResourceInfo.of(
                         remoteResource,
                         remoteResourceProvider,
                         remoteResourceInstance);
 
-                resourceInstances.add(resourceInstance);
+                testContext
+                        .addCollectionElement(
+                                TestContextProperties.REMOTE_RESOURCE_INSTANCES,
+                                resourceInstance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' remote resource", e, value);
+                throw ExceptionUtil.INSTANCE
+                        .propagate("Could not start '{}' remote resource", e,
+                                value);
             }
         });
     }
 
-    void processInstance(RemoteResource remoteResource,
-            RemoteResourceInstance<Object> remoteResourceInstance,
-            Class<? extends RemoteResourceProvider> value,
-            ServiceInstance serviceInstance) {
-
-        String name = remoteResource.name();
-        String resourceInstanceName;
-        Class<RemoteResourceInstance> resourceInstanceContract = RemoteResourceInstance.class;
-
-        if (name.isEmpty()) {
-            resourceInstanceName = Paths.get("resource:/", remoteResourceInstance.getFqn()).normalize().toString();
-        } else {
-            resourceInstanceName = Paths.get("resource:/", name).normalize().toString();
-        }
-
-        serviceInstance.addConstant(remoteResourceInstance, resourceInstanceName, resourceInstanceContract);
-
-        processResource(resourceInstanceName, remoteResource, remoteResourceInstance, serviceInstance);
-    }
-
-    void processResource(String resourceInstanceName,
-            RemoteResource remoteResource,
-            RemoteResourceInstance<Object> remoteResourceInstance,
-            ServiceInstance serviceInstance) {
-        String resourceName = remoteResource.resourceName();
-        Class<?> resourceContract = remoteResource.resourceContract();
-        Instance resourceInstance = remoteResourceInstance.getResource();
-
-        if (resourceName.isEmpty()) {
-            resourceName = Paths.get(resourceInstanceName, "resource").toString();
-        } else {
-            resourceName = Paths.get(resourceInstanceName, resourceName).normalize().toString();
-        }
-
-        serviceInstance.replace(resourceInstance, resourceName, resourceContract);
-    }
-
     @Override
     public void stop(TestContext testContext) {
+        Collection<RemoteResourceInfo> resourceInstances =
+                testContext.getRemoteResources();
+
         resourceInstances.forEach(resourceInstance -> {
             try {
                 RemoteResourceProvider provider = resourceInstance.getProvider();

@@ -15,22 +15,46 @@
  */
 package org.testifyproject;
 
+import java.util.Optional;
+
+import org.testifyproject.annotation.Application;
+import org.testifyproject.trait.PropertiesReader;
+
 /**
- * A contract that defines methods for retrieving information about a client and
- * communicating with web resources running inside of the server.
+ * A contract that defines methods for retrieving information about a client and communicating
+ * with the application under test.
  *
  * @author saden
- * @param <T> the target type
+ * @param <C> the client
  */
-public interface ClientInstance<T> extends Instance<T> {
+public interface ClientInstance<C> extends PropertiesReader {
 
     /**
-     * Get a client instance that can be used to communicate with web resources
-     * running inside of the server.
+     * Get a unique fully qualified name associated with the virtual resource.
      *
-     * @return a client instance.
+     * @return the virtual resource's fully qualified name
      */
-    @Override
-    T getValue();
+    String getFqn();
 
+    /**
+     * Get the application annotation associated with the client instance.
+     *
+     * @return the application annotation
+     */
+    Application getApplication();
+
+    /**
+     * Get client instance.
+     *
+     * @return the client instance
+     */
+    Instance<C> getClient();
+
+    /**
+     * Get the client provider instance.
+     *
+     * @param <P> the client provider
+     * @return optional with the client provider, empty optional otherwise
+     */
+    <P> Optional<Instance<P>> getClientProvider();
 }

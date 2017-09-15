@@ -16,6 +16,7 @@
 package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Type;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

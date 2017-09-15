@@ -33,7 +33,7 @@ public class ScanInspector implements AnnotationInspector<Scan> {
 
     @Override
     public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, Scan scan) {
-        testDescriptor.addListElement(TestDescriptorProperties.SCANS, scan);
+        testDescriptor.addCollectionElement(TestDescriptorProperties.SCANS, scan);
     }
 
 }

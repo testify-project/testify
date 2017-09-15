@@ -18,8 +18,8 @@ package org.testifyproject.core.reifier;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.SutReifier;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.extension.annotation.UnitCategory;
+import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies the sut class.
@@ -36,8 +36,8 @@ public class CreateSutReifier implements SutReifier {
         testContext.getSutDescriptor().ifPresent(sutDescriptor -> {
             Object testInstance = testContext.getTestInstance();
 
-            Object sutValue = sutDescriptor.getValue(testInstance).orElseGet(()
-                    -> ReflectionUtil.INSTANCE.newInstance(sutDescriptor.getType())
+            Object sutValue = sutDescriptor.getValue(testInstance).orElseGet(() ->
+                    ReflectionUtil.INSTANCE.newInstance(sutDescriptor.getType())
             );
 
             sutDescriptor.setValue(testInstance, sutValue);

@@ -15,13 +15,16 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.Optional;
 import static java.util.Optional.empty;
-import org.junit.Before;
-import org.junit.Test;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
@@ -33,7 +36,7 @@ import org.testifyproject.fixture.common.InvalidTestClass;
  * @author saden
  */
 public class ApplicationPreVerifierTest {
-    
+
     ApplicationPreVerifier sut;
 
     @Before
@@ -86,5 +89,5 @@ public class ApplicationPreVerifierTest {
         verify(testDescriptor).getTestClassName();
         verify(testDescriptor).getApplication();
     }
-    
+
 }

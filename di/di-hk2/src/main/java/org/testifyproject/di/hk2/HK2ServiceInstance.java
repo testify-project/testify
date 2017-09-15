@@ -15,30 +15,31 @@
  */
 package org.testifyproject.di.hk2;
 
+import static org.glassfish.hk2.api.ServiceLocatorState.RUNNING;
+import static org.glassfish.hk2.utilities.BuilderHelper.createContractFilter;
+import static org.glassfish.hk2.utilities.BuilderHelper.createNameAndContractFilter;
+import static org.glassfish.hk2.utilities.BuilderHelper.createNameFilter;
+import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addOneConstant;
+import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Set;
+
 import javax.inject.Named;
 import javax.inject.Qualifier;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.DynamicConfigurationService;
 import org.glassfish.hk2.api.IndexedFilter;
 import org.glassfish.hk2.api.MultiException;
 import org.glassfish.hk2.api.Populator;
 import org.glassfish.hk2.api.ServiceLocator;
-import static org.glassfish.hk2.api.ServiceLocatorState.RUNNING;
 import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.BuilderHelper;
-import static org.glassfish.hk2.utilities.BuilderHelper.createContractFilter;
-import static org.glassfish.hk2.utilities.BuilderHelper.createNameAndContractFilter;
-import static org.glassfish.hk2.utilities.BuilderHelper.createNameFilter;
 import org.glassfish.hk2.utilities.NamedImpl;
-import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addOneConstant;
-import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Module;
@@ -48,10 +49,12 @@ import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class
- * provides the ability to work with HK2 {@link ServiceLocator} to create,
- * locate, and manage services.
+ * An HK2 DI implementation of {@link ServiceInstance} SPI contract. This class provides the
+ * ability to work with HK2 {@link ServiceLocator} to create, locate, and manage services.
  *
  * @author saden
  */
@@ -152,11 +155,13 @@ public class HK2ServiceInstance implements ServiceInstance {
     public void replace(Object instance, String name, Class contract) {
         Class instanceType = instance.getClass();
 
-        IndexedFilter filter = BuilderHelper.createContractFilter(instanceType.getTypeName());
+        IndexedFilter filter = BuilderHelper.createContractFilter(instanceType
+                .getTypeName());
         removeFilter(locator, filter, true);
 
         if (name != null && contract != null) {
-            removeFilter(locator, createNameAndContractFilter(contract.getName(), name), true);
+            removeFilter(locator, createNameAndContractFilter(contract.getName(), name),
+                    true);
             removeFilter(locator, createNameFilter(name), true);
             removeFilter(locator, createContractFilter(contract.getName()), true);
         } else if (name != null) {
@@ -170,7 +175,8 @@ public class HK2ServiceInstance implements ServiceInstance {
 
     @Override
     public void addModules(Module... modules) {
-        DynamicConfigurationService dcs = locator.getService(DynamicConfigurationService.class);
+        DynamicConfigurationService dcs = locator.getService(
+                DynamicConfigurationService.class);
         DynamicConfiguration config = dcs.createDynamicConfiguration();
 
         for (Module module : modules) {
@@ -184,19 +190,22 @@ public class HK2ServiceInstance implements ServiceInstance {
     @Override
     public void addScans(Scan... scans) {
         try {
-            DynamicConfigurationService dcs = locator.getService(DynamicConfigurationService.class);
+            DynamicConfigurationService dcs = locator.getService(
+                    DynamicConfigurationService.class);
             DynamicConfiguration dc = dcs.createDynamicConfiguration();
             Populator populator = dcs.getPopulator();
             ClassLoader classLoader = testContext.getTestDescriptor().getTestClassLoader();
 
             for (Scan scan : scans) {
-                HK2DescriptorPopulator descriptorPopulator = new HK2DescriptorPopulator(classLoader, scan.value());
+                HK2DescriptorPopulator descriptorPopulator = new HK2DescriptorPopulator(
+                        classLoader, scan.value());
                 populator.populate(descriptorPopulator);
             }
 
             dc.commit();
         } catch (IOException | MultiException e) {
-            throw ExceptionUtil.INSTANCE.propagate("Could not populate service instance", e);
+            throw ExceptionUtil.INSTANCE.propagate("Could not populate service instance",
+                    e);
         }
     }
 

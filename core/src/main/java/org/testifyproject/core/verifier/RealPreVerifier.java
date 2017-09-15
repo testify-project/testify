@@ -15,9 +15,11 @@
  */
 package org.testifyproject.core.verifier;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import java.util.Optional;
-import static java.util.stream.Collectors.toList;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
@@ -29,18 +31,20 @@ import org.testifyproject.extension.annotation.Lenient;
 import org.testifyproject.extension.annotation.Loose;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure that the test class contains a field annotated with
- * {@link org.testifyproject.annotation.Sut} annotation or a field annotated
- * with {@link org.testifyproject.annotation.Real}.
+ * {@link org.testifyproject.annotation.Sut} annotation or a field annotated with
+ * {@link org.testifyproject.annotation.Real}.
  *
  * @author saden
  */
 @Strict
 @Lenient
 @Loose
+@UnitCategory
 @IntegrationCategory
 @SystemCategory
 @Discoverable
@@ -57,7 +61,8 @@ public class RealPreVerifier implements PreVerifier {
                 .filter(p -> p.getReal().isPresent())
                 .collect(toList());
 
-        ExceptionUtil.INSTANCE.raise(!foundSutDescriptor.isPresent() && fieldDescriptors.isEmpty(),
+        ExceptionUtil.INSTANCE.raise(!foundSutDescriptor.isPresent() && fieldDescriptors
+                .isEmpty(),
                 "Test class '{}' does not define a field annotated with @Sut "
                 + "nor does it define field(s) annotated with @Real. Please "
                 + "insure the test class defines a single field annotated "

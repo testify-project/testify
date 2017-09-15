@@ -15,11 +15,11 @@
  */
 package org.testifyproject;
 
+import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * A contract that defines methods for getting information about a virtual
- * resource.
+ * A contract that defines methods for getting information about a virtual resource.
  *
  * @author saden
  * @param <R> the underlying virtual resource type
@@ -32,6 +32,13 @@ public interface VirtualResourceInstance<R> extends PropertiesReader {
      * @return the virtual resource's fully qualified name
      */
     String getFqn();
+
+    /**
+     * Get the virtual resource annotation associated with the virtual resource instance.
+     *
+     * @return the virtual resource annotation
+     */
+    VirtualResource getVirtualResource();
 
     /**
      * Get the resource instance associated with the virtual resource.

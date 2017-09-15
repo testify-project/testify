@@ -15,11 +15,13 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.ParameterDescriptor;
@@ -37,8 +39,8 @@ public class DefaultParameterDescriptorTest {
 
     @Before
     public void init() throws NoSuchMethodException {
-        Constructor<AnalyzedSutClass> constructor
-                = AnalyzedSutClass.class.getDeclaredConstructor(Map.class);
+        Constructor<AnalyzedSutClass> constructor =
+                AnalyzedSutClass.class.getDeclaredConstructor(Map.class);
 
         index = 0;
         parameter = constructor.getParameters()[index];

@@ -15,11 +15,12 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.extension.annotation.Strict;
@@ -48,7 +49,9 @@ public class GuidelineInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addListElement(TestDescriptorProperties.GUIDELINE_ANNOTATIONS, type);
+        verify(testDescriptor).addCollectionElement(
+                TestDescriptorProperties.GUIDELINE_ANNOTATIONS,
+                type);
     }
 
 }

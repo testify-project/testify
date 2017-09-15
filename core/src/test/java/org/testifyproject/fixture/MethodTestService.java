@@ -15,6 +15,8 @@
  */
 package org.testifyproject.fixture;
 
+import org.testifyproject.annotation.Name;
+
 /**
  *
  * @author saden
@@ -27,6 +29,7 @@ public class MethodTestService implements TestContract {
         message = "init";
     }
 
+    @Name("kill")
     void destroy() {
         message = "destroy";
 

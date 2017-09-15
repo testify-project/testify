@@ -15,6 +15,11 @@
  */
 package org.testifyproject.core.analyzer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -23,15 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import org.testifyproject.SutDescriptor;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.ParameterDescriptor;
+import org.testifyproject.SutDescriptor;
 import org.testifyproject.fixture.analyzer.AnalyzedSutClass;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -138,25 +140,27 @@ public class DefaultSutDescriptorTest {
         Class<Object> type = Object.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Optional<FieldDescriptor> result = sut.findFieldDescriptor(type);
 
         assertThat(result).contains(fieldDescriptor);
     }
-    
+
     @Test
     public void givenSubtypeFindFieldDescriptorShouldReturnFieldDescriptor() {
         Class<Collection> type = Collection.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
         Class<List> searchType = List.class;
 
         given(fieldDescriptor.isSupertypeOf(searchType)).willReturn(true);
-        
+
         Optional<FieldDescriptor> result = sut.findFieldDescriptor(searchType);
 
         assertThat(result).contains(fieldDescriptor);
@@ -168,7 +172,8 @@ public class DefaultSutDescriptorTest {
         String name = "name";
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
-        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey, fieldDescriptor);
+        Map<DescriptorKey, FieldDescriptor> value = ImmutableMap.of(descriptorKey,
+                fieldDescriptor);
         properties.put(SutDescriptorProperties.FIELD_DESCRIPTORS_CACHE, value);
 
         Optional<FieldDescriptor> result = sut.findFieldDescriptor(type, name);
@@ -192,25 +197,27 @@ public class DefaultSutDescriptorTest {
         Class<Object> type = Object.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
-        Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey, parameterDescriptor);
+        Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey,
+                parameterDescriptor);
         properties.put(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
 
         Optional<ParameterDescriptor> result = sut.findParameterDescriptor(type);
 
         assertThat(result).contains(parameterDescriptor);
     }
-    
-     @Test
+
+    @Test
     public void givenSubtypeFindParameterDescriptorShouldReturnParameterDescriptor() {
         Class<Collection> type = Collection.class;
         DescriptorKey descriptorKey = DescriptorKey.of(type);
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
-        Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey, parameterDescriptor);
+        Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey,
+                parameterDescriptor);
         properties.put(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
         Class<List> searchType = List.class;
-        
+
         given(parameterDescriptor.isSupertypeOf(searchType)).willReturn(true);
-        
+
         Optional<ParameterDescriptor> result = sut.findParameterDescriptor(searchType);
 
         assertThat(result).contains(parameterDescriptor);
@@ -222,7 +229,8 @@ public class DefaultSutDescriptorTest {
         String name = "name";
         DescriptorKey descriptorKey = DescriptorKey.of(type, name);
         ParameterDescriptor parameterDescriptor = mock(ParameterDescriptor.class);
-        Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey, parameterDescriptor);
+        Map<DescriptorKey, ParameterDescriptor> value = ImmutableMap.of(descriptorKey,
+                parameterDescriptor);
         properties.put(SutDescriptorProperties.PARAMETER_DESCRIPTORS_CACHE, value);
 
         Optional<ParameterDescriptor> result = sut.findParameterDescriptor(type, name);

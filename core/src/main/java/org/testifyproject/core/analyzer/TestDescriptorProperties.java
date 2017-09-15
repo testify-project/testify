@@ -93,9 +93,14 @@ public class TestDescriptorProperties {
     public static final String INSPECTED_ANNOTATIONS = "inspectedAnnotations";
 
     /**
-     * Inspected annotations cache property key.
+     * Guideline annotations cache property key.
      */
     public static final String GUIDELINE_ANNOTATIONS = "guidelineAnnotations";
+
+    /**
+     * Hint annotations cache property key.
+     */
+    public static final String HINT_ANNOTATION = "hintAnnotation";
 
     private TestDescriptorProperties() {
     }
