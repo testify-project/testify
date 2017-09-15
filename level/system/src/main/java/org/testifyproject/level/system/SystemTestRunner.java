@@ -15,8 +15,11 @@
  */
 package org.testifyproject.level.system;
 
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
 import java.net.URI;
 import java.util.Optional;
+
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.Instance;
@@ -31,7 +34,6 @@ import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.core.TestContextProperties;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
@@ -79,46 +81,60 @@ public class SystemTestRunner implements TestRunner {
             //create and initalize mock fields. this is necessary so we can configure
             //expected interaction prior to making a call to the application
             //endpoints
-            serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class, SystemCategory.class)
+            serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class,
+                    SystemCategory.class)
                     .forEach(p -> p.reify(testContext));
 
-            serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor.getGuidelines(), SystemCategory.class)
+            serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor
+                    .getGuidelines(), SystemCategory.class)
                     .forEach(p -> p.verify(testContext));
 
             testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
             testResourcesProvider.start(testContext);
 
-            ServerInstance serverInstance = createServer(testContext, application, testConfigurer);
-            testContext.addProperty(TestContextProperties.APP_SERVER_INSTANCE, serverInstance);
-            testContext.addProperty(serverInstance.getFqn(), serverInstance.getProperties());
+            ServerInstance serverInstance = createServer(testContext, application,
+                    testConfigurer);
+            testContext.addProperty(TestContextProperties.APP_SERVER_INSTANCE,
+                    serverInstance);
+            testContext.addProperty(serverInstance.getFqn(), serverInstance
+                    .getProperties());
 
-            ClientInstance clientInstance = createClient(testContext, application, testConfigurer, serverInstance.getBaseURI());
-            testContext.addProperty(TestContextProperties.APP_CLIENT_INSTANCE, clientInstance);
-            testContext.addProperty(clientInstance.getFqn(), clientInstance.getProperties());
+            ClientInstance clientInstance = createClient(testContext, application,
+                    testConfigurer, serverInstance.getBaseURI());
+            testContext.addProperty(TestContextProperties.APP_CLIENT_INSTANCE,
+                    clientInstance);
+            testContext.addProperty(clientInstance.getFqn(), clientInstance
+                    .getProperties());
 
-            testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE).ifPresent(serviceInstance -> {
-                serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class, SystemCategory.class)
-                        .stream()
-                        .flatMap(p -> p.get(testContext).stream())
-                        .forEach(serviceInstance::replace);
+            testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
+                    .ifPresent(serviceInstance -> {
+                        serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class,
+                                SystemCategory.class)
+                                .stream()
+                                .flatMap(p -> p.get(testContext).stream())
+                                .forEach(serviceInstance::replace);
 
-                //XXX: Some DI framework (i.e. Spring) require that the service instance
-                //context be initialized. We need to do the initialization after the
-                //required resources have started so that resources can dynamically
-                //added to the service instance and eligiable for injection into the
-                //test class and test fixtures.
-                serviceInstance.init();
+                        //XXX: Some DI framework (i.e. Spring) require that the service instance
+                        //context be initialized. We need to do the initialization after the
+                        //required resources have started so that resources can dynamically
+                        //added to the service instance and eligiable for injection into the
+                        //test class and test fixtures.
+                        serviceInstance.init();
 
-                testContext.getSutDescriptor().ifPresent(sutDescriptor
-                        -> createSut(sutDescriptor, clientInstance, serviceInstance, testInstance)
-                );
+                        testContext.getSutDescriptor().ifPresent(sutDescriptor ->
+                                createSut(sutDescriptor, clientInstance, serviceInstance,
+                                        testInstance)
+                        );
 
-                serviceLocatorUtil.findAllWithFilter(FinalReifier.class, SystemCategory.class)
-                        .forEach(p -> p.reify(testContext));
+                        serviceLocatorUtil.findAllWithFilter(FinalReifier.class,
+                                SystemCategory.class)
+                                .forEach(p -> p.reify(testContext));
 
-                serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor.getGuidelines(), SystemCategory.class)
-                        .forEach(p -> p.verify(testContext));
-            });
+                        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class,
+                                testDescriptor
+                                        .getGuidelines(), SystemCategory.class)
+                                .forEach(p -> p.verify(testContext));
+                    });
         });
     }
 
@@ -128,7 +144,8 @@ public class SystemTestRunner implements TestRunner {
         Object testInstance = testContext.getTestInstance();
         Optional<SutDescriptor> sutDescriptor = testContext.getSutDescriptor();
 
-        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor.getGuidelines(), SystemCategory.class)
+        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor
+                .getGuidelines(), SystemCategory.class)
                 .forEach(p -> p.verify(testContext));
 
         //invoke destroy method on fields annotated with Fixture
@@ -138,10 +155,12 @@ public class SystemTestRunner implements TestRunner {
         //invoke destroy method on sut field annotated with Fixture
         sutDescriptor.ifPresent(p -> p.destroy(testInstance));
 
-        testContext.<ClientInstance>findProperty(TestContextProperties.APP_CLIENT_INSTANCE)
+        testContext
+                .<ClientInstance>findProperty(TestContextProperties.APP_CLIENT_INSTANCE)
                 .ifPresent(clientProvider::destroy);
 
-        testContext.<ServerInstance>findProperty(TestContextProperties.APP_SERVER_INSTANCE)
+        testContext
+                .<ServerInstance>findProperty(TestContextProperties.APP_SERVER_INSTANCE)
                 .ifPresent(serverProvider::stop);
 
         testResourcesProvider.stop(testContext);
@@ -166,7 +185,8 @@ public class SystemTestRunner implements TestRunner {
         sutDescriptor.setValue(testInstance, sutValue);
     }
 
-    ServerInstance createServer(TestContext testContext, Application application, TestConfigurer testConfigurer) {
+    ServerInstance createServer(TestContext testContext, Application application,
+            TestConfigurer testConfigurer) {
         //create server provider instance
         Class<? extends ServerProvider> serverProviderType = application.serverProvider();
         if (ServerProvider.class.equals(serverProviderType)) {

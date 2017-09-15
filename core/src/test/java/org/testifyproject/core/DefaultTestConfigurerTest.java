@@ -15,14 +15,16 @@
  */
 package org.testifyproject.core;
 
-import java.lang.reflect.Type;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Type;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -134,7 +136,7 @@ public class DefaultTestConfigurerTest {
         verify(configHandler).getInstance();
         verify(configHandler).invoke(testInstance, configuration);
     }
-    
+
     @Test
     public void givenConfigHandlerWithInstanceAndNoValueConfigureShouldReturnOriginalConfiguration() {
         TestContext testContext = mock(TestContext.class);

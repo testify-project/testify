@@ -32,8 +32,7 @@ public interface MockProvider {
     <T> T createFake(Class<? extends T> type);
 
     /**
-     * Create a virtual instance of the given type that delegates to the given
-     * instance.
+     * Create a virtual instance of the given type that delegates to the given instance.
      *
      * @param <T> the type of the object being virtualized
      * @param type the class of the type being virtualized
@@ -43,8 +42,7 @@ public interface MockProvider {
     <T> T createVirtual(Class<? extends T> type, T delegate);
 
     /**
-     * Create a virtual instance of the given type that delegates to the given
-     * instance.
+     * Create a virtual instance of the given type that delegates to the given instance.
      *
      * @param <T> the type of the object being virtualized
      * @param type the class of the type being virtualized
@@ -56,8 +54,7 @@ public interface MockProvider {
     }
 
     /**
-     * Verify all interaction between the system under test and its
-     * collaborators.
+     * Verify all interaction between the system under test and its collaborators.
      *
      * @param collaborators an array of collaborators that will be verified
      */

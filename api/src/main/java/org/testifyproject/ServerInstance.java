@@ -16,12 +16,12 @@
 package org.testifyproject;
 
 import java.net.URI;
+
 import org.testifyproject.annotation.Application;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * A contract that defines methods for retrieving information about the running
- * server.
+ * A contract that defines methods for retrieving information about the running server.
  *
  * @author saden
  * @param <T> the underlying server instance type.

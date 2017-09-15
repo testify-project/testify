@@ -16,17 +16,18 @@
 package org.testifyproject.junit4.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
+
 import org.glassfish.hk2.api.IterableProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.BDDMockito.given;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Sut;
-import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.IterableProviderGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.impl.Hello;

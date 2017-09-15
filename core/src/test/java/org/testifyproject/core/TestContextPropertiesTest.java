@@ -16,6 +16,7 @@
 package org.testifyproject.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 /**
@@ -23,7 +24,7 @@ import org.junit.Test;
  * @author saden
  */
 public class TestContextPropertiesTest {
-    
+
     @Test
     public void verifyConstants() {
         assertThat(TestContextProperties.APP).isNotEmpty();
@@ -38,5 +39,5 @@ public class TestContextPropertiesTest {
         assertThat(TestContextProperties.SUT_INSTANCE).isNotEmpty();
         assertThat(TestContextProperties.SERVICE_INSTANCE).isNotEmpty();
     }
-    
+
 }

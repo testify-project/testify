@@ -15,20 +15,22 @@
  */
 package org.testifyproject.di.spring;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
+import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+
 import javax.inject.Named;
 import javax.inject.Provider;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.springframework.beans.BeansException;
-import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.support.BeanDefinitionDefaults;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -44,11 +46,13 @@ import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * A Spring DI implementation of {@link ServiceInstance} SPI contract. This
- * class provides the ability to work with Spring
- * {@link ConfigurableApplicationContext} to create, locate, and manage
- * services.
+ * A Spring DI implementation of {@link ServiceInstance} SPI contract. This class provides the
+ * ability to work with Spring {@link ConfigurableApplicationContext} to create, locate, and
+ * manage services.
  *
  * @author saden
  */
@@ -78,7 +82,8 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public void inject(Object instance) {
         if (isRunning()) {
-            DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
+            DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context
+                    .getBeanFactory();
             beanFactory.autowireBean(instance);
         }
     }
@@ -163,10 +168,12 @@ public class SpringServiceInstance implements ServiceInstance {
         Class rawType = token.getRawType();
 
         if (token.isSubtypeOf(Provider.class)) {
-            rawType = token.resolveType(Provider.class.getTypeParameters()[0]).getRawType();
+            rawType = token.resolveType(Provider.class.getTypeParameters()[0])
+                    .getRawType();
             instance = SpringDefaultProvider.of(this, rawType);
         } else if (token.isSubtypeOf(Optional.class)) {
-            rawType = token.resolveType(Optional.class.getTypeParameters()[0]).getRawType();
+            rawType = token.resolveType(Optional.class.getTypeParameters()[0])
+                    .getRawType();
             instance = Optional.ofNullable(context.getBean(rawType));
         } else if (token.isSubtypeOf(Map.class)) {
             rawType = token.resolveType(Map.class.getTypeParameters()[1]).getRawType();
@@ -211,7 +218,8 @@ public class SpringServiceInstance implements ServiceInstance {
 
     @Override
     public void addConstant(Object instance, String name, Class contract) {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context
+                .getBeanFactory();
         Class instanceType = instance.getClass();
 
         if (name != null) {
@@ -223,7 +231,8 @@ public class SpringServiceInstance implements ServiceInstance {
 
     @Override
     public void replace(Object instance, String name, Class contract) {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context
+                .getBeanFactory();
 
         if (name != null && contract != null) {
             if (beanFactory.containsBean(name)) {
@@ -231,7 +240,8 @@ public class SpringServiceInstance implements ServiceInstance {
             }
 
             //XXX: find and remove all the beans that implment the given contract
-            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, contract, true, false);
+            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
+                    contract, true, false);
 
             for (String beanName : contractBeanNames) {
                 beanFactory.removeBeanDefinition(beanName);
@@ -242,14 +252,16 @@ public class SpringServiceInstance implements ServiceInstance {
             }
         } else if (contract != null) {
             //XXX: find and remove all the beans that implment the given contract
-            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, contract, true, false);
+            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
+                    contract, true, false);
 
             for (String beanName : contractBeanNames) {
                 beanFactory.removeBeanDefinition(beanName);
             }
         } else {
             //XXX: find and remove all the beans of the given instance type
-            String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory, instance.getClass(), true, false);
+            String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
+                    instance.getClass(), true, false);
             for (String beanName : typeBeanNames) {
                 beanFactory.removeBeanDefinition(beanName);
             }
@@ -261,7 +273,8 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public void addModules(Module... modules) {
         BeanDefinitionRegistry registry = (BeanDefinitionRegistry) context;
-        AnnotatedBeanDefinitionReader annotatedBeanDefinitionReader = new AnnotatedBeanDefinitionReader(registry);
+        AnnotatedBeanDefinitionReader annotatedBeanDefinitionReader =
+                new AnnotatedBeanDefinitionReader(registry);
 
         for (Module module : modules) {
             annotatedBeanDefinitionReader.registerBean(module.value());
@@ -271,8 +284,10 @@ public class SpringServiceInstance implements ServiceInstance {
     @Override
     public void addScans(Scan... scans) {
         BeanDefinitionRegistry registry = (BeanDefinitionRegistry) context;
-        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry);
-        BeanDefinitionDefaults beanDefinitionDefaults = scanner.getBeanDefinitionDefaults();
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(
+                registry);
+        BeanDefinitionDefaults beanDefinitionDefaults = scanner
+                .getBeanDefinitionDefaults();
         beanDefinitionDefaults.setLazyInit(true);
 
         for (Scan scan : scans) {

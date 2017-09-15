@@ -15,14 +15,17 @@
  */
 package org.testifyproject.core;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Map;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * A class that contains resource, client, and properties of a local resource.
@@ -54,8 +57,7 @@ public class DefaultLocalResourceInstance<R, C> implements LocalResourceInstance
     }
 
     /**
-     * Create a local resource instance based on the given resource, client and
-     * properties.
+     * Create a local resource instance based on the given resource, client and properties.
      *
      * @param <R> the underlying resource type
      * @param <C> the underlying resource client type
@@ -71,7 +73,8 @@ public class DefaultLocalResourceInstance<R, C> implements LocalResourceInstance
             Instance<R> resource,
             Instance<C> client,
             Map<String, Object> properties) {
-        return new DefaultLocalResourceInstance<>(fqn, localResource, resource, client, properties);
+        return new DefaultLocalResourceInstance<>(fqn, localResource, resource, client,
+                properties);
     }
 
     @Override

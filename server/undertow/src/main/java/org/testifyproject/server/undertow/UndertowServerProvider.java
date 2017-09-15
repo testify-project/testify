@@ -15,6 +15,41 @@
  */
 package org.testifyproject.server.undertow;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
+import static org.testifyproject.core.ApplicationInstanceProperties.APPLICATION_INSTANCE;
+import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER;
+import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_HANDLERS;
+
+import java.lang.reflect.Field;
+import java.net.ServerSocket;
+import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.servlet.ServletContainerInitializer;
+
+import org.testifyproject.ApplicationInstance;
+import org.testifyproject.ApplicationProvider;
+import org.testifyproject.ServerInstance;
+import org.testifyproject.ServerProvider;
+import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Application;
+import org.testifyproject.core.ServerInstanceBuilder;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.LoggingUtil;
+import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.tools.Discoverable;
+import org.xnio.StreamConnection;
+import org.xnio.channels.AcceptingChannel;
+
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -27,36 +62,6 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.handlers.DefaultServlet;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
-import java.lang.reflect.Field;
-import java.net.ServerSocket;
-import java.net.URI;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import java.util.Set;
-import javax.servlet.ServletContainerInitializer;
-import org.testifyproject.ApplicationInstance;
-import org.testifyproject.ApplicationProvider;
-import org.testifyproject.ServerInstance;
-import org.testifyproject.ServerProvider;
-import org.testifyproject.TestContext;
-import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Application;
-import static org.testifyproject.core.ApplicationInstanceProperties.APPLICATION_INSTANCE;
-import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER;
-import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_HANDLERS;
-import org.testifyproject.core.ServerInstanceBuilder;
-import org.testifyproject.core.util.ExceptionUtil;
-import org.testifyproject.core.util.LoggingUtil;
-import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.tools.Discoverable;
-import org.xnio.StreamConnection;
-import org.xnio.channels.AcceptingChannel;
 
 /**
  * An Undertow implementation of the ServerProvider SPI contract.
@@ -74,25 +79,32 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
 
     @Override
     public DeploymentInfo configure(TestContext testContext) {
-        applicationProvider = ServiceLocatorUtil.INSTANCE.getOne(ApplicationProvider.class);
+        applicationProvider = ServiceLocatorUtil.INSTANCE
+                .getOne(ApplicationProvider.class);
         ApplicationInstance applicationInstance = applicationProvider.start(testContext);
         testContext.addProperty(APPLICATION_INSTANCE, applicationInstance);
 
         try {
             String name = testContext.getName();
 
-            Optional<Set<Class<?>>> foundHandlers = applicationInstance.findProperty(SERVLET_HANDLERS);
-            Optional<ServletContainerInitializer> foundInitializer = applicationInstance.findProperty(SERVLET_CONTAINER_INITIALIZER);
+            Optional<Set<Class<?>>> foundHandlers = applicationInstance.findProperty(
+                    SERVLET_HANDLERS);
+            Optional<ServletContainerInitializer> foundInitializer = applicationInstance
+                    .findProperty(SERVLET_CONTAINER_INITIALIZER);
             DeploymentInfo deploymentInfo = null;
 
             if (foundHandlers.isPresent() && foundInitializer.isPresent()) {
                 Set<Class<?>> handles = foundHandlers.get();
                 ServletContainerInitializer initializerInstance = foundInitializer.get();
 
-                ImmediateInstanceFactory<ServletContainerInitializer> factory = new ImmediateInstanceFactory<>(initializerInstance);
+                ImmediateInstanceFactory<ServletContainerInitializer> factory =
+                        new ImmediateInstanceFactory<>(initializerInstance);
                 URI uri = URI.create(DEFAULT_URI);
-                Class<? extends ServletContainerInitializer> initializerClass = initializerInstance.getClass();
-                ServletContainerInitializerInfo initInfo = new ServletContainerInitializerInfo(initializerClass, factory, handles);
+                Class<? extends ServletContainerInitializer> initializerClass =
+                        initializerInstance.getClass();
+                ServletContainerInitializerInfo initInfo =
+                        new ServletContainerInitializerInfo(initializerClass, factory,
+                                handles);
 
                 ServletInfo servletInfo = Servlets.servlet(name, DefaultServlet.class);
                 TestDescriptor testDescriptor = testContext.getTestDescriptor();
@@ -116,7 +128,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public ServerInstance<Undertow> start(TestContext testContext, Application application, DeploymentInfo deploymentInfo) {
+    public ServerInstance<Undertow> start(TestContext testContext, Application application,
+            DeploymentInfo deploymentInfo) {
         try {
             DeploymentManager deploymentManager = Servlets.defaultContainer()
                     .addDeployment(deploymentInfo);
@@ -172,7 +185,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
 
             Field channelsField = foundField.get();
             channelsField.setAccessible(true);
-            List<AcceptingChannel<? extends StreamConnection>> channels = (List) getFieldValue(channelsField, undertow);
+            List<AcceptingChannel<? extends StreamConnection>> channels =
+                    (List) getFieldValue(channelsField, undertow);
 
             channels.stream()
                     .map(this::getPortFromChannel).
@@ -218,7 +232,8 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
         try {
             return of(type.getDeclaredField(name));
         } catch (NoSuchFieldException | SecurityException e) {
-            LoggingUtil.INSTANCE.debug("Could not find field '{}' in type '{}'", name, type.getSimpleName(), e);
+            LoggingUtil.INSTANCE.debug("Could not find field '{}' in type '{}'", name,
+                    type.getSimpleName(), e);
             return empty();
         }
     }
@@ -229,9 +244,9 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
                 field.setAccessible(true);
 
                 return (T) field.get(instance);
-            } catch (IllegalAccessException
-                    | IllegalArgumentException
-                    | SecurityException e) {
+            } catch (IllegalAccessException |
+                    IllegalArgumentException |
+                    SecurityException e) {
                 throw ExceptionUtil.INSTANCE.propagate(e);
             }
         });

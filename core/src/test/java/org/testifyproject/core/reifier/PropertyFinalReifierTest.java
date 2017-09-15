@@ -15,14 +15,16 @@
  */
 package org.testifyproject.core.reifier;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;

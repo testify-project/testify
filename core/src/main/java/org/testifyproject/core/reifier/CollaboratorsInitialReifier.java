@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
@@ -37,8 +38,7 @@ import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies the sut and test based on the presence of
- * {@link org.testifyproject.annotation.CollaboratorProvider} class on the test
- * class.
+ * {@link org.testifyproject.annotation.CollaboratorProvider} class on the test class.
  *
  * @author saden
  */
@@ -53,28 +53,29 @@ public class CollaboratorsInitialReifier implements InitialReifier {
         MockProvider mockProvider = testContext.getMockProvider();
 
         testContext.getSutDescriptor()
-                .ifPresent(sutDescriptor
-                        -> sutDescriptor.getValue(testInstance)
-                        .ifPresent(sutValue -> {
-                            TestDescriptor testDescriptor = testContext.getTestDescriptor();
-                            Sut sut = sutDescriptor.getSut();
-                            String factoryMethodName = sut.factoryMethod();
+                .ifPresent(sutDescriptor ->
+                        sutDescriptor.getValue(testInstance)
+                                .ifPresent(sutValue -> {
+                                    TestDescriptor testDescriptor = testContext
+                                            .getTestDescriptor();
+                                    Sut sut = sutDescriptor.getSut();
+                                    String factoryMethodName = sut.factoryMethod();
 
-                            if (!factoryMethodName.isEmpty()) {
-                                processFactoryMethod(factoryMethodName,
-                                        testDescriptor,
-                                        sutDescriptor,
-                                        mockProvider,
-                                        sutValue,
-                                        testInstance);
-                            } else {
-                                processFields(testDescriptor,
-                                        sutDescriptor,
-                                        mockProvider,
-                                        sutValue,
-                                        testInstance);
-                            }
-                        }));
+                                    if (!factoryMethodName.isEmpty()) {
+                                        processFactoryMethod(factoryMethodName,
+                                                testDescriptor,
+                                                sutDescriptor,
+                                                mockProvider,
+                                                sutValue,
+                                                testInstance);
+                                    } else {
+                                        processFields(testDescriptor,
+                                                sutDescriptor,
+                                                mockProvider,
+                                                sutValue,
+                                                testInstance);
+                                    }
+                                }));
     }
 
     void processFactoryMethod(String factoryMethodName,
@@ -92,23 +93,26 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             //if the collaborator provider has a method that returns a collection or an array
             //of collaborators that match the types of the factory method then use it to
             //create an instance of the sut.
-            Collection<MethodDescriptor> collaboratorProviders = testDescriptor.getCollaboratorProviders();
+            Collection<MethodDescriptor> collaboratorProviders = testDescriptor
+                    .getCollaboratorProviders();
 
             for (MethodDescriptor collaboratorProvider : collaboratorProviders) {
                 if (collaboratorProvider.hasReturnType(Object[].class)
                         || collaboratorProvider.hasReturnType(Collection.class)) {
-                    Optional<Object> foundCollaborators
-                            = getCollaborators(testDescriptor, collaboratorProvider, testInstance);
+                    Optional<Object> foundCollaborators =
+                            getCollaborators(testDescriptor, collaboratorProvider, testInstance);
 
                     if (foundCollaborators.isPresent()) {
                         Object[] collaborators = convertToArray(foundCollaborators.get());
                         Class[] collaboratorReturnTypes = Stream.of(collaborators)
-                                .map(collaborator -> getCollaboratorType(mockProvider, collaborator))
+                                .map(collaborator -> getCollaboratorType(mockProvider,
+                                        collaborator))
                                 .toArray(Class[]::new);
 
                         if (Arrays.equals(factoryMethodParamTypes, collaboratorReturnTypes)) {
                             factoryMethodDescriptor.invoke(sutValue, collaborators)
-                                    .ifPresent(value -> sutDescriptor.setValue(testInstance, value));
+                                    .ifPresent(value -> sutDescriptor
+                                            .setValue(testInstance, value));
                             return;
                         }
 
@@ -120,7 +124,8 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             //at the builder paramteters and see if there are methods in the collaborator
             //providers that return the same type and call them to provide collaborators
             //for the sut
-            Object[] collaborators = findCollaborators(testDescriptor, factoryMethodDescriptor, testInstance);
+            Object[] collaborators = findCollaborators(testDescriptor, factoryMethodDescriptor,
+                    testInstance);
 
             factoryMethodDescriptor.invoke(sutValue, collaborators)
                     .ifPresent(value -> sutDescriptor.setValue(testInstance, value));
@@ -134,13 +139,14 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             Object testInstance) {
         //if method factory is not specified then find collaborator methods that provide
         //an array or collection and see if they can be used to reify the sut
-        Collection<MethodDescriptor> collaboratorProviders = testDescriptor.getCollaboratorProviders();
+        Collection<MethodDescriptor> collaboratorProviders = testDescriptor
+                .getCollaboratorProviders();
 
         for (MethodDescriptor collaboratorProvider : collaboratorProviders) {
             if (collaboratorProvider.hasReturnType(Object[].class)
                     || collaboratorProvider.hasReturnType(Collection.class)) {
-                Optional<Object> foundCollaborators
-                        = getCollaborators(testDescriptor, collaboratorProvider, testInstance);
+                Optional<Object> foundCollaborators =
+                        getCollaborators(testDescriptor, collaboratorProvider, testInstance);
 
                 if (foundCollaborators.isPresent()) {
                     processCollaborators(
@@ -164,8 +170,8 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             }
 
             Class collaboratorType = getCollaboratorType(mockProvider, collaborator);
-            Optional<FieldDescriptor> foundFieldDescriptor
-                    = sutDescriptor.findFieldDescriptor(collaboratorType);
+            Optional<FieldDescriptor> foundFieldDescriptor =
+                    sutDescriptor.findFieldDescriptor(collaboratorType);
 
             if (foundFieldDescriptor.isPresent()) {
                 FieldDescriptor fieldDescriptor = foundFieldDescriptor.get();
@@ -174,19 +180,24 @@ public class CollaboratorsInitialReifier implements InitialReifier {
         }
     }
 
-    Optional<Object> getCollaborators(TestDescriptor testDescriptor, MethodDescriptor methodDescriptor, Object testInstance) {
-        Object[] collaborators = findCollaborators(testDescriptor, methodDescriptor, testInstance);
+    Optional<Object> getCollaborators(TestDescriptor testDescriptor,
+            MethodDescriptor methodDescriptor, Object testInstance) {
+        Object[] collaborators = findCollaborators(testDescriptor, methodDescriptor,
+                testInstance);
 
         return methodDescriptor.getInstance()
-                .map(instance -> methodDescriptor.invoke(instance, convertToArray(collaborators)))
-                .orElseGet(() -> methodDescriptor.invoke(testInstance, convertToArray(collaborators)));
+                .map(instance -> methodDescriptor.invoke(instance, convertToArray(
+                        collaborators)))
+                .orElseGet(() -> methodDescriptor.invoke(testInstance, convertToArray(
+                        collaborators)));
     }
 
-    Object[] findCollaborators(TestDescriptor testDescriptor, MethodDescriptor methodDescriptor, Object testInstance) {
+    Object[] findCollaborators(TestDescriptor testDescriptor, MethodDescriptor methodDescriptor,
+            Object testInstance) {
         return methodDescriptor.getParameters().stream()
                 .map(parameter -> {
-                    Optional<MethodDescriptor> foundMethodDescriptor
-                            = findCollaboratorProvider(testDescriptor, parameter);
+                    Optional<MethodDescriptor> foundMethodDescriptor =
+                            findCollaboratorProvider(testDescriptor, parameter);
 
                     ExceptionUtil.INSTANCE.raise(!foundMethodDescriptor.isPresent(),
                             "Could not find a provider for argument '{} {}'"
@@ -200,20 +211,24 @@ public class CollaboratorsInitialReifier implements InitialReifier {
                 })
                 .filter(foundMethodDescriptor -> foundMethodDescriptor.isPresent())
                 .map(foundMethodDescriptor -> foundMethodDescriptor.get())
-                .map(parameterMethodDescriptor
-                        -> getCollaborators(testDescriptor, parameterMethodDescriptor, testInstance).orElse(null)
+                .map(parameterMethodDescriptor ->
+                        getCollaborators(testDescriptor, parameterMethodDescriptor, testInstance)
+                                .orElse(null)
                 )
                 .toArray();
     }
 
-    Optional<MethodDescriptor> findCollaboratorProvider(TestDescriptor testDescriptor, Parameter parameter) {
+    Optional<MethodDescriptor> findCollaboratorProvider(TestDescriptor testDescriptor,
+            Parameter parameter) {
         Class<?> parameterType = parameter.getType();
         Name name = parameter.getDeclaredAnnotation(Name.class);
         Optional<MethodDescriptor> foundMethodDescriptor;
 
         if (name == null) {
             //find a method that has returns the same type as the parameter and has the same name
-            foundMethodDescriptor = testDescriptor.findCollaboratorProvider(parameterType, parameter.getName());
+            foundMethodDescriptor = testDescriptor.findCollaboratorProvider(parameterType,
+                    parameter
+                            .getName());
 
             //if one is not found then just use parameter type matching
             if (!foundMethodDescriptor.isPresent()) {
@@ -221,7 +236,8 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             }
         } else {
             //if a name is specified then use it to find the right method
-            foundMethodDescriptor = testDescriptor.findCollaboratorProvider(parameterType, name.value());
+            foundMethodDescriptor = testDescriptor.findCollaboratorProvider(parameterType, name
+                    .value());
         }
 
         return foundMethodDescriptor;

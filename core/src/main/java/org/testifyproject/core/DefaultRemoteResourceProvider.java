@@ -18,10 +18,12 @@ package org.testifyproject.core;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
+
 import org.testifyproject.DataProvider;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.RemoteResourceProvider;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.ResourceInfo;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -35,9 +37,8 @@ import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * An implementation of {@link ResourceProvider} that manages the starting and
- * stopping of {@link RemoteResourceProvider} implementations required by the
- * test class.
+ * An implementation of {@link ResourceProvider} that manages the starting and stopping of
+ * {@link RemoteResourceProvider} implementations required by the test class.
  *
  * @author saden
  * @see org.testifyproject.ResourceProvider
@@ -72,55 +73,71 @@ public class DefaultRemoteResourceProvider implements ResourceProvider {
         remoteResources.parallelStream().forEach(remoteResource -> {
             Class<? extends RemoteResourceProvider> value = remoteResource.value();
 
-            RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(value);
+            RemoteResourceProvider remoteResourceProvider = reflectionUtil.newInstance(
+                    value);
             String configKey = remoteResource.configKey();
             PropertiesReader configReader = testContext.getPropertiesReader(configKey);
-            Object configuration = remoteResourceProvider.configure(testContext, remoteResource, configReader);
+            Object configuration = remoteResourceProvider.configure(testContext,
+                    remoteResource,
+                    configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
                 //start the resource
-                RemoteResourceInstance<Object> remoteResourceInstance
-                        = remoteResourceProvider.start(testContext, remoteResource, configuration);
+                RemoteResourceInstance<Object> remoteResourceInstance =
+                        remoteResourceProvider.start(testContext, remoteResource,
+                                configuration);
 
                 //determine if there are data files and load the data into te resource
                 String[] dataFilePatterns = remoteResource.dataFiles();
 
                 if (dataFilePatterns.length != 0) {
                     //load the data using the resource provider load method
-                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
-                    remoteResourceProvider.load(testContext, remoteResource, remoteResourceInstance, dataFiles);
+                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(
+                            dataFilePatterns);
+                    remoteResourceProvider.load(testContext, remoteResource,
+                            remoteResourceInstance,
+                            dataFiles);
 
                     //if there is data provider defined then create an instance of
                     //it and load data using the data provider as well
-                    Class<? extends DataProvider> dataProviderType = remoteResource.dataProvider();
+                    Class<? extends DataProvider> dataProviderType = remoteResource
+                            .dataProvider();
 
                     if (!DataProvider.class.equals(dataProviderType)) {
-                        DataProvider dataProvider = reflectionUtil.newInstance(dataProviderType);
+                        DataProvider dataProvider = reflectionUtil.newInstance(
+                                dataProviderType);
                         dataProvider.load(testContext, dataFiles, remoteResourceInstance);
                     }
                 }
 
                 //add resource properties to the test context with its fqn as its key
-                testContext.addProperty(remoteResourceInstance.getFqn(), remoteResourceInstance.getProperties());
+                testContext.addProperty(remoteResourceInstance.getFqn(),
+                        remoteResourceInstance
+                                .getProperties());
 
                 //track the resource so it can be stopped later
-                ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                ResourceInfo resourceInstance = DefaultRemoteResourceInfo.of(
                         remoteResource,
                         remoteResourceProvider,
                         remoteResourceInstance);
 
-                testContext.addCollectionElement(TestContextProperties.REMOTE_RESOURCE_INSTANCES, resourceInstance);
+                testContext
+                        .addCollectionElement(
+                                TestContextProperties.REMOTE_RESOURCE_INSTANCES,
+                                resourceInstance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' remote resource", e, value);
+                throw ExceptionUtil.INSTANCE
+                        .propagate("Could not start '{}' remote resource", e,
+                                value);
             }
         });
     }
 
     @Override
     public void stop(TestContext testContext) {
-        Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> resourceInstances
-                = testContext.findCollection(TestContextProperties.REMOTE_RESOURCE_INSTANCES);
+        Collection<RemoteResourceInfo> resourceInstances =
+                testContext.getRemoteResources();
 
         resourceInstances.forEach(resourceInstance -> {
             try {

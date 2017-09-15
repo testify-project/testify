@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
@@ -62,7 +64,8 @@ public class LocalResourceInstanceBuilderTest {
         given(localResource.resourceName()).willReturn(customName);
         given(localResource.resourceContract()).willReturn(customContract);
 
-        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue, resourceContract)
+        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue,
+                resourceContract)
                 .build(fqn, localResource);
 
         assertThat(result).isNotNull();
@@ -83,7 +86,8 @@ public class LocalResourceInstanceBuilderTest {
         given(localResource.resourceName()).willReturn(customName);
         given(localResource.resourceContract()).willReturn(customContract);
 
-        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue).build(fqn, localResource);
+        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue).build(fqn,
+                localResource);
 
         assertThat(result).isNotNull();
 
@@ -103,7 +107,8 @@ public class LocalResourceInstanceBuilderTest {
         given(localResource.resourceName()).willReturn(customName);
         given(localResource.resourceContract()).willReturn(customContract);
 
-        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue).build(fqn, localResource);
+        LocalResourceInstance<Object, Object> result = sut.resource(resourceValue).build(fqn,
+                localResource);
 
         assertThat(result).isNotNull();
 
@@ -137,7 +142,7 @@ public class LocalResourceInstanceBuilderTest {
         assertThat(instance.getContract()).contains(clientContract);
         assertThat(instance.getValue()).isEqualTo(clientValue);
     }
-    
+
     @Test
     public void givenClientWithoutCustomNameAndContractBuildShouldAddClient() {
         String customName = "";
@@ -147,7 +152,8 @@ public class LocalResourceInstanceBuilderTest {
         given(localResource.clientName()).willReturn(customName);
         given(localResource.clientContract()).willReturn(customContract);
 
-        LocalResourceInstance<Object, Object> result = sut.client(clientValue).build(fqn, localResource);
+        LocalResourceInstance<Object, Object> result = sut.client(clientValue).build(fqn,
+                localResource);
 
         assertThat(result).isNotNull();
         assertThat(result.getClient()).isPresent();
@@ -169,7 +175,8 @@ public class LocalResourceInstanceBuilderTest {
         given(localResource.clientName()).willReturn(customName);
         given(localResource.clientContract()).willReturn(customContract);
 
-        LocalResourceInstance<Object, Object> result = sut.client(clientValue).build(fqn, localResource);
+        LocalResourceInstance<Object, Object> result = sut.client(clientValue).build(fqn,
+                localResource);
 
         assertThat(result).isNotNull();
         assertThat(result.getClient()).isPresent();
@@ -187,7 +194,8 @@ public class LocalResourceInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        LocalResourceInstance<Object, Object> result = sut.property(key, value).build(fqn, localResource);
+        LocalResourceInstance<Object, Object> result = sut.property(key, value).build(fqn,
+                localResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -199,7 +207,8 @@ public class LocalResourceInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(key, value);
 
-        LocalResourceInstance<Object, Object> result = sut.properties(properties).build(fqn, localResource);
+        LocalResourceInstance<Object, Object> result = sut.properties(properties).build(fqn,
+                localResource);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);

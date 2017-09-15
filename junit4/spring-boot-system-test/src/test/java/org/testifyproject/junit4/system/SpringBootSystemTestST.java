@@ -15,15 +15,18 @@
  */
 package org.testifyproject.junit4.system;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.sql.DataSource;
 import javax.ws.rs.client.WebTarget;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -106,25 +109,35 @@ public class SpringBootSystemTestST {
     @Test
     public void verifyInjections() {
         assertThat(sut).as("injection of application client as the SUT").isNotNull();
-        assertThat(clientInstance).as("injection of application ClientInstance").isNotNull();
+        assertThat(clientInstance).as("injection of application ClientInstance")
+                .isNotNull();
         assertThat(greetingService).as("injection of an application service").isNotNull();
         assertThat(testContext).as("injection of TestContext").isNotNull();
         assertThat(serverInstance).as("injection of ServerInstance").isNotNull();
         assertThat(container).as("injection of application server instance").isNotNull();
 
-        assertThat(virtualResourceInstance).as("injection of VirtualResourceInstance").isNotNull();
-        assertThat(virtualResource).as("injection of Virtual Resource resource").isNotNull();
-        assertThat(qualifiedVirtualResource).as("injection of Virtual Resource resource by @Qualifier").isNotNull();
+        assertThat(virtualResourceInstance).as("injection of VirtualResourceInstance")
+                .isNotNull();
+        assertThat(virtualResource).as("injection of Virtual Resource resource")
+                .isNotNull();
+        assertThat(qualifiedVirtualResource).as(
+                "injection of Virtual Resource resource by @Qualifier").isNotNull();
 
-        assertThat(localResourceInstance).as("injection of LocalResourceInstance").isNotNull();
+        assertThat(localResourceInstance).as("injection of LocalResourceInstance")
+                .isNotNull();
         assertThat(localResource).as("injection of Local Resource resource").isNotNull();
-        assertThat(namedLocalResource).as("injection of Local Resource resource by @Named").isNotNull();
+        assertThat(namedLocalResource)
+                .as("injection of Local Resource resource by @Named").isNotNull();
         assertThat(localClient).as("injection of Local Resource client").isNotNull();
-        assertThat(resourceLocalClient).as("injection of Local Resource client by @Resource").isNotNull();
+        assertThat(resourceLocalClient).as(
+                "injection of Local Resource client by @Resource").isNotNull();
 
-        assertThat(properties).as("injection of application server properties map").isNotEmpty();
-        assertThat(application).as("injection of application server property by expression").isNotNull();
-        assertThat(sources).as("injection of application server property by sub-expression").isNotNull();
+        assertThat(properties).as("injection of application server properties map")
+                .isNotEmpty();
+        assertThat(application).as(
+                "injection of application server property by expression").isNotNull();
+        assertThat(sources).as(
+                "injection of application server property by sub-expression").isNotNull();
     }
 
 }

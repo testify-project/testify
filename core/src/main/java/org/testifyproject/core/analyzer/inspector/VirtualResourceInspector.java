@@ -32,8 +32,10 @@ import org.testifyproject.tools.Discoverable;
 public class VirtualResourceInspector implements AnnotationInspector<VirtualResource> {
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, VirtualResource virtualResource) {
-        testDescriptor.addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES, virtualResource);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType,
+            VirtualResource virtualResource) {
+        testDescriptor.addCollectionElement(TestDescriptorProperties.VIRTUAL_RESOURCES,
+                virtualResource);
     }
 
 }

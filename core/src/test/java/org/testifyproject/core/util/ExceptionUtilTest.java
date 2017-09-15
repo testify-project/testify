@@ -16,12 +16,13 @@
 package org.testifyproject.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestifyException;
 
 /**
@@ -63,7 +64,7 @@ public class ExceptionUtilTest {
         assertThat(result.getMessage()).contains(greeting, name);
         verify(loggingUtil).formatMessage(messageFormat, args);
     }
-    
+
     @Test
     public void givenMessageFormatAndThrowableAndArgsPropogateShouldReturn() {
         String greeting = "Hello";
@@ -79,7 +80,7 @@ public class ExceptionUtilTest {
         assertThat(result.getMessage()).contains(greeting, name);
         verify(loggingUtil).formatMessage(messageFormat, args);
     }
-    
+
     @Test
     public void givenMessageFormatAndArgsRaiseShouldThrowException() {
         String greeting = "Hello";

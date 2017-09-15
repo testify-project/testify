@@ -18,15 +18,11 @@ package org.testifyproject.core;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.testifyproject.LocalResourceInstance;
-import org.testifyproject.LocalResourceProvider;
+
+import org.testifyproject.LocalResourceInfo;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
-import org.testifyproject.RemoteResourceInstance;
-import org.testifyproject.RemoteResourceProvider;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
@@ -34,15 +30,14 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
-import org.testifyproject.VirtualResourceInstance;
-import org.testifyproject.VirtualResourceProvider;
-import org.testifyproject.annotation.LocalResource;
-import org.testifyproject.annotation.RemoteResource;
-import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.VirtualResourceInfo;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * A small context class that contains reference to the test testInstance, the
- * test testDescriptor, and helper methods.
+ * A small context class that contains reference to the test testInstance, the test
+ * testDescriptor, and helper methods.
  *
  * @author saden
  */
@@ -141,17 +136,17 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> getLocalResourceInstances() {
+    public Collection<LocalResourceInfo> getLocalResources() {
         return findCollection(TestContextProperties.LOCAL_RESOURCE_INSTANCES);
     }
 
     @Override
-    public Collection<ResourceInstance<RemoteResource, RemoteResourceProvider, RemoteResourceInstance>> getRemoteResourceInstances() {
+    public Collection<RemoteResourceInfo> getRemoteResources() {
         return findCollection(TestContextProperties.REMOTE_RESOURCE_INSTANCES);
     }
 
     @Override
-    public Collection<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> getVirtualResourceInstances() {
+    public Collection<VirtualResourceInfo> getVirtualResources() {
         return findCollection(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
     }
 

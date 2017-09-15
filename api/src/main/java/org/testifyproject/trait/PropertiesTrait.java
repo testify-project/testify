@@ -19,13 +19,12 @@ import java.util.Map;
 
 /**
  * <p>
- * A contracts that specifies Properties trait. Classes that implement this
- * interface have the ability to associate properties with the implementation
- * class.
+ * A contracts that specifies Properties trait. Classes that implement this interface have the
+ * ability to associate properties with the implementation class.
  * </p>
  * <p>
- * Note that with respect to null keys and values the behavior the methods in
- * contract are dependent on the {@link Map} implementation returned by {@link #getProperties()
+ * Note that with respect to null keys and values the behavior the methods in contract are
+ * dependent on the {@link Map} implementation returned by {@link #getProperties()
  * }
  * </p>
  *
@@ -34,8 +33,7 @@ import java.util.Map;
 public interface PropertiesTrait {
 
     /**
-     * Get the properties associated with this implementation of
-     * PropertiesTrait.
+     * Get the properties associated with this implementation of PropertiesTrait.
      *
      * @param <V> map entry value type
      * @return a map containing key/value pairs

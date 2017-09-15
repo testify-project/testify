@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core.reifier;
 
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.MockProvider;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;

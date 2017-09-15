@@ -16,6 +16,7 @@
 package org.testifyproject.di.fixture.autowired.impl;
 
 import javax.inject.Named;
+
 import org.jvnet.hk2.annotations.Service;
 import org.testifyproject.di.fixture.autowired.Greeting;
 

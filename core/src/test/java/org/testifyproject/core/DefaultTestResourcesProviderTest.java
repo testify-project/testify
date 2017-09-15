@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.util.ServiceLocatorUtil;
@@ -60,12 +62,14 @@ public class DefaultTestResourcesProviderTest {
         ResourceProvider resourceProvider = mock(ResourceProvider.class);
         List<ResourceProvider> foundResourceProviders = ImmutableList.of(resourceProvider);
 
-        given(serviceLocatorUtil.findAll(ResourceProvider.class)).willReturn(foundResourceProviders);
+        given(serviceLocatorUtil.findAll(ResourceProvider.class)).willReturn(
+                foundResourceProviders);
 
         sut.start(testContext);
 
         verify(resourceProvider).start(testContext);
-        verify(testContext).addCollectionElement(TestContextProperties.RESOURCE_PROVIDERS, resourceProvider);
+        verify(testContext).addCollectionElement(TestContextProperties.RESOURCE_PROVIDERS,
+                resourceProvider);
     }
 
     @Test
@@ -74,7 +78,9 @@ public class DefaultTestResourcesProviderTest {
         ResourceProvider resourceProvider = mock(ResourceProvider.class);
         List<ResourceProvider> foundResourceProviders = ImmutableList.of(resourceProvider);
 
-        given(testContext.<ResourceProvider>findCollection(TestContextProperties.RESOURCE_PROVIDERS)).willReturn(foundResourceProviders);
+        given(testContext.<ResourceProvider>findCollection(
+                TestContextProperties.RESOURCE_PROVIDERS))
+                .willReturn(foundResourceProviders);
 
         sut.stop(testContext);
 

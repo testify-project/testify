@@ -53,9 +53,10 @@ public class LocalResourcePreVerifier implements PreVerifier {
                         p.getConstructor();
                     } catch (NoSuchMethodException e) {
                         ExceptionUtil.INSTANCE.raise(
-                                "Local Resource '{}' defined in test class '{}' does not have a zero "
-                                + "argument default constructor. Please insure that the local resource "
-                                + "provider defines a public zero argument default constructor.",
+                                "Local Resource '{}' defined in test class '{}' does not have "
+                                + "a zero argument default constructor. Please insure that the "
+                                + "local resource provider defines a public zero argument "
+                                + "default constructor.",
                                 testClassName, p.getSimpleName()
                         );
                     }

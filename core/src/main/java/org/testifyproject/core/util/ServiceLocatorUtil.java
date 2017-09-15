@@ -15,6 +15,10 @@
  */
 package org.testifyproject.core.util;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,13 +26,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
 
 /**
- * A utility class that uses {@link ServiceLoader} mechanism to locate service
- * descriptors under "META-INF/services" folder.
+ * A utility class that uses {@link ServiceLoader} mechanism to locate service descriptors under
+ * "META-INF/services" folder.
  *
  * @author saden
  */
@@ -65,8 +66,8 @@ public class ServiceLocatorUtil {
     }
 
     /**
-     * Find all implementations of the given type annotated with the given
-     * guideline and filter annotations.
+     * Find all implementations of the given type annotated with the given guideline and filter
+     * annotations.
      *
      * @param <T> the SPI type
      * @param type the SPI contract
@@ -105,8 +106,7 @@ public class ServiceLocatorUtil {
     }
 
     /**
-     * Find all implementations of the given type annotated with the given
-     * annotation.
+     * Find all implementations of the given type annotated with the given annotation.
      *
      * @param <T> the SPI type
      * @param type the SPI contract
@@ -135,9 +135,8 @@ public class ServiceLocatorUtil {
     }
 
     /**
-     * Gets one implementation of the given type. If more than one
-     * implementation is found in the classpath an IllegalStateException will be
-     * thrown.
+     * Gets one implementation of the given type. If more than one implementation is found in
+     * the classpath an IllegalStateException will be thrown.
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
@@ -155,9 +154,8 @@ public class ServiceLocatorUtil {
     }
 
     /**
-     * Gets one implementation of the given type using the given annotation
-     * filter. If more than one implementation is found in the classpath an
-     * IllegalStateException will be thrown.
+     * Gets one implementation of the given type using the given annotation filter. If more than
+     * one implementation is found in the classpath an IllegalStateException will be thrown.
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
@@ -190,8 +188,8 @@ public class ServiceLocatorUtil {
     }
 
     /**
-     * Get a specific implementation of the given contract. If no implementation
-     * is found in the classpath an IllegalStateException will be thrown.
+     * Get a specific implementation of the given contract. If no implementation is found in the
+     * classpath an IllegalStateException will be thrown.
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
@@ -214,8 +212,8 @@ public class ServiceLocatorUtil {
     }
 
     /**
-     * Get an implementation of the contract. If an implementation is not found
-     * in the classpath then get the default implementation.
+     * Get an implementation of the contract. If an implementation is not found in the classpath
+     * then get the default implementation.
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
@@ -260,8 +258,8 @@ public class ServiceLocatorUtil {
     }
 
     /**
-     * Gets all implementations of the given type. If no implementation is found
-     * in the classpath an IllegalStateException will be thrown.
+     * Gets all implementations of the given type. If no implementation is found in the
+     * classpath an IllegalStateException will be thrown.
      *
      * @param <T> the SPI type
      * @param contract the SPI contract
@@ -310,7 +308,8 @@ public class ServiceLocatorUtil {
     void insureNotEmpty(List<?> result, String name) {
         ExceptionUtil.INSTANCE.raise(result.isEmpty(),
                 "Could not find an implementaiton of '{}' contract in the classpath. "
-                + "Please insure at least one implementation of '{}' contract is in the classpath", name, name);
+                + "Please insure at least one implementation of '{}' contract is in the classpath",
+                name, name);
     }
 
     void insureOne(List<?> result, String name) {

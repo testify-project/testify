@@ -15,12 +15,13 @@
  */
 package org.testifyproject.di.fixture.common;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import org.testifyproject.di.fixture.common.impl.Caio;
 import org.testifyproject.di.fixture.common.impl.Haye;
 import org.testifyproject.di.fixture.common.impl.Hello;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 
 /**
  * Greeting module.
@@ -32,8 +33,10 @@ public class GreetingModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Greeting.class).to(Hello.class).in(Singleton.class);
-        bind(Greeting.class).annotatedWith(GreetingQualfier.class).to(Caio.class).in(Singleton.class);
-        bind(Greeting.class).annotatedWith(Names.named("Haye")).to(Haye.class).in(Singleton.class);
+        bind(Greeting.class).annotatedWith(GreetingQualfier.class).to(Caio.class).in(
+                Singleton.class);
+        bind(Greeting.class).annotatedWith(Names.named("Haye")).to(Haye.class).in(
+                Singleton.class);
         bind(Greeter.class).in(Singleton.class);
     }
 

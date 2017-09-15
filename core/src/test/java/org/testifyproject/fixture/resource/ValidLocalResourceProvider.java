@@ -30,16 +30,19 @@ import org.testifyproject.trait.PropertiesReader;
 public class ValidLocalResourceProvider implements LocalResourceProvider {
 
     @Override
-    public Object configure(TestContext testContext, LocalResource localResource, PropertiesReader configReader) {
+    public Object configure(TestContext testContext, LocalResource localResource,
+            PropertiesReader configReader) {
         return null;
     }
 
     @Override
-    public LocalResourceInstance start(TestContext testContext, LocalResource localResource, Object config) {
+    public LocalResourceInstance start(TestContext testContext, LocalResource localResource,
+            Object config) {
         return null;
     }
 
     @Override
-    public void stop(TestContext testContext, LocalResource localResource, LocalResourceInstance instance) {
+    public void stop(TestContext testContext, LocalResource localResource,
+            LocalResourceInstance instance) {
     }
 }

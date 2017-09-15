@@ -18,6 +18,7 @@ package org.testifyproject.mock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
+
 import org.easymock.cglib.proxy.Factory;
 import org.junit.Before;
 import org.junit.Test;

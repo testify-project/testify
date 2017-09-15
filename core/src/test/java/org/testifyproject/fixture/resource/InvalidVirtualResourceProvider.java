@@ -36,17 +36,21 @@ public class InvalidVirtualResourceProvider implements VirtualResourceProvider<V
     }
 
     @Override
-    public Void configure(TestContext testContext, VirtualResource virtualResource, PropertiesReader configReader) {
+    public Void configure(TestContext testContext, VirtualResource virtualResource,
+            PropertiesReader configReader) {
         return null;
     }
 
     @Override
-    public VirtualResourceInstance start(TestContext testContext, VirtualResource virtualResource, Void configuration) {
+    public VirtualResourceInstance start(TestContext testContext,
+            VirtualResource virtualResource,
+            Void configuration) {
         return null;
     }
 
     @Override
-    public void stop(TestContext testContext, VirtualResource virtualResource, VirtualResourceInstance instance) {
+    public void stop(TestContext testContext, VirtualResource virtualResource,
+            VirtualResourceInstance instance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

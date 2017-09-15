@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture.web;
 
 import javax.ws.rs.ApplicationPath;
+
 import org.glassfish.jersey.server.ResourceConfig;
 import org.testifyproject.junit4.fixture.web.feature.ServiceLocatorConfigFeature;
 

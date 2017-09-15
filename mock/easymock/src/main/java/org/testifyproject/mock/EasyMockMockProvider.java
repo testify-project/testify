@@ -15,15 +15,17 @@
  */
 package org.testifyproject.mock;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.stream.IntStream;
-import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.stream.IntStream;
+
+import org.easymock.EasyMock;
 import org.easymock.cglib.proxy.Factory;
 import org.testifyproject.MockProvider;
 import org.testifyproject.tools.Discoverable;
@@ -63,9 +65,9 @@ public class EasyMockMockProvider implements MockProvider {
             replay(instance);
 
             return instance;
-        } catch (IllegalAccessException
-                | IllegalArgumentException
-                | InvocationTargetException e) {
+        } catch (IllegalAccessException |
+                IllegalArgumentException |
+                InvocationTargetException e) {
             throw new IllegalArgumentException("Could not delegate method calls", e);
         }
     }

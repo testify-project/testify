@@ -15,8 +15,10 @@
  */
 package org.testifyproject.core.analyzer;
 
-import java.lang.reflect.Method;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Method;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.MethodDescriptor;

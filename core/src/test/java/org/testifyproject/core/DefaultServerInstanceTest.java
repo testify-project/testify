@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import java.net.URI;
 import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.annotation.Application;
@@ -89,7 +91,9 @@ public class DefaultServerInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ServerInstance<Object> equal = DefaultServerInstance.of(fqn, application, baseURI, server, properties);
+        ServerInstance<Object> equal = DefaultServerInstance.of(fqn, application, baseURI,
+                server,
+                properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());

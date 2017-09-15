@@ -17,13 +17,15 @@ package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.ParameterDescriptor;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * A descriptor class used to access or perform operations on a system under test (SUT) constructor
- * parameters.
+ * A descriptor class used to access or perform operations on a system under test (SUT)
+ * constructor parameters.
  *
  * @author saden
  */

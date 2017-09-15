@@ -15,19 +15,20 @@
  */
 package org.testifyproject.trait;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
 
 /**
  * <p>
  * A contracts that specifies methods for reading property values. class.
  * </p>
  * <p>
- * Note that with respect to null keys and values the behavior the methods in
- * contract are dependent on the {@link Map} implementation returned by {@link #getProperties()
+ * Note that with respect to null keys and values the behavior the methods in contract are
+ * dependent on the {@link Map} implementation returned by {@link #getProperties()
  * }
  * </p>
  *
@@ -40,8 +41,7 @@ public interface PropertiesReader extends PropertiesTrait {
      * Get a PropertiesReader instance for the given mapKey. Note that:
      * </p>
      * <ul>
-     * <li>If the key is empty then the this PropertiesReader instance will be
-     * returned</li>
+     * <li>If the key is empty then the this PropertiesReader instance will be returned</li>
      * <li>If the key is not found then an empty map will be returned</li>
      * </ul>
      * @param key the key associated with the map
@@ -78,8 +78,8 @@ public interface PropertiesReader extends PropertiesTrait {
     }
 
     /**
-     * Find a collection value associated with the given key. If the queue is
-     * not found an {@link Collections#emptyList()} will be returned.
+     * Find a collection value associated with the given key. If the queue is not found an
+     * {@link Collections#emptyList()} will be returned.
      *
      * @param <E> the collection element type
      * @param key the key associated with the queue
@@ -92,8 +92,8 @@ public interface PropertiesReader extends PropertiesTrait {
     }
 
     /**
-     * Find a map typed associated with the given key. If the map is not found
-     * an {@link Collections#emptyMap()} is returned.
+     * Find a map typed associated with the given key. If the map is not found an
+     * {@link Collections#emptyMap()} is returned.
      *
      * @param <K> the map key type
      * @param <V> the map value type

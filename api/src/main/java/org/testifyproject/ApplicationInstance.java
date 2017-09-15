@@ -20,8 +20,7 @@ import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
 
 /**
- * A contract that defines methods for retrieving information about an
- * application.
+ * A contract that defines methods for retrieving information about an application.
  *
  * @author saden
  */

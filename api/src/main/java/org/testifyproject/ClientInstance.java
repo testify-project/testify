@@ -16,12 +16,13 @@
 package org.testifyproject;
 
 import java.util.Optional;
+
 import org.testifyproject.annotation.Application;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * A contract that defines methods for retrieving information about a client and
- * communicating with the application under test.
+ * A contract that defines methods for retrieving information about a client and communicating
+ * with the application under test.
  *
  * @author saden
  * @param <C> the client

@@ -17,8 +17,7 @@ package org.testifyproject.core;
 
 /**
  * A class that defines a list of common
- * {@link org.testifyproject.ApplicationInstance application instance}
- * properties.
+ * {@link org.testifyproject.ApplicationInstance application instance} properties.
  *
  * @author saden
  */

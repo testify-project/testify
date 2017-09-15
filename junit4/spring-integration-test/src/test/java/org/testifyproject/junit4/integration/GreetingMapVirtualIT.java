@@ -15,8 +15,10 @@
  */
 package org.testifyproject.junit4.integration;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

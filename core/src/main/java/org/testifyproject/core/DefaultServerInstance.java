@@ -17,11 +17,13 @@ package org.testifyproject.core;
 
 import java.net.URI;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.annotation.Application;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Default implementation of {@link ServerInstance} contract.

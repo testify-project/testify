@@ -17,6 +17,7 @@ package org.testifyproject.core;
 
 import java.net.URI;
 import java.util.Map;
+
 import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.annotation.Application;
@@ -82,8 +83,7 @@ public class ServerInstanceBuilder<T> {
     }
 
     /**
-     * Associate the specified value with the specified key in the resource
-     * resource.
+     * Associate the specified value with the specified key in the resource resource.
      *
      * @param key the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
@@ -108,11 +108,10 @@ public class ServerInstanceBuilder<T> {
     }
 
     /**
-     * Build and return a server instance based on the builder state,
-     * application and the given fqn (fully qualified name). When choosing a fqn for the
-     * resource it is best to choose a fqn that reflect the resource being
-     * provided to avoid potential collision with names used by other virtual
-     * resource provider implementations.
+     * Build and return a server instance based on the builder state, application and the given
+     * fqn (fully qualified name). When choosing a fqn for the resource it is best to choose a
+     * fqn that reflect the resource being provided to avoid potential collision with names used
+     * by other virtual resource provider implementations.
      *
      * @param fqn the fully qualified name of the virtual resource
      * @param application the application annotation

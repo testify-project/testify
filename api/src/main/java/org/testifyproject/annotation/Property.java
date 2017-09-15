@@ -15,15 +15,16 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.FIELD;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on test class field to inject runtime or
- * configuration properties into a test case.
+ * An annotation that can be placed on test class field to inject runtime or configuration
+ * properties into a test case.
  *
  * @author saden
  */

@@ -18,8 +18,7 @@ package org.testifyproject.core.util;
 import java.nio.file.Paths;
 
 /**
- * A utility class for creating names to associate
- * {@link org.testifyproject.Instance}s.
+ * A utility class for creating names to associate {@link org.testifyproject.Instance}s.
  *
  * @author saden
  */

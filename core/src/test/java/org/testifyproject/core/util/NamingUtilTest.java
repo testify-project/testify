@@ -16,6 +16,7 @@
 package org.testifyproject.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 

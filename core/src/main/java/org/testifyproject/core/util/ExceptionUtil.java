@@ -47,8 +47,8 @@ public class ExceptionUtil {
     }
 
     /**
-     * Format the given message using the given args, log the error and raise
-     * the throwable as a TestifyException.
+     * Format the given message using the given args, log the error and raise the throwable as a
+     * TestifyException.
      *
      * @param messageFormat the message format
      * @param cause the cause of the exception
@@ -62,8 +62,7 @@ public class ExceptionUtil {
     }
 
     /**
-     * Format the given message using the given args and propogate a new
-     * TestifyException.
+     * Format the given message using the given args and propogate a new TestifyException.
      *
      * @param messageFormat the message format
      * @param args message format arguments
@@ -76,8 +75,8 @@ public class ExceptionUtil {
     }
 
     /**
-     * Format the given message using the given args and raise the throwable as
-     * a TestifyException.
+     * Format the given message using the given args and raise the throwable as a
+     * TestifyException.
      *
      * @param messageFormat the message format
      * @param args message format arguments
@@ -89,8 +88,8 @@ public class ExceptionUtil {
     }
 
     /**
-     * Format the given message using the given args and raise the throwable as
-     * a TestifyException if the given condition is true.
+     * Format the given message using the given args and raise the throwable as a
+     * TestifyException if the given condition is true.
      *
      * @param condition the condition used to determine propagation
      * @param messageFormat the message format
@@ -105,15 +104,16 @@ public class ExceptionUtil {
     }
 
     /**
-     * Format the given message using the given args and raise the throwable as
-     * a TestifyException if the given condition is true.
+     * Format the given message using the given args and raise the throwable as a
+     * TestifyException if the given condition is true.
      *
      * @param condition the condition used to determine propagation
      * @param messageFormat the message format
      * @param throwable the cause of the exception
      * @param args message format arguments
      */
-    public void raise(Boolean condition, String messageFormat, Throwable throwable, Object... args) {
+    public void raise(Boolean condition, String messageFormat, Throwable throwable,
+            Object... args) {
         if (condition) {
             String message = loggingUtil.formatMessage(messageFormat, args);
 

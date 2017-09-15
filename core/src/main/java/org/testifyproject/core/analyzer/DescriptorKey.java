@@ -16,12 +16,12 @@
 package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Type;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * A key object used to find a descriptor in a collection based on its name and
- * type.
+ * A key object used to find a descriptor in a collection based on its name and type.
  *
  * @author saden
  */

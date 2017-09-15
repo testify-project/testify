@@ -16,9 +16,11 @@
 package org.testifyproject.client;
 
 import java.net.URI;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.Instance;
@@ -28,8 +30,8 @@ import org.testifyproject.core.ClientInstanceBuilder;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A Jersey Client implementation of the ClientProvider SPI contract that
- * provides a usable {@link WebTarget} instance.
+ * A Jersey Client implementation of the ClientProvider SPI contract that provides a usable
+ * {@link WebTarget} instance.
  *
  * @author saden
  */
@@ -37,7 +39,8 @@ import org.testifyproject.tools.Discoverable;
 public class WebTargetClientProvider implements ClientProvider<ClientBuilder, WebTarget> {
 
     @Override
-    public ClientBuilder configure(TestContext testContext, Application application, URI baseURI) {
+    public ClientBuilder configure(TestContext testContext, Application application,
+            URI baseURI) {
         ClientBuilder builder = ClientBuilder.newBuilder();
         builder.register(new ErrorClientResponseFilter());
 

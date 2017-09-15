@@ -15,8 +15,12 @@
  */
 package org.testifyproject.junit4.system;
 
+import static org.testifyproject.core.TestContextProperties.BASE_URI;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
 import java.net.URI;
 import java.util.concurrent.Callable;
+
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -30,16 +34,14 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
-import static org.testifyproject.core.TestContextProperties.BASE_URI;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.di.hk2.HK2ServiceProvider;
 
 /**
  * A class that intercepts methods of classes that extend or implement
- * {@link org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory}
- * This class is responsible for configuring the Jersey 2 application as well as
- * extracting information useful for test reification.
+ * {@link org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory} This class is
+ * responsible for configuring the Jersey 2 application as well as extracting information useful
+ * for test reification.
  *
  * @author saden
  */
@@ -71,12 +73,15 @@ public class Jerset2Interceptor {
         testContextHolder.execute(testContext -> {
             ApplicationHandler applicationHandler = handler.getApplicationHandler();
             ServiceLocator serviceLocator = applicationHandler.getServiceLocator();
-            serviceLocator = testContext.getTestConfigurer().configure(testContext, serviceLocator);
+            serviceLocator = testContext.getTestConfigurer().configure(testContext,
+                    serviceLocator);
 
-            ServiceProvider<ServiceLocator> serviceProvider
-                    = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class, HK2ServiceProvider.class);
+            ServiceProvider<ServiceLocator> serviceProvider =
+                    ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
+                            HK2ServiceProvider.class);
 
-            ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceLocator);
+            ServiceInstance serviceInstance = serviceProvider.configure(testContext,
+                    serviceLocator);
             serviceProvider.postConfigure(testContext, serviceInstance);
             testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
             testContext.addProperty(BASE_URI, uri);

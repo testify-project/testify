@@ -16,6 +16,7 @@
 package org.testifyproject.core;
 
 import java.util.List;
+
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestResourcesProvider;
@@ -42,11 +43,13 @@ public class DefaultTestResourcesProvider implements TestResourcesProvider {
 
     @Override
     public void start(TestContext testContext) {
-        List<ResourceProvider> foundResourceProviders = serviceLocatorUtil.findAll(ResourceProvider.class);
+        List<ResourceProvider> foundResourceProviders = serviceLocatorUtil.findAll(
+                ResourceProvider.class);
 
         foundResourceProviders.parallelStream().forEach(resourceProvider -> {
             resourceProvider.start(testContext);
-            testContext.addCollectionElement(TestContextProperties.RESOURCE_PROVIDERS, resourceProvider);
+            testContext.addCollectionElement(TestContextProperties.RESOURCE_PROVIDERS,
+                    resourceProvider);
         });
     }
 

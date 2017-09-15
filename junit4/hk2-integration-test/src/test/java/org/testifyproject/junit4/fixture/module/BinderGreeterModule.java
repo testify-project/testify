@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture.module;
 
 import javax.inject.Singleton;
+
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 /**

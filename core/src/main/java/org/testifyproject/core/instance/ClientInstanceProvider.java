@@ -17,6 +17,7 @@ package org.testifyproject.core.instance;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.testifyproject.ClientInstance;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
@@ -40,8 +41,8 @@ public class ClientInstanceProvider implements PostInstanceProvider {
     public List<Instance> get(TestContext testContext) {
         ImmutableList.Builder<Instance> builder = ImmutableList.builder();
 
-        Optional<ClientInstance<Object>> foundClientInstance
-                = testContext.findProperty(TestContextProperties.APP_CLIENT_INSTANCE);
+        Optional<ClientInstance<Object>> foundClientInstance =
+                testContext.findProperty(TestContextProperties.APP_CLIENT_INSTANCE);
 
         foundClientInstance.ifPresent(clientInstance -> {
             builder.add(DefaultInstance.of(clientInstance, ClientInstance.class));

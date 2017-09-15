@@ -15,18 +15,19 @@
  */
 package org.testifyproject.core.instance;
 
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.TestContext;
+import org.testifyproject.VirtualResourceInfo;
 import org.testifyproject.VirtualResourceInstance;
-import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
@@ -46,16 +47,15 @@ public class VirtualResourceInstanceProviderTest {
     @Test
     public void givenTestContextWithVirtualResourceInstancesWithoutNameGetShouldReturnInstnaces() {
         TestContext testContext = mock(TestContext.class);
-        ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance> resourceInstance
-                = mock(ResourceInstance.class);
-        List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> virtualResourcesInstances
-                = ImmutableList.of(resourceInstance);
+        VirtualResourceInfo resourceInstance = mock(VirtualResourceInfo.class);
+        List<VirtualResourceInfo> virtualResourcesInstances =
+                ImmutableList.of(resourceInstance);
         VirtualResourceInstance value = mock(VirtualResourceInstance.class);
         VirtualResource annotation = mock(VirtualResource.class, Answers.RETURNS_MOCKS);
         String fqn = "test";
         Instance resource = mock(Instance.class);
 
-        given(testContext.getVirtualResourceInstances()).willReturn(virtualResourcesInstances);
+        given(testContext.getVirtualResources()).willReturn(virtualResourcesInstances);
         given(resourceInstance.getValue()).willReturn(value);
         given(resourceInstance.getAnnotation()).willReturn(annotation);
         given(annotation.name()).willReturn("");
@@ -70,15 +70,14 @@ public class VirtualResourceInstanceProviderTest {
     @Test
     public void givenTestContextWithVirtualResourceInstancesWithNameGetShouldReturnInstnaces() {
         TestContext testContext = mock(TestContext.class);
-        ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance> resourceInstance
-                = mock(ResourceInstance.class);
-        List<ResourceInstance<VirtualResource, VirtualResourceProvider, VirtualResourceInstance>> virtualResourcesInstances
-                = ImmutableList.of(resourceInstance);
+        VirtualResourceInfo resourceInstance = mock(VirtualResourceInfo.class);
+        List<VirtualResourceInfo> virtualResourcesInstances =
+                ImmutableList.of(resourceInstance);
         VirtualResourceInstance value = mock(VirtualResourceInstance.class);
         VirtualResource annotation = mock(VirtualResource.class, Answers.RETURNS_MOCKS);
         Instance resource = mock(Instance.class);
 
-        given(testContext.getVirtualResourceInstances()).willReturn(virtualResourcesInstances);
+        given(testContext.getVirtualResources()).willReturn(virtualResourcesInstances);
         given(resourceInstance.getValue()).willReturn(value);
         given(resourceInstance.getAnnotation()).willReturn(annotation);
         given(annotation.name()).willReturn("test");

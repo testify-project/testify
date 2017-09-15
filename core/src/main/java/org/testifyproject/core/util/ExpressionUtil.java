@@ -17,6 +17,7 @@ package org.testifyproject.core.util;
 
 import java.util.Map;
 import java.util.regex.Pattern;
+
 import org.testifyproject.apache.commons.jexl3.JexlBuilder;
 import org.testifyproject.apache.commons.jexl3.JexlContext;
 import org.testifyproject.apache.commons.jexl3.JexlEngine;
@@ -47,8 +48,8 @@ public class ExpressionUtil {
     }
 
     /**
-     * Evaluates the expression with the variables contained in the supplied
-     * {@link Map} based context.
+     * Evaluates the expression with the variables contained in the supplied {@link Map} based
+     * context.
      *
      * @param template the template
      * @param context the template context
@@ -62,8 +63,7 @@ public class ExpressionUtil {
     }
 
     /**
-     * Evaluates the template with the variables contained in the supplied
-     * object based context.
+     * Evaluates the template with the variables contained in the supplied object based context.
      *
      * @param template the template
      * @param context the template context
@@ -77,8 +77,8 @@ public class ExpressionUtil {
     }
 
     /**
-     * Evaluates the expression with the variables contained in the supplied
-     * {@link Map} based context.
+     * Evaluates the expression with the variables contained in the supplied {@link Map} based
+     * context.
      *
      * @param <T> the evaluated expression return type
      * @param expression the expression
@@ -93,8 +93,8 @@ public class ExpressionUtil {
     }
 
     /**
-     * Evaluates the expression with the variables contained in the supplied
-     * object based context.
+     * Evaluates the expression with the variables contained in the supplied object based
+     * context.
      *
      * @param <T> the evaluated expression return type
      * @param expression the expression

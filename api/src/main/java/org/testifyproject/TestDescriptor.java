@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
+
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
@@ -34,12 +35,12 @@ import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
 
 /**
- * A contract that defines methods used to access or perform operations on a
- * test class.
+ * A contract that defines methods used to access or perform operations on a test class.
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesReader, PropertiesWriter, AnnotationTrait<Class> {
+public interface TestDescriptor extends PropertiesReader, PropertiesWriter,
+        AnnotationTrait<Class> {
 
     /**
      * The name of the test class.
@@ -70,8 +71,7 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<CollaboratorProvider> getCollaboratorProvider();
 
     /**
-     * Get a collection of collaborator provider methods associated with the
-     * test class.
+     * Get a collection of collaborator provider methods associated with the test class.
      *
      * @return a collection of method descriptor, empty list otherwise
      */
@@ -99,16 +99,15 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<ConfigHandler> getConfigHandler();
 
     /**
-     * Get a collection of method handlers for all the config handlers
-     * associated with the test class.
+     * Get a collection of method handlers for all the config handlers associated with the test
+     * class.
      *
      * @return a collection with method descriptors, empty list otherwise
      */
     Collection<MethodDescriptor> getConfigHandlers();
 
     /**
-     * Get a collection of field descriptors for all the fields associated with
-     * the test class.
+     * Get a collection of field descriptors for all the fields associated with the test class.
      *
      * @return a collection with field descriptor, empty list otherwise
      */
@@ -150,8 +149,8 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Collection<RemoteResource> getRemoteResources();
 
     /**
-     * Get a collection of all known and inspected annotations including those
-     * placed on {@link org.testifyproject.annotation.Bundle} annotation.
+     * Get a collection of all known and inspected annotations including those placed on
+     * {@link org.testifyproject.annotation.Bundle} annotation.
      *
      * @return a collection of inspected annotations, empty list otherwise
      */
@@ -172,8 +171,8 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<Hint> getHint();
 
     /**
-     * Find the config handler associated with the test class capable of
-     * configuring the given configurable type.
+     * Find the config handler associated with the test class capable of configuring the given
+     * configurable type.
      *
      * @param configurableType the configurable type
      * @return an optional with method descriptor, empty optional otherwise
@@ -198,8 +197,7 @@ public interface TestDescriptor extends PropertiesReader, PropertiesWriter, Anno
     Optional<MethodDescriptor> findCollaboratorProvider(Type returnType, String name);
 
     /**
-     * Find the descriptor for a field with the given type and name on the test
-     * class.
+     * Find the descriptor for a field with the given type and name on the test class.
      *
      * @param type the field type
      * @param name the field name

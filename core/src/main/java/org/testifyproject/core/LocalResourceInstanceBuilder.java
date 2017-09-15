@@ -17,6 +17,7 @@ package org.testifyproject.core;
 
 import java.nio.file.Paths;
 import java.util.Map;
+
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
@@ -86,8 +87,7 @@ public class LocalResourceInstanceBuilder<R, C> {
     }
 
     /**
-     * Set the client of the underlying resource to the given client and
-     * contract.
+     * Set the client of the underlying resource to the given client and contract.
      *
      * @param client the underlying resource client resource
      * @param contract the underlying resource client contract
@@ -101,8 +101,7 @@ public class LocalResourceInstanceBuilder<R, C> {
     }
 
     /**
-     * Associate the specified value with the specified key in the resource
-     * resource.
+     * Associate the specified value with the specified key in the resource resource.
      *
      * @param ket the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
@@ -127,11 +126,10 @@ public class LocalResourceInstanceBuilder<R, C> {
     }
 
     /**
-     * Build and return a local resource instance based on the builder state and
-     * the given fqn (fully qualified name). When choosing a fqn for the
-     * resource it is best to choose a fqn that reflect the resource being
-     * provided to avoid potential collision with names used by other virtual
-     * resource provider implementations.
+     * Build and return a local resource instance based on the builder state and the given fqn
+     * (fully qualified name). When choosing a fqn for the resource it is best to choose a fqn
+     * that reflect the resource being provided to avoid potential collision with names used by
+     * other virtual resource provider implementations.
      *
      * @param fqn the fully qualified name of the local resource
      * @param localResource the local resource annotation

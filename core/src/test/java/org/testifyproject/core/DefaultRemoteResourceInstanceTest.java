@@ -15,13 +15,15 @@
  */
 package org.testifyproject.core;
 
-import java.util.HashMap;
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.Instance;
 import org.testifyproject.RemoteResourceInstance;
 import org.testifyproject.annotation.RemoteResource;
@@ -80,8 +82,8 @@ public class DefaultRemoteResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        RemoteResourceInstance<Object> uneuqual
-                = DefaultRemoteResourceInstance.of(name, remoteResource, null, properties);
+        RemoteResourceInstance<Object> uneuqual =
+                DefaultRemoteResourceInstance.of(name, remoteResource, null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -94,8 +96,8 @@ public class DefaultRemoteResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        RemoteResourceInstance<Object> equal
-                = DefaultRemoteResourceInstance.of(name, remoteResource, resource, properties);
+        RemoteResourceInstance<Object> equal =
+                DefaultRemoteResourceInstance.of(name, remoteResource, resource, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());

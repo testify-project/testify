@@ -25,8 +25,7 @@ import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies test fields annotated with
- * {@link  org.testifyproject.annotation.Fake}.
+ * A class that reifies test fields annotated with {@link  org.testifyproject.annotation.Fake}.
  *
  * @author saden
  */

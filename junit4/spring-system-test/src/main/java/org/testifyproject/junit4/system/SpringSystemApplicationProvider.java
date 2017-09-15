@@ -18,6 +18,7 @@ package org.testifyproject.junit4.system;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+
 import org.springframework.web.SpringServletContainerInitializer;
 import org.testifyproject.ApplicationInstance;
 import org.testifyproject.ApplicationProvider;
@@ -38,7 +39,8 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class SpringSystemApplicationProvider implements ApplicationProvider {
 
-    private static final TestContextHolder TEST_CONTEXT_HOLDER = TestContextHolder.INSTANCE;
+    private static final TestContextHolder TEST_CONTEXT_HOLDER =
+            TestContextHolder.INSTANCE;
 
     @Override
     public ApplicationInstance start(TestContext testContext) {
@@ -51,19 +53,25 @@ public class SpringSystemApplicationProvider implements ApplicationProvider {
 
             String servletClassName = "org.springframework.web.servlet.FrameworkServlet";
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            SpringSystemInterceptor interceptor = new SpringSystemInterceptor(TEST_CONTEXT_HOLDER);
+            SpringSystemInterceptor interceptor = new SpringSystemInterceptor(
+                    TEST_CONTEXT_HOLDER);
 
             ReflectionUtil.INSTANCE.rebase(servletClassName, classLoader, interceptor);
 
-            Class<?> dynamicApp = ReflectionUtil.INSTANCE.subclass(application.value(), classLoader, interceptor);
+            Class<?> dynamicApp = ReflectionUtil.INSTANCE.subclass(application.value(),
+                    classLoader, interceptor);
 
             Set<Class<?>> handlers = Collections.singleton(dynamicApp);
-            SpringServletContainerInitializer initializer = new SpringServletContainerInitializer();
+            SpringServletContainerInitializer initializer =
+                    new SpringServletContainerInitializer();
 
             applicationInstance = DefaultApplicationInstance.of(testContext, application);
 
-            applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER, initializer);
-            applicationInstance.addProperty(ApplicationInstanceProperties.SERVLET_HANDLERS, handlers);
+            applicationInstance.addProperty(
+                    ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER,
+                    initializer);
+            applicationInstance
+                    .addProperty(ApplicationInstanceProperties.SERVLET_HANDLERS, handlers);
 
             TEST_CONTEXT_HOLDER.set(testContext);
         }

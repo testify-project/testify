@@ -15,16 +15,17 @@
  */
 package org.testifyproject.extension.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.TYPE;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
 import org.testifyproject.ServiceProvider;
 
 /**
- * An annotation that can be placed a test class to provide hints to the test
- * class.
+ * An annotation that can be placed a test class to provide hints to the test class.
  *
  * @author saden
  */

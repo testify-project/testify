@@ -43,7 +43,7 @@ public class InjectableFieldService {
 
     @Virtual
     TestContract virtual;
-    
+
     @Property("property")
     TestContract property;
 

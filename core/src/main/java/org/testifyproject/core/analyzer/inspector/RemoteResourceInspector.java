@@ -32,8 +32,10 @@ import org.testifyproject.tools.Discoverable;
 public class RemoteResourceInspector implements AnnotationInspector<RemoteResource> {
 
     @Override
-    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType, RemoteResource remoteResource) {
-        testDescriptor.addCollectionElement(TestDescriptorProperties.REMOTE_RESOURCES, remoteResource);
+    public void inspect(TestDescriptor testDescriptor, Class<?> annotatedType,
+            RemoteResource remoteResource) {
+        testDescriptor.addCollectionElement(TestDescriptorProperties.REMOTE_RESOURCES,
+                remoteResource);
     }
 
 }

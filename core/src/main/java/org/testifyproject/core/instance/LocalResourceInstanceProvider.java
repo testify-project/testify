@@ -17,10 +17,10 @@ package org.testifyproject.core.instance;
 
 import java.util.Collection;
 import java.util.List;
+
 import org.testifyproject.Instance;
+import org.testifyproject.LocalResourceInfo;
 import org.testifyproject.LocalResourceInstance;
-import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.ResourceInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.DefaultInstance;
@@ -47,8 +47,8 @@ public class LocalResourceInstanceProvider implements PreInstanceProvider {
     public List<Instance> get(TestContext testContext) {
         ImmutableList.Builder<Instance> builder = ImmutableList.builder();
 
-        Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> localResourceInstances
-                = testContext.getLocalResourceInstances();
+        Collection<LocalResourceInfo> localResourceInstances = testContext
+                .getLocalResources();
 
         localResourceInstances.forEach(resourceInstance -> {
             LocalResourceInstance<Object, Object> value = resourceInstance.getValue();

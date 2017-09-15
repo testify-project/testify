@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture;
 
 import javax.inject.Inject;
+
 import org.glassfish.hk2.api.IterableProvider;
 import org.jvnet.hk2.annotations.Service;
 import org.testifyproject.junit4.fixture.common.Greeting;

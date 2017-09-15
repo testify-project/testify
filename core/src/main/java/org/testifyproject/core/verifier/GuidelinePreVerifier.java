@@ -18,6 +18,7 @@ package org.testifyproject.core.verifier;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.stream.Collectors;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ExceptionUtil;

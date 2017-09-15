@@ -15,8 +15,10 @@
  */
 package org.testifyproject.junit4;
 
-import java.net.InetAddress;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.net.InetAddress;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.Instance;

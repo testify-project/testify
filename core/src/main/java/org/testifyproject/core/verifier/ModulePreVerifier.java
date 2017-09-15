@@ -16,6 +16,7 @@
 package org.testifyproject.core.verifier;
 
 import java.util.Collection;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
@@ -29,8 +30,7 @@ import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure that integration test classes are annotated with {@link Module} or
- * {@link Scan}.
+ * Insure that integration test classes are annotated with {@link Module} or {@link Scan}.
  *
  * @author saden
  */

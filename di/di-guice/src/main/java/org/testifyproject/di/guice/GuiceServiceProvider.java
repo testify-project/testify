@@ -15,9 +15,8 @@
  */
 package org.testifyproject.di.guice;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import java.util.Collection;
+
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
@@ -26,6 +25,9 @@ import org.testifyproject.annotation.Module;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * A Google Guice implementation of the {@link ServiceProvider} contract.

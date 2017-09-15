@@ -15,19 +15,22 @@
  */
 package org.testifyproject.client;
 
-import java.net.URI;
-import java.util.Optional;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Answers;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.net.URI;
+import java.util.Optional;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Answers;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
@@ -74,7 +77,8 @@ public class WebTargetClientProviderTest {
         given(clientBuilder.build()).willReturn(client);
         given(client.target(baseURI)).willReturn(webTarget);
 
-        ClientInstance<WebTarget> result = sut.create(testContext, application, baseURI, clientBuilder);
+        ClientInstance<WebTarget> result = sut.create(testContext, application, baseURI,
+                clientBuilder);
 
         assertThat(result).isNotNull();
         assertThat(result.getFqn()).isEqualTo("jerseyClient");
@@ -104,6 +108,7 @@ public class WebTargetClientProviderTest {
         verify(instance).getValue();
         verify(client).close();
 
-        verifyNoMoreInteractions(testContext, application, clientInstance, instance, client);
+        verifyNoMoreInteractions(testContext, application, clientInstance, instance,
+                client);
     }
 }

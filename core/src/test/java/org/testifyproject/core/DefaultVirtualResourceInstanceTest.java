@@ -15,13 +15,15 @@
  */
 package org.testifyproject.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.VirtualResource;
@@ -74,7 +76,9 @@ public class DefaultVirtualResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null, virtualResource, resource, properties);
+        VirtualResourceInstance unequal = DefaultVirtualResourceInstance.of(null,
+                virtualResource,
+                resource, properties);
 
         assertThat(sut).isNotEqualTo(unequal);
         assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -87,7 +91,8 @@ public class DefaultVirtualResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, virtualResource, resource, properties);
+        VirtualResourceInstance equal = DefaultVirtualResourceInstance.of(name, virtualResource,
+                resource, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());

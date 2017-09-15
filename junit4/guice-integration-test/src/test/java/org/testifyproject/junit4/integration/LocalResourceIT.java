@@ -15,10 +15,13 @@
  */
 package org.testifyproject.junit4.integration;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import java.sql.Connection;
 import java.util.Optional;
+
 import javax.sql.DataSource;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.Instance;

@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestifyException;
@@ -67,7 +69,8 @@ public class FileSystemUtilTest {
     }
 
     @Test(expected = TestifyException.class)
-    public void givenNonExistentDirectoryDeleteDirectoryShouldThrowException() throws IOException {
+    public void givenNonExistentDirectoryDeleteDirectoryShouldThrowException() throws
+            IOException {
         Path directoryPath = Files.createTempDirectory("FileSystemUtil");
         directoryPath.toFile().delete();
 

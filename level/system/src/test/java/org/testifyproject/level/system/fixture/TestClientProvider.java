@@ -16,6 +16,7 @@
 package org.testifyproject.level.system.fixture;
 
 import java.net.URI;
+
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.TestContext;
@@ -33,7 +34,8 @@ public class TestClientProvider implements ClientProvider {
     }
 
     @Override
-    public ClientInstance create(TestContext testContext, Application application, URI baseURI, Object configuration) {
+    public ClientInstance create(TestContext testContext, Application application,
+            URI baseURI, Object configuration) {
         return null;
     }
 

@@ -54,10 +54,12 @@ public class VirtualResourcePreVerifier implements PreVerifier {
                         resourceProvider.getConstructor();
                     } catch (NoSuchMethodException e) {
                         ExceptionUtil.INSTANCE.raise(
-                                "Virtual Resource '{}' defined in test class '{}' does not have a zero "
-                                + "argument default constructor. Please insure that the virtual resource "
-                                + "provider defines a public zero argument default constructor.",
-                                testDescriptor.getTestClassName(), resourceProvider.getSimpleName()
+                                "Virtual Resource '{}' defined in test class '{}' does not have "
+                                + "a zero argument default constructor. Please insure that the "
+                                + "virtual resource provider defines a public zero argument "
+                                + "default constructor.",
+                                testDescriptor.getTestClassName(), resourceProvider
+                                .getSimpleName()
                         );
                     }
                 });

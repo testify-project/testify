@@ -17,14 +17,16 @@ package org.testifyproject.core.analyzer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.annotation.Name;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * A descriptor class used to access properties of or perform operations on an
- * analyzed test class or the system under test fields. getF
+ * A descriptor class used to access properties of or perform operations on an analyzed test
+ * class or the system under test fields. getF
  *
  * @author saden
  */

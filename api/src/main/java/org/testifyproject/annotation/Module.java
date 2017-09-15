@@ -15,18 +15,19 @@
  */
 package org.testifyproject.annotation;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on integration and system tests to load a
- * module that contains services before each test run (i.e. Spring's Java
- * Config, HK2's AbstractBinder, or Guice's AbstractModule)
+ * An annotation that can be placed on integration and system tests to load a module that
+ * contains services before each test run (i.e. Spring's Java Config, HK2's AbstractBinder, or
+ * Guice's AbstractModule)
  *
  * @author saden
  */
@@ -38,13 +39,12 @@ public @interface Module {
 
     /**
      * <p>
-     * A value that represents a module class that should be loaded before each
-     * test run.
+     * A value that represents a module class that should be loaded before each test run.
      * </p>
      * <p>
-     * Please note that to encourage simplicity and modular design loading of
-     * modules is limited to a single module class. If you absolutely need to
-     * load multiple modules this annotation is{@link Scans repeatable}.
+     * Please note that to encourage simplicity and modular design loading of modules is limited
+     * to a single module class. If you absolutely need to load multiple modules this annotation
+     * is{@link Scans repeatable}.
      * </p>
      *
      * @return a module class.

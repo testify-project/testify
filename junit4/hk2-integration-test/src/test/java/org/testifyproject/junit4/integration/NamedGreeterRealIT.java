@@ -16,13 +16,14 @@
 package org.testifyproject.junit4.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Sut;
-import static org.testifyproject.di.hk2.HK2Properties.DEFAULT_DESCRIPTOR;
 import org.testifyproject.junit4.fixture.NamedGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.impl.Ciao;
@@ -44,7 +45,8 @@ public class NamedGreeterRealIT {
     @Test
     public void verifyInjection() {
         assertThat(sut).isNotNull();
-        assertThat(greeting).isNotNull().isSameAs(sut.getGreeting()).isInstanceOf(Ciao.class);
+        assertThat(greeting).isNotNull().isSameAs(sut.getGreeting()).isInstanceOf(
+                Ciao.class);
         assertThat(Mockito.mockingDetails(greeting).isMock()).isFalse();
 
     }

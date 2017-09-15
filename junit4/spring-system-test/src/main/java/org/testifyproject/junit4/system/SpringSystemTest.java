@@ -22,9 +22,10 @@ import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
 
 /**
- * A JUnit Spring system test runner. This class is the main entry point for running a Spring system
- * tests using {@link org.junit.runner.RunWith}. It provides means of creating your system under
- * test, faking certain collaborators or using real collaborators in the Spring application context.
+ * A JUnit Spring system test runner. This class is the main entry point for running a Spring
+ * system tests using {@link org.junit.runner.RunWith}. It provides means of creating your
+ * system under test, faking certain collaborators or using real collaborators in the Spring
+ * application context.
  *
  * @author saden
  */
@@ -41,7 +42,8 @@ public class SpringSystemTest extends TestifyJUnit4TestRunner {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.SYSTEM)
                 .resourceStartStrategy(StartStrategy.LAZY)
-                .dependency("org.springframework.web.WebApplicationInitializer", "Spring Web MVC")
+                .dependency("org.springframework.web.WebApplicationInitializer",
+                        "Spring Web MVC")
                 .build()
         );
     }

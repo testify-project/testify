@@ -16,6 +16,7 @@
 package org.testifyproject.core.verifier;
 
 import java.util.Optional;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
@@ -28,8 +29,7 @@ import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * Insure system tests annotate the test class with
- * {@link Application} annotation.
+ * Insure system tests annotate the test class with {@link Application} annotation.
  *
  * @author saden
  */

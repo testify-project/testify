@@ -15,23 +15,24 @@
  */
 package org.testifyproject.junit4.system;
 
-import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import static org.glassfish.jersey.server.monitoring.ApplicationEvent.Type.INITIALIZATION_FINISHED;
+import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
+
+import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.StartStrategy;
 import org.testifyproject.core.TestContextHolder;
-import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.PreInstanceProvider;
 
 /**
- * A Jersey 2 application event listeners that listens for application events to
- * initialize, start and stop test resources.
+ * A Jersey 2 application event listeners that listens for application events to initialize,
+ * start and stop test resources.
  *
  * @author saden
  */
@@ -55,12 +56,14 @@ public class Jersey2ApplicationListener implements ApplicationEventListener {
                         testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
                                 .ifPresent(serviceInstance -> {
                                     //add constant instances
-                                    ServiceLocatorUtil.INSTANCE.findAllWithFilter(PreInstanceProvider.class)
+                                    ServiceLocatorUtil.INSTANCE.findAllWithFilter(
+                                            PreInstanceProvider.class)
                                             .stream()
                                             .flatMap(p -> p.get(testContext).stream())
                                             .forEach(serviceInstance::replace);
 
-                                    ServiceLocatorUtil.INSTANCE.findAllWithFilter(InstanceProvider.class)
+                                    ServiceLocatorUtil.INSTANCE.findAllWithFilter(
+                                            InstanceProvider.class)
                                             .stream()
                                             .flatMap(p -> p.get(testContext).stream())
                                             .forEach(serviceInstance::replace);

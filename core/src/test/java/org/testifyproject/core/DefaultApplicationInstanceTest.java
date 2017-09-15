@@ -15,11 +15,13 @@
  */
 package org.testifyproject.core;
 
-import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.ApplicationInstance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
@@ -88,7 +90,8 @@ public class DefaultApplicationInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ApplicationInstance equal = DefaultApplicationInstance.of(testContext, application, properties);
+        ApplicationInstance equal = DefaultApplicationInstance.of(testContext, application,
+                properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());

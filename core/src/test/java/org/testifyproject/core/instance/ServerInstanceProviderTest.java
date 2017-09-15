@@ -15,14 +15,16 @@
  */
 package org.testifyproject.core.instance;
 
-import java.util.List;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.Instance;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.TestContext;
@@ -47,7 +49,8 @@ public class ServerInstanceProviderTest {
         TestContext testContext = mock(TestContext.class);
         Optional<ServerInstance<Object>> foundServerInstance = Optional.empty();
 
-        given(testContext.<ServerInstance<Object>>findProperty(TestContextProperties.APP_SERVER_INSTANCE))
+        given(testContext.<ServerInstance<Object>>findProperty(
+                TestContextProperties.APP_SERVER_INSTANCE))
                 .willReturn(foundServerInstance);
 
         List<Instance> result = sut.get(testContext);
@@ -64,7 +67,8 @@ public class ServerInstanceProviderTest {
         Instance<Object> server = mock(Instance.class);
         Instance<Object> instance = DefaultInstance.of(serverInstance, ServerInstance.class);
 
-        given(testContext.<ServerInstance<Object>>findProperty(TestContextProperties.APP_SERVER_INSTANCE))
+        given(testContext.<ServerInstance<Object>>findProperty(
+                TestContextProperties.APP_SERVER_INSTANCE))
                 .willReturn(foundServerInstance);
         given(serverInstance.getServer()).willReturn(server);
 

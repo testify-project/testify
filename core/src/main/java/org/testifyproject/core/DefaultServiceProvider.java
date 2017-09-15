@@ -17,6 +17,7 @@ package org.testifyproject.core;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
@@ -24,8 +25,7 @@ import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * An implementation of {@link ServiceProvider} backed by objects in the
- * {@link TestContext}.
+ * An implementation of {@link ServiceProvider} backed by objects in the {@link TestContext}.
  *
  * @author saden
  */
@@ -41,7 +41,8 @@ public class DefaultServiceProvider implements ServiceProvider<Map<ServiceKey, O
     }
 
     @Override
-    public ServiceInstance configure(TestContext testContext, Map<ServiceKey, Object> serviceContext) {
+    public ServiceInstance configure(TestContext testContext,
+            Map<ServiceKey, Object> serviceContext) {
         return new DefaultServiceInstance(serviceContext);
     }
 

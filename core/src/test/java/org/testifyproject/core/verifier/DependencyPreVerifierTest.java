@@ -15,12 +15,14 @@
  */
 package org.testifyproject.core.verifier;
 
-import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestifyException;
 import org.testifyproject.guava.common.collect.ImmutableMap;
@@ -46,7 +48,8 @@ public class DependencyPreVerifierTest {
     @Test(expected = TestifyException.class)
     public void givenInvalidTestContextVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
-        Map<String, String> dependencies = ImmutableMap.of("invalid.class.String", "Invalid Java String");
+        Map<String, String> dependencies = ImmutableMap.of("invalid.class.String",
+                "Invalid Java String");
 
         given(testContext.getDependencies()).willReturn(dependencies);
 

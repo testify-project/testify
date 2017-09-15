@@ -15,8 +15,6 @@
  */
 package org.testifyproject.core.analyzer.inspector;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -24,6 +22,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
@@ -69,7 +70,8 @@ public class CollaboratorProviderInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, annotation);
+        verify(testDescriptor).addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER,
+                annotation);
         verifyNoMoreInteractions(testDescriptor);
     }
 
@@ -84,8 +86,10 @@ public class CollaboratorProviderInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor).addCollectionElement(eq(TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
-        verify(testDescriptor).addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER, annotation);
+        verify(testDescriptor).addCollectionElement(eq(
+                TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
+        verify(testDescriptor).addProperty(TestDescriptorProperties.COLLABORATOR_PROVIDER,
+                annotation);
         verifyNoMoreInteractions(testDescriptor);
     }
 
@@ -100,8 +104,10 @@ public class CollaboratorProviderInspectorTest {
 
         sut.inspect(testDescriptor, annotatedType, annotation);
 
-        verify(testDescriptor, times(2)).addCollectionElement(eq(TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
-        verify(testDescriptor, times(2)).addProperty(eq(TestDescriptorProperties.COLLABORATOR_PROVIDER), any(CollaboratorProvider.class));
+        verify(testDescriptor, times(2)).addCollectionElement(eq(
+                TestDescriptorProperties.COLLABORATOR_PROVIDERS), any(MethodDescriptor.class));
+        verify(testDescriptor, times(2)).addProperty(eq(
+                TestDescriptorProperties.COLLABORATOR_PROVIDER), any(CollaboratorProvider.class));
         verifyNoMoreInteractions(testDescriptor);
     }
 }

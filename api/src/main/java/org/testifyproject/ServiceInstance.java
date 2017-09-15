@@ -20,12 +20,13 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
 
 /**
- * A contract that defines methods for working with various dependency injection
- * frameworks to add services and modules as well as retrieve services.
+ * A contract that defines methods for working with various dependency injection frameworks to
+ * add services and modules as well as retrieve services.
  *
  * @author saden
  */
@@ -95,9 +96,8 @@ public interface ServiceInstance {
     }
 
     /**
-     * Replace all services that implement the given contract with the given
-     * name and instance. If services that implement the contract are not found
-     * this method should behave like
+     * Replace all services that implement the given contract with the given name and instance.
+     * If services that implement the contract are not found this method should behave like
      * {@link #addConstant(java.lang.Object, java.lang.String, java.lang.Class)}.
      *
      * @param value the service value
@@ -116,11 +116,10 @@ public interface ServiceInstance {
     }
 
     /**
-     * Replace all services that implement the given {@link Instance} as well as
-     * override the name and/or contract defined in the instance with the given
-     * overrideName and overrideContract. Note that if overrideName is used if
-     * it is not null or empty and overrideConctract is used if it is not null
-     * or equal to Class.class.
+     * Replace all services that implement the given {@link Instance} as well as override the
+     * name and/or contract defined in the instance with the given overrideName and
+     * overrideContract. Note that if overrideName is used if it is not null or empty and
+     * overrideConctract is used if it is not null or equal to Class.class.
      *
      * @param <T> the instance type
      * @param instance the instance
@@ -173,8 +172,8 @@ public interface ServiceInstance {
      * Add the given scans to the service instance.
      * </p>
      * <p>
-     * Please note that for some DI a resource might be a package (Spring) and
-     * for others it might be service descriptor file (HK2).
+     * Please note that for some DI a resource might be a package (Spring) and for others it
+     * might be service descriptor file (HK2).
      * </p>
      *
      * @param scans an array of scans
@@ -192,8 +191,7 @@ public interface ServiceInstance {
     }
 
     /**
-     * Get all the name qualifier annotation classes supported by the service
-     * locator.
+     * Get all the name qualifier annotation classes supported by the service locator.
      *
      * @return a set containing name qualifier annotation classes.
      */
@@ -202,8 +200,7 @@ public interface ServiceInstance {
     }
 
     /**
-     * Get all the custom qualifier annotations classes supported by the service
-     * locator.
+     * Get all the custom qualifier annotations classes supported by the service locator.
      *
      * @return a set containing custom qualifier annotation classes.
      */

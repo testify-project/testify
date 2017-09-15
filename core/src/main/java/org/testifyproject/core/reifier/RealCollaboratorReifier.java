@@ -16,6 +16,7 @@
 package org.testifyproject.core.reifier;
 
 import java.util.Optional;
+
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.core.util.ReflectionUtil;
@@ -24,8 +25,7 @@ import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
 /**
- * A class that reifies test fields annotated with
- * {@link  org.testifyproject.annotation.Real}.
+ * A class that reifies test fields annotated with {@link  org.testifyproject.annotation.Real}.
  *
  * @author saden
  */
@@ -45,7 +45,8 @@ public class RealCollaboratorReifier implements CollaboratorReifier {
                         Class<?> fieldType = fieldDescriptor.getType();
                         Object fieldValue = null;
 
-                        Optional<Object> foundFieldValue = fieldDescriptor.getValue(testInstance);
+                        Optional<Object> foundFieldValue = fieldDescriptor
+                                .getValue(testInstance);
 
                         if (foundFieldValue.isPresent()) {
                             fieldValue = foundFieldValue.get();

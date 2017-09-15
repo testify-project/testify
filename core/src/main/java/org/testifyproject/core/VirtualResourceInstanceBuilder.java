@@ -17,6 +17,7 @@ package org.testifyproject.core;
 
 import java.nio.file.Paths;
 import java.util.Map;
+
 import org.testifyproject.Instance;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.VirtualResource;
@@ -72,8 +73,7 @@ public class VirtualResourceInstanceBuilder<R> {
     }
 
     /**
-     * Associate the specified value with the specified key in the resource
-     * resource.
+     * Associate the specified value with the specified key in the resource resource.
      *
      * @param key the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
@@ -98,11 +98,10 @@ public class VirtualResourceInstanceBuilder<R> {
     }
 
     /**
-     * Build and return a virtual resource instance based on the builder state
-     * and the given fqn (fully qualified name). When choosing a fqn for the
-     * resource it is best to choose a fqn that reflect the resource being
-     * provided to avoid potential collision with names used by other virtual
-     * resource provider implementations.
+     * Build and return a virtual resource instance based on the builder state and the given fqn
+     * (fully qualified name). When choosing a fqn for the resource it is best to choose a fqn
+     * that reflect the resource being provided to avoid potential collision with names used by
+     * other virtual resource provider implementations.
      *
      * @param fqn the fully qualified name of the virtual resource
      * @param virtualResource the virtual resource annotation
@@ -111,7 +110,9 @@ public class VirtualResourceInstanceBuilder<R> {
     public VirtualResourceInstance<R> build(String fqn, VirtualResource virtualResource) {
         Instance<R> resourceInstance = createResource(fqn, virtualResource);
 
-        return DefaultVirtualResourceInstance.of(fqn, virtualResource, resourceInstance, properties.build());
+        return DefaultVirtualResourceInstance.of(fqn, virtualResource, resourceInstance,
+                properties
+                        .build());
     }
 
     Instance<R> createResource(String fqn, VirtualResource virtualResource) {
@@ -124,7 +125,8 @@ public class VirtualResourceInstanceBuilder<R> {
         if ("".equals(virtualResource.resourceName())) {
             resourceName = Paths.get("resource:/", fqn, "resource").toString();
         } else {
-            resourceName = Paths.get("resource:/", fqn, virtualResource.resourceName()).toString();
+            resourceName = Paths.get("resource:/", fqn, virtualResource.resourceName())
+                    .toString();
         }
 
         if (!void.class.equals(virtualResource.resourceContract())) {

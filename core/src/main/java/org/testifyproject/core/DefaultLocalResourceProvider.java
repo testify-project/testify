@@ -18,10 +18,12 @@ package org.testifyproject.core;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
+
 import org.testifyproject.DataProvider;
+import org.testifyproject.LocalResourceInfo;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.ResourceInstance;
+import org.testifyproject.ResourceInfo;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -35,9 +37,8 @@ import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
 
 /**
- * An implementation of {@link ResourceProvider} that manages the starting and
- * stopping of {@link LocalResourceProvider} implementations required by the
- * test class.
+ * An implementation of {@link ResourceProvider} that manages the starting and stopping of
+ * {@link LocalResourceProvider} implementations required by the test class.
  *
  * @author saden
  * @see org.testifyproject.ResourceProvider
@@ -72,55 +73,69 @@ public class DefaultLocalResourceProvider implements ResourceProvider {
         localResources.parallelStream().forEach(localResource -> {
             Class<? extends LocalResourceProvider> value = localResource.value();
 
-            LocalResourceProvider localResourceProvider = reflectionUtil.newInstance(value);
+            LocalResourceProvider localResourceProvider = reflectionUtil
+                    .newInstance(value);
             String configKey = localResource.configKey();
             PropertiesReader configReader = testContext.getPropertiesReader(configKey);
-            Object configuration = localResourceProvider.configure(testContext, localResource, configReader);
+            Object configuration = localResourceProvider.configure(testContext,
+                    localResource,
+                    configReader);
             configuration = testConfigurer.configure(testContext, configuration);
 
             try {
                 //start the resource
-                LocalResourceInstance<Object, Object> localResourceInstance
-                        = localResourceProvider.start(testContext, localResource, configuration);
+                LocalResourceInstance<Object, Object> localResourceInstance =
+                        localResourceProvider.start(testContext, localResource,
+                                configuration);
 
                 //determine if there are data files and load the data into te resource
                 String[] dataFilePatterns = localResource.dataFiles();
 
                 if (dataFilePatterns.length != 0) {
                     //load the data using the resource provider load method
-                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(dataFilePatterns);
-                    localResourceProvider.load(testContext, localResource, localResourceInstance, dataFiles);
+                    Set<Path> dataFiles = fileSystemUtil.findClasspathFiles(
+                            dataFilePatterns);
+                    localResourceProvider
+                            .load(testContext, localResource, localResourceInstance,
+                                    dataFiles);
 
                     //if there is data provider defined then create an instance of
                     //it and load data using the data provider as well
-                    Class<? extends DataProvider> dataProviderType = localResource.dataProvider();
+                    Class<? extends DataProvider> dataProviderType = localResource
+                            .dataProvider();
 
                     if (!DataProvider.class.equals(dataProviderType)) {
-                        DataProvider dataProvider = reflectionUtil.newInstance(dataProviderType);
+                        DataProvider dataProvider = reflectionUtil.newInstance(
+                                dataProviderType);
                         dataProvider.load(testContext, dataFiles, localResourceInstance);
                     }
                 }
 
                 //add resource properties to the test context with its fqn as its key
-                testContext.addProperty(localResourceInstance.getFqn(), localResourceInstance.getProperties());
+                testContext.addProperty(localResourceInstance.getFqn(),
+                        localResourceInstance
+                                .getProperties());
 
                 //track the resource so it can be stopped later
-                ResourceInstance resourceInstance = DefaultResourceInstance.of(
+                ResourceInfo resourceInstance = DefaultLocalResourceInfo.of(
                         localResource,
                         localResourceProvider,
                         localResourceInstance);
 
-                testContext.addCollectionElement(TestContextProperties.LOCAL_RESOURCE_INSTANCES, resourceInstance);
+                testContext.addCollectionElement(
+                        TestContextProperties.LOCAL_RESOURCE_INSTANCES,
+                        resourceInstance);
             } catch (Exception e) {
-                throw ExceptionUtil.INSTANCE.propagate("Could not start '{}' local resource", e, value);
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Could not start '{}' local resource", e,
+                        value);
             }
         });
     }
 
     @Override
     public void stop(TestContext testContext) {
-        Collection<ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance>> resourceInstances
-                = testContext.findCollection(TestContextProperties.LOCAL_RESOURCE_INSTANCES);
+        Collection<LocalResourceInfo> resourceInstances = testContext.getLocalResources();
 
         resourceInstances.forEach(resourceInstance -> {
             try {

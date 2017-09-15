@@ -15,12 +15,14 @@
  */
 package org.testifyproject.di.guice;
 
+import java.util.Optional;
+import java.util.Queue;
+
+import org.testifyproject.Instance;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
-import java.util.Optional;
-import java.util.Queue;
-import org.testifyproject.Instance;
 
 /**
  * A wrapper class for dynamically registering constants.
@@ -36,8 +38,7 @@ public class GuiceAbstractModule extends AbstractModule {
     }
 
     /**
-     * Create an instance of GuiceAbstractModule using the given queue of
-     * constants.
+     * Create an instance of GuiceAbstractModule using the given queue of constants.
      *
      * @param constants the constants
      * @return a module instance
@@ -59,13 +60,16 @@ public class GuiceAbstractModule extends AbstractModule {
                 Class contractType = contract.get();
                 String instanceName = name.get();
 
-                bind(instanceType).annotatedWith(Names.named(instanceName)).toInstance(instance);
-                bind(contractType).annotatedWith(Names.named(instanceName)).toInstance(instance);
+                bind(instanceType).annotatedWith(Names.named(instanceName)).toInstance(
+                        instance);
+                bind(contractType).annotatedWith(Names.named(instanceName)).toInstance(
+                        instance);
                 bind(contractType).toInstance(instance);
             } else if (name.isPresent()) {
                 String instanceName = name.get();
 
-                bind(instanceType).annotatedWith(Names.named(instanceName)).toInstance(instance);
+                bind(instanceType).annotatedWith(Names.named(instanceName)).toInstance(
+                        instance);
             } else if (contract.isPresent()) {
                 Class contractType = contract.get();
 

@@ -15,14 +15,16 @@
  */
 package org.testifyproject.trait;
 
+import static java.util.Optional.ofNullable;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
 import java.util.stream.Stream;
+
 import org.testifyproject.annotation.Bundle;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
@@ -58,7 +60,8 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
                 Bundle bundle = declaredAnnotationType.getDeclaredAnnotation(Bundle.class);
 
                 if (bundle != null) {
-                    declaredAnnotation = declaredAnnotationType.getDeclaredAnnotation(annotationType);
+                    declaredAnnotation = declaredAnnotationType
+                            .getDeclaredAnnotation(annotationType);
                     break;
                 }
             }
@@ -87,7 +90,9 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
             Bundle bundle = declaredAnnotationType.getDeclaredAnnotation(Bundle.class);
 
             if (bundle != null) {
-                listBuilder.add(declaredAnnotationType.getDeclaredAnnotationsByType(annotationType));
+                A[] bundleAnnotations =
+                        declaredAnnotationType.getDeclaredAnnotationsByType(annotationType);
+                listBuilder.add(bundleAnnotations);
             }
         }
 
@@ -95,13 +100,14 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
     }
 
     /**
-     * Get the meta annotations declared on the annotated element itself or
-     * annotations on the annotated element.
+     * Get the meta annotations declared on the annotated element itself or annotations on the
+     * annotated element.
      *
      * @param metaAnnotationTypes an array of meta annotations
      * @return an array of meta annotations
      */
-    default Annotation[] getMetaAnnotations(Collection<Class<? extends Annotation>>... metaAnnotationTypes) {
+    default Annotation[] getMetaAnnotations(
+            Collection<Class<? extends Annotation>>... metaAnnotationTypes) {
         T annotatedElement = getAnnotatedElement();
 
         //XXX: dont execute on this stream in parallel
@@ -109,7 +115,8 @@ public interface AnnotationTrait<T extends AnnotatedElement> {
                 .flatMap(Collection::parallelStream)
                 .distinct()
                 .map(annotationType -> {
-                    Annotation declaredAnnotation = annotatedElement.getDeclaredAnnotation(annotationType);
+                    Annotation declaredAnnotation = annotatedElement.getDeclaredAnnotation(
+                            annotationType);
 
                     if (declaredAnnotation == null) {
                         for (Annotation annotation : annotatedElement.getDeclaredAnnotations()) {

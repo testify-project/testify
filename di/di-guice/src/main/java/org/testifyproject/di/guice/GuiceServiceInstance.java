@@ -15,6 +15,24 @@
  */
 package org.testifyproject.di.guice;
 
+import static com.google.inject.util.Modules.combine;
+import static com.google.inject.util.Modules.override;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.inject.Qualifier;
+
+import org.testifyproject.Instance;
+import org.testifyproject.ServiceInstance;
+import org.testifyproject.annotation.Fixture;
+import org.testifyproject.core.DefaultInstance;
+import org.testifyproject.core.util.ReflectionUtil;
+import org.testifyproject.guava.common.collect.ImmutableSet;
+
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -23,26 +41,14 @@ import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
-import static com.google.inject.util.Modules.combine;
-import static com.google.inject.util.Modules.override;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.inject.Qualifier;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.testifyproject.Instance;
-import org.testifyproject.ServiceInstance;
-import org.testifyproject.annotation.Fixture;
-import org.testifyproject.core.DefaultInstance;
-import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.guava.common.collect.ImmutableSet;
 
 /**
- * A Google Guice DI implementation of the {@link ServiceInstance} spi contract. This class provides the ability to work
- * with Google Guice {@link Injector} to create, locate, and manage services.
+ * A Google Guice DI implementation of the {@link ServiceInstance} spi contract. This class
+ * provides the ability to work with Google Guice {@link Injector} to create, locate, and manage
+ * services.
  *
  * @author saden
  */

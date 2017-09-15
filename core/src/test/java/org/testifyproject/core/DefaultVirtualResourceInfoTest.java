@@ -16,51 +16,52 @@
 package org.testifyproject.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
-import org.testifyproject.LocalResourceInstance;
-import org.testifyproject.LocalResourceProvider;
-import org.testifyproject.ResourceInstance;
-import org.testifyproject.annotation.LocalResource;
+import org.testifyproject.ResourceInfo;
+import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.VirtualResource;
 
 /**
  *
  * @author saden
  */
-public class DefaultResourceInstanceTest {
+public class DefaultVirtualResourceInfoTest {
 
-    ResourceInstance<LocalResource, LocalResourceProvider, LocalResourceInstance> sut;
+    ResourceInfo sut;
 
-    LocalResource annotation;
-    LocalResourceProvider provider;
-    LocalResourceInstance value;
+    VirtualResource annotation;
+    VirtualResourceProvider provider;
+    VirtualResourceInstance value;
 
     @Before
     public void init() {
-        annotation = mock(LocalResource.class);
-        provider = mock(LocalResourceProvider.class);
-        value = mock(LocalResourceInstance.class);
+        annotation = mock(VirtualResource.class);
+        provider = mock(VirtualResourceProvider.class);
+        value = mock(VirtualResourceInstance.class);
 
-        sut = DefaultResourceInstance.of(annotation, provider, value);
+        sut = DefaultVirtualResourceInfo.of(annotation, provider, value);
     }
 
     @Test
     public void validateSutInstance() {
         assertThat(sut).isNotNull();
-        assertThat(sut.getAnnotation()).isEqualTo(annotation);
-        assertThat(sut.getProvider()).isEqualTo(provider);
-        assertThat(sut.getValue()).isEqualTo(value);
+        assertThat((Object) sut.getAnnotation()).isEqualTo(annotation);
+        assertThat((Object) sut.getProvider()).isEqualTo(provider);
+        assertThat((Object) sut.getValue()).isEqualTo(value);
     }
 
     @Test
     public void givenInstanceOfShouldReturn() {
-        sut = DefaultResourceInstance.of(annotation, provider, value);
+        sut = DefaultVirtualResourceInfo.of(annotation, provider, value);
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getAnnotation()).isEqualTo(annotation);
-        assertThat(sut.getProvider()).isEqualTo(provider);
-        assertThat(sut.getValue()).isEqualTo(value);
+        assertThat((Object) sut.getAnnotation()).isEqualTo(annotation);
+        assertThat((Object) sut.getProvider()).isEqualTo(provider);
+        assertThat((Object) sut.getValue()).isEqualTo(value);
     }
 
     @Test
@@ -78,7 +79,7 @@ public class DefaultResourceInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        ResourceInstance unequal = DefaultResourceInstance.of(annotation, provider, null);
+        ResourceInfo unequal = DefaultVirtualResourceInfo.of(annotation, provider, null);
 
         assertThat(sut).isNotEqualTo(unequal);
         assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -91,7 +92,7 @@ public class DefaultResourceInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        ResourceInstance equal = DefaultResourceInstance.of(annotation, provider, value);
+        ResourceInfo equal = DefaultVirtualResourceInfo.of(annotation, provider, value);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -101,7 +102,8 @@ public class DefaultResourceInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultResourceInstance", "annotation", "provider", "value");
+        assertThat(result)
+                .contains("DefaultVirtualResourceInfo", "annotation", "provider", "value");
     }
 
 }

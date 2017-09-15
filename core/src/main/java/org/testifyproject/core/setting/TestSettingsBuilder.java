@@ -16,6 +16,7 @@
 package org.testifyproject.core.setting;
 
 import java.util.Map;
+
 import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;

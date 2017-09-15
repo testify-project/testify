@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture;
 
 import java.util.List;
+
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.DefaultInstance;

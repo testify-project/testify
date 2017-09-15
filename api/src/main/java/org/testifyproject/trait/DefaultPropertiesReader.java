@@ -16,6 +16,7 @@
 package org.testifyproject.trait;
 
 import java.util.Map;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -35,8 +36,7 @@ public class DefaultPropertiesReader implements PropertiesReader {
     }
 
     /**
-     * Create a new instance of {@code DefaultPropertiesReader} with the given
-     * properties.
+     * Create a new instance of {@code DefaultPropertiesReader} with the given properties.
      *
      * @param properties the underlying properties map
      * @return a new instance of {@code DefaultPropertiesReader}

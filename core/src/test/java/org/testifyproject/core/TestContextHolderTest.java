@@ -15,17 +15,19 @@
  */
 package org.testifyproject.core;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestContext;
 
 /**

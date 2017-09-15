@@ -16,12 +16,13 @@
 package org.testifyproject;
 
 import java.lang.reflect.Parameter;
+
 import org.testifyproject.trait.AnnotationTrait;
 import org.testifyproject.trait.TypeTrait;
 
 /**
- * A contract that defines methods to access properties of or perform operations
- * on a system under test (SUT) constructor parameters.
+ * A contract that defines methods to access properties of or perform operations on a system
+ * under test (SUT) constructor parameters.
  *
  * @author saden
  */

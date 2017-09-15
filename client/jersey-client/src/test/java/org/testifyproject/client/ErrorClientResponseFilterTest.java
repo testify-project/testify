@@ -15,22 +15,27 @@
  */
 package org.testifyproject.client;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.core.Response;
+
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.core.Response;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.TestifyException;
 
 /**
@@ -67,7 +72,8 @@ public class ErrorClientResponseFilterTest {
     }
 
     @Test(expected = TestifyException.class)
-    public void givenErrorFamilyWithoutEntityCallToFilterShouldDoRaiseException() throws IOException {
+    public void givenErrorFamilyWithoutEntityCallToFilterShouldDoRaiseException() throws
+            IOException {
         ClientRequestContext requestContext = mock(ClientRequestContext.class);
         ClientResponseContext responseContext = mock(ClientResponseContext.class);
         URI uri = URI.create("uri://test");
@@ -86,7 +92,8 @@ public class ErrorClientResponseFilterTest {
         try {
             sut.filter(requestContext, responseContext);
         } catch (TestifyException e) {
-            assertThat(e.getMessage()).contains(uri.getPath(), reasonPhrase, statusCode.toString());
+            assertThat(e.getMessage()).contains(uri.getPath(), reasonPhrase, statusCode
+                    .toString());
             verify(requestContext).getUri();
             verify(responseContext).getStatusInfo();
             verify(statusInfo).getFamily();
@@ -101,7 +108,8 @@ public class ErrorClientResponseFilterTest {
     }
 
     @Test(expected = TestifyException.class)
-    public void givenErrorFamilyWithEntityCallToFilterShouldDoRaiseException() throws IOException {
+    public void givenErrorFamilyWithEntityCallToFilterShouldDoRaiseException() throws
+            IOException {
         ClientRequestContext requestContext = mock(ClientRequestContext.class);
         ClientResponseContext responseContext = mock(ClientResponseContext.class);
         URI uri = URI.create("uri://test");
@@ -123,7 +131,8 @@ public class ErrorClientResponseFilterTest {
         try {
             sut.filter(requestContext, responseContext);
         } catch (TestifyException e) {
-            assertThat(e.getMessage()).contains(uri.getPath(), reasonPhrase, statusCode.toString(), responseBody);
+            assertThat(e.getMessage()).contains(uri.getPath(), reasonPhrase, statusCode
+                    .toString(), responseBody);
             verify(requestContext).getUri();
             verify(responseContext).getStatusInfo();
             verify(statusInfo).getFamily();

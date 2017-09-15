@@ -15,14 +15,16 @@
  */
 package org.testifyproject.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.Mockito.mock;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.Mockito.mock;
 import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.Application;
@@ -90,8 +92,8 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        DefaultClientInstance<Object> uneuqual
-                = DefaultClientInstance.of(fqn, application, clientProvider, null, properties);
+        DefaultClientInstance<Object> uneuqual =
+                DefaultClientInstance.of(fqn, application, clientProvider, null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
         assertThat(sut.hashCode()).isNotEqualTo(uneuqual.hashCode());
@@ -104,8 +106,8 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        DefaultClientInstance<Object> equal
-                = DefaultClientInstance.of(fqn, application, client, clientProvider, properties);
+        DefaultClientInstance<Object> equal =
+                DefaultClientInstance.of(fqn, application, client, clientProvider, properties);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());

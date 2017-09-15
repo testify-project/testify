@@ -15,14 +15,16 @@
  */
 package org.testifyproject.core.instance;
 
-import java.util.List;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
@@ -47,7 +49,8 @@ public class ClientInstanceProviderTest {
         TestContext testContext = mock(TestContext.class);
         Optional<ClientInstance<Object>> foundClientInstance = Optional.empty();
 
-        given(testContext.<ClientInstance<Object>>findProperty(TestContextProperties.APP_CLIENT_INSTANCE))
+        given(testContext.<ClientInstance<Object>>findProperty(
+                TestContextProperties.APP_CLIENT_INSTANCE))
                 .willReturn(foundClientInstance);
 
         List<Instance> result = sut.get(testContext);
@@ -66,7 +69,8 @@ public class ClientInstanceProviderTest {
         Optional<Instance<Object>> foundClientProvider = Optional.of(clientProvider);
         Instance<Object> instance = DefaultInstance.of(clientInstance, ClientInstance.class);
 
-        given(testContext.<ClientInstance<Object>>findProperty(TestContextProperties.APP_CLIENT_INSTANCE))
+        given(testContext.<ClientInstance<Object>>findProperty(
+                TestContextProperties.APP_CLIENT_INSTANCE))
                 .willReturn(foundClientInstance);
         given(clientInstance.getClient()).willReturn(client);
         given(clientInstance.getClientProvider()).willReturn(foundClientProvider);

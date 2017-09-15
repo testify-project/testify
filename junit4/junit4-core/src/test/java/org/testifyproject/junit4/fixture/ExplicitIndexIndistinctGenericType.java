@@ -16,6 +16,7 @@
 package org.testifyproject.junit4.fixture;
 
 import java.util.function.Supplier;
+
 import org.testifyproject.junit4.fixture.common.Hello;
 
 /**
@@ -27,7 +28,8 @@ public class ExplicitIndexIndistinctGenericType {
     private final Supplier<Hello> hello1;
     private final Supplier<Hello> hello2;
 
-    public ExplicitIndexIndistinctGenericType(Supplier<Hello> hello1, Supplier<Hello> hello2) {
+    public ExplicitIndexIndistinctGenericType(Supplier<Hello> hello1,
+            Supplier<Hello> hello2) {
         this.hello1 = hello1;
         this.hello2 = hello2;
     }

@@ -15,11 +15,6 @@
  */
 package org.testifyproject.junit4.fixture;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.multibindings.MapBinder;
-import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
 import org.testifyproject.junit4.fixture.common.CustomQualifier;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.impl.Caio;
@@ -28,6 +23,12 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
 import org.testifyproject.junit4.fixture.service.Greeter;
 import org.testifyproject.junit4.fixture.service.NamedGreeter;
 import org.testifyproject.junit4.fixture.service.QualifiedGreeter;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.multibindings.MapBinder;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 
 /**
  * Greeting module.
@@ -38,19 +39,26 @@ public class GreetingModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        Multibinder<Greeting> setBinder = Multibinder.newSetBinder(binder(), Greeting.class);
+        Multibinder<Greeting> setBinder = Multibinder.newSetBinder(binder(),
+                Greeting.class);
         setBinder.addBinding().to(Hello.class).in(Singleton.class);
         setBinder.addBinding().to(Caio.class).in(Singleton.class);
         setBinder.addBinding().to(Haye.class).in(Singleton.class);
 
-        MapBinder<String, Greeting> mapBinder = MapBinder.newMapBinder(binder(), String.class, Greeting.class);
-        mapBinder.addBinding(Hello.class.getSimpleName()).to(Hello.class).in(Singleton.class);
-        mapBinder.addBinding(Caio.class.getSimpleName()).to(Caio.class).in(Singleton.class);
-        mapBinder.addBinding(Haye.class.getSimpleName()).to(Haye.class).in(Singleton.class);
+        MapBinder<String, Greeting> mapBinder = MapBinder.newMapBinder(binder(),
+                String.class, Greeting.class);
+        mapBinder.addBinding(Hello.class.getSimpleName()).to(Hello.class).in(
+                Singleton.class);
+        mapBinder.addBinding(Caio.class.getSimpleName()).to(Caio.class)
+                .in(Singleton.class);
+        mapBinder.addBinding(Haye.class.getSimpleName()).to(Haye.class)
+                .in(Singleton.class);
 
         bind(Greeting.class).to(Hello.class).in(Singleton.class);
-        bind(Greeting.class).annotatedWith(CustomQualifier.class).to(Caio.class).in(Singleton.class);
-        bind(Greeting.class).annotatedWith(Names.named("Haye")).to(Haye.class).in(Singleton.class);
+        bind(Greeting.class).annotatedWith(CustomQualifier.class).to(Caio.class).in(
+                Singleton.class);
+        bind(Greeting.class).annotatedWith(Names.named("Haye")).to(Haye.class).in(
+                Singleton.class);
 
         bind(Greeter.class).in(Singleton.class);
         bind(NamedGreeter.class).in(Singleton.class);

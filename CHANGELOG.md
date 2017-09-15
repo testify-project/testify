@@ -25,7 +25,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Added `ClientInstanceBuilder` class to build client instances.
 - Added the ability to get local, virtual and remote resources from the `TestContext`
 - Added a method to get application annotation from `ServerInstance` contract
-- Added a default implementation of `ServiceInstance` contract that can be used in unit tests
+- Added a default implementation `DefaultServiceInstance` of `ServiceInstance` contract that can be used in unit tests
+- Added `RemoteResourceInfo`, `LocalResourceInfo`, and `VirtualResourceInfo` contracts
+- Added methods to `TestContext` to get local, remote, and virtual resources.
+- Added `DefaultRemoteResourceInfo`, `DefaultLocalResourceInfo`, and `DefaultVirtualResourceInfo` implementations to replace `DefaultResourceInstance`
 
 ### Changed
 - Renamed `getDefinedName` method `FieldDescriptor` and `MethodDescriptor` to `getDeclaredName`
@@ -35,9 +38,11 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Changed ClientInstance contract to return client and clientProvider instances. Also added methods to get `fqn` and `annotation`.
 - Renamed `PropertiesWriter#addListElement` and `PropertiesReader#findList`
 - Changed return types of methods that return `List` to `Collection` 
+- Renamed `ResourceInstance` contract to `ResourceInfo`
 
 ### Removed
 - Removed `name` attribute from `@Fake`, `@Virtual` and `@Real`. `@Named` can be used on the field as a replacement.
+- Removed `DefaultResourceInstance`
 
 ## [0.9.8] - 2017-08-12
 ### Added
