@@ -18,12 +18,12 @@ package org.testifyproject.core.util;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.testifyproject.commons.jexl3.JexlBuilder;
-import org.testifyproject.commons.jexl3.JexlContext;
-import org.testifyproject.commons.jexl3.JexlEngine;
-import org.testifyproject.commons.jexl3.JexlExpression;
-import org.testifyproject.commons.jexl3.MapContext;
-import org.testifyproject.commons.jexl3.ObjectContext;
+import org.testifyproject.apache.commons.jexl3.JexlBuilder;
+import org.testifyproject.apache.commons.jexl3.JexlContext;
+import org.testifyproject.apache.commons.jexl3.JexlEngine;
+import org.testifyproject.apache.commons.jexl3.JexlExpression;
+import org.testifyproject.apache.commons.jexl3.MapContext;
+import org.testifyproject.apache.commons.jexl3.ObjectContext;
 
 /**
  * A utility class for creating and interpolating expressions.

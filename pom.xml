@@ -55,7 +55,7 @@
         <netbeans.hint.license>apache20</netbeans.hint.license>
 
         <!-- Build Dependency Versions -->
-        <buildtools.version>0.9.8-SNAPSHOT</buildtools.version>
+        <buildtools.version>0.9.8</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.2</plugin.resource>

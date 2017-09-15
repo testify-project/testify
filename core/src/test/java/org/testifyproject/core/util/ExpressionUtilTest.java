@@ -22,9 +22,9 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.commons.jexl3.JexlBuilder;
-import org.testifyproject.commons.jexl3.JexlEngine;
-import org.testifyproject.commons.jexl3.JexlException;
+import org.testifyproject.apache.commons.jexl3.JexlBuilder;
+import org.testifyproject.apache.commons.jexl3.JexlEngine;
+import org.testifyproject.apache.commons.jexl3.JexlException;
 import org.testifyproject.fixture.common.User;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
