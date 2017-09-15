@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.client</groupId>
         <artifactId>client</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     
     <artifactId>jersey-client</artifactId>

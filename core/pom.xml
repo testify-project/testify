@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     
     <artifactId>core</artifactId>
