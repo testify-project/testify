@@ -13,7 +13,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
-## [0.9.9-SNAPSHOT]
+## [0.9.9] - 2017-09-15
 ### Added
 - Added new `@Name` annotation that can be used to associate a custom name with a field, method or method parameter
 - Added the ability to find and inject collaborator method arguments by name
