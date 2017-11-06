@@ -39,6 +39,7 @@
         <module>spring-boot-system-test</module>        
         <module>hk2-integration-test</module>
         <module>jersey2-system-test</module>
+        <module>grpc-system-test</module>
         <module>guice-integration-test</module>
     </modules>
     
