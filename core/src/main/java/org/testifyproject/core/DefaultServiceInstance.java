@@ -15,18 +15,14 @@
  */
 package org.testifyproject.core;
 
-import static java.util.stream.Collectors.toList;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.annotation.Name;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 import org.testifyproject.tools.Discoverable;
@@ -59,7 +55,14 @@ public class DefaultServiceInstance implements ServiceInstance {
 
     @Override
     public <T> T getService(Type type, String name) {
-        return (T) serviceContext.get(ServiceKey.of(type, name));
+        T result = (T) serviceContext.get(ServiceKey.of(type, name));
+
+        //last ditch effort to find the value by type
+        if (result == null) {
+            result = (T) serviceContext.get(ServiceKey.of(type));
+        }
+
+        return result;
     }
 
     @Override
@@ -75,19 +78,12 @@ public class DefaultServiceInstance implements ServiceInstance {
             }
 
             if (instance == null) {
-                List<Object> foundMatches = serviceContext.values()
+                instance = serviceContext.values()
                         .stream()
                         .filter(Objects::nonNull)
                         .filter(p -> TypeToken.of(type).isSupertypeOf(p.getClass()))
-                        .collect(toList());
-
-                ExceptionUtil.INSTANCE.raise(
-                        foundMatches.size() > 1,
-                        "Found {} matches for type {}. Please specify a @Name qualifier "
-                        + "on the field.",
-                        foundMatches.size(), type.getTypeName());
-
-                instance = foundMatches.get(0);
+                        .findFirst()
+                        .orElse(null);
             }
 
         } else if (Name.class.equals(qualifiers[0].annotationType())) {
@@ -96,16 +92,6 @@ public class DefaultServiceInstance implements ServiceInstance {
         }
 
         return (T) instance;
-    }
-
-    @Override
-    public void addConstant(Object instance, String name, Class contract) {
-        serviceContext.putIfAbsent(ServiceKey.of(contract, name), instance);
-    }
-
-    @Override
-    public void replace(Object value, String name, Class contract) {
-        serviceContext.put(ServiceKey.of(contract, name), value);
     }
 
     @Override

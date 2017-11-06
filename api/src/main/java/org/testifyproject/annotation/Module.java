@@ -51,4 +51,15 @@ public @interface Module {
      */
     Class<?> value();
 
+    /**
+     * An attribute that indicates whether the module is a for testing purpose. If the module is
+     * for testing purpose the services defined in the module will take precedence over services
+     * defined in other modules. This is useful if you wish to substitute certain services for
+     * testing purpose (i.e. load a different DataSource than the one for production during test
+     * runs):
+     *
+     * @return true if the module is for testing purpose, false otherwise.
+     */
+    boolean test() default false;
+
 }

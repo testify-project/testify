@@ -18,6 +18,7 @@ package org.testifyproject.core;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.testifyproject.TestContext;
 
@@ -28,27 +29,26 @@ import org.testifyproject.TestContext;
  */
 public class TestContextHolder {
 
-    private final InheritableThreadLocal<TestContext> inheritableThreadLocal;
+    private final InheritableThreadLocal<TestContext> threadLocal;
 
     /**
      * An instance of the TestContextHolder.
      */
-    public static final TestContextHolder INSTANCE = new TestContextHolder(
-            new InheritableThreadLocal<>());
+    public static final TestContextHolder INSTANCE =
+            new TestContextHolder(new InheritableThreadLocal<>());
 
-    TestContextHolder(InheritableThreadLocal<TestContext> inheritableThreadLocal) {
-        this.inheritableThreadLocal = inheritableThreadLocal;
+    TestContextHolder(InheritableThreadLocal<TestContext> threadLocal) {
+        this.threadLocal = threadLocal;
     }
 
     /**
      * Create a new instance of TestContextHolder.
      *
-     * @param inheritableThreadLocal the underlying thread local instance holder
+     * @param threadLocal the underlying thread local instance holder
      * @return a new instance
      */
-    public static TestContextHolder of(
-            InheritableThreadLocal<TestContext> inheritableThreadLocal) {
-        return new TestContextHolder(inheritableThreadLocal);
+    public static TestContextHolder of(InheritableThreadLocal<TestContext> threadLocal) {
+        return new TestContextHolder(threadLocal);
     }
 
     /**
@@ -57,7 +57,7 @@ public class TestContextHolder {
      * @param testContext the value to be stored
      */
     public void set(TestContext testContext) {
-        inheritableThreadLocal.set(testContext);
+        threadLocal.set(testContext);
     }
 
     /**
@@ -66,14 +66,14 @@ public class TestContextHolder {
      * @return the current thread's value, empty optional otherwise
      */
     public Optional<TestContext> get() {
-        return Optional.ofNullable(inheritableThreadLocal.get());
+        return Optional.ofNullable(threadLocal.get());
     }
 
     /**
      * Removes the test context in current thread.
      */
     public void remove() {
-        inheritableThreadLocal.remove();
+        threadLocal.remove();
     }
 
     /**
@@ -82,7 +82,7 @@ public class TestContextHolder {
      * @param consumer the consumer function
      */
     public synchronized void execute(Consumer<TestContext> consumer) {
-        TestContext testContext = inheritableThreadLocal.get();
+        TestContext testContext = threadLocal.get();
 
         if (testContext != null) {
             consumer.accept(testContext);
@@ -93,11 +93,11 @@ public class TestContextHolder {
      * Execute the given function if the the current thread has a test context.
      *
      * @param <R> the function result type
-     * @param function the consumer function
+     * @param function the function that will be called to get the results
      * @return the function result
      */
     public synchronized <R> R execute(Function<TestContext, R> function) {
-        TestContext testContext = inheritableThreadLocal.get();
+        TestContext testContext = threadLocal.get();
         R result = null;
 
         if (testContext != null) {
@@ -106,6 +106,36 @@ public class TestContextHolder {
 
         return result;
 
+    }
+
+    /**
+     * Execute the given function return its results if not null, otherwise return
+     * {@code other}.
+     *
+     * @param <R> the function result type
+     * @param function the function that will be called to get the results
+     * @param other the result to be returned if there is no result present, may be null
+     * @return the value, if present, otherwise {@code other}
+     */
+    public <R> R executeOrElse(Function<TestContext, R> function, R other) {
+        R result = execute(function);
+
+        return result != null ? result : other;
+    }
+
+    /**
+     * Execute the given function return its results if not null, otherwise invoke {@code other}
+     * and return the result of that invocation.
+     *
+     * @param <R> the function result type
+     * @param function the function that will be called to get the results
+     * @param other the result to be returned if there is no result present, may be null
+     * @return the result, if present, otherwise {@code other}
+     */
+    public <R> R executeOrElse(Function<TestContext, R> function, Supplier<? extends R> other) {
+        R result = execute(function);
+
+        return result != null ? result : other.get();
     }
 
 }

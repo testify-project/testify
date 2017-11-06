@@ -25,9 +25,10 @@ import org.testifyproject.annotation.Application;
  *
  * @author saden
  * @param <T> the client configuration type
- * @param <C> the client instance type
+ * @param <C> the client type
+ * @param <P> the client supplier type, should be if not applicable {@link Void}
  */
-public interface ClientProvider<T, C> {
+public interface ClientProvider<T, C, P> {
 
     /**
      * Configure the client using the given server instance.
@@ -49,7 +50,9 @@ public interface ClientProvider<T, C> {
      * @param configuration client configuration object
      * @return a client instance.
      */
-    ClientInstance<C> create(TestContext testContext, Application application, URI baseURI,
+    ClientInstance<C, P> create(TestContext testContext,
+            Application application,
+            URI baseURI,
             T configuration);
 
     /**
@@ -57,6 +60,22 @@ public interface ClientProvider<T, C> {
      *
      * @param clientInstance the client instance to dispose of
      */
-    void destroy(ClientInstance<C> clientInstance);
+    void destroy(ClientInstance<C, P> clientInstance);
 
+    /**
+     * The type of the client.
+     *
+     * @return the client type.
+     */
+    Class<C> getClientType();
+
+    /**
+     * The type of client supplier. If a client supplier is not applicable this method returns
+     * {@code null};
+     *
+     * @return the client supplier type.
+     */
+    default Class<P> getClientSupplierType() {
+        return null;
+    }
 }

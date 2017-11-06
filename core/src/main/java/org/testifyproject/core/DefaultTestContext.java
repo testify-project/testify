@@ -86,6 +86,11 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
+    public ClassLoader getTestClassLoader() {
+        return testDescriptor.getTestClassLoader();
+    }
+
+    @Override
     public StartStrategy getResourceStartStrategy() {
         return resourceStartStrategy;
     }

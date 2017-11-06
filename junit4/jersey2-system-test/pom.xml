@@ -28,6 +28,17 @@
     <name>Jersey 2 System Test</name>
     <description>A module that contains a JUnit test runner for running Jersey 2 system tests</description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-javaagent:${org.testifyproject:core:jar}</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -62,22 +73,15 @@
             <artifactId>junit4-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.testifyproject.external</groupId>
-            <artifactId>external-bytebuddy</artifactId>
-            <version>${buildtools.version}</version>
-        </dependency>
 
         <!-- Jersey 2 Deps -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-http</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>

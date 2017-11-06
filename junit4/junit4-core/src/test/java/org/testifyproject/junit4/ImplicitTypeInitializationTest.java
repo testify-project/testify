@@ -46,7 +46,6 @@ public class ImplicitTypeInitializationTest {
 
     @Before
     public void verifyInjections() {
-        System.out.println("Exesuting test:" + this);
         assertThat(sut).isNotNull();
         assertThat(hello).isNotNull();
         assertThat(Mockito.mockingDetails(sut.getHello()).isMock()).isTrue();
@@ -55,7 +54,6 @@ public class ImplicitTypeInitializationTest {
 
     @Test
     public void givenNothingClassToExecuteShouldReturnHello() {
-        System.out.println("Exesuting test:" + this);
         String helloGreeting = "Hello";
         given(hello.greet()).willReturn(helloGreeting);
 

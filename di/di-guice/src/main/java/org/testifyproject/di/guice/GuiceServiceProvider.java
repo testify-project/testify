@@ -15,13 +15,9 @@
  */
 package org.testifyproject.di.guice;
 
-import java.util.Collection;
-
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
-import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Module;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
@@ -47,16 +43,6 @@ public class GuiceServiceProvider implements ServiceProvider<Injector> {
     @Override
     public ServiceInstance configure(TestContext testContext, Injector injector) {
         return new GuiceServiceInstance(injector);
-    }
-
-    @Override
-    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
-        TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Collection<Module> modules = testDescriptor.getModules();
-
-        if (!modules.isEmpty()) {
-            modules.stream().forEach(serviceInstance::addModules);
-        }
     }
 
 }

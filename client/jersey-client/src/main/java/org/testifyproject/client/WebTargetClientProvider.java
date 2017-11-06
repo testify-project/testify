@@ -36,7 +36,7 @@ import org.testifyproject.tools.Discoverable;
  * @author saden
  */
 @Discoverable
-public class WebTargetClientProvider implements ClientProvider<ClientBuilder, WebTarget> {
+public class WebTargetClientProvider implements ClientProvider<ClientBuilder, WebTarget, Client> {
 
     @Override
     public ClientBuilder configure(TestContext testContext, Application application,
@@ -48,7 +48,7 @@ public class WebTargetClientProvider implements ClientProvider<ClientBuilder, We
     }
 
     @Override
-    public ClientInstance<WebTarget> create(TestContext testContext,
+    public ClientInstance<WebTarget, Client> create(TestContext testContext,
             Application application,
             URI baseURI,
             ClientBuilder clientBuilder) {
@@ -56,17 +56,27 @@ public class WebTargetClientProvider implements ClientProvider<ClientBuilder, We
         WebTarget webTarget = client.target(baseURI);
 
         return ClientInstanceBuilder.builder()
-                .client(webTarget, WebTarget.class)
-                .clientProvider(client, Client.class)
+                .client(webTarget, getClientType())
+                .clientSupplier(client, getClientSupplierType())
                 .build("jerseyClient", application);
     }
 
     @Override
-    public void destroy(ClientInstance<WebTarget> clientInstance) {
-        clientInstance.getClientProvider()
+    public void destroy(ClientInstance<WebTarget, Client> clientInstance) {
+        clientInstance.getClientSupplier()
                 .map(Instance::getValue)
                 .map(Client.class::cast)
                 .ifPresent(Client::close);
+    }
+
+    @Override
+    public Class<WebTarget> getClientType() {
+        return WebTarget.class;
+    }
+
+    @Override
+    public Class<Client> getClientSupplierType() {
+        return Client.class;
     }
 
 }

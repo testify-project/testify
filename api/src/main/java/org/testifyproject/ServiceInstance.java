@@ -18,11 +18,7 @@ package org.testifyproject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
-
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
 
 /**
  * A contract that defines methods for working with various dependency injection frameworks to
@@ -61,90 +57,6 @@ public interface ServiceInstance {
     <T> T getService(Type type, Annotation... qualifiers);
 
     /**
-     * Add a constant with the given name and contract.
-     *
-     * @param value the constant value
-     * @param name the name associated with the constant
-     * @param contract the contract associated with the constant
-     */
-    void addConstant(Object value, String name, Class contract);
-
-    /**
-     * Add the given instance as a constant.
-     *
-     * @param <T> the instance type
-     * @param instance the instance
-     */
-    default <T> void addConstant(Instance<T> instance) {
-        T value = instance.getValue();
-        String name = null;
-        Class contract = null;
-
-        Optional<String> foundName = instance.getName();
-
-        if (foundName.isPresent()) {
-            name = foundName.get();
-        }
-
-        Optional<Class<? extends T>> foundContract = instance.getContract();
-
-        if (foundContract.isPresent()) {
-            contract = foundContract.get();
-        }
-
-        addConstant(value, name, contract);
-    }
-
-    /**
-     * Replace all services that implement the given contract with the given name and instance.
-     * If services that implement the contract are not found this method should behave like
-     * {@link #addConstant(java.lang.Object, java.lang.String, java.lang.Class)}.
-     *
-     * @param value the service value
-     * @param name the name of the service
-     * @param contract the contract implemented by the instance
-     *
-     */
-    void replace(Object value, String name, Class contract);
-
-    /**
-     * Add the given module(s) to the service instance.
-     *
-     * @param modules an array of modules
-     */
-    default void addModules(Module... modules) {
-    }
-
-    /**
-     * Replace all services that implement the given {@link Instance} as well as override the
-     * name and/or contract defined in the instance with the given overrideName and
-     * overrideContract. Note that if overrideName is used if it is not null or empty and
-     * overrideConctract is used if it is not null or equal to Class.class.
-     *
-     * @param <T> the instance type
-     * @param instance the instance
-     */
-    default <T> void replace(Instance<T> instance) {
-        T value = instance.getValue();
-        String name = null;
-        Class contract = null;
-
-        Optional<String> foundName = instance.getName();
-
-        if (foundName.isPresent()) {
-            name = foundName.get();
-        }
-
-        Optional<Class<? extends T>> foundContract = instance.getContract();
-
-        if (foundContract.isPresent()) {
-            contract = foundContract.get();
-        }
-
-        replace(value, name, contract);
-    }
-
-    /**
      * Determine if the service instance is running.
      *
      * @return true if the service is running, false otherwise.
@@ -154,31 +66,10 @@ public interface ServiceInstance {
     }
 
     /**
-     * Initialize the service instance.
-     */
-    default void init() {
-
-    }
-
-    /**
      * Destroy the service instance.
      */
     default void destroy() {
 
-    }
-
-    /**
-     * <p>
-     * Add the given scans to the service instance.
-     * </p>
-     * <p>
-     * Please note that for some DI a resource might be a package (Spring) and for others it
-     * might be service descriptor file (HK2).
-     * </p>
-     *
-     * @param scans an array of scans
-     */
-    default void addScans(Scan... scans) {
     }
 
     /**

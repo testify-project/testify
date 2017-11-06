@@ -20,7 +20,7 @@ import java.util.List;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.DefaultInstance;
-import org.testifyproject.extension.PreInstanceProvider;
+import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
@@ -36,7 +36,7 @@ import org.testifyproject.tools.Discoverable;
 @IntegrationCategory
 @SystemCategory
 @Discoverable
-public class TestContextInstanceProvider implements PreInstanceProvider {
+public class TestContextInstanceProvider implements InstanceProvider {
 
     @Override
     public List<Instance> get(TestContext testContext) {

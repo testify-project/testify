@@ -27,7 +27,18 @@
     <artifactId>di-guice</artifactId>
     <name>Guice DI</name>
     <description>A module that provides Google Guice DI Service Instance implementation</description>
-    
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-javaagent:${org.testifyproject:core:jar}</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>

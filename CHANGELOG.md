@@ -12,6 +12,23 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Security - Lists security fixes to security vulnerabilities
 
 ## [Unreleased]
+## [1.0.0-SNAPSHOT]
+### Added
+- Added Java Agent to enable the redefinition of classes to the core module
+ - Added InstrumentProvider and InstrumentInstance to enable the redefinition of classes
+- Introduced InstanceProvider extension contracts that enable the addition of arbitrary constants
+- Introduced ProxyInstanceProvider and ProxyInstanceControler to enable the creation and addition of proxied constants
+
+### Changed
+ - Renamed TestResourceProvider to ResourceController
+ - Added the ability to get client type and client provider type to ClientProvider contract
+ - Added the ability to get server type to the ServerProvider contract
+ - Moved reifier and verify extension classes to the extension package
+ 
+### Removed 
+ - Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute
+
+
 
 ## [0.9.9] - 2017-09-15
 ### Added

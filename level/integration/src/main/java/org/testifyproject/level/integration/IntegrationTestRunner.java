@@ -22,23 +22,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.testifyproject.ResourceController;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
-import org.testifyproject.extension.InstanceProvider;
-import org.testifyproject.extension.PostInstanceProvider;
 import org.testifyproject.extension.PostVerifier;
-import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.Hint;
@@ -55,7 +51,7 @@ import org.testifyproject.tools.Discoverable;
 public class IntegrationTestRunner implements TestRunner {
 
     private final ServiceLocatorUtil serviceLocatorUtil;
-    TestResourcesProvider testResourcesProvider;
+    ResourceController resourceController;
 
     public IntegrationTestRunner() {
         this(ServiceLocatorUtil.INSTANCE);
@@ -72,6 +68,9 @@ public class IntegrationTestRunner implements TestRunner {
         Optional<SutDescriptor> foundSutDescriptor = testContext.getSutDescriptor();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
 
+        resourceController = serviceLocatorUtil.getOne(ResourceController.class);
+        resourceController.start(testContext);
+
         serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class,
                 IntegrationCategory.class)
                 .forEach(p -> p.reify(testContext));
@@ -80,69 +79,22 @@ public class IntegrationTestRunner implements TestRunner {
                 .getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
-        ServiceProvider serviceProvider;
-
-        Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor
-                .getHint()
-                .map(Hint::serviceProvider)
-                .filter(((Predicate) ServiceProvider.class::equals).negate());
-
-        if (foundServiceProvider.isPresent()) {
-            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class,
-                    foundServiceProvider.get());
-        } else {
-            serviceProvider = serviceLocatorUtil.getOneWithFilter(ServiceProvider.class,
-                    IntegrationCategory.class);
-        }
+        ServiceProvider serviceProvider = getServiceProvider(testDescriptor);
 
         Object serviceContext = serviceProvider.create(testContext);
-
-        ServiceInstance serviceInstance = serviceProvider.configure(testContext,
-                serviceContext);
+        testConfigurer.configure(testContext, serviceContext);
+        ServiceInstance serviceInstance = serviceProvider.configure(testContext, serviceContext);
         testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
 
-        serviceProvider.postConfigure(testContext, serviceInstance);
-        testConfigurer.configure(testContext, serviceContext);
-
-        testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
-        testResourcesProvider.start(testContext);
-
-        if (testContext.getResourceStartStrategy() == StartStrategy.EAGER) {
-            //add constant instances
-            serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class,
-                    IntegrationCategory.class)
-                    .stream()
-                    .flatMap(p -> p.get(testContext).stream())
-                    .forEach(serviceInstance::replace);
-
-            serviceLocatorUtil.findAllWithFilter(InstanceProvider.class)
-                    .stream()
-                    .flatMap(p -> p.get(testContext).stream())
-                    .forEach(serviceInstance::replace);
-        }
-
-        serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class,
-                IntegrationCategory.class)
-                .stream()
-                .flatMap(p -> p.get(testContext).stream())
-                .forEach(serviceInstance::replace);
-
-        //XXX: Some DI framework (i.e. Spring) require that the service instance
-        //context be initialized. We need to do the initialization after the
-        //required resources have started so that resources can dynamically
-        //added to the service instance and eligiable for injection into the
-        //test class and test fixtures.
-        serviceInstance.init();
-
         foundSutDescriptor.ifPresent(sutDescriptor -> {
-            Set<Class<? extends Annotation>> nameQualifers = serviceInstance
-                    .getNameQualifers();
-            Set<Class<? extends Annotation>> customQualifiers = serviceInstance
-                    .getCustomQualifiers();
+            Set<Class<? extends Annotation>> nameQualifers =
+                    serviceInstance.getNameQualifers();
+            Set<Class<? extends Annotation>> customQualifiers =
+                    serviceInstance.getCustomQualifiers();
             Class sutType = sutDescriptor.getType();
 
-            Annotation[] sutQualifiers =
-                    sutDescriptor.getMetaAnnotations(nameQualifers, customQualifiers);
+            Annotation[] sutQualifiers = sutDescriptor
+                    .getMetaAnnotations(nameQualifers, customQualifiers);
 
             Object sutInstance = serviceInstance.getService(sutType, sutQualifiers);
             sutDescriptor.setValue(testInstance, sutInstance);
@@ -161,7 +113,22 @@ public class IntegrationTestRunner implements TestRunner {
         serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor
                 .getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
+    }
 
+    ServiceProvider getServiceProvider(TestDescriptor testDescriptor) {
+        ServiceProvider serviceProvider;
+        Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor
+                .getHint()
+                .map(Hint::serviceProvider)
+                .filter(((Predicate) ServiceProvider.class::equals).negate());
+        if (foundServiceProvider.isPresent()) {
+            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class,
+                    foundServiceProvider.get());
+        } else {
+            serviceProvider = serviceLocatorUtil.getOneWithFilter(ServiceProvider.class,
+                    IntegrationCategory.class);
+        }
+        return serviceProvider;
     }
 
     @Override
@@ -181,8 +148,8 @@ public class IntegrationTestRunner implements TestRunner {
         testContext.getSutDescriptor()
                 .ifPresent(p -> p.destroy(testInstance));
 
-        if (testResourcesProvider != null) {
-            testResourcesProvider.stop(testContext);
+        if (resourceController != null) {
+            resourceController.stop(testContext);
         }
 
         testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)

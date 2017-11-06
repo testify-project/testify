@@ -77,14 +77,14 @@ public class WebTargetClientProviderTest {
         given(clientBuilder.build()).willReturn(client);
         given(client.target(baseURI)).willReturn(webTarget);
 
-        ClientInstance<WebTarget> result = sut.create(testContext, application, baseURI,
+        ClientInstance<WebTarget, Client> result = sut.create(testContext, application, baseURI,
                 clientBuilder);
 
         assertThat(result).isNotNull();
         assertThat(result.getFqn()).isEqualTo("jerseyClient");
         assertThat(result.getApplication()).isEqualTo(application);
         assertThat(result.getClient()).isNotNull();
-        assertThat(result.getClientProvider()).isNotNull();
+        assertThat(result.getClientSupplier()).isNotNull();
 
         verify(clientBuilder).build();
         verify(client).target(baseURI);
@@ -94,17 +94,17 @@ public class WebTargetClientProviderTest {
 
     @Test
     public void callToCloseShouldCloseClient() {
-        ClientInstance<WebTarget> clientInstance = mock(ClientInstance.class);
+        ClientInstance<WebTarget, Client> clientInstance = mock(ClientInstance.class);
         Client client = mock(Client.class);
         Instance instance = mock(Instance.class);
-        Optional<Instance<Object>> foundInstance = Optional.of(instance);
+        Optional<Instance<Client>> foundInstance = Optional.of(instance);
 
-        given(clientInstance.getClientProvider()).willReturn(foundInstance);
+        given(clientInstance.getClientSupplier()).willReturn(foundInstance);
         given(instance.getValue()).willReturn(client);
 
         sut.destroy(clientInstance);
 
-        verify(clientInstance).getClientProvider();
+        verify(clientInstance).getClientSupplier();
         verify(instance).getValue();
         verify(client).close();
 

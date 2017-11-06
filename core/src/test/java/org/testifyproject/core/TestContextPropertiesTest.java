@@ -32,9 +32,8 @@ public class TestContextPropertiesTest {
         assertThat(TestContextProperties.APP_CONTEXT_PATH).isNotEmpty();
         assertThat(TestContextProperties.APP_NAME).isNotEmpty();
         assertThat(TestContextProperties.APP_PORT).isNotEmpty();
-        assertThat(TestContextProperties.APP_SERVLET_CONTAINER).isNotEmpty();
-        assertThat(TestContextProperties.APP_SERVLET_CONTEXT).isNotEmpty();
-        assertThat(TestContextProperties.BASE_URI).isNotEmpty();
+        assertThat(TestContextProperties.APP_SERVER).isNotEmpty();
+        assertThat(TestContextProperties.APP_BASE_URI).isNotEmpty();
         assertThat(TestContextProperties.SUT_DESCRIPTOR).isNotEmpty();
         assertThat(TestContextProperties.SUT_INSTANCE).isNotEmpty();
         assertThat(TestContextProperties.SERVICE_INSTANCE).isNotEmpty();

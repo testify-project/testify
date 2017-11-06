@@ -15,9 +15,8 @@
  */
 package org.testifyproject;
 
-import static java.util.Optional.empty;
-
-import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * A contract that defines an instance object. An instance represents the properties of an
@@ -40,20 +39,40 @@ public interface Instance<T> {
      * Get the name of instance. If present it represents the service name associated with the
      * instance and may be used to qualify the service.
      *
-     * @return optional with instance name, empty optional otherwise
+     * @return instance name, null otherwise
      */
-    default Optional<String> getName() {
-        return empty();
+    default String getName() {
+        return null;
     }
 
     /**
      * The contract implemented by the instance. If present any existing implementations of the
      * contract in the dependency injection framework will be replaced by this instance.
      *
-     * @return optional with instance contract type, empty optional otherwise
+     * @return instance contract type, null otherwise
      */
-    default Optional<Class<? extends T>> getContract() {
-        return empty();
+    default Class<? extends T> getContract() {
+        return null;
+    }
+
+    /**
+     * Execute the given function with the {@link #getValue() } as its parameters.
+     *
+     * @param <R> function return type
+     * @param function the function
+     * @return the result of executing the function
+     */
+    default <R> R execute(Function<T, R> function) {
+        return function.apply(getValue());
+    }
+
+    /**
+     * Execute a function with the {@link #getValue() } as its parameters.
+     *
+     * @param consumer the consumer function
+     */
+    default void execute(Consumer<T> consumer) {
+        consumer.accept(getValue());
     }
 
 }

@@ -19,7 +19,7 @@ package org.testifyproject.fixture.reflection;
  *
  * @author saden
  */
-public class CustomConstructorService {
+public final class CustomConstructorService {
 
     private final String message;
 

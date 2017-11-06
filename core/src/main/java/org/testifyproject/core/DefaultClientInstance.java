@@ -32,10 +32,11 @@ import lombok.ToString;
  *
  * @author saden
  * @param <C> the client type
+ * @param <P> the client supplier type
  */
 @ToString
 @EqualsAndHashCode
-public class DefaultClientInstance<C> implements ClientInstance<C> {
+public class DefaultClientInstance<C, P> implements ClientInstance<C, P> {
 
     private final String fqn;
     private final Application application;
@@ -59,7 +60,8 @@ public class DefaultClientInstance<C> implements ClientInstance<C> {
     /**
      * Create a client instance based on the given parameters.
      *
-     * @param <C> the underlying client provider client type
+     * @param <C> the client type
+     * @param <P> the client supplier type
      * @param fqn the fully qualified name of the client
      * @param application the application annotation
      * @param clientProvider the underlying local provider instance
@@ -67,11 +69,11 @@ public class DefaultClientInstance<C> implements ClientInstance<C> {
      * @param properties the provider instance properties
      * @return a new provider instance
      */
-    public static <C> DefaultClientInstance<C> of(
+    public static <C, P> DefaultClientInstance<C, P> of(
             String fqn,
             Application application,
             Instance<C> client,
-            Instance clientProvider,
+            Instance<P> clientProvider,
             Map<String, Object> properties) {
         return new DefaultClientInstance<>(fqn, application, client, clientProvider, properties);
     }
@@ -92,7 +94,7 @@ public class DefaultClientInstance<C> implements ClientInstance<C> {
     }
 
     @Override
-    public <P> Optional<Instance<P>> getClientProvider() {
+    public Optional<Instance<P>> getClientSupplier() {
         return ofNullable(clientProvider);
     }
 

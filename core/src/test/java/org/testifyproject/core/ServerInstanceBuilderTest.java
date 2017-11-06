@@ -76,7 +76,7 @@ public class ServerInstanceBuilderTest {
 
         assertThat(resourceInstance).isNotNull();
         assertThat(resourceInstance.getValue()).isEqualTo(server);
-        assertThat(resourceInstance.getContract()).isEmpty();
+        assertThat(resourceInstance.getContract()).isNotNull();
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ServerInstanceBuilderTest {
 
         assertThat(resourceInstance).isNotNull();
         assertThat(resourceInstance.getValue()).isEqualTo(server);
-        assertThat(resourceInstance.getContract()).contains(contract);
+        assertThat(resourceInstance.getContract()).isEqualTo(contract);
     }
 
     @Test

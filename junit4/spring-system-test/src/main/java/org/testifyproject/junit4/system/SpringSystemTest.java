@@ -41,7 +41,7 @@ public class SpringSystemTest extends TestifyJUnit4TestRunner {
     public SpringSystemTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.SYSTEM)
-                .resourceStartStrategy(StartStrategy.LAZY)
+                .resourceStartStrategy(StartStrategy.EAGER)
                 .dependency("org.springframework.web.WebApplicationInitializer",
                         "Spring Web MVC")
                 .build()
