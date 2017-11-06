@@ -33,6 +33,39 @@
         <systemrules.version>1.16.1</systemrules.version>
     </properties>
     
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>org.testifyproject.external:external-bytebuddy</include>
+                        </includes>
+                    </artifactSet>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"></transformer>
+                    </transformers>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Agent-Class>org.testifyproject.core.extension.instrument.InstrumentAgent</Agent-Class>
+                            <Premain-Class>org.testifyproject.core.extension.instrument.InstrumentAgent</Premain-Class>
+                            <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                            <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                            <Can-Set-Native-Method-Prefix>true</Can-Set-Native-Method-Prefix>
+                            <Implementation-Title>Testify Instrumentation Agent</Implementation-Title>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>

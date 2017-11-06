@@ -32,19 +32,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.support.BeanDefinitionDefaults;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.testifyproject.core.annotation.DefaultModule;
-import org.testifyproject.core.annotation.DefaultScan;
 import org.testifyproject.di.fixture.autowired.Greeting;
 import org.testifyproject.di.fixture.autowired.impl.Haye;
 import org.testifyproject.di.fixture.autowired.impl.Hello;
-import org.testifyproject.di.fixture.common.CreatedService;
 import org.testifyproject.di.fixture.common.InjectedGreeter;
-import org.testifyproject.di.fixture.common.WiredContract;
-import org.testifyproject.di.fixture.common.WiredService;
-import org.testifyproject.di.fixture.module.TestModule;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
 /**
@@ -92,14 +85,6 @@ public class SpringServiceInstanceTest {
         Boolean result = sut.isRunning();
 
         assertThat(result).isTrue();
-    }
-
-    @Test
-    public void callToInitShouldInitApplicationContex() {
-        ConfigurableApplicationContext context = new AnnotationConfigApplicationContext();
-
-        sut = new SpringServiceInstance(context);
-        sut.init();
     }
 
     @Test
@@ -164,98 +149,6 @@ public class SpringServiceInstanceTest {
         };
 
         Haye greeting = sut.getService(Haye.class, new Annotation[]{qualifier});
-        assertThat(greeting).isNotNull();
-    }
-
-    @Test
-    public void givenServiceInstanceAddConstantShouldAddTheService() {
-        CreatedService service = new CreatedService("greeting");
-        sut.addConstant(service, null, null);
-
-        CreatedService result = context.getBean(CreatedService.class);
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    public void givenValidParamsReplaceIWithConstantShouldRepalceService() {
-        String name = "newgreeting";
-        Hello constant = new Hello();
-
-        sut.replace(constant, name, Greeting.class);
-
-        Greeting result = context.getBean(name, Greeting.class);
-        assertThat(result).isSameAs(constant);
-    }
-
-    @Test
-    public void givenConstantReplaceShouldReplaceAllInstances() {
-        Hello constant = new Hello();
-        String name = null;
-        Class contract = null;
-
-        sut.replace(constant, name, contract);
-
-        Greeting result = context.getBean("Hello", Hello.class);
-        assertThat(result).isSameAs(constant);
-    }
-
-    @Test
-    public void givenConstantWithNameReplaceShouldReplaceAllInstances() {
-        Hello constant = new Hello();
-        String name = "hello";
-        Class contract = null;
-
-        sut.replace(constant, name, contract);
-
-        Greeting result = context.getBean(name, Hello.class);
-        assertThat(result).isSameAs(constant);
-    }
-
-    @Test
-    public void givenConstantWithContractReplaceShouldReplaceAllInstances() {
-        Hello constant = new Hello();
-        String name = null;
-        Class contract = Hello.class;
-
-        sut.replace(constant, name, contract);
-
-        Greeting result = context.getBean("Hello", Hello.class);
-        assertThat(result).isSameAs(constant);
-    }
-
-    @Test
-    public void givenConstantWithNameAndContractReplaceShouldReplaceAllInstances() {
-        Hello constant = new Hello();
-        String name = "hello";
-        Class contract = Greeting.class;
-
-        sut.replace(constant, name, contract);
-
-        Greeting result = context.getBean(name, Hello.class);
-        assertThat(result).isSameAs(constant);
-    }
-
-    @Test
-    public void givenModuleAddModuleShouldAddModule() {
-        DefaultModule module = new DefaultModule(TestModule.class);
-        sut.addModules(module);
-
-        WiredContract contract = context.getBean(WiredContract.class);
-        WiredService service = context.getBean(WiredService.class);
-
-        assertThat(contract).isNotNull();
-        assertThat(service).isNotNull();
-    }
-
-    @Test
-    public void givenPackageAddResourceShouldAddServices() {
-        context = new AnnotationConfigApplicationContext();
-        sut = new SpringServiceInstance(context);
-
-        sut.addScans(new DefaultScan("org.testifyproject.di.fixture.module"));
-        context.refresh();
-
-        WiredContract greeting = sut.getService(WiredContract.class);
         assertThat(greeting).isNotNull();
     }
 

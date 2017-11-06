@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Function;
 
 /**
  * <p>
@@ -37,16 +38,35 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public interface PropertiesWriter extends PropertiesTrait {
 
     /**
+     * If the specified key is not already associated with a value (or is mapped to null),
+     * attempts to compute its value using the given mapping function and enters it into this
+     * map unless null.
+     *
+     * @param <T> the value type
+     * @param key the key with which the specified value is to be associated
+     * @param mappingFunction the function to compute a value
+     * @return the current (existing or computed) value associated with the specified key
+     */
+    default <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
+        Map<String, T> properties = getProperties();
+
+        return properties.computeIfAbsent(key, mappingFunction);
+    }
+
+    /**
      * Add the given key/value pair if it is absent.
      *
      * @param <T> the value type
      * @param key the key
      * @param value the value
+     * @return this object
      */
-    default <T> void addProperty(String key, T value) {
+    default <T> PropertiesWriter addProperty(String key, T value) {
         Map<String, T> properties = getProperties();
 
         properties.computeIfAbsent(key, p -> value);
+
+        return this;
     }
 
     /**
@@ -55,14 +75,16 @@ public interface PropertiesWriter extends PropertiesTrait {
      * @param <E> the element type
      * @param key the properties map key
      * @param element the element that will be added
+     * @return this object
      */
-    default <E> void addCollectionElement(String key, E element) {
+    default <E> PropertiesWriter addCollectionElement(String key, E element) {
         Map<String, Collection<E>> properties = getProperties();
 
         Collection<E> result = properties.computeIfAbsent(key, p ->
                 new ConcurrentLinkedQueue<>());
 
         result.add(element);
+        return this;
     }
 
     /**
@@ -74,12 +96,15 @@ public interface PropertiesWriter extends PropertiesTrait {
      * @param key the properties map key
      * @param entryKey the new entry key that will be added
      * @param entryValue the new entry value that will be added
+     * @return this object
      */
-    default <K, V> void addMapEntry(String key, K entryKey, V entryValue) {
+    default <K, V> PropertiesWriter addMapEntry(String key, K entryKey, V entryValue) {
         Map<String, Map<K, V>> properties = getProperties();
 
         Map<K, V> result = properties.computeIfAbsent(key, p -> new ConcurrentHashMap<>());
         result.computeIfAbsent(entryKey, k -> entryValue);
+
+        return this;
     }
 
 }

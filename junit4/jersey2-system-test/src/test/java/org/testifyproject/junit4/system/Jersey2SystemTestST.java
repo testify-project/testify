@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -57,7 +58,7 @@ public class Jersey2SystemTestST {
     GreetingService greetingService;
 
     @Real
-    ClientInstance<WebTarget> clientInstance;
+    ClientInstance<WebTarget, Client> clientInstance;
 
     @Real
     TestContext testContext;

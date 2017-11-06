@@ -20,21 +20,19 @@ import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.testifyproject.ResourceController;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
-import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.PostVerifier;
-import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
@@ -52,7 +50,7 @@ import org.testifyproject.tools.Discoverable;
 public class UnitTestRunner implements TestRunner {
 
     private final ServiceLocatorUtil serviceLocatorUtil;
-    TestResourcesProvider testResourcesProvider;
+    ResourceController resourceController;
 
     public UnitTestRunner() {
         this(ServiceLocatorUtil.INSTANCE);
@@ -72,6 +70,9 @@ public class UnitTestRunner implements TestRunner {
                 .getGuidelines(), UnitCategory.class)
                 .forEach(p -> p.verify(testContext));
 
+        resourceController = serviceLocatorUtil.getOne(ResourceController.class);
+        resourceController.start(testContext);
+
         ServiceProvider serviceProvider;
 
         Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor
@@ -89,34 +90,12 @@ public class UnitTestRunner implements TestRunner {
 
         Object serviceContext = serviceProvider.create(testContext);
 
-        ServiceInstance serviceInstance = serviceProvider.configure(testContext,
-                serviceContext);
+        ServiceInstance serviceInstance =
+                serviceProvider.configure(testContext, serviceContext);
         testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
 
         serviceProvider.postConfigure(testContext, serviceInstance);
         testConfigurer.configure(testContext, serviceContext);
-
-        testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
-        testResourcesProvider.start(testContext);
-
-        //XXX: Some DI framework (i.e. Spring) require that the service instance
-        //context be initialized. We need to do the initialization after the
-        //required resources have started so that resources can dynamically
-        //added to the service instance and eligiable for injection into the
-        //test class and test fixtures.
-        serviceInstance.init();
-
-        //add constant instances
-        serviceLocatorUtil
-                .findAllWithFilter(PreInstanceProvider.class, UnitCategory.class)
-                .stream()
-                .flatMap(p -> p.get(testContext).stream())
-                .forEach(serviceInstance::replace);
-
-        serviceLocatorUtil.findAllWithFilter(InstanceProvider.class)
-                .stream()
-                .flatMap(p -> p.get(testContext).stream())
-                .forEach(serviceInstance::replace);
 
         serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitCategory.class)
                 .forEach(p -> p.reify(testContext));
@@ -163,7 +142,10 @@ public class UnitTestRunner implements TestRunner {
         testContext.getSutDescriptor()
                 .ifPresent(p -> p.destroy(testInstance));
 
-        testResourcesProvider.stop(testContext);
+        testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
+                .ifPresent(ServiceInstance::destroy);
+
+        resourceController.stop(testContext);
     }
 
 }

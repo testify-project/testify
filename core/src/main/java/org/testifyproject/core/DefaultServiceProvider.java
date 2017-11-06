@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.tools.Discoverable;
 
@@ -43,6 +45,19 @@ public class DefaultServiceProvider implements ServiceProvider<Map<ServiceKey, O
     @Override
     public ServiceInstance configure(TestContext testContext,
             Map<ServiceKey, Object> serviceContext) {
+
+        //add instances
+        ServiceLocatorUtil.INSTANCE
+                .findAllWithFilter(InstanceProvider.class)
+                .stream()
+                .flatMap(p -> p.get(testContext).stream())
+                .forEach(instance -> {
+                    serviceContext.put(
+                            ServiceKey.of(instance.getContract(), instance.getName()),
+                            instance.getValue()
+                    );
+                });
+
         return new DefaultServiceInstance(serviceContext);
     }
 

@@ -15,30 +15,18 @@
  */
 package org.testifyproject.di.guice;
 
-import static com.google.inject.util.Modules.combine;
-import static com.google.inject.util.Modules.override;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.inject.Qualifier;
 
-import org.testifyproject.Instance;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.annotation.Fixture;
-import org.testifyproject.core.DefaultInstance;
-import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 
 import com.google.inject.BindingAnnotation;
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.Stage;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
@@ -64,12 +52,7 @@ public class GuiceServiceInstance implements ServiceInstance {
         CUSTOM_QUALIFIER = ImmutableSet.of(Qualifier.class, BindingAnnotation.class);
     }
 
-    private final Queue<Instance> constants = new ConcurrentLinkedQueue<>();
-    private final Queue<Instance> replacements = new ConcurrentLinkedQueue<>();
-    private final Queue<Module> modules = new ConcurrentLinkedQueue<>();
-    private final Queue<Module> testModules = new ConcurrentLinkedQueue<>();
-    private boolean running = false;
-    private Injector injector;
+    private final Injector injector;
 
     public GuiceServiceInstance(Injector injector) {
         this.injector = injector;
@@ -77,7 +60,7 @@ public class GuiceServiceInstance implements ServiceInstance {
 
     @Override
     public Boolean isRunning() {
-        return running;
+        return true;
     }
 
     @Override
@@ -95,43 +78,15 @@ public class GuiceServiceInstance implements ServiceInstance {
 
     @Override
     public <T> T getService(Type type, String name) {
-        updateInjector();
-
         return (T) injector.getInstance(Key.get(type, Names.named(name)));
     }
 
     @Override
     public <T> T getService(Type type, Annotation... qualifiers) {
-        updateInjector();
-
         if (qualifiers == null || qualifiers.length == 0) {
             return (T) injector.getInstance(Key.get(type));
         } else {
             return (T) injector.getInstance(Key.get(type, qualifiers[0]));
-        }
-    }
-
-    @Override
-    public void addConstant(Object instance, String name, Class contract) {
-        constants.add(DefaultInstance.of(instance, name, contract));
-    }
-
-    @Override
-    public void replace(Object instance, String name, Class contract) {
-        replacements.add(DefaultInstance.of(instance, name, contract));
-    }
-
-    @Override
-    public void addModules(org.testifyproject.annotation.Module... modules) {
-        for (org.testifyproject.annotation.Module module : modules) {
-            Class<?> value = module.value();
-            Module instance = (Module) ReflectionUtil.INSTANCE.newInstance(value);
-
-            if (value.isAnnotationPresent(Fixture.class)) {
-                testModules.add(instance);
-            } else {
-                this.modules.add(instance);
-            }
         }
     }
 
@@ -143,24 +98,5 @@ public class GuiceServiceInstance implements ServiceInstance {
     @Override
     public Set<Class<? extends Annotation>> getCustomQualifiers() {
         return CUSTOM_QUALIFIER;
-    }
-
-    synchronized void updateInjector() {
-        if (!running) {
-
-            Module constantModule = GuiceAbstractModule.of(constants);
-            Module replacementModule = GuiceAbstractModule.of(replacements);
-
-            //Combine the modules defined in the test class with testify's constant
-            //modules, then replace binding definitions with testify replacements
-            //and the modules designated as test modules.
-            Module serviceModule = combine(combine(modules), constantModule);
-            Module testModule = combine(testModules);
-            Module module = override(serviceModule).with(replacementModule, testModule);
-
-            //create a guice injector
-            injector = Guice.createInjector(Stage.DEVELOPMENT, module);
-            running = true;
-        }
     }
 }

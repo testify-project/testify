@@ -18,9 +18,8 @@ package org.testifyproject.server.undertow;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-import static org.testifyproject.core.ApplicationInstanceProperties.APPLICATION_INSTANCE;
-import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_CONTAINER_INITIALIZER;
-import static org.testifyproject.core.ApplicationInstanceProperties.SERVLET_HANDLERS;
+import static org.testifyproject.core.TestContextProperties.APPLICATION_INSTANCE;
+import static org.testifyproject.server.core.ServletProperties.SERVLET_INSTANCE;
 
 import java.lang.reflect.Field;
 import java.net.ServerSocket;
@@ -46,6 +45,7 @@ import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.server.core.ServletInstance;
 import org.testifyproject.tools.Discoverable;
 import org.xnio.StreamConnection;
 import org.xnio.channels.AcceptingChannel;
@@ -87,21 +87,21 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
         try {
             String name = testContext.getName();
 
-            Optional<Set<Class<?>>> foundHandlers = applicationInstance.findProperty(
-                    SERVLET_HANDLERS);
-            Optional<ServletContainerInitializer> foundInitializer = applicationInstance
-                    .findProperty(SERVLET_CONTAINER_INITIALIZER);
+            Optional<ServletInstance> foundServletInstance =
+                    applicationInstance.findProperty(SERVLET_INSTANCE);
+
             DeploymentInfo deploymentInfo = null;
 
-            if (foundHandlers.isPresent() && foundInitializer.isPresent()) {
-                Set<Class<?>> handles = foundHandlers.get();
-                ServletContainerInitializer initializerInstance = foundInitializer.get();
+            if (foundServletInstance.isPresent()) {
+                ServletInstance servletInstance = foundServletInstance.get();
+                Set<Class<?>> handles = servletInstance.getHandlers();
+                ServletContainerInitializer initializer = servletInstance.getInitializer();
 
                 ImmediateInstanceFactory<ServletContainerInitializer> factory =
-                        new ImmediateInstanceFactory<>(initializerInstance);
+                        new ImmediateInstanceFactory<>(initializer);
                 URI uri = URI.create(DEFAULT_URI);
                 Class<? extends ServletContainerInitializer> initializerClass =
-                        initializerInstance.getClass();
+                        initializer.getClass();
                 ServletContainerInitializerInfo initInfo =
                         new ServletContainerInitializerInfo(initializerClass, factory,
                                 handles);
@@ -156,7 +156,7 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
 
             ServerInstance serverInstance = ServerInstanceBuilder.builder()
                     .baseURI(baseURI)
-                    .server(server)
+                    .server(server, Undertow.class)
                     .property("deploymentInfo", deploymentInfo)
                     .property("deploymentManager", deploymentManager)
                     .property("httpHandler", httpHandler)
@@ -165,6 +165,11 @@ public class UndertowServerProvider implements ServerProvider<DeploymentInfo, Un
         } catch (Exception e) {
             throw ExceptionUtil.INSTANCE.propagate("Could not start Undertow Server", e);
         }
+    }
+
+    @Override
+    public Class<Undertow> getServerType() {
+        return Undertow.class;
     }
 
     @Override

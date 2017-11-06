@@ -15,8 +15,8 @@
  */
 package org.testifyproject.junit4.system;
 
-import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
-import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTEXT;
+import static org.testifyproject.core.TestContextProperties.APP_SERVER;
+import static org.testifyproject.server.core.ServletProperties.SERVLET_CONTEXT;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -29,6 +29,7 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
+import org.testifyproject.bytebuddy.implementation.bind.annotation.Argument;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
@@ -47,12 +48,6 @@ import org.testifyproject.core.util.LoggingUtil;
  */
 public class ApplicationContextInterceptor {
 
-    private final TestContextHolder testContextHolder;
-
-    ApplicationContextInterceptor(TestContextHolder testContextHolder) {
-        this.testContextHolder = testContextHolder;
-    }
-
     @RuntimeType
     @BindingPriority(Integer.MAX_VALUE)
     public Object anyMethod(
@@ -67,7 +62,7 @@ public class ApplicationContextInterceptor {
             @SuperCall Callable<EmbeddedServletContainerFactory> zuper) throws Exception {
         EmbeddedServletContainerFactory containerFactory = zuper.call();
 
-        testContextHolder.execute(testContext -> {
+        TestContextHolder.INSTANCE.execute(testContext -> {
             ConfigurableEmbeddedServletContainer servletContainer =
                     (ConfigurableEmbeddedServletContainer) containerFactory;
             servletContainer.setPort(0);
@@ -80,8 +75,8 @@ public class ApplicationContextInterceptor {
     }
 
     protected void prepareEmbeddedWebApplicationContext(@SuperCall Callable<Void> zuper,
-            ServletContext servletContext) throws Exception {
-        testContextHolder.execute(testContext -> {
+            @Argument(0) ServletContext servletContext) throws Exception {
+        TestContextHolder.INSTANCE.execute(testContext -> {
             TestConfigurer testConfigurer = testContext.getTestConfigurer();
             testConfigurer.configure(testContext, servletContext);
         });
@@ -93,8 +88,8 @@ public class ApplicationContextInterceptor {
             @SuperCall Callable<EmbeddedServletContainer> zuper) throws Exception {
         EmbeddedServletContainer servletContainer = zuper.call();
 
-        testContextHolder.execute((Consumer<TestContext>) testContext ->
-                testContext.addProperty(APP_SERVLET_CONTAINER, servletContainer)
+        TestContextHolder.INSTANCE.execute((Consumer<TestContext>) testContext ->
+                testContext.addProperty(APP_SERVER, servletContainer)
         );
 
         return servletContainer;
@@ -102,10 +97,9 @@ public class ApplicationContextInterceptor {
 
     public void prepareEmbeddedWebApplicationContext(@SuperCall Callable<Void> zuper,
             @AllArguments Object[] args) throws Exception {
-
-        testContextHolder.execute(testContext -> {
+        TestContextHolder.INSTANCE.execute(testContext -> {
             LoggingUtil.INSTANCE.setTextContext(testContext);
-            testContext.addProperty(APP_SERVLET_CONTEXT, args[0]);
+            testContext.addProperty(SERVLET_CONTEXT, args[0]);
         });
 
         zuper.call();

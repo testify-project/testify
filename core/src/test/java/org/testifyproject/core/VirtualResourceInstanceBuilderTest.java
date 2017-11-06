@@ -72,7 +72,7 @@ public class VirtualResourceInstanceBuilderTest {
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/resource");
-        assertThat(instance.getContract()).contains(resourceContract);
+        assertThat(instance.getContract()).isEqualTo(resourceContract);
         assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
@@ -93,7 +93,7 @@ public class VirtualResourceInstanceBuilderTest {
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/resource");
-        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getContract()).isNull();
         assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
@@ -114,7 +114,7 @@ public class VirtualResourceInstanceBuilderTest {
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/resourceName");
-        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getContract()).isEqualTo(customContract);
         assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 

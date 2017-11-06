@@ -66,6 +66,13 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
     Class<?> getTestClass();
 
     /**
+     * The class loader associated with the test class.
+     *
+     * @return the test class classloader
+     */
+    ClassLoader getTestClassLoader();
+
+    /**
      * Get the test class descriptor.
      *
      * @return the test class descriptor.

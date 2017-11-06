@@ -20,16 +20,13 @@ import static org.testifyproject.core.TestContextProperties.APP_ARGUMENTS;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
-import org.testifyproject.TestConfigurer;
-import org.testifyproject.TestContext;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.AllArguments;
+import org.testifyproject.bytebuddy.implementation.bind.annotation.Argument;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
@@ -49,12 +46,6 @@ import org.testifyproject.di.spring.SpringServiceProvider;
  */
 public class SpringApplicationInterceptor {
 
-    private final TestContextHolder testContextHolder;
-
-    SpringApplicationInterceptor(TestContextHolder testContextHolder) {
-        this.testContextHolder = testContextHolder;
-    }
-
     @RuntimeType
     @BindingPriority(Integer.MAX_VALUE)
     public Object anyMethod(
@@ -72,7 +63,7 @@ public class SpringApplicationInterceptor {
         AnnotationConfigEmbeddedWebApplicationContext applicationContext =
                 (AnnotationConfigEmbeddedWebApplicationContext) zuper.call();
 
-        testContextHolder.execute(testContext -> {
+        TestContextHolder.INSTANCE.execute(testContext -> {
             testContext.addProperty(APP, object);
 
             if (args.length == 2) {
@@ -84,33 +75,22 @@ public class SpringApplicationInterceptor {
     }
 
     public void refresh(@SuperCall Callable<Void> zuper,
-            ApplicationContext applicationContext)
+            @Argument(0) ApplicationContext applicationContext)
             throws Exception {
         ConfigurableApplicationContext configurableApplicationContext =
                 (ConfigurableApplicationContext) applicationContext;
-        //TODO: should the service provider be set up front and available from the test context?
-        ServiceProvider serviceProvider =
-                ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
-                        SpringServiceProvider.class);
 
-        ServiceInstance serviceInstance =
-                testContextHolder.execute(
-                        (Function<TestContext, ServiceInstance>) testContext ->
-                        serviceProvider.configure(testContext,
-                                configurableApplicationContext)
-                );
+        TestContextHolder.INSTANCE.execute(testContext -> {
+            testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
+                ServiceProvider<ConfigurableApplicationContext> serviceProvider =
+                        ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
+                                SpringServiceProvider.class);
 
-        zuper.call();
-
-        testContextHolder.execute(testContext -> {
-            serviceProvider.postConfigure(testContext, serviceInstance);
-
-            TestConfigurer testConfigurer = testContext.getTestConfigurer();
-            testConfigurer.configure(testContext, configurableApplicationContext);
-
-            testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
+                return serviceProvider.configure(testContext, configurableApplicationContext);
+            });
         });
 
+        zuper.call();
     }
 
 }

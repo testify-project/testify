@@ -41,4 +41,9 @@ public class TestServerProvider implements ServerProvider {
     public void stop(ServerInstance serverInstance) {
     }
 
+    @Override
+    public Class getServerType() {
+        return null;
+    }
+
 }

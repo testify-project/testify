@@ -38,7 +38,7 @@ public class VirtualResourceInstanceBuilder<R> {
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
-     * Create a new resource of VirtualResourceInstanceBuilder.
+     * Create a new instance of VirtualResourceInstanceBuilder.
      *
      * @return a new resource builder
      */

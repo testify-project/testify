@@ -15,11 +15,9 @@
  */
 package org.testifyproject.core;
 
-import java.nio.file.Paths;
 import java.util.Map;
 
 import org.testifyproject.ClientInstance;
-import org.testifyproject.Instance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
@@ -27,20 +25,21 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
  * A builder class used to construction {@link ClientInstance} instances.
  *
  * @author saden
- * @param <C> the underlying client type
+ * @param <C> the client type
+ * @param <P> the client supplier type
  */
-public class ClientInstanceBuilder<C> {
+public class ClientInstanceBuilder<C, P> {
 
     private C client;
     private Class<C> clientContract;
-    private Object clientProvider;
-    private Class providerContract;
+    private Object clientSupplier;
+    private Class clientSupplierContract;
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
-     * Create a new resource of VirtualResourceInstanceBuilder.
+     * Create a new instance of ClientInstanceBuilder.
      *
-     * @return a new resource builder
+     * @return a new client instance builder
      */
     public static ClientInstanceBuilder builder() {
         return new ClientInstanceBuilder<>();
@@ -52,7 +51,7 @@ public class ClientInstanceBuilder<C> {
      * @param client the underlying client
      * @return this object
      */
-    public ClientInstanceBuilder<C> client(C client) {
+    public ClientInstanceBuilder<C, P> client(C client) {
         this.client = client;
 
         return this;
@@ -65,7 +64,7 @@ public class ClientInstanceBuilder<C> {
      * @param contract the underlying client contract
      * @return this object
      */
-    public ClientInstanceBuilder<C> client(C client, Class<C> contract) {
+    public ClientInstanceBuilder<C, P> client(C client, Class<C> contract) {
         this.client = client;
         this.clientContract = contract;
 
@@ -73,29 +72,28 @@ public class ClientInstanceBuilder<C> {
     }
 
     /**
-     * Set the underlying client clientProvider to the given client clientProvider.
+     * Set the underlying client clientSupplier to the given client clientSupplier.
      *
-     * @param <P> the underlying client clientProvider
-     * @param clientProvider the underlying client clientProvider
+     * @param clientSupplier the underlying client clientSupplier
      * @return this object
      */
-    public <P> ClientInstanceBuilder<C> clientProvider(P clientProvider) {
-        this.clientProvider = clientProvider;
+    public ClientInstanceBuilder<C, P> clientSupplier(P clientSupplier) {
+        this.clientSupplier = clientSupplier;
 
         return this;
     }
 
     /**
-     * Set the underlying client clientProvider to the given client clientProvider and contract.
+     * Set the underlying client clientSupplier to the given client clientSupplier and contract.
      *
-     * @param <P> the underlying client clientProvider
-     * @param clientProvider the underlying client clientProvider
-     * @param contract the underlying client clientProvider contract
+     * @param clientSupplier the underlying client clientSupplier
+     * @param clientSupplierContract the underlying client clientSupplier contract
      * @return this object
      */
-    public <P> ClientInstanceBuilder<C> clientProvider(P clientProvider, Class<P> contract) {
-        this.clientProvider = clientProvider;
-        this.providerContract = contract;
+    public ClientInstanceBuilder<C, P> clientSupplier(P clientSupplier,
+            Class<P> clientSupplierContract) {
+        this.clientSupplier = clientSupplier;
+        this.clientSupplierContract = clientSupplierContract;
 
         return this;
     }
@@ -107,7 +105,7 @@ public class ClientInstanceBuilder<C> {
      * @param value the value to be associated with the specified key
      * @return this object
      */
-    public ClientInstanceBuilder<C> property(String key, Object value) {
+    public ClientInstanceBuilder<C, P> property(String key, Object value) {
         this.properties.put(key, value);
 
         return this;
@@ -119,7 +117,7 @@ public class ClientInstanceBuilder<C> {
      * @param properties a map that contains key value pairs.
      * @return this object
      */
-    public ClientInstanceBuilder<C> properties(Map<String, Object> properties) {
+    public ClientInstanceBuilder<C, P> properties(Map<String, Object> properties) {
         this.properties.putAll(properties);
 
         return this;
@@ -133,56 +131,16 @@ public class ClientInstanceBuilder<C> {
      * @param application the application annotation
      * @return a virtual resource instance
      */
-    public ClientInstance<C> build(String fqn, Application application) {
-        Instance<C> clientInstance = createClient(fqn, application);
-        Instance clientProviderInstance = createClientProvider(fqn, application);
+    public ClientInstance<C, P> build(String fqn, Application application) {
+        String clientName = application.clientName();
+        String clientNameSupplier = application.clientSupplierName();
 
         return DefaultClientInstance.of(fqn,
                 application,
-                clientInstance,
-                clientProviderInstance,
+                DefaultInstance.of(client, clientName, clientContract),
+                DefaultInstance.of(clientSupplier, clientNameSupplier, clientSupplierContract),
                 properties.build());
 
     }
 
-    Instance<C> createClient(String fqn, Application application) {
-        if (client == null) {
-            return null;
-        }
-
-        String clientName;
-
-        if ("".equals(application.clientName())) {
-            clientName = Paths.get("application:/", fqn, "client").toString();
-        } else {
-            clientName = Paths.get("application:/", fqn, application.clientName()).toString();
-        }
-
-        if (!void.class.equals(application.clientContract())) {
-            clientContract = application.clientContract();
-        }
-
-        return DefaultInstance.of(client, clientName, clientContract);
-    }
-
-    Instance createClientProvider(String fqn, Application application) {
-        if (clientProvider == null) {
-            return null;
-        }
-
-        String resourceName;
-
-        if ("".equals(application.clientProviderName())) {
-            resourceName = Paths.get("application:/", fqn, "clientProvider").toString();
-        } else {
-            resourceName = Paths.get("application:/", fqn, application.clientProviderName())
-                    .toString();
-        }
-
-        if (!void.class.equals(application.clientProviderContract())) {
-            providerContract = application.clientProviderContract();
-        }
-
-        return DefaultInstance.of(clientProvider, resourceName, providerContract);
-    }
 }

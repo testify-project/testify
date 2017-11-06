@@ -37,9 +37,6 @@ public class GreetingResourceClientST {
 
     @Test
     public void verifyInjections() {
-        //Arrange
-        String phrase = "Hello";
-
         //Act
         Response result = sut.path("/").request().get();
 

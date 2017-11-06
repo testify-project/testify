@@ -18,8 +18,6 @@ package org.testifyproject.di.spring;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -32,16 +30,10 @@ import javax.inject.Provider;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.support.BeanDefinitionDefaults;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
-import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
@@ -92,13 +84,6 @@ public class SpringServiceInstance implements ServiceInstance {
     public void destroy() {
         if (isRunning()) {
             context.close();
-        }
-    }
-
-    @Override
-    public void init() {
-        if (!context.isActive()) {
-            context.refresh();
         }
     }
 
@@ -214,85 +199,6 @@ public class SpringServiceInstance implements ServiceInstance {
         }
 
         return instance;
-    }
-
-    @Override
-    public void addConstant(Object instance, String name, Class contract) {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context
-                .getBeanFactory();
-        Class instanceType = instance.getClass();
-
-        if (name != null) {
-            beanFactory.registerSingleton(name, instance);
-        } else {
-            beanFactory.registerSingleton(instanceType.getSimpleName(), instance);
-        }
-    }
-
-    @Override
-    public void replace(Object instance, String name, Class contract) {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context
-                .getBeanFactory();
-
-        if (name != null && contract != null) {
-            if (beanFactory.containsBean(name)) {
-                beanFactory.removeBeanDefinition(name);
-            }
-
-            //XXX: find and remove all the beans that implment the given contract
-            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
-                    contract, true, false);
-
-            for (String beanName : contractBeanNames) {
-                beanFactory.removeBeanDefinition(beanName);
-            }
-        } else if (name != null) {
-            if (beanFactory.containsBean(name)) {
-                beanFactory.removeBeanDefinition(name);
-            }
-        } else if (contract != null) {
-            //XXX: find and remove all the beans that implment the given contract
-            String[] contractBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
-                    contract, true, false);
-
-            for (String beanName : contractBeanNames) {
-                beanFactory.removeBeanDefinition(beanName);
-            }
-        } else {
-            //XXX: find and remove all the beans of the given instance type
-            String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
-                    instance.getClass(), true, false);
-            for (String beanName : typeBeanNames) {
-                beanFactory.removeBeanDefinition(beanName);
-            }
-        }
-
-        addConstant(instance, name, contract);
-    }
-
-    @Override
-    public void addModules(Module... modules) {
-        BeanDefinitionRegistry registry = (BeanDefinitionRegistry) context;
-        AnnotatedBeanDefinitionReader annotatedBeanDefinitionReader =
-                new AnnotatedBeanDefinitionReader(registry);
-
-        for (Module module : modules) {
-            annotatedBeanDefinitionReader.registerBean(module.value());
-        }
-    }
-
-    @Override
-    public void addScans(Scan... scans) {
-        BeanDefinitionRegistry registry = (BeanDefinitionRegistry) context;
-        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(
-                registry);
-        BeanDefinitionDefaults beanDefinitionDefaults = scanner
-                .getBeanDefinitionDefaults();
-        beanDefinitionDefaults.setLazyInit(true);
-
-        for (Scan scan : scans) {
-            scanner.scan(scan.value());
-        }
     }
 
     @Override

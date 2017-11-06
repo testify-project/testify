@@ -40,7 +40,7 @@ public class LocalResourceInstanceBuilder<R, C> {
     private Class<C> clientContract;
 
     /**
-     * Create a new resource of LocalResourceInstanceBuilder.
+     * Create a new instance of LocalResourceInstanceBuilder.
      *
      * @return a new resource builder
      */

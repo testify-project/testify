@@ -32,6 +32,7 @@
     <description>Parent module of ServerProvider SPI Contract implementations</description>
 
     <modules>
+        <module>server-core</module>
         <module>undertow</module>
     </modules>
 

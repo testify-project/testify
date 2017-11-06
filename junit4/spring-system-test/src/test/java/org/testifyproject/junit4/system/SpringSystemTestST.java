@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class SpringSystemTestST {
     WebTarget sut;
 
     @Real
-    ClientInstance<WebTarget> clientInstance;
+    ClientInstance<WebTarget, Client> clientInstance;
 
     @Real
     GreetingService greetingService;
@@ -71,9 +72,6 @@ public class SpringSystemTestST {
 
     @Real
     ServerInstance<Undertow> serverInstance;
-
-    @Real
-    Undertow undertow;
 
     @Real
     VirtualResourceInstance<InetAddress> virtualResourceInstance;
@@ -119,7 +117,6 @@ public class SpringSystemTestST {
         assertThat(greetingService).as("injection of an application service").isNotNull();
         assertThat(testContext).as("injection of TestContext").isNotNull();
         assertThat(serverInstance).as("injection of ServerInstance").isNotNull();
-        assertThat(undertow).as("injection of application server instance").isNotNull();
 
         assertThat(virtualResourceInstance).as("injection of VirtualResourceInstance")
                 .isNotNull();

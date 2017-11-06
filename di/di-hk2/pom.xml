@@ -27,7 +27,18 @@
     <artifactId>di-hk2</artifactId>
     <name>HK2 DI</name>
     <description>A module that provides HK2 DI Service Instance implementation</description>
-    
+   
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-javaagent:${org.testifyproject:core:jar}</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>

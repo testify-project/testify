@@ -47,7 +47,7 @@ public class DefaultInstanceTest {
         assertThat(sut).isNotNull();
         assertThat(sut.getValue()).isEqualTo(instance);
         assertThat(sut.getName()).contains(name);
-        assertThat(sut.getContract()).contains(contract);
+        assertThat(sut.getContract()).isEqualTo(contract);
     }
 
     @Test
@@ -56,8 +56,8 @@ public class DefaultInstanceTest {
 
         assertThat(sut).isNotNull();
         assertThat(sut.getValue()).isEqualTo(instance);
-        assertThat(sut.getName()).isEmpty();
-        assertThat(sut.getContract()).isEmpty();
+        assertThat(sut.getName()).isNull();
+        assertThat(sut.getContract()).isEqualTo(contract);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class DefaultInstanceTest {
         assertThat(sut).isNotNull();
         assertThat(sut.getValue()).isEqualTo(instance);
         assertThat(sut.getName()).contains(name);
-        assertThat(sut.getContract()).isEmpty();
+        assertThat(sut.getContract()).isEqualTo(contract);
     }
 
     @Test
@@ -76,8 +76,8 @@ public class DefaultInstanceTest {
 
         assertThat(sut).isNotNull();
         assertThat(sut.getValue()).isEqualTo(instance);
-        assertThat(sut.getContract()).contains(contract);
-        assertThat(sut.getName()).isEmpty();
+        assertThat(sut.getContract()).isEqualTo(contract);
+        assertThat(sut.getName()).isNull();
     }
 
     @Test

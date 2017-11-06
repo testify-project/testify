@@ -37,7 +37,7 @@ public class ServerInstanceBuilder<T> {
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
-     * Create a new resource of ServerInstanceBuilder.
+     * Create a new instance of ServerInstanceBuilder.
      *
      * @return a new server instance builder
      */

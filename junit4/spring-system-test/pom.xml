@@ -28,6 +28,17 @@
     <name>Spring System Test</name>
     <description>A module that contains a JUnit test runner for running Spring system tests</description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-javaagent:${org.testifyproject:core:jar}</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>
@@ -50,6 +61,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.testifyproject.server</groupId>
+            <artifactId>server-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
@@ -60,11 +76,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${javax.servlet.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testifyproject.external</groupId>
-            <artifactId>external-bytebuddy</artifactId>
-            <version>${buildtools.version}</version>
         </dependency>
         
         <!-- Test Deps -->

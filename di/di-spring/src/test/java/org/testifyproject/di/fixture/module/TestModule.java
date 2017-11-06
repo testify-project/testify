@@ -19,7 +19,6 @@ import javax.inject.Singleton;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.testifyproject.annotation.Fixture;
 import org.testifyproject.di.fixture.common.WiredContract;
 import org.testifyproject.di.fixture.common.WiredService;
 
@@ -27,7 +26,6 @@ import org.testifyproject.di.fixture.common.WiredService;
  *
  * @author saden
  */
-@Fixture
 @Configuration
 public class TestModule {
 

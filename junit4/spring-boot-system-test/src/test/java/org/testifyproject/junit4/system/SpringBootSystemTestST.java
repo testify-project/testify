@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class SpringBootSystemTestST {
     GreetingService greetingService;
 
     @Real
-    ClientInstance<WebTarget> clientInstance;
+    ClientInstance<WebTarget, Client> clientInstance;
 
     @Real
     TestContext testContext;

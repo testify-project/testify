@@ -19,29 +19,34 @@ import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.testifyproject.ClientInstance;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.Instance;
+import org.testifyproject.ResourceController;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.ServiceProvider;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.TestContextProperties;
+import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
-import org.testifyproject.extension.PostInstanceProvider;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.tools.Discoverable;
 
@@ -54,9 +59,7 @@ import org.testifyproject.tools.Discoverable;
 @Discoverable
 public class SystemTestRunner implements TestRunner {
 
-    TestResourcesProvider testResourcesProvider;
-    ServerProvider serverProvider;
-    ClientProvider clientProvider;
+    ResourceController resourceController;
 
     private final ServiceLocatorUtil serviceLocatorUtil;
     private final ReflectionUtil reflectionUtil;
@@ -74,67 +77,54 @@ public class SystemTestRunner implements TestRunner {
     public void start(TestContext testContext) {
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Optional<SutDescriptor> foundSutDescriptor = testContext.getSutDescriptor();
+        Object testInstance = testContext.getTestInstance();
 
         testDescriptor.getApplication().ifPresent(application -> {
-            Object testInstance = testContext.getTestInstance();
+            try {
+                //create and initalize mock fields. this is necessary so we can configure
+                //expected interaction prior to making a call to the application
+                //endpoints
+                serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class,
+                        SystemCategory.class)
+                        .forEach(p -> p.reify(testContext));
 
-            //create and initalize mock fields. this is necessary so we can configure
-            //expected interaction prior to making a call to the application
-            //endpoints
-            serviceLocatorUtil.findAllWithFilter(CollaboratorReifier.class,
-                    SystemCategory.class)
-                    .forEach(p -> p.reify(testContext));
+                serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor
+                        .getGuidelines(), SystemCategory.class)
+                        .forEach(p -> p.verify(testContext));
 
-            serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor
-                    .getGuidelines(), SystemCategory.class)
-                    .forEach(p -> p.verify(testContext));
+                resourceController = serviceLocatorUtil.getOne(ResourceController.class);
+                resourceController.start(testContext);
 
-            testResourcesProvider = serviceLocatorUtil.getOne(TestResourcesProvider.class);
-            testResourcesProvider.start(testContext);
+                ClientProvider clientProvider = createClientProvider(testContext, application);
+                ServerProvider serverProvider = createServerProvider(testContext, application);
 
-            ServerInstance serverInstance = createServer(testContext, application,
+                createServer(testContext, testConfigurer, serverProvider, application);
+                createClient(testContext, testConfigurer, clientProvider, application);
+            } catch (Exception ex) {
+                throw ExceptionUtil.INSTANCE.propagate(ex);
+            }
+
+            ServiceInstance serviceInstance = createService(testContext, testDescriptor,
                     testConfigurer);
-            testContext.addProperty(TestContextProperties.APP_SERVER_INSTANCE,
-                    serverInstance);
-            testContext.addProperty(serverInstance.getFqn(), serverInstance
-                    .getProperties());
 
-            ClientInstance clientInstance = createClient(testContext, application,
-                    testConfigurer, serverInstance.getBaseURI());
-            testContext.addProperty(TestContextProperties.APP_CLIENT_INSTANCE,
-                    clientInstance);
-            testContext.addProperty(clientInstance.getFqn(), clientInstance
-                    .getProperties());
+            if (serviceInstance != null) {
+                if (foundSutDescriptor.isPresent()) {
+                    SutDescriptor sutDescriptor = foundSutDescriptor.get();
+                    createSut(testContext, sutDescriptor, serviceInstance, testInstance);
+                }
 
-            testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE)
-                    .ifPresent(serviceInstance -> {
-                        serviceLocatorUtil.findAllWithFilter(PostInstanceProvider.class,
-                                SystemCategory.class)
-                                .stream()
-                                .flatMap(p -> p.get(testContext).stream())
-                                .forEach(serviceInstance::replace);
+                serviceLocatorUtil.findAllWithFilter(
+                        FinalReifier.class,
+                        SystemCategory.class
+                ).forEach(p -> p.reify(testContext));
 
-                        //XXX: Some DI framework (i.e. Spring) require that the service instance
-                        //context be initialized. We need to do the initialization after the
-                        //required resources have started so that resources can dynamically
-                        //added to the service instance and eligiable for injection into the
-                        //test class and test fixtures.
-                        serviceInstance.init();
-
-                        testContext.getSutDescriptor().ifPresent(sutDescriptor ->
-                                createSut(sutDescriptor, clientInstance, serviceInstance,
-                                        testInstance)
-                        );
-
-                        serviceLocatorUtil.findAllWithFilter(FinalReifier.class,
-                                SystemCategory.class)
-                                .forEach(p -> p.reify(testContext));
-
-                        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class,
-                                testDescriptor
-                                        .getGuidelines(), SystemCategory.class)
-                                .forEach(p -> p.verify(testContext));
-                    });
+                serviceLocatorUtil.findAllWithFilter(
+                        PreiVerifier.class,
+                        testDescriptor.getGuidelines(),
+                        SystemCategory.class
+                ).forEach(p -> p.verify(testContext));
+            }
         });
     }
 
@@ -155,70 +145,210 @@ public class SystemTestRunner implements TestRunner {
         //invoke destroy method on sut field annotated with Fixture
         sutDescriptor.ifPresent(p -> p.destroy(testInstance));
 
-        testContext
-                .<ClientInstance>findProperty(TestContextProperties.APP_CLIENT_INSTANCE)
-                .ifPresent(clientProvider::destroy);
+        try {
+            Optional<ClientInstance> foundClientInstance =
+                    testContext.findProperty(TestContextProperties.APP_CLIENT_INSTANCE);
 
-        testContext
-                .<ServerInstance>findProperty(TestContextProperties.APP_SERVER_INSTANCE)
-                .ifPresent(serverProvider::stop);
+            if (foundClientInstance.isPresent()) {
+                ClientInstance clientInstance = foundClientInstance.get();
 
-        testResourcesProvider.stop(testContext);
-    }
+                Optional<ClientProvider> foundClientProvider =
+                        testContext.findProperty(TestContextProperties.APP_CLIENT_PROVIDER);
 
-    void createSut(SutDescriptor sutDescriptor,
-            ClientInstance<Object> clientInstance,
-            ServiceInstance serviceInstance,
-            Object testInstance) {
-        Class sutType = sutDescriptor.getType();
-        Instance<Object> client = clientInstance.getClient();
-        Optional<String> foundName = client.getName();
+                if (foundClientProvider.isPresent()) {
+                    ClientProvider clientProvider = foundClientProvider.get();
+                    clientProvider.destroy(clientInstance);
+                }
+            }
 
-        Object sutValue = null;
+            //XXX: because an exception is thrown by stop we have to catch it and propogate it
+            //this way server prvoider impl don't have to worry about handling exceptions
+            Optional<ServerInstance> foundServerInstance =
+                    testContext.<ServerInstance>findProperty(
+                            TestContextProperties.APP_SERVER_INSTANCE);
 
-        if (ClientInstance.class.isAssignableFrom(sutType)) {
-            sutValue = serviceInstance.getService(sutType);
-        } else if (foundName.isPresent()) {
-            sutValue = serviceInstance.getService(sutType, foundName.get());
+            if (foundServerInstance.isPresent()) {
+                ServerInstance serverInstance = foundServerInstance.get();
+                Optional<ServerProvider> foundServerProvider =
+                        testContext.findProperty(TestContextProperties.APP_SERVER_PROVIDER);
+
+                if (foundServerProvider.isPresent()) {
+                    ServerProvider serverProvider = foundServerProvider.get();
+                    serverProvider.stop(serverInstance);
+                }
+            }
+
+            resourceController.stop(testContext);
+        } catch (Exception ex) {
+            throw ExceptionUtil.INSTANCE.propagate(ex);
         }
-
-        sutDescriptor.setValue(testInstance, sutValue);
     }
 
-    ServerInstance createServer(TestContext testContext, Application application,
-            TestConfigurer testConfigurer) {
-        //create server provider instance
-        Class<? extends ServerProvider> serverProviderType = application.serverProvider();
-        if (ServerProvider.class.equals(serverProviderType)) {
-            serverProvider = serviceLocatorUtil.getOne(serverProviderType);
+    ServerProvider createServerProvider(TestContext testContext, Application application) {
+        Class<? extends ServerProvider> type = application.serverProvider();
+        ServerProvider serverProvider;
+        if (ServerProvider.class.equals(type)) {
+            serverProvider = serviceLocatorUtil.getOne(type);
         } else {
-            serverProvider = reflectionUtil.newInstance(serverProviderType);
+            serverProvider = reflectionUtil.newInstance(type);
         }
-
-        //configure and start the server
-        Object serverConfig = serverProvider.configure(testContext);
-        serverConfig = testConfigurer.configure(testContext, serverConfig);
-
-        return serverProvider.start(testContext, application, serverConfig);
+        testContext.addProperty(TestContextProperties.APP_SERVER_PROVIDER,
+                serverProvider);
+        return serverProvider;
     }
 
-    ClientInstance createClient(TestContext testContext,
-            Application application,
-            TestConfigurer testConfigurer,
-            URI baseURI) {
-        //create client provider instance
-        Class<? extends ClientProvider> clientProviderType = application.clientProvider();
-
+    ClientProvider createClientProvider(TestContext testContext, Application application) {
+        //create client supplier instance
+        Class<? extends ClientProvider> clientProviderType =
+                application.clientProvider();
+        ClientProvider clientProvider;
         if (clientProviderType.equals(ClientProvider.class)) {
             clientProvider = serviceLocatorUtil.getOne(ClientProvider.class);
         } else {
             clientProvider = reflectionUtil.newInstance(clientProviderType);
         }
+        testContext.addProperty(TestContextProperties.APP_CLIENT_PROVIDER,
+                clientProvider);
+        return clientProvider;
+    }
 
+    ServiceInstance createService(TestContext testContext, TestDescriptor testDescriptor,
+            TestConfigurer testConfigurer) {
+        ServiceInstance serviceInstance;
+        Optional<ServiceInstance> foundServiceInstance =
+                testContext.<ServiceInstance>findProperty(SERVICE_INSTANCE);
+        if (foundServiceInstance.isPresent()) {
+            serviceInstance = foundServiceInstance.get();
+        } else {
+            ServiceProvider serviceProvider;
+
+            Optional<Class<? extends ServiceProvider>> foundServiceProvider =
+                    testDescriptor
+                            .getHint()
+                            .map(Hint::serviceProvider)
+                            .filter(((Predicate) ServiceProvider.class::equals)
+                                    .negate());
+
+            if (foundServiceProvider.isPresent()) {
+                serviceProvider = serviceLocatorUtil.getOne(
+                        ServiceProvider.class,
+                        foundServiceProvider.get());
+            } else {
+                serviceProvider = serviceLocatorUtil.getOne(
+                        ServiceProvider.class,
+                        DefaultServiceProvider.class);
+            }
+
+            Object serviceContext = serviceProvider.create(testContext);
+
+            serviceInstance = serviceProvider.configure(testContext, serviceContext);
+            testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
+
+            serviceProvider.postConfigure(testContext, serviceInstance);
+            testConfigurer.configure(testContext, serviceContext);
+        }
+        return serviceInstance;
+    }
+
+    void createServer(TestContext testContext, TestConfigurer testConfigurer,
+            ServerProvider serverProvider, Application application) throws
+            Exception {
+        //configure and start the server
+        Object serverConfig = serverProvider.configure(testContext);
+        serverConfig = testConfigurer.configure(testContext, serverConfig);
+
+        ServerInstance serverInstance =
+                serverProvider.start(testContext, application, serverConfig);
+
+        testContext
+                .addProperty(TestContextProperties.APP_SERVER_INSTANCE, serverInstance)
+                .addProperty(serverInstance.getFqn(), serverInstance.getProperties())
+                .addProperty(TestContextProperties.APP_BASE_URI, serverInstance
+                        .getBaseURI())
+                .addProperty(TestContextProperties.APP_SERVER, serverInstance
+                        .getServer().getValue());
+    }
+
+    void createClient(TestContext testContext, TestConfigurer testConfigurer,
+            ClientProvider clientProvider, Application application) {
+        URI baseURI = testContext.getProperty(TestContextProperties.APP_BASE_URI);
         //configure and create the client
-        Object clientConfig = clientProvider.configure(testContext, application, baseURI);
+        Object clientConfig =
+                clientProvider.configure(testContext, application, baseURI);
         clientConfig = testConfigurer.configure(testContext, clientConfig);
 
-        return clientProvider.create(testContext, application, baseURI, clientConfig);
+        ClientInstance<Object, Object> clientInstance =
+                clientProvider.create(testContext, application, baseURI, clientConfig);
+        testContext
+                .addProperty(TestContextProperties.APP_CLIENT_INSTANCE, clientInstance)
+                .addProperty(TestContextProperties.APP_CLIENT, clientInstance
+                        .getClient().getValue())
+                .addProperty(clientInstance.getFqn(), clientInstance.getProperties());
+
+        clientInstance.getClientSupplier()
+                .map(Instance::getValue)
+                .ifPresent(value -> {
+                    testContext.addProperty(
+                            TestContextProperties.APP_CLIENT_SUPPLIER,
+                            value
+                    );
+                });
     }
+
+    void createSut(TestContext testContext,
+            SutDescriptor sutDescriptor,
+            ServiceInstance serviceInstance,
+            Object testInstance) {
+        Class sutType = sutDescriptor.getType();
+        Optional<ClientInstance> foundClientInstance =
+                testContext.findProperty(TestContextProperties.APP_CLIENT_INSTANCE);
+
+        Object sutValue = null;
+
+        if (ClientInstance.class.isAssignableFrom(sutType)) {
+            sutValue = serviceInstance.getService(sutType);
+        } else if (foundClientInstance.isPresent()) {
+            ClientInstance clientInstance = foundClientInstance.get();
+            Instance<Object> client = clientInstance.getClient();
+            String clientName = client.getName();
+            Class<?> clientContract = client.getContract();
+
+            if (sutType.isAssignableFrom(clientContract)) {
+                try {
+                    sutValue = serviceInstance.getService(sutType, clientName);
+                } catch (Exception e) {
+                    LoggingUtil.INSTANCE.debug("could not find client of type '{}'",
+                            clientContract);
+                }
+
+                //if the client is not in the service instance then simply use the client value.
+                //we do this because client can be final and therefore not proxiable
+                if (sutValue == null) {
+                    sutValue = client.getValue();
+                }
+
+            }
+
+            Optional<Instance<Object>> foundClientSupplier = clientInstance.getClientSupplier();
+
+            if (sutValue == null && foundClientSupplier.isPresent()) {
+                Instance<Object> clientSupplier = foundClientSupplier.get();
+                String clientSupplierName = clientSupplier.getName();
+                Class<?> clientSupplierContract = clientSupplier.getContract();
+
+                if (sutType.isAssignableFrom(clientSupplierContract)) {
+                    try {
+                        sutValue = serviceInstance.getService(sutType, clientSupplierName);
+                    } catch (Exception e) {
+                        LoggingUtil.INSTANCE
+                                .debug("could not find client supplier of type '{}'",
+                                        clientContract);
+                    }
+                }
+            }
+        }
+
+        sutDescriptor.setValue(testInstance, sutValue);
+    }
+
 }

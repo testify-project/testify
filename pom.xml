@@ -38,9 +38,9 @@
         <module>core</module>
         <module>di</module>
         <module>level</module>
-        <module>junit4</module>
         <module>client</module>
         <module>server</module>
+        <module>junit4</module>
     </modules>
     
     <properties>
@@ -53,9 +53,10 @@
         <!-- IDE Properties -->
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <netbeans.hint.license>apache20</netbeans.hint.license>
+        <netbeans.inceptionYear>2016</netbeans.inceptionYear>
 
         <!-- Build Dependency Versions -->
-        <buildtools.version>0.9.8</buildtools.version>
+        <buildtools.version>0.9.9-SNAPSHOT</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.2</plugin.resource>
@@ -66,6 +67,7 @@
         <plugin.enforcer>1.4.1</plugin.enforcer>
         <plugin.source>3.0.1</plugin.source>
         <plugin.javadoc>2.10.4</plugin.javadoc>
+        <plugin.dependency>3.0.2</plugin.dependency>
         <plugin.jacoco>0.7.9</plugin.jacoco>
         <plugin.pit>1.2.2</plugin.pit>
         <plugin.license>3.0</plugin.license>
@@ -76,6 +78,7 @@
         <plugin.projectinfo>2.9</plugin.projectinfo>
         <plugin.jxr>2.5</plugin.jxr>
         <plugin.sonarqube>3.3.0.603</plugin.sonarqube>
+        <plugin.shade>2.4.3</plugin.shade>
 
         <!-- Test Dependencies -->
         <junit.version>4.12</junit.version>
@@ -298,6 +301,53 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${plugin.dependency}</version>
+                    <executions>
+                        <execution>
+                            <id>properties</id>
+                            <goals>
+                                <goal>properties</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${plugin.shade}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.testifyproject.maven</groupId>
+                            <artifactId>shade-plugin-extentions</artifactId>
+                            <version>${buildtools.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <shadedArtifactAttached>false</shadedArtifactAttached>
+                        <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                        <createDependencyReducedPom>true</createDependencyReducedPom>
+                        <createSourcesJar>true</createSourcesJar>
+                        <shadeSourcesContent>true</shadeSourcesContent>
+                        <transformers>
+                            <transformer implementation="org.testifyproject.maven.shade.ServiceResourceTransformer" />
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                                <addHeader>false</addHeader>
+                            </transformer>
+                        </transformers>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>${plugin.gpg}</version>
                     <executions>
@@ -349,6 +399,7 @@
                     <configuration>
                         <argLine>${jacocoSurefireArgs} -client -Xms512m -Xmx2048m</argLine>
                         <failIfNoTests>false</failIfNoTests>
+                        <trimStackTrace>false</trimStackTrace>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
                         <includes>
@@ -463,6 +514,7 @@
                             <exclude>**/*.enc</exclude>
                             <exclude>**/*.tar</exclude>
                             <exclude>**/*.sh</exclude>
+                            <exclude>**/*.proto</exclude>
                             <exclude>**/settings.xml</exclude>
                             <exclude>**/nbactions.xml</exclude>
                             <exclude>LICENSE</exclude>
@@ -714,8 +766,19 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.jacoco</groupId>
@@ -725,17 +788,8 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                    </plugin>
-                    <plugin>
                         <groupId>com.mycila</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <skip>${skipTests}</skip>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -769,21 +823,24 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <artifactId>maven-dependency-plugin</artifactId>
                     </plugin>
                     <plugin>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.mycila</groupId>
-                        <artifactId>license-maven-plugin</artifactId>
-                    </plugin>
+                    </plugin>        
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                     </plugin>
                     <plugin>
                         <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>

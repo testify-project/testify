@@ -28,6 +28,17 @@
     <name>Spring Integration Test</name>
     <description>A module that contains a JUnit test runner for running Spring integration tests</description>
    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-javaagent:${org.testifyproject:core:jar}</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>

@@ -20,8 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.util.Optional;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,17 +45,17 @@ public class InstanceTest {
 
     @Test
     public void callToGetNameShouldReturnEmptyOptional() {
-        Optional<String> result = sut.getName();
+        String result = sut.getName();
 
-        assertThat(result).isEmpty();
+        assertThat(result).isNull();
         verify(sut).getName();
     }
 
     @Test
     public void callToGetContractShouldReturnEmptyOptional() {
-        Optional<Class<? extends String>> result = sut.getContract();
+        Class<? extends String> result = sut.getContract();
 
-        assertThat(result).isEmpty();
+        assertThat(result).isNull();
         verify(sut).getContract();
     }
 
