@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -27,7 +28,6 @@ import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
 import org.testifyproject.extension.annotation.Loose;
 import org.testifyproject.extension.annotation.Strict;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure that integration test classes are annotated with {@link Module} or {@link Scan}.

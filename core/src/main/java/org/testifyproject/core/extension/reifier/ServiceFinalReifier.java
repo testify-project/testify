@@ -19,12 +19,12 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies test class fields that have not been initialized.

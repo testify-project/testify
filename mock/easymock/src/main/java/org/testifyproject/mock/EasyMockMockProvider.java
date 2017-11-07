@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 import org.easymock.EasyMock;
 import org.easymock.cglib.proxy.Factory;
 import org.testifyproject.MockProvider;
-import org.testifyproject.tools.Discoverable;
+import org.testifyproject.annotation.Discoverable;
 
 /**
  * A EasyMock implementation of the {@link MockProvider} SPI contract.

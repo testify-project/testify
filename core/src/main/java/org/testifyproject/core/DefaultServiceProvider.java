@@ -21,10 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An implementation of {@link ServiceProvider} backed by objects in the {@link TestContext}.

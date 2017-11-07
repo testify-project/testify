@@ -30,6 +30,7 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
@@ -39,7 +40,6 @@ import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.IntegrationCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A class used to run a integration test.

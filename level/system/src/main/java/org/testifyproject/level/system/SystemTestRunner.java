@@ -35,6 +35,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -48,7 +49,6 @@ import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.SystemCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A class used to run a system test.

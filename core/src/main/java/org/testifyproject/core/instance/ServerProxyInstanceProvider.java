@@ -23,13 +23,13 @@ import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.extension.instrument.DefaultProxyInstance;
 import org.testifyproject.extension.ProxyInstance;
 import org.testifyproject.extension.ProxyInstanceProvider;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An implementation of PreInstanceProvider that provides the test context.

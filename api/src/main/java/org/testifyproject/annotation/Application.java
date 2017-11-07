@@ -23,6 +23,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.testifyproject.CleanupProvider;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.ServerProvider;
 
@@ -149,5 +150,12 @@ public @interface Application {
      * @return the server contract class
      */
     Class serverContract() default void.class;
+
+    /**
+     * Specifies a cleanup provider implementations that performs cleanup operation.
+     *
+     * @return the cleanup provider implementation class.
+     */
+    Class<? extends CleanupProvider> cleanupProvider() default CleanupProvider.class;
 
 }

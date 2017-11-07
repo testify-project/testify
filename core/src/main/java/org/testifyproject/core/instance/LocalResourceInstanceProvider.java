@@ -22,6 +22,7 @@ import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInfo;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.NamingUtil;
@@ -30,7 +31,6 @@ import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An implementation of PreInstanceProvider that provides local resource instances.

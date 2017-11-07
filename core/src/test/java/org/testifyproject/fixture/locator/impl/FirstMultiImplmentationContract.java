@@ -15,8 +15,8 @@
  */
 package org.testifyproject.fixture.locator.impl;
 
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.fixture.locator.MultiImplmentationContract;
-import org.testifyproject.tools.Discoverable;
 
 /**
  *

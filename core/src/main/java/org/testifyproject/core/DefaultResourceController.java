@@ -20,8 +20,8 @@ import java.util.List;
 import org.testifyproject.ResourceController;
 import org.testifyproject.ResourceProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An implementation of the ResourceController SPI contract.

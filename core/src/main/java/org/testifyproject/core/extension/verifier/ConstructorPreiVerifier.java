@@ -25,13 +25,13 @@ import org.testifyproject.ParameterDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure that the system under test constructor parameters are defined as collaborators on the

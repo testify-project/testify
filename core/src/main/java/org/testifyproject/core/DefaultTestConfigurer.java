@@ -18,7 +18,7 @@ package org.testifyproject.core;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.tools.Discoverable;
+import org.testifyproject.annotation.Discoverable;
 
 /**
  * An implementation of {@link TestConfigurer} contract.

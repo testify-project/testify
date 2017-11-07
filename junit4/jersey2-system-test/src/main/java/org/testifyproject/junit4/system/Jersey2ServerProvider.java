@@ -33,10 +33,10 @@ import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.

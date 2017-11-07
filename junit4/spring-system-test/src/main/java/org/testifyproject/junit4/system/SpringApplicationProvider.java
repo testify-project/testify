@@ -23,11 +23,11 @@ import org.testifyproject.ApplicationProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.DefaultApplicationInstance;
 import org.testifyproject.core.util.InstrumentUtil;
 import org.testifyproject.server.core.ServletInstance;
 import org.testifyproject.server.core.ServletProperties;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A Spring Servlet implementation of the ApplicationProvider SPI contract.

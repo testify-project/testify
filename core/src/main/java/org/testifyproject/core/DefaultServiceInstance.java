@@ -22,10 +22,10 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.Name;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An implementation of {@link ServiceInstance} that is backed by objects in the
