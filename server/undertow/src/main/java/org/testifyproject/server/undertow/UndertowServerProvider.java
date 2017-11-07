@@ -41,12 +41,12 @@ import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.server.core.ServletInstance;
-import org.testifyproject.tools.Discoverable;
 import org.xnio.StreamConnection;
 import org.xnio.channels.AcceptingChannel;
 

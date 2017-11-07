@@ -15,10 +15,10 @@
  */
 package org.testifyproject.di.hk2;
 
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.extension.instrument.InstrumentInstanceBuilder;
 import org.testifyproject.extension.InstrumentInstance;
 import org.testifyproject.extension.InstrumentProvider;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * TODO.

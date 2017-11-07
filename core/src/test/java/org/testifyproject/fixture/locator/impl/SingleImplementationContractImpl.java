@@ -15,9 +15,9 @@
  */
 package org.testifyproject.fixture.locator.impl;
 
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.fixture.locator.SingleImplementationContract;
-import org.testifyproject.tools.Discoverable;
 
 /**
  *

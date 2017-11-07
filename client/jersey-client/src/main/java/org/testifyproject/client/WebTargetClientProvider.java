@@ -26,8 +26,8 @@ import org.testifyproject.ClientProvider;
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.ClientInstanceBuilder;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A Jersey Client implementation of the ClientProvider SPI contract that provides a usable

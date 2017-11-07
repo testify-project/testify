@@ -20,11 +20,11 @@ import java.util.List;
 
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Bundle;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.AnnotationInspector;
 import org.testifyproject.extension.annotation.Handles;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An annotation inspector that processes {@link Bundle} annotation.

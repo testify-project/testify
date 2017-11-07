@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
@@ -27,7 +28,6 @@ import org.testifyproject.extension.annotation.Loose;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure that collaborator provider methods are configured correctly.

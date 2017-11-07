@@ -708,10 +708,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>service-generator</artifactId>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -739,12 +735,6 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.testifyproject.tools</groupId>
-                <artifactId>service-generator</artifactId>
-                <version>${buildtools.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

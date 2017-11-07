@@ -23,7 +23,7 @@ import static org.mockito.Mockito.withSettings;
 
 import org.mockito.AdditionalAnswers;
 import org.testifyproject.MockProvider;
-import org.testifyproject.tools.Discoverable;
+import org.testifyproject.annotation.Discoverable;
 
 /**
  * A Mockito implementation of the {@link MockProvider} SPI contract.

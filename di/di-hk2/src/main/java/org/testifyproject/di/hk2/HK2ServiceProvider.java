@@ -21,9 +21,9 @@ import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An HK2 implementation of the {@link ServiceProvider} contract.

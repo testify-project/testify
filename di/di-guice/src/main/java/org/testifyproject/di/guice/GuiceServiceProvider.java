@@ -18,9 +18,9 @@ package org.testifyproject.di.guice;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
-import org.testifyproject.tools.Discoverable;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

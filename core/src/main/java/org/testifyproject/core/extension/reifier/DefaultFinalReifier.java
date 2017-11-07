@@ -22,10 +22,10 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies the test class.

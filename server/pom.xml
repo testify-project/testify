@@ -34,6 +34,7 @@
     <modules>
         <module>server-core</module>
         <module>undertow</module>
+        <module>generic-server</module>
     </modules>
 
     <dependencies>

@@ -90,6 +90,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.testifyproject.server</groupId>
+            <artifactId>generic-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.testifyproject.di</groupId>
             <artifactId>di-guice</artifactId>
             <version>${project.version}</version>

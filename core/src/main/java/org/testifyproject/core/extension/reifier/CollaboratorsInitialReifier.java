@@ -27,6 +27,7 @@ import org.testifyproject.MockProvider;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
@@ -34,7 +35,6 @@ import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies the sut and test based on the presence of

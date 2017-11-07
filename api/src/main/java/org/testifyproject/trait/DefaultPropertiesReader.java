@@ -16,17 +16,13 @@
 package org.testifyproject.trait;
 
 import java.util.Map;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.util.Objects;
 
 /**
  * An implementation of {@link PropertiesReader} contract.
  *
  * @author saden
  */
-@ToString
-@EqualsAndHashCode
 public class DefaultPropertiesReader implements PropertiesReader {
 
     private final Map<String, Object> properties;
@@ -48,6 +44,33 @@ public class DefaultPropertiesReader implements PropertiesReader {
     @Override
     public Map<String, Object> getProperties() {
         return properties;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.properties);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DefaultPropertiesReader other = (DefaultPropertiesReader) obj;
+        return Objects.equals(this.properties, other.properties);
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultPropertiesReader(" + "properties=" + properties + ')';
     }
 
 }

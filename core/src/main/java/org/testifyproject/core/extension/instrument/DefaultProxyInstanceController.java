@@ -21,13 +21,13 @@ import java.util.function.Supplier;
 
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.InstrumentUtil;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.ProxyInstanceController;
 import org.testifyproject.extension.ProxyInstanceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * TODO.
@@ -56,17 +56,20 @@ public class DefaultProxyInstanceController implements ProxyInstanceController {
                 .flatMap(p -> p.get(testContext).parallelStream())
                 .forEach(proxyInstance -> {
                     Class proxyType = proxyInstance.getType();
-                    int proxyTypeModifiers = proxyType.getModifiers();
 
-                    //we cant proxy final classes so ignore them
-                    if (!Modifier.isFinal(proxyTypeModifiers)) {
-                        String proxyName = proxyInstance.getName();
-                        Supplier proxyDelegate = proxyInstance.getDelegate();
+                    if (proxyType != null) {
+                        int proxyTypeModifiers = proxyType.getModifiers();
 
-                        Object proxy = instrumentUtil.createProxy(proxyType,
-                                testContext.getTestClassLoader(), proxyDelegate);
+                        //we cant proxy final classes so ignore them
+                        if (!Modifier.isFinal(proxyTypeModifiers)) {
+                            String proxyName = proxyInstance.getName();
+                            Supplier proxyDelegate = proxyInstance.getDelegate();
 
-                        builder.add(DefaultInstance.of(proxy, proxyName, proxyType));
+                            Object proxy = instrumentUtil.createProxy(proxyType,
+                                    testContext.getTestClassLoader(), proxyDelegate);
+
+                            builder.add(DefaultInstance.of(proxy, proxyName, proxyType));
+                        }
                     }
                 });
 

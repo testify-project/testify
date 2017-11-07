@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -27,7 +28,6 @@ import org.testifyproject.extension.annotation.Loose;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * Verify all interaction between the SUT and its collaborators based on

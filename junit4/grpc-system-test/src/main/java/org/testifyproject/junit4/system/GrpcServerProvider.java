@@ -27,7 +27,6 @@ import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
-import org.testifyproject.tools.Discoverable;
 
 import io.grpc.Server;
 
@@ -38,7 +37,7 @@ import io.grpc.Server;
  *
  * @author saden
  */
-@Discoverable
+//@Discoverable
 public class GrpcServerProvider implements ServerProvider<String[], Server> {
 
     @Override
@@ -47,7 +46,8 @@ public class GrpcServerProvider implements ServerProvider<String[], Server> {
     }
 
     @Override
-    public ServerInstance<Server> start(TestContext testContext, Application application,
+    public ServerInstance<Server> start(TestContext testContext,
+            Application application,
             String[] args) throws Exception {
         ServerInstanceBuilder builder = ServerInstanceBuilder.builder();
 

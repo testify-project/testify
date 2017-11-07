@@ -30,9 +30,28 @@
 
     <properties>
         <slf4j.version>1.7.25</slf4j.version>
+        <compiler.testing.version>0.10</compiler.testing.version>
     </properties>
-    
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- DO-NOT-REMOVE: Disable annotation processing for ourselves -->
+                    <compilerArgument>-proc:none</compilerArgument>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
+        <dependency>
+            <groupId>com.google.testing.compile</groupId>
+            <artifactId>compile-testing</artifactId>
+            <version>${compiler.testing.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

@@ -19,10 +19,10 @@ import java.util.Optional;
 
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.annotation.UnitCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A class that reifies test fields annotated with {@link  org.testifyproject.annotation.Real}.

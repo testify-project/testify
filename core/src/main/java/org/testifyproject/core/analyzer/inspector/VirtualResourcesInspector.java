@@ -16,12 +16,12 @@
 package org.testifyproject.core.analyzer.inspector;
 
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.annotation.VirtualResources;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.extension.AnnotationInspector;
 import org.testifyproject.extension.annotation.Handles;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An annotation inspector that processes {@link VirtualResources} annotations.

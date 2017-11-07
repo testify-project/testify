@@ -17,10 +17,10 @@ package org.testifyproject.core.analyzer.inspector;
 
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.extension.AnnotationInspector;
 import org.testifyproject.extension.annotation.Handles;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An annotation inspector that processes {@link Application} annotation.

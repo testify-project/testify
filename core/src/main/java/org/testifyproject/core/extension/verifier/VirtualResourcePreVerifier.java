@@ -18,6 +18,7 @@ package org.testifyproject.core.extension.verifier;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
@@ -26,7 +27,6 @@ import org.testifyproject.extension.annotation.Lenient;
 import org.testifyproject.extension.annotation.Loose;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.SystemCategory;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * Insure virtual resource providers have default constructors.
