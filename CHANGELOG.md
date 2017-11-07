@@ -18,16 +18,18 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Added InstrumentProvider and InstrumentInstance to enable the redefinition of classes
 - Introduced InstanceProvider extension contracts that enable the addition of arbitrary constants
 - Introduced ProxyInstanceProvider and ProxyInstanceControler to enable the creation and addition of proxied constants
+- Added a generic server provider that can be used to execute static main functions
+- Added a CleanupProvider contract to enable the execution of a cleanup operation
 
 ### Changed
- - Renamed TestResourceProvider to ResourceController
- - Added the ability to get client type and client provider type to ClientProvider contract
- - Added the ability to get server type to the ServerProvider contract
- - Moved reifier and verify extension classes to the extension package
+- Renamed TestResourceProvider to ResourceController
+- Added the ability to get client type and client provider type to ClientProvider contract
+- Added the ability to get server type to the ServerProvider contract
+- Moved reifier and verify extension classes to the extension package
+- Moved @Discoverable from build-tools:service-generator to the API module
  
 ### Removed 
  - Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute
-
 
 
 ## [0.9.9] - 2017-09-15
