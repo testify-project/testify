@@ -15,22 +15,25 @@
  */
 package org.testifyproject.di.spring;
 
+import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
+import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
+import org.testifyproject.core.util.ServiceLocatorUtil;
+import org.testifyproject.extension.InstanceProvider;
+import org.testifyproject.extension.ProxyInstanceController;
 
 /**
  * A class that is called after the application context is refreshed to initialize the test as
@@ -56,37 +59,31 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
             ConfigurableListableBeanFactory configurableListableBeanFactory) {
         DefaultListableBeanFactory beanFactory =
                 (DefaultListableBeanFactory) configurableListableBeanFactory;
-        Set<String> replacedBeanNames = new HashSet<>();
+
+        Queue<Instance<?>> instances = getInstances(testContext);
+
+        removeInstances(instances, beanFactory);
+        addInstances(instances, beanFactory);
 
         for (String beanName : beanFactory.getBeanDefinitionNames()) {
-            if (!replacedBeanNames.contains(beanName)) {
-                BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
-                Class<?> beanType = beanFactory.getType(beanName);
-//
-//                if (beanDefinition.isPrimary()) {
-//                    processPrimary(beanFactory, beanDefinition, beanName, beanType);
-//                }
+            BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+            //mark all beans as lazy beans so we don't needlessly
+            //instianticate them during testing
+            beanDefinition.setLazyInit(true);
 
-                //mark all beans as lazy beans so we don't needlessly
-                //instianticate them during testing
-                beanDefinition.setLazyInit(true);
+            Class<?> beanType = beanFactory.getType(beanName);
 
-                //lets look for beans annotated with configuration
-                Configuration configuration = beanType.getAnnotation(Configuration.class);
+            if (beanDefinition.isPrimary()) {
+                processPrimary(beanFactory, beanDefinition, beanName, beanType);
+            }
 
-                if (configuration == null) {
-                    processConfiguration(beanFactory, beanDefinition, beanType, beanName,
-                            replacedBeanNames);
-                }
+            //by default spring eagerly initilizes singleton scoped beans such as
+            //controllers so lets insure that controller entry points are prototype
+            //scoped and thus make them lazy.
+            boolean isController = isController(beanType);
 
-                //by default spring eagerly initilizes singleton scoped beans such as
-                //controllers so lets insure that controller entry points are prototype
-                //scoped and thus make them lazy.
-                boolean isController = isController(beanType);
-
-                if (isController) {
-                    beanDefinition.setScope(SCOPE_PROTOTYPE);
-                }
+            if (isController) {
+                beanDefinition.setScope(SCOPE_PROTOTYPE);
             }
         }
 
@@ -94,77 +91,100 @@ public class SpringBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
 
     }
 
-//    void processPrimary(DefaultListableBeanFactory beanFactory,
-//            BeanDefinition beanDefinition, String beanName, Class<?> beanType) {
-//        String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
-//
-//        if (beanNamesForType.length > 1) {
-//            for (String beanNameForType : beanNamesForType) {
-//                if (beanNameForType.equals(beanName)) {
-//                    beanFactory.removeBeanDefinition(beanNameForType);
-//                } else {
-//                    beanFactory.removeBeanDefinition(beanNameForType);
-//
-//                    GenericBeanDefinition replacementBeanDefinition =
-//                            new GenericBeanDefinition(beanDefinition);
-//                    replacementBeanDefinition.setPrimary(false);
-//                    replacementBeanDefinition.setLazyInit(true);
-//                    beanFactory.registerBeanDefinition(beanNameForType,
-//                            replacementBeanDefinition);
-//                }
-//            }
-//        }
-//    }
-    void processConfiguration(DefaultListableBeanFactory beanFactory,
-            BeanDefinition beanDefinition,
-            Class<?> beanType,
-            String beanName,
-            Set<String> replacedBeanNames) {
-        String factoryBeanName = beanDefinition.getFactoryBeanName();
-        Primary primary = beanType.getAnnotation(Primary.class);
+    Queue<Instance<?>> getInstances(TestContext testContext) {
+        //add instances
+        ConcurrentLinkedDeque<Instance<?>> instances = new ConcurrentLinkedDeque<>();
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(InstanceProvider.class)
+                .stream()
+                .map(p -> p.get(testContext))
+                .flatMap(p -> p.stream())
+                .forEach(p -> instances.addLast(p));
 
-        //if primary is null but the factory bean is defined then try
-        //to get the primary annotation from the factory bean type
-        if (primary == null && factoryBeanName != null) {
-            Class<?> factoryBeanType = beanFactory.getType(factoryBeanName);
+        ServiceLocatorUtil.INSTANCE.findAllWithFilter(ProxyInstanceController.class)
+                .stream()
+                .map(p -> p.create(testContext))
+                .flatMap(p -> p.stream())
+                .forEach(p -> instances.addLast(p));
 
-            primary = factoryBeanType.isAnnotationPresent(Configuration.class)
-                    ? factoryBeanType.getAnnotation(Primary.class)
-                    : null;
-        }
+        return instances;
+    }
 
-        //if primary is defined then lets find all the beans with
-        //the same type and replace them with the bean definition
-        //in the bean annotated with primary and thus replacying
-        //all production beans with test primary beans
-        if (primary != null) {
-            processPrimary(beanFactory, beanDefinition, beanType, beanName, primary,
-                    replacedBeanNames);
-        }
+    void removeInstances(Queue<Instance<?>> instances, DefaultListableBeanFactory beanFactory) {
+        //remove existing instances
+        instances.forEach(instance -> {
+            String name = instance.getName();
+            Class contract = instance.getContract();
+
+            if (name != null && contract != null) {
+                if (beanFactory.containsBean(name)) {
+                    beanFactory.removeBeanDefinition(name);
+                }
+
+                //XXX: find and remove all the beans that implment the given contract
+                String[] contractBeanNames = beanNamesForTypeIncludingAncestors(
+                        beanFactory,
+                        contract, true, false);
+
+                for (String beanName : contractBeanNames) {
+                    beanFactory.removeBeanDefinition(beanName);
+                }
+            } else if (name != null) {
+                if (beanFactory.containsBean(name)) {
+                    beanFactory.removeBeanDefinition(name);
+                }
+            } else if (contract != null) {
+                //XXX: find and remove all the beans that implment the given contract
+                String[] contractBeanNames = beanNamesForTypeIncludingAncestors(
+                        beanFactory,
+                        contract, true, false);
+
+                for (String beanName : contractBeanNames) {
+                    beanFactory.removeBeanDefinition(beanName);
+                }
+            } else {
+                //XXX: find and remove all the beans of the given instance type
+                String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
+                        instance.getClass(), true, false);
+                for (String beanName : typeBeanNames) {
+                    beanFactory.removeBeanDefinition(beanName);
+                }
+            }
+
+        });
+    }
+
+    void addInstances(Queue<Instance<?>> instances, DefaultListableBeanFactory beanFactory) {
+        //add new instances
+        instances.forEach(instance -> {
+            Object value = instance.getValue();
+            String name = instance.getName();
+            Class contract = value.getClass();
+
+            if (name == null) {
+                beanFactory.registerSingleton(contract.getSimpleName(), value);
+            } else {
+                beanFactory.registerSingleton(name, value);
+            }
+        });
     }
 
     void processPrimary(DefaultListableBeanFactory beanFactory,
-            BeanDefinition beanDefinition,
-            Class<?> beanType,
-            String beanName,
-            Primary primary,
-            Set<String> replacedBeanNames) {
+            BeanDefinition beanDefinition, String beanName, Class<?> beanType) {
         String[] beanNamesForType = beanFactory.getBeanNamesForType(beanType);
 
-        if (beanNamesForType.length > 1) {
+        if (beanNamesForType.length == 2) {
             for (String beanNameForType : beanNamesForType) {
                 if (beanNameForType.equals(beanName)) {
                     beanFactory.removeBeanDefinition(beanNameForType);
                 } else {
                     beanFactory.removeBeanDefinition(beanNameForType);
+
                     GenericBeanDefinition replacementBeanDefinition =
                             new GenericBeanDefinition(beanDefinition);
-
                     replacementBeanDefinition.setPrimary(false);
                     replacementBeanDefinition.setLazyInit(true);
                     beanFactory.registerBeanDefinition(beanNameForType,
                             replacementBeanDefinition);
-                    replacedBeanNames.add(beanNameForType);
                 }
             }
         }

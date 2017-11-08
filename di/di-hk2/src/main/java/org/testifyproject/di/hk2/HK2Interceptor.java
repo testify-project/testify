@@ -80,6 +80,13 @@ public class HK2Interceptor {
             @Argument(3) ServiceLocatorFactory.CreatePolicy policy)
             throws Exception {
         ServiceLocator serviceLocator = zuper.call();
+        String locatorName = serviceLocator.getName();
+
+        //ignore jersey service locator
+        switch (locatorName) {
+            case "jersey-server-rd-locator":
+                return serviceLocator;
+        }
 
         TestContextHolder.INSTANCE.execute(testContext -> {
             testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {

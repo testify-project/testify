@@ -15,12 +15,9 @@
  */
 package org.testifyproject.di.spring;
 
-import static org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
-import java.util.Queue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.springframework.beans.factory.support.BeanDefinitionDefaults;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -29,10 +26,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.testifyproject.Instance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestConfigurer;
-import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
@@ -43,8 +38,6 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.This;
 import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.util.ServiceLocatorUtil;
-import org.testifyproject.extension.InstanceProvider;
-import org.testifyproject.extension.ProxyInstanceController;
 
 /**
  * TODO.
@@ -77,11 +70,6 @@ public class ApplicationContextInterceptor {
                 configContext.setAllowBeanDefinitionOverriding(true);
             }
 
-            SpringBeanFactoryPostProcessor postProcessor =
-                    new SpringBeanFactoryPostProcessor(testContext);
-
-            applicationContext.addBeanFactoryPostProcessor(postProcessor);
-
             TestConfigurer testConfigurer = testContext.getTestConfigurer();
             ConfigurableApplicationContext configuredApplicationContext =
                     testConfigurer.configure(testContext, applicationContext);
@@ -94,10 +82,10 @@ public class ApplicationContextInterceptor {
             addModules(testDescriptor, registry);
             addScans(testDescriptor, registry);
 
-            Queue<Instance<?>> instances = getInstances(testContext);
+            SpringBeanFactoryPostProcessor postProcessor =
+                    new SpringBeanFactoryPostProcessor(testContext);
 
-            removeInstances(instances, beanFactory);
-            addInstances(instances, beanFactory);
+            applicationContext.addBeanFactoryPostProcessor(postProcessor);
 
             testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
                 ServiceProvider<ConfigurableApplicationContext> serviceProvider =
@@ -109,22 +97,6 @@ public class ApplicationContextInterceptor {
         });
 
         zuper.call();
-    }
-
-    Queue<Instance<?>> getInstances(TestContext testContext) {
-        //add instances
-        ConcurrentLinkedDeque<Instance<?>> instances = new ConcurrentLinkedDeque<>();
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(InstanceProvider.class)
-                .stream()
-                .map(p -> p.get(testContext))
-                .flatMap(p -> p.stream())
-                .forEach(p -> instances.addLast(p));
-        ServiceLocatorUtil.INSTANCE.findAllWithFilter(ProxyInstanceController.class)
-                .stream()
-                .map(p -> p.create(testContext))
-                .flatMap(p -> p.stream())
-                .forEach(p -> instances.addLast(p));
-        return instances;
     }
 
     void addModules(TestDescriptor testDescriptor, BeanDefinitionRegistry registry) {
@@ -150,62 +122,4 @@ public class ApplicationContextInterceptor {
                 .forEachOrdered(scanner::scan);
     }
 
-    void removeInstances(Queue<Instance<?>> instances, DefaultListableBeanFactory beanFactory) {
-        //remove existing instances
-        instances.forEach(instance -> {
-            String name = instance.getName();
-            Class contract = instance.getContract();
-
-            if (name != null && contract != null) {
-                if (beanFactory.containsBean(name)) {
-                    beanFactory.removeBeanDefinition(name);
-                }
-
-                //XXX: find and remove all the beans that implment the given contract
-                String[] contractBeanNames = beanNamesForTypeIncludingAncestors(
-                        beanFactory,
-                        contract, true, false);
-
-                for (String beanName : contractBeanNames) {
-                    beanFactory.removeBeanDefinition(beanName);
-                }
-            } else if (name != null) {
-                if (beanFactory.containsBean(name)) {
-                    beanFactory.removeBeanDefinition(name);
-                }
-            } else if (contract != null) {
-                //XXX: find and remove all the beans that implment the given contract
-                String[] contractBeanNames = beanNamesForTypeIncludingAncestors(
-                        beanFactory,
-                        contract, true, false);
-
-                for (String beanName : contractBeanNames) {
-                    beanFactory.removeBeanDefinition(beanName);
-                }
-            } else {
-                //XXX: find and remove all the beans of the given instance type
-                String[] typeBeanNames = beanNamesForTypeIncludingAncestors(beanFactory,
-                        instance.getClass(), true, false);
-                for (String beanName : typeBeanNames) {
-                    beanFactory.removeBeanDefinition(beanName);
-                }
-            }
-
-        });
-    }
-
-    void addInstances(Queue<Instance<?>> instances, DefaultListableBeanFactory beanFactory) {
-        //add new instances
-        instances.forEach(instance -> {
-            Object value = instance.getValue();
-            String name = instance.getName();
-            Class contract = value.getClass();
-
-            if (name == null) {
-                beanFactory.registerSingleton(contract.getSimpleName(), value);
-            } else {
-                beanFactory.registerSingleton(name, value);
-            }
-        });
-    }
 }
