@@ -17,32 +17,27 @@ package org.testifyproject.core.extension.instrument;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Method;
 
-import org.testifyproject.bytebuddy.agent.ByteBuddyAgent;
-import org.testifyproject.fixture.instrument.Greeter;
+import org.junit.Test;
 
 /**
- * TODO.
  *
  * @author saden
  */
 public class InstrumentAgentTest {
 
-    private InstrumentAgentTest() {
-    }
+    @Test
+    public void verifyAgent() throws Exception {
+        InstrumentAgent.main(new String[]{});
 
-    public static void main(String[] args) {
-        premain("", ByteBuddyAgent.install());
-
-        Greeter greeter = new Greeter();
-        String result = greeter.modifiedGreeting();
+        //avoid loading the class which makes it impossible to rebase with agent
+        Class type = Class.forName("org.testifyproject.fixture.instrument.AgentGreeter");
+        Method method = type.getDeclaredMethod("modifiedGreeting");
+        Object greeter = type.newInstance();
+        Object result = method.invoke(greeter);
 
         assertThat(result).isEqualTo("HELLO");
-    }
-
-    public static void premain(String arguments, Instrumentation instrumentation) {
-        InstrumentAgent.premain(arguments, instrumentation);
     }
 
 }

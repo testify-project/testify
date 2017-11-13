@@ -46,7 +46,8 @@ import com.google.inject.Stage;
 import com.google.inject.internal.InternalInjectorCreator;
 
 /**
- * TODO.
+ * Guice operation interceptor. This class intercepts certain Guice initialization calls to
+ * configure the test case.
  *
  * @author saden
  */
@@ -65,7 +66,7 @@ public class GuiceInterceptor {
             @Argument(0) Stage stage,
             @Argument(1) Iterable<? extends Module> modules)
             throws Exception {
-        Injector result = TestContextHolder.INSTANCE.execute(testContext -> {
+        Injector result = TestContextHolder.INSTANCE.query(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
             Queue<Module> prodModules = new ConcurrentLinkedQueue<>();
             Queue<Module> testModules = new ConcurrentLinkedQueue<>();

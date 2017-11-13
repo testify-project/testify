@@ -24,7 +24,6 @@ import javax.servlet.ServletContainerInitializer;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 
 /**
@@ -33,19 +32,22 @@ import org.testifyproject.guava.common.collect.ImmutableSet;
  */
 public class ServletInstanceTest {
 
-    @Sut
     ServletInstance sut;
+    Set<Class<?>> handlers;
+    ServletContainerInitializer initializer;
 
     @Before
     public void init() {
-        ServletContainerInitializer initializer = mock(ServletContainerInitializer.class);
-        Set<Class<?>> handlers = ImmutableSet.of();
+        initializer = mock(ServletContainerInitializer.class);
+        handlers = ImmutableSet.of();
         sut = new ServletInstance(initializer, handlers);
     }
 
     @Test
     public void verifySut() {
         assertThat(sut).isNotNull();
+        assertThat(sut.getHandlers()).isEqualTo(handlers);
+        assertThat(sut.getInitializer()).isEqualTo(initializer);
         assertThat(ServletInstance.builder()).isNotNull();
     }
 

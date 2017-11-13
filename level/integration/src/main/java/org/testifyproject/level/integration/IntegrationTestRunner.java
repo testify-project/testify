@@ -20,7 +20,6 @@ import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import org.testifyproject.ResourceController;
 import org.testifyproject.ServiceInstance;
@@ -31,6 +30,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Discoverable;
+import org.testifyproject.annotation.Hint;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
@@ -38,7 +38,6 @@ import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
-import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 
 /**
@@ -79,7 +78,11 @@ public class IntegrationTestRunner implements TestRunner {
                 .getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
 
-        ServiceProvider serviceProvider = getServiceProvider(testDescriptor);
+        ServiceProvider serviceProvider = serviceLocatorUtil.getFromHintWithFilter(
+                testContext,
+                ServiceProvider.class,
+                Hint::serviceProvider
+        );
 
         Object serviceContext = serviceProvider.create(testContext);
         testConfigurer.configure(testContext, serviceContext);
@@ -113,22 +116,6 @@ public class IntegrationTestRunner implements TestRunner {
         serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor
                 .getGuidelines(), IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
-    }
-
-    ServiceProvider getServiceProvider(TestDescriptor testDescriptor) {
-        ServiceProvider serviceProvider;
-        Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor
-                .getHint()
-                .map(Hint::serviceProvider)
-                .filter(((Predicate) ServiceProvider.class::equals).negate());
-        if (foundServiceProvider.isPresent()) {
-            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class,
-                    foundServiceProvider.get());
-        } else {
-            serviceProvider = serviceLocatorUtil.getOneWithFilter(ServiceProvider.class,
-                    IntegrationCategory.class);
-        }
-        return serviceProvider;
     }
 
     @Override

@@ -17,9 +17,6 @@ package org.testifyproject.level.unit;
 
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
 import org.testifyproject.ResourceController;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
@@ -28,6 +25,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Discoverable;
+import org.testifyproject.annotation.Hint;
 import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 import org.testifyproject.extension.CollaboratorReifier;
@@ -37,7 +35,6 @@ import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
-import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
@@ -73,29 +70,20 @@ public class UnitTestRunner implements TestRunner {
         resourceController = serviceLocatorUtil.getOne(ResourceController.class);
         resourceController.start(testContext);
 
-        ServiceProvider serviceProvider;
-
-        Optional<Class<? extends ServiceProvider>> foundServiceProvider = testDescriptor
-                .getHint()
-                .map(Hint::serviceProvider)
-                .filter(((Predicate) ServiceProvider.class::equals).negate());
-
-        if (foundServiceProvider.isPresent()) {
-            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class,
-                    foundServiceProvider.get());
-        } else {
-            serviceProvider = serviceLocatorUtil.getOne(ServiceProvider.class,
-                    DefaultServiceProvider.class);
-        }
+        ServiceProvider serviceProvider = serviceLocatorUtil.getFromHintOrDefault(
+                    testContext,
+                    ServiceProvider.class,
+                    DefaultServiceProvider.class,
+                    Hint::serviceProvider);
 
         Object serviceContext = serviceProvider.create(testContext);
+        testConfigurer.configure(testContext, serviceContext);
 
         ServiceInstance serviceInstance =
                 serviceProvider.configure(testContext, serviceContext);
         testContext.addProperty(SERVICE_INSTANCE, serviceInstance);
 
         serviceProvider.postConfigure(testContext, serviceInstance);
-        testConfigurer.configure(testContext, serviceContext);
 
         serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitCategory.class)
                 .forEach(p -> p.reify(testContext));

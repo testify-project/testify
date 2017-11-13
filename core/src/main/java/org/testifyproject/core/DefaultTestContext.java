@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +25,6 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
@@ -45,7 +45,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class DefaultTestContext implements TestContext {
 
-    private StartStrategy resourceStartStrategy;
     private Object testInstance;
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
@@ -54,6 +53,7 @@ public class DefaultTestContext implements TestContext {
     private MockProvider mockProvider;
     private Map<String, Object> properties;
     private Map<String, String> dependencies;
+    private Class<? extends Annotation> testCategory;
 
     @Override
     public Map<String, Object> getProperties() {
@@ -91,8 +91,8 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public StartStrategy getResourceStartStrategy() {
-        return resourceStartStrategy;
+    public Class<? extends Annotation> getTestCategory() {
+        return testCategory;
     }
 
     @Override
@@ -155,8 +155,8 @@ public class DefaultTestContext implements TestContext {
         return findCollection(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
     }
 
-    void setResourceStartStrategy(StartStrategy resourceStartStrategy) {
-        this.resourceStartStrategy = resourceStartStrategy;
+    void setTestCategory(Class<? extends Annotation> testCategory) {
+        this.testCategory = testCategory;
     }
 
     void setTestInstance(Object testInstance) {

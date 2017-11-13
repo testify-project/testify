@@ -20,6 +20,7 @@ import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,13 +33,13 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
 import org.testifyproject.VirtualResourceInfo;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  *
@@ -47,8 +48,7 @@ import org.testifyproject.VirtualResourceInfo;
 public class DefaultTestContextTest {
 
     TestContext sut;
-
-    StartStrategy resourceStartStrategy;
+    Class<? extends Annotation> testCategory;
     Object testInstance;
     TestDescriptor testDescriptor;
     MethodDescriptor methodDescriptor;
@@ -60,7 +60,7 @@ public class DefaultTestContextTest {
 
     @Before
     public void init() {
-        resourceStartStrategy = StartStrategy.EAGER;
+        testCategory = UnitCategory.class;
         testInstance = new Object();
         testDescriptor = mock(TestDescriptor.class);
         methodDescriptor = mock(MethodDescriptor.class);
@@ -71,7 +71,7 @@ public class DefaultTestContextTest {
         dependencies = mock(Map.class, delegatesTo(new HashMap<>()));
 
         sut = DefaultTestContextBuilder.builder()
-                .resourceStartStrategy(resourceStartStrategy)
+                .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .testMethodDescriptor(methodDescriptor)
@@ -121,9 +121,9 @@ public class DefaultTestContextTest {
 
     @Test
     public void callToGetResourceStartStrategyShouldReturn() {
-        StartStrategy result = sut.getResourceStartStrategy();
+        Class<? extends Annotation> result = sut.getTestCategory();
 
-        assertThat(result).isEqualTo(resourceStartStrategy);
+        assertThat(result).isEqualTo(testCategory);
     }
 
     @Test
@@ -228,7 +228,7 @@ public class DefaultTestContextTest {
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         TestContext uneuqual = DefaultTestContextBuilder.builder()
-                .resourceStartStrategy(resourceStartStrategy)
+                .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .testMethodDescriptor(null)
@@ -249,7 +249,7 @@ public class DefaultTestContextTest {
     @Test
     public void givenEqualInstancesShouldBeEqual() {
         TestContext equal = DefaultTestContextBuilder.builder()
-                .resourceStartStrategy(resourceStartStrategy)
+                .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .testMethodDescriptor(methodDescriptor)
@@ -268,8 +268,10 @@ public class DefaultTestContextTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultTestContext", "resourceStartStrategy",
+        assertThat(result).contains(
+                "DefaultTestContext",
                 "testDescriptor",
-                "methodDescriptor");
+                "methodDescriptor"
+        );
     }
 }

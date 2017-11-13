@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.system;
+package org.testifyproject.di.fixture.instrument;
 
-import org.testifyproject.core.extension.instrument.InstrumentInstanceBuilder;
-import org.testifyproject.extension.InstrumentInstance;
-import org.testifyproject.extension.InstrumentProvider;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Sut;
+import org.testifyproject.di.fixture.common.Greeting;
+import org.testifyproject.di.fixture.common.GreetingModule;
 
 /**
- * TODO.
  *
  * @author saden
  */
-//@Discoverable
-public class SpringServletInstrumentProvider implements InstrumentProvider {
+@Module(GreetingModule.class)
+public class ModuleTester {
 
-    @Override
-    public InstrumentInstance get() {
-        return InstrumentInstanceBuilder.builder()
-                .build("org.springframework.web.servlet.FrameworkServlet",
-                        new SpringServletInterceptor());
+    @Sut
+    Greeting sut;
+
+    @Test
+    public void verifyInjection() {
+        assertThat(sut).isNotNull();
     }
 
 }

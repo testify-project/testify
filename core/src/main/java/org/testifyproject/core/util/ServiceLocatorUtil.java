@@ -26,6 +26,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Hint;
 
 /**
  * A utility class that uses {@link ServiceLoader} mechanism to locate service descriptors under
@@ -209,6 +215,39 @@ public class ServiceLocatorUtil {
         insureNotEmpty(result, contractName, implementationName);
 
         return result.get(0);
+    }
+
+    public <T> T getFromHintWithFilter(TestContext testContext,
+            Class<T> contract,
+            Function<Hint, Class<? extends T>> hintProvider) {
+
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Predicate predicate = contract::equals;
+
+        Optional<Class<? extends T>> foundProvider = testDescriptor.getHint()
+                .map(hintProvider)
+                .filter(predicate.negate());
+
+        return foundProvider
+                .map(hintServiceProvider -> getOne(contract, hintServiceProvider))
+                .orElseGet(() -> getOneWithFilter(contract, testContext.getTestCategory()));
+    }
+
+    public <T> T getFromHintOrDefault(TestContext testContext,
+            Class<T> contract,
+            Class<? extends T> implementation,
+            Function<Hint, Class<? extends T>> hintProvider) {
+
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Predicate predicate = contract::equals;
+
+        Optional<Class<? extends T>> foundProvider = testDescriptor.getHint()
+                .map(hintProvider)
+                .filter(predicate.negate());
+
+        return foundProvider
+                .map(hintServiceProvider -> getOne(contract, hintServiceProvider))
+                .orElseGet(() -> getOne(contract, implementation));
     }
 
     /**

@@ -46,14 +46,14 @@ public class ClientProxyInstanceProvider implements ProxyInstanceProvider {
     public List<ProxyInstance> get(TestContext testContext) {
         ImmutableList.Builder<ProxyInstance> builder = ImmutableList.builder();
 
-        testContext.<ClientProvider>findProperty(TestContextProperties.APP_CLIENT_PROVIDER)
+        testContext.<ClientProvider>findProperty(TestContextProperties.CLIENT_PROVIDER)
                 .ifPresent(clientProvider -> {
                     builder.add(createClientInstance(testContext));
                     builder.add(createClient(testContext, clientProvider.getClientType()));
+                    Class clientSupplierType = clientProvider.getClientSupplierType();
 
-                    if (clientProvider.getClientSupplierType() != null) {
-                        builder.add(createClientProvider(testContext, clientProvider
-                                .getClientSupplierType()));
+                    if (clientSupplierType != null) {
+                        builder.add(createClientSupplier(testContext, clientSupplierType));
                     }
                 });
 
@@ -62,17 +62,21 @@ public class ClientProxyInstanceProvider implements ProxyInstanceProvider {
 
     ProxyInstance createClientInstance(TestContext testContext) {
         Supplier<ClientInstance> supplier = () ->
-                testContext.getProperty(TestContextProperties.APP_CLIENT_INSTANCE);
+                testContext.getProperty(TestContextProperties.CLIENT_INSTANCE);
 
         return DefaultProxyInstance.of(ClientInstance.class, supplier);
     }
 
     ProxyInstance createClient(TestContext testContext, Class clientType) {
         Supplier<?> supplier = () ->
-                testContext.getProperty(TestContextProperties.APP_CLIENT);
+                testContext.getProperty(TestContextProperties.CLIENT);
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Class contract = clientType;
+
+        Class contract = testDescriptor.getApplication()
+                .map(Application::clientContract)
+                .orElse(clientType);
+
         String name = testDescriptor.getApplication()
                 .map(Application::clientName)
                 .orElse(null);
@@ -90,12 +94,15 @@ public class ClientProxyInstanceProvider implements ProxyInstanceProvider {
         return DefaultProxyInstance.of(contract, name, supplier);
     }
 
-    ProxyInstance createClientProvider(TestContext testContext, Class clientSupplierType) {
+    ProxyInstance createClientSupplier(TestContext testContext, Class clientSupplierType) {
         Supplier<?> supplier = () ->
-                testContext.getProperty(TestContextProperties.APP_CLIENT_SUPPLIER);
+                testContext.getProperty(TestContextProperties.CLIENT_SUPPLIER);
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        Class contract = clientSupplierType;
+        Class contract = testDescriptor.getApplication()
+                .map(Application::clientContract)
+                .orElse(clientSupplierType);
+
         String name = testDescriptor.getApplication()
                 .map(Application::clientSupplierName)
                 .orElse(null);

@@ -66,7 +66,7 @@ public interface ServerInstance<T> extends PropertiesReader {
      * @param function the function
      * @return the result of executing the function
      */
-    default <R> R execute(BiFunction<T, URI, R> function) {
+    default <R> R query(BiFunction<T, URI, R> function) {
         return function.apply(getServer().getValue(), getBaseURI());
     }
 
@@ -76,7 +76,7 @@ public interface ServerInstance<T> extends PropertiesReader {
      *
      * @param consumer the consumer function
      */
-    default void execute(BiConsumer<T, URI> consumer) {
+    default void command(BiConsumer<T, URI> consumer) {
         consumer.accept(getServer().getValue(), getBaseURI());
     }
 

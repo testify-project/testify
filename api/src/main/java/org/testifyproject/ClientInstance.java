@@ -69,7 +69,7 @@ public interface ClientInstance<C, P> extends PropertiesReader {
      * @param function the function
      * @return the result of executing the function
      */
-    default <R> R execute(BiFunction<C, P, R> function) {
+    default <R> R query(BiFunction<C, P, R> function) {
         return function.apply(
                 getClient().getValue(),
                 getClientSupplier().map(Instance::getValue).orElse(null)
@@ -83,7 +83,7 @@ public interface ClientInstance<C, P> extends PropertiesReader {
      *
      * @param consumer the consumer function
      */
-    default void execute(BiConsumer<C, P> consumer) {
+    default void command(BiConsumer<C, P> consumer) {
         consumer.accept(
                 getClient().getValue(),
                 getClientSupplier().map(Instance::getValue).orElse(null)

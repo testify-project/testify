@@ -17,16 +17,28 @@ package org.testifyproject.core.util;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.MDC;
+import org.testifyproject.MethodDescriptor;
+import org.testifyproject.MockProvider;
 import org.testifyproject.SutDescriptor;
+import org.testifyproject.TestConfigurer;
+import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.asm.ClassReader;
+import org.testifyproject.core.DefaultTestConfigurer;
+import org.testifyproject.core.DefaultTestContextBuilder;
+import org.testifyproject.core.TestContextProperties;
+import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.analyzer.DefaultSutDescriptor;
 import org.testifyproject.core.analyzer.DefaultTestDescriptor;
 import org.testifyproject.core.analyzer.SutClassAnalyzer;
 import org.testifyproject.core.analyzer.TestClassAnalyzer;
+import org.testifyproject.mock.MockitoMockProvider;
 
 /**
  * A utility class for analyzing classes.
@@ -81,6 +93,42 @@ public class AnalyzerUtil {
                 );
             }
         });
+    }
+
+    public TestContext analyzeAndCreate(Class<?> testClass, Method testMethod) {
+        Object testInstance = ReflectionUtil.INSTANCE.createInstance(testClass);
+        TestDescriptor testDescriptor = AnalyzerUtil.INSTANCE.analyzeTestClass(testClass);
+
+        MDC.put("test", testClass.getSimpleName());
+        MDC.put("method", testMethod.getName());
+
+        MethodDescriptor methodDescriptor = DefaultMethodDescriptor.of(testMethod);
+        Class<TestConfigurer> testConfigurerType = TestConfigurer.class;
+        TestConfigurer testConfigurer = ServiceLocatorUtil.INSTANCE
+                .getOneOrDefault(testConfigurerType, DefaultTestConfigurer.class);
+
+        Class<MockProvider> mockProviderType = MockProvider.class;
+        MockProvider mockProvider = ServiceLocatorUtil.INSTANCE
+                .getOneOrDefault(mockProviderType, MockitoMockProvider.class);
+
+        TestContext testContext = DefaultTestContextBuilder.builder()
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .testMethodDescriptor(methodDescriptor)
+                .testConfigurer(testConfigurer)
+                .mockProvider(mockProvider)
+                .properties(SettingUtil.INSTANCE.getSettings())
+                .build();
+
+        Optional<Field> sutField = testDescriptor.getSutField();
+
+        if (sutField.isPresent()) {
+            SutDescriptor sutDescriptor =
+                    AnalyzerUtil.INSTANCE.analyzeSutField(sutField.get());
+            testContext.addProperty(TestContextProperties.SUT_DESCRIPTOR, sutDescriptor);
+        }
+
+        return testContext;
     }
 
 }

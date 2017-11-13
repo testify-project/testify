@@ -28,6 +28,18 @@
     <name>Spring DI</name>
     <description>A module that provides Spring DI Service Instance implementation</description>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>${jacocoSurefireArgs} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>

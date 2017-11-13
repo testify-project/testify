@@ -16,7 +16,6 @@
 package org.testifyproject.junit4.system;
 
 import org.junit.runners.model.InitializationError;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
@@ -41,7 +40,6 @@ public class Jersey2SystemTest extends TestifyJUnit4TestRunner {
     public Jersey2SystemTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.SYSTEM)
-                .resourceStartStrategy(StartStrategy.LAZY)
                 .dependency("org.glassfish.jersey.server.ResourceConfig", "Jersey2 Server")
                 .build()
         );

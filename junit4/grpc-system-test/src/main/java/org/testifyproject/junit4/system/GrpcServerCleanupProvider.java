@@ -22,7 +22,7 @@ import org.testifyproject.annotation.Discoverable;
 import io.grpc.Server;
 
 /**
- * TODO.
+ * An implementation of cleanup provider to stop GRPC server.
  *
  * @author saden
  */
@@ -31,7 +31,7 @@ public class GrpcServerCleanupProvider implements CleanupProvider<ServerInstance
 
     @Override
     public void cleanup(ServerInstance<Server> instance) {
-        instance.execute((server, baseURI) -> {
+        instance.command((server, baseURI) -> {
             server.shutdownNow();
         });
     }

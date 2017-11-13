@@ -113,28 +113,6 @@ public class ReflectionUtil {
 
     }
 
-    /**
-     * Remove final modifier from the given type.
-     *
-     * @param type the executable final modifier will be removed from.
-     */
-    public void removeFinalModifier(Class type) {
-        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
-            try {
-                Field modifiersField = Class.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(type, type.getModifiers() & ~Modifier.FINAL);
-
-                return null;
-            } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException |
-                    SecurityException e) {
-                throw ExceptionUtil.INSTANCE.propagate(
-                        "Could not remove final modifier from field  '{}' in class '{}'.",
-                        e, type.getName(), type.getDeclaringClass().getSimpleName());
-            }
-        });
-
-    }
 
     /**
      * Invoke the given method using the given object and arguments.

@@ -15,9 +15,9 @@
  */
 package org.testifyproject.core.setting;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.guava.common.collect.ImmutableMap;
@@ -30,7 +30,7 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
 public class TestSettingsBuilder {
 
     private Class<? extends TestRunner> testRunnerClass;
-    private StartStrategy startStrategy = StartStrategy.LAZY;
+    private Class<? extends Annotation> testCategory;
     private final ImmutableMap.Builder<String, String> dependencies = ImmutableMap.builder();
     private TestCategory.Level level;
 
@@ -48,8 +48,8 @@ public class TestSettingsBuilder {
         return this;
     }
 
-    public TestSettingsBuilder resourceStartStrategy(StartStrategy startStrategy) {
-        this.startStrategy = startStrategy;
+    public TestSettingsBuilder testCategory(Class<? extends Annotation> testCategory) {
+        this.testCategory = testCategory;
         return this;
     }
 
@@ -65,6 +65,7 @@ public class TestSettingsBuilder {
 
     public TestSettingsBuilder level(TestCategory.Level level) {
         this.level = level;
+        this.testCategory = TestCategory.find(level);
         return this;
     }
 
@@ -73,7 +74,7 @@ public class TestSettingsBuilder {
 
         testSettings.setDependencies(dependencies.build());
         testSettings.setLevel(level);
-        testSettings.setResourceStartStrategy(startStrategy);
+        testSettings.setTestCategory(testCategory);
         testSettings.setTestRunnerClass(testRunnerClass);
 
         return testSettings;

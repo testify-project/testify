@@ -58,7 +58,8 @@ import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.ProxyInstanceController;
 
 /**
- * TODO.
+ * HK2 Service Locator operation interceptor. This class intercepts certain HK2 initialization
+ * calls to configure the test case.
  *
  * @author saden
  */
@@ -88,7 +89,7 @@ public class HK2Interceptor {
                 return serviceLocator;
         }
 
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
                 TestDescriptor testDescriptor = testContext.getTestDescriptor();
                 ClassLoader classLoader = testDescriptor.getTestClassLoader();

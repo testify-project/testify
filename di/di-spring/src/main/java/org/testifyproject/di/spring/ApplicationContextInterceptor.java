@@ -40,7 +40,8 @@ import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.util.ServiceLocatorUtil;
 
 /**
- * TODO.
+ * Spring Application Context operation interceptor. This class intercepts certain Spring
+ * Application Context initialization calls to configure the test case.
  *
  * @author saden
  */
@@ -60,7 +61,7 @@ public class ApplicationContextInterceptor {
             @SuperCall Callable<Void> zuper,
             @This ConfigurableApplicationContext applicationContext,
             @AllArguments Object[] args) throws Exception {
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             if (applicationContext instanceof AnnotationConfigApplicationContext) {
                 AnnotationConfigApplicationContext configContext =
                         (AnnotationConfigApplicationContext) applicationContext;

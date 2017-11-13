@@ -25,7 +25,8 @@ import org.testifyproject.extension.InstrumentInstance;
 import org.testifyproject.extension.InstrumentProvider;
 
 /**
- * TODO.
+ * An agent implementation that enables the rebasing of classes to enable the ability to
+ * intercept method calls.
  *
  * @author saden
  */

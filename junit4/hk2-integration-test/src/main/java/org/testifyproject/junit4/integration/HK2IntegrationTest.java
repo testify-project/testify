@@ -16,7 +16,6 @@
 package org.testifyproject.junit4.integration;
 
 import org.junit.runners.model.InitializationError;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
@@ -41,7 +40,6 @@ public class HK2IntegrationTest extends TestifyJUnit4TestRunner {
     public HK2IntegrationTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.INTEGRATION)
-                .resourceStartStrategy(StartStrategy.EAGER)
                 .dependency("org.glassfish.hk2.api.ServiceLocator", "HK2")
                 .build()
         );

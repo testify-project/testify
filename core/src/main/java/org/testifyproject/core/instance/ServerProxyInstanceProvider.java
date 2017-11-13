@@ -16,6 +16,7 @@
 package org.testifyproject.core.instance;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.testifyproject.ServerInstance;
@@ -44,7 +45,7 @@ public class ServerProxyInstanceProvider implements ProxyInstanceProvider {
     public List<ProxyInstance> get(TestContext testContext) {
         ImmutableList.Builder<ProxyInstance> builder = ImmutableList.builder();
 
-        testContext.<ServerProvider>findProperty(TestContextProperties.APP_SERVER_PROVIDER)
+        testContext.<ServerProvider>findProperty(TestContextProperties.SERVER_PROVIDER)
                 .ifPresent(serverProvider -> {
                     builder.add(createServerInstance(testContext));
                     builder.add(createServer(testContext, serverProvider.getServerType()));
@@ -55,21 +56,28 @@ public class ServerProxyInstanceProvider implements ProxyInstanceProvider {
 
     ProxyInstance createServerInstance(TestContext testContext) {
         Supplier<ServerInstance> supplier =
-                () -> testContext.getProperty(TestContextProperties.APP_SERVER_INSTANCE);
+                () -> testContext.getProperty(TestContextProperties.SERVER_INSTANCE);
 
         return DefaultProxyInstance.of(ServerInstance.class, supplier);
     }
 
     ProxyInstance createServer(TestContext testContext, Class serverType) {
         Supplier<?> supplier = () ->
-                testContext.getProperty(TestContextProperties.APP_SERVER);
+                testContext.getProperty(TestContextProperties.SERVER);
 
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        String name = testDescriptor.getApplication()
+        Optional<Application> foundApplication = testDescriptor.getApplication();
+
+        String name = foundApplication
                 .map(Application::serverName)
                 .orElse(null);
 
-        return DefaultProxyInstance.of(serverType, name, supplier);
+        Class contract = foundApplication
+                .map(Application::serverContract)
+                .filter(p -> !void.class.equals(p))
+                .orElse(serverType);
+
+        return DefaultProxyInstance.of(contract, name, supplier);
     }
 
 }

@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.di.fixture.instrument;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+import org.testifyproject.annotation.Scan;
+import org.testifyproject.annotation.Sut;
+import org.testifyproject.di.fixture.autowired.Greeter;
 
 /**
- * An enumeration class that defines resource start strategy.
  *
  * @author saden
  */
-public enum StartStrategy {
+@Scan("org.testifyproject.di.fixture.autowired")
+public class ScanTester {
 
-    /**
-     * Indicates resources should be started eagerly.
-     */
-    EAGER,
-    /**
-     * Indicates resources should be started lazily.
-     */
-    LAZY,
+    @Sut
+    Greeter sut;
+
+    @Test
+    public void verifyInjection() {
+        assertThat(sut).isNotNull();
+    }
 
 }

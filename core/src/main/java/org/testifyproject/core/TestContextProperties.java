@@ -46,39 +46,39 @@ public class TestContextProperties {
     /**
      * The application server property key.
      */
-    public static final String APP_SERVER = "appServer";
+    public static final String SERVER = "appServer";
     /**
      * The application base URI property key.
      */
-    public static final String APP_BASE_URI = "baseURI";
+    public static final String SERVER_BASE_URI = "baseURI";
     /**
      * The application context path property key.
      */
-    public static final String APP_CONTEXT_PATH = "appContextPath";
+    public static final String SERVER_CONTEXT_PATH = "appContextPath";
     /**
      * The application client instance property key.
      */
-    public static final String APP_CLIENT_INSTANCE = "appClientInstance";
+    public static final String CLIENT_INSTANCE = "appClientInstance";
     /**
      * The application client property key.
      */
-    public static final String APP_CLIENT = "appClient";
+    public static final String CLIENT = "appClient";
     /**
      * The application client supplier property key.
      */
-    public static final String APP_CLIENT_SUPPLIER = "appClientSupplier";
+    public static final String CLIENT_SUPPLIER = "appClientSupplier";
     /**
      * The application client provider property key.
      */
-    public static final String APP_CLIENT_PROVIDER = "appClientProvider";
+    public static final String CLIENT_PROVIDER = "appClientProvider";
     /**
      * The application server instance property key.
      */
-    public static final String APP_SERVER_INSTANCE = "appServerInstance";
+    public static final String SERVER_INSTANCE = "appServerInstance";
     /**
      * The application server provider property key.
      */
-    public static final String APP_SERVER_PROVIDER = "appServerProvider";
+    public static final String SERVER_PROVIDER = "appServerProvider";
     /**
      * The application service instance property key.
      */

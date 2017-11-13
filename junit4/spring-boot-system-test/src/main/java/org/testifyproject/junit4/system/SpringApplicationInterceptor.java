@@ -63,7 +63,7 @@ public class SpringApplicationInterceptor {
         AnnotationConfigEmbeddedWebApplicationContext applicationContext =
                 (AnnotationConfigEmbeddedWebApplicationContext) zuper.call();
 
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             testContext.addProperty(APP, object);
 
             if (args.length == 2) {
@@ -80,7 +80,7 @@ public class SpringApplicationInterceptor {
         ConfigurableApplicationContext configurableApplicationContext =
                 (ConfigurableApplicationContext) applicationContext;
 
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
                 ServiceProvider<ConfigurableApplicationContext> serviceProvider =
                         ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,

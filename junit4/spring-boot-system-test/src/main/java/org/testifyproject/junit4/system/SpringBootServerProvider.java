@@ -19,7 +19,7 @@ import static java.lang.String.format;
 
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
-import static org.testifyproject.core.TestContextProperties.APP_SERVER;
+import static org.testifyproject.core.TestContextProperties.SERVER;
 import static org.testifyproject.server.core.ServletProperties.SERVLET_CONTEXT;
 
 import java.net.URI;
@@ -82,7 +82,7 @@ public class SpringBootServerProvider implements
         Optional<ServletContext> servletContext =
                 testContext.findProperty(SERVLET_CONTEXT);
         Optional<EmbeddedServletContainer> servletContainer =
-                testContext.findProperty(APP_SERVER);
+                testContext.findProperty(SERVER);
 
         if (servletContext.isPresent() && servletContainer.isPresent()) {
             EmbeddedServletContainer server = servletContainer.get();
@@ -97,7 +97,7 @@ public class SpringBootServerProvider implements
                     .server(server)
                     .property(APP, springApplication)
                     .property(APP_NAME, testContext.getName())
-                    .property(APP_SERVER, server)
+                    .property(SERVER, server)
                     .build("springboot", application);
         }
 
@@ -108,7 +108,7 @@ public class SpringBootServerProvider implements
     @Override
     public void stop(ServerInstance<EmbeddedServletContainer> serverInstance) {
         if (serverInstance != null) {
-            serverInstance.execute((container, baseURI) -> {
+            serverInstance.command((container, baseURI) -> {
                 LoggingUtil.INSTANCE.debug("Stopping Spring Boot server");
                 container.stop();
             });

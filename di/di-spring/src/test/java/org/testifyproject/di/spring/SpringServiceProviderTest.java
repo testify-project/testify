@@ -16,55 +16,45 @@
 package org.testifyproject.di.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.testifyproject.TestConfigurer;
+import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
 
 /**
  *
  * @author saden
  */
-@Ignore
 public class SpringServiceProviderTest {
-
+    
     SpringServiceProvider sut;
-
+    
     @Before
     public void init() {
         sut = new SpringServiceProvider();
     }
-
+    
     @Test
-    public void callToCreateWithTestContextShouldCreateSpringApplicationContext() {
+    public void callToCreateShouldCreateApplicationContext() {
         TestContext testContext = mock(TestContext.class);
-        TestConfigurer testConfigurer = mock(TestConfigurer.class);
-        AnnotationConfigApplicationContext context =
-                mock(AnnotationConfigApplicationContext.class);
-        String testName = "testName";
-
-        given(testContext.getName()).willReturn(testName);
-        given(testContext.getTestConfigurer()).willReturn(testConfigurer);
-        given(testConfigurer.configure(eq(testContext), any(
-                AnnotationConfigApplicationContext.class)))
-                .willAnswer((InvocationOnMock invocation) -> {
-                    return invocation.getArguments()[1];
-                });
-
+        
         ConfigurableApplicationContext result = sut.create(testContext);
-
+        
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(testName);
-        assertThat(result.getDisplayName()).isEqualTo(testName);
     }
-
+    
+    @Test
+    public void callToConfigureShouldReturnServiceInstance() {
+        TestContext testContext = mock(TestContext.class);
+        ConfigurableApplicationContext applicationContext = mock(
+                ConfigurableApplicationContext.class);
+        
+        ServiceInstance result = sut.configure(testContext, applicationContext);
+        
+        assertThat(result).isNotNull();
+    }
+    
 }

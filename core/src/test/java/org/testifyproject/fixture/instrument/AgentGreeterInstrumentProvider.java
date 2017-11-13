@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.level.fixture;
+package org.testifyproject.fixture.instrument;
 
-import org.testifyproject.ServiceInstance;
-import org.testifyproject.ServiceProvider;
-import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
+import org.testifyproject.core.extension.instrument.InstrumentInstanceBuilder;
+import org.testifyproject.extension.InstrumentInstance;
+import org.testifyproject.extension.InstrumentProvider;
 
 /**
  *
  * @author saden
  */
-public class TestServiceProvider implements ServiceProvider<Object> {
+@Discoverable
+public class AgentGreeterInstrumentProvider implements InstrumentProvider {
 
     @Override
-    public Object create(TestContext testContext) {
-        return null;
-    }
-
-    @Override
-    public ServiceInstance configure(TestContext testContext, Object serviceContext) {
-        return null;
-    }
-
-    @Override
-    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
+    public InstrumentInstance get() {
+        return InstrumentInstanceBuilder.builder()
+                .build("org.testifyproject.fixture.instrument.AgentGreeter",
+                        new AgentGreeterInterceptor());
     }
 
 }

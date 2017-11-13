@@ -21,7 +21,8 @@ import org.testifyproject.extension.InstrumentInstance;
 import org.testifyproject.extension.InstrumentProvider;
 
 /**
- * TODO.
+ * An implementation of InstrumentProvider contract that configures rebasing and interception of
+ * Spring Boot Spring Application operations.
  *
  * @author saden
  */
