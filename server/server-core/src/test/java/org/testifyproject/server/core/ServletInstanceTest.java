@@ -24,7 +24,6 @@ import javax.servlet.ServletContainerInitializer;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.annotation.Sut;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 
 /**
@@ -33,20 +32,78 @@ import org.testifyproject.guava.common.collect.ImmutableSet;
  */
 public class ServletInstanceTest {
 
-    @Sut
     ServletInstance sut;
+    Set<Class<?>> handlers;
+    ServletContainerInitializer initializer;
 
     @Before
     public void init() {
-        ServletContainerInitializer initializer = mock(ServletContainerInitializer.class);
-        Set<Class<?>> handlers = ImmutableSet.of();
+        initializer = mock(ServletContainerInitializer.class);
+        handlers = ImmutableSet.of();
+
         sut = new ServletInstance(initializer, handlers);
     }
 
     @Test
-    public void verifySut() {
+    public void verifySutAndBuilder() {
         assertThat(sut).isNotNull();
         assertThat(ServletInstance.builder()).isNotNull();
+    }
+
+    @Test
+    public void callToGetInitializerShouldReturnInitializer() {
+        assertThat(sut.getInitializer()).isEqualTo(initializer);
+    }
+
+    @Test
+    public void callToGetHandlersShouldReturnHandlers() {
+        assertThat(sut.getHandlers()).isEqualTo(handlers);
+    }
+
+    @Test
+    public void givenNullInstancesShouldNotBeEqual() {
+        assertThat(sut).isNotEqualTo(null);
+    }
+
+    @Test
+    public void givenDifferentTypeInstancesShouldNotBeEqual() {
+        String differentType = "instance";
+
+        assertThat(sut).isNotEqualTo(differentType);
+        assertThat(sut.hashCode()).isNotEqualTo(differentType.hashCode());
+    }
+
+    @Test
+    public void givenUnequalInstancesShouldNotBeEqual() {
+        ServletContainerInitializer tInitializer = mock(ServletContainerInitializer.class);
+        Set<Class<?>> tHandlers = ImmutableSet.of();
+        ServletInstance unequal = new ServletInstance(tInitializer, tHandlers);
+
+        assertThat(sut).isNotEqualTo(unequal);
+        assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
+    }
+
+    @Test
+    public void givenSameInstancesShouldBeEqual() {
+        assertThat(sut).isEqualTo(sut);
+    }
+
+    @Test
+    public void givenEqualInstancesShouldBeEqual() {
+        ServletInstance equal = new ServletInstance(initializer, handlers);
+
+        assertThat(sut).isEqualTo(equal);
+        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
+    }
+
+    @Test
+    public void callToToStringShouldReturnHumanReadableString() {
+        String result = sut.toString();
+
+        assertThat(result).contains(
+                "ServletInstance",
+                "handlers",
+                "initializer");
     }
 
 }

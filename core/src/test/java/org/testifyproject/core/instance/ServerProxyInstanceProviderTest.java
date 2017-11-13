@@ -15,14 +15,24 @@
  */
 package org.testifyproject.core.instance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.testifyproject.core.TestContextProperties.SERVER_PROVIDER;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.ServerInstance;
+import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Application;
+import org.testifyproject.extension.ProxyInstance;
 
 /**
  *
@@ -34,14 +44,94 @@ public class ServerProxyInstanceProviderTest {
 
     @Before
     public void init() {
-        sut = new ServerProxyInstanceProvider();
+        sut = spy(new ServerProxyInstanceProvider());
     }
 
     @Test
-    public void givenTestContextWithoutServerInstanceGetShouldReturnEmptyList() {
+    public void givenTestContextWithoutServerProviderCallToGetShouldReturnEmptyList() {
         TestContext testContext = mock(TestContext.class);
-        Optional<ServerInstance<Object>> foundServerInstance = Optional.empty();
+        Optional<ServerProvider> foundServerProvider = Optional.empty();
 
+        given(testContext.<ServerProvider>findProperty(SERVER_PROVIDER))
+                .willReturn(foundServerProvider);
+
+        List<ProxyInstance> result = sut.get(testContext);
+
+        assertThat(result).isEmpty();
     }
 
+    @Test
+    public void givenTestContextWithServerProviderCallToGetShouldReturnProxyInstances() {
+        TestContext testContext = mock(TestContext.class);
+        ServerProvider serverProvider = mock(ServerProvider.class);
+        Optional<ServerProvider> foundServerProvider = Optional.of(serverProvider);
+        ProxyInstance serverInstanceProxyInstance = mock(ProxyInstance.class);
+        ProxyInstance serverProxyInstance = mock(ProxyInstance.class);
+        Class serverType = Object.class;
+
+        given(testContext.<ServerProvider>findProperty(SERVER_PROVIDER))
+                .willReturn(foundServerProvider);
+        willReturn(serverInstanceProxyInstance)
+                .given(sut).createServerInstance(testContext);
+        given(serverProvider.getServerType()).willReturn(serverType);
+        willReturn(serverProxyInstance)
+                .given(sut).createServer(testContext, serverType);
+
+        List<ProxyInstance> result = sut.get(testContext);
+
+        assertThat(result).contains(serverInstanceProxyInstance, serverProxyInstance);
+    }
+
+    @Test
+    public void callToCreateServerInstanceShouldReturnProxyInstance() {
+        TestContext testContext = mock(TestContext.class);
+        ProxyInstance result = sut.createServerInstance(testContext);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getDelegate()).isNotNull();
+        assertThat(result.getType()).isEqualTo(ServerInstance.class);
+    }
+
+    @Test
+    public void givenTestContextWithApplicationConfigCreateServerReturnProxyInstance() {
+        TestContext testContext = mock(TestContext.class);
+        Class<Object> serverType = Object.class;
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        Application application = mock(Application.class);
+        Optional<Application> foundApplication = Optional.of(application);
+        String serverName = "serverName";
+        Class serverContract = Object.class;
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getApplication()).willReturn(foundApplication);
+        given(application.serverName()).willReturn(serverName);
+        given(application.serverContract()).willReturn(serverContract);
+
+        ProxyInstance result = sut.createServer(testContext, serverType);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getDelegate()).isNotNull();
+        assertThat(result.getName()).isEqualTo(serverName);
+        assertThat(result.getType()).isEqualTo(serverContract);
+    }
+    
+    @Test
+    public void givenTestContextWithoutApplicationConfigCreateServerReturnProxyInstance() {
+        TestContext testContext = mock(TestContext.class);
+        Class<Object> serverType = Object.class;
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        Optional<Application> foundApplication = Optional.empty();
+        String serverName = null;
+        Class serverContract = serverType;
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getApplication()).willReturn(foundApplication);
+
+        ProxyInstance result = sut.createServer(testContext, serverType);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getDelegate()).isNotNull();
+        assertThat(result.getName()).isEqualTo(serverName);
+        assertThat(result.getType()).isEqualTo(serverContract);
+    }
 }

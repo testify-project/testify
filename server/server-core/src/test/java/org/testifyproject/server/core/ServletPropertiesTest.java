@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.level.fixture;
+package org.testifyproject.server.core;
 
-import org.testifyproject.ServiceInstance;
-import org.testifyproject.ServiceProvider;
-import org.testifyproject.TestContext;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
 
 /**
  *
  * @author saden
  */
-public class TestServiceProvider implements ServiceProvider<Object> {
+public class ServletPropertiesTest {
 
-    @Override
-    public Object create(TestContext testContext) {
-        return null;
-    }
-
-    @Override
-    public ServiceInstance configure(TestContext testContext, Object serviceContext) {
-        return null;
-    }
-
-    @Override
-    public void postConfigure(TestContext testContext, ServiceInstance serviceInstance) {
+    @Test
+    public void verifyProperties() {
+        assertThat(ServletProperties.SERVLET_CONTEXT).isNotNull();
+        assertThat(ServletProperties.SERVLET_INSTANCE).isNotNull();
     }
 
 }

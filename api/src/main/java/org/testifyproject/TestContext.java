@@ -15,6 +15,7 @@
  */
 package org.testifyproject;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -138,13 +139,12 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
     Map<String, String> getDependencies();
 
     /**
-     * Indicates whether test resources should be eagerly started. Note that during integration
-     * tests resources can be started right before the test case is executed but in system tests
-     * the start of resources must be delayed until the application server is running.
+     * Get the test category associated with the test. Note that the annotation returned will be
+     * {@code UnitCategory, IntegrationCategory, or SystemCategory}.
      *
-     * @return resource start strategy
+     * @return the test category annotation
      */
-    StartStrategy getResourceStartStrategy();
+    Class<? extends Annotation> getTestCategory();
 
     /**
      * Get the local resource instances associated with the test.

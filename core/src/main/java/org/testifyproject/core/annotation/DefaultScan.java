@@ -28,19 +28,32 @@ import org.testifyproject.annotation.Scan;
 public class DefaultScan implements Scan {
 
     private final String value;
+    private final boolean test;
 
-    public DefaultScan(String value) {
+    DefaultScan(String value, boolean test) {
         this.value = value;
+        this.test = test;
     }
 
     /**
      * Create a new instance of Scan with the given value.
      *
-     * @param value the resource in the classpath
+     * @param value the scan resource
      * @return a new scan instance
      */
     public static Scan of(String value) {
-        return new DefaultScan(value);
+        return new DefaultScan(value, false);
+    }
+
+    /**
+     * Create a new instance of Scan with the given value.
+     *
+     * @param value the scan resource
+     * @param test true if the scan is for testing purpose, false otherwise
+     * @return a new scan instance
+     */
+    public static Scan of(String value, boolean test) {
+        return new DefaultScan(value, test);
     }
 
     @Override
@@ -51,6 +64,11 @@ public class DefaultScan implements Scan {
     @Override
     public Class<? extends Annotation> annotationType() {
         return Scan.class;
+    }
+
+    @Override
+    public boolean test() {
+        return test;
     }
 
 }

@@ -43,7 +43,8 @@ import org.testifyproject.di.spring.SpringBeanFactoryPostProcessor;
 import org.testifyproject.di.spring.SpringServiceProvider;
 
 /**
- * TODO.
+ * Spring Application Context operation interceptor. This class intercepts certain Spring
+ * Application Context initialization calls to configure the test case.
  *
  * @author saden
  */
@@ -65,7 +66,7 @@ public class ApplicationContextInterceptor {
             @AllArguments Object[] args) throws Exception {
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) zuper.call();
 
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             AnnotationConfigWebApplicationContext configuredContext =
                     (AnnotationConfigWebApplicationContext) applicationContext;
 

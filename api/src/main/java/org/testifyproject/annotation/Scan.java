@@ -24,6 +24,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+
 /**
  * An annotation that can be placed on integration and system tests to load a resources that
  * contains services before each test run (i.e. Spring service fully qualified package name, HK2
@@ -50,5 +51,15 @@ public @interface Scan {
      * @return a resource name.
      */
     String value();
+
+    /**
+     * An attribute that indicates whether the scan is a for testing purpose. If the scan is for
+     * testing purpose the services found by the scan will take precedence over services defined
+     * in other scans. This is useful if you wish to substitute certain services for testing
+     * purpose (i.e. load a different DataSource than the one for production during test runs):
+     *
+     * @return true if the scan is for testing purpose, false otherwise.
+     */
+    boolean test() default false;
 
 }

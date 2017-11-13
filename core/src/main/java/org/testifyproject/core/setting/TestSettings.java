@@ -15,9 +15,9 @@
  */
 package org.testifyproject.core.setting;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
 
@@ -34,7 +34,7 @@ import lombok.ToString;
 public class TestSettings {
 
     private Class<? extends TestRunner> testRunnerClass;
-    private StartStrategy resourceStartStrategy;
+    private Class<? extends Annotation> testCategory;
     private Map<String, String> dependencies;
     private TestCategory.Level level;
     private String[] categories;
@@ -51,12 +51,12 @@ public class TestSettings {
         this.testRunnerClass = testRunnerClass;
     }
 
-    public StartStrategy getResourceStartStrategy() {
-        return resourceStartStrategy;
+    public Class<? extends Annotation> getTestCategory() {
+        return testCategory;
     }
 
-    void setResourceStartStrategy(StartStrategy resourceStartStrategy) {
-        this.resourceStartStrategy = resourceStartStrategy;
+    void setTestCategory(Class<? extends Annotation> testCategory) {
+        this.testCategory = testCategory;
     }
 
     public Map<String, String> getDependencies() {

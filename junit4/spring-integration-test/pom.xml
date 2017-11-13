@@ -33,7 +33,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-javaagent:${org.testifyproject:core:jar}</argLine>
+                    <argLine>${jacocoSurefireArgs} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
                 </configuration>
             </plugin>
         </plugins>

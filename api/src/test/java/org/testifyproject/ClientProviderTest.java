@@ -16,21 +16,39 @@
 package org.testifyproject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 
 /**
  *
  * @author saden
  */
-public class StartStrategyTest {
+public class ClientProviderTest {
+
+    ClientProvider<Object, Object, Object> sut;
+
+    @Before
+    public void init() {
+        sut = mock(ClientProvider.class, Answers.CALLS_REAL_METHODS);
+    }
+
+    @After
+    public void destroy() {
+        verifyNoMoreInteractions(sut);
+    }
 
     @Test
-    public void verifyStartStrategyEnums() {
-        assertThat(StartStrategy.values()).containsExactly(
-                StartStrategy.EAGER,
-                StartStrategy.LAZY
-        );
+    public void callToGetClientSupplierTypeShouldReturnNull() {
+        Class<Object> result = sut.getClientSupplierType();
+
+        assertThat(result).isNull();
+        verify(sut).getClientSupplierType();
     }
 
 }

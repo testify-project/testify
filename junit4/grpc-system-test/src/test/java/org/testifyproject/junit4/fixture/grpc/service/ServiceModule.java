@@ -21,7 +21,7 @@ import com.google.inject.multibindings.Multibinder;
 import io.grpc.BindableService;
 
 /**
- * TODO.
+ * Test module to configure guice test services.
  *
  * @author saden
  */

@@ -25,7 +25,8 @@ import org.testifyproject.bytebuddy.implementation.bind.annotation.RuntimeType;
 import org.testifyproject.core.util.ExceptionUtil;
 
 /**
- * TODO.
+ * A generic interceptor implementation that delegates calls in a lazy manner to a delegate
+ * supplied by specified delegate supplier.
  *
  * @author saden
  */

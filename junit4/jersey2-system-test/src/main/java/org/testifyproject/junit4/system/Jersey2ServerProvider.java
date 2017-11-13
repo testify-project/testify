@@ -19,7 +19,7 @@ import static java.lang.String.format;
 
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
-import static org.testifyproject.core.TestContextProperties.APP_SERVER;
+import static org.testifyproject.core.TestContextProperties.SERVER;
 
 import java.net.URI;
 import java.util.Optional;
@@ -99,7 +99,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
                     .server(server)
                     .property(APP, resourceConfig)
                     .property(APP_NAME, testContext.getName())
-                    .property(APP_SERVER, server)
+                    .property(SERVER, server)
                     .build("jersey", application);
         }
 
@@ -109,7 +109,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
     @Override
     public void stop(ServerInstance<HttpServer> serverInstance) {
         if (serverInstance != null) {
-            serverInstance.execute((httpServer, baseURI) -> {
+            serverInstance.command((httpServer, baseURI) -> {
                 httpServer.shutdown();
             });
         }

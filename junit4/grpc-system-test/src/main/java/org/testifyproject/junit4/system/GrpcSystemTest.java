@@ -16,7 +16,6 @@
 package org.testifyproject.junit4.system;
 
 import org.junit.runners.model.InitializationError;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
@@ -41,7 +40,6 @@ public class GrpcSystemTest extends TestifyJUnit4TestRunner {
     public GrpcSystemTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.SYSTEM)
-                .resourceStartStrategy(StartStrategy.LAZY)
                 .dependency("io.grpc.Grpc", "gRPC")
                 .build()
         );

@@ -15,8 +15,7 @@
  */
 package org.testifyproject.di.fixture.autowired.impl;
 
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.testifyproject.di.fixture.autowired.Greeting;
 
@@ -25,7 +24,7 @@ import org.testifyproject.di.fixture.autowired.Greeting;
  *
  * @author saden
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Primary
 @Component
 public class Hello implements Greeting {
 

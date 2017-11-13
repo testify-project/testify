@@ -16,6 +16,8 @@
 package org.testifyproject.level.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -46,7 +48,6 @@ import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
-import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -119,8 +120,6 @@ public class UnitTestRunnerTest {
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
-        Hint hint = mock(Hint.class);
-        Optional<Hint> foundHint = Optional.of(hint);
         ServiceProvider serviceProvider = mock(ServiceProvider.class);
         Object serviceContext = mock(Object.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
@@ -135,9 +134,13 @@ public class UnitTestRunnerTest {
         given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines,
                 UnitCategory.class))
                 .willReturn(configurationVerifiers);
-        given(testDescriptor.getHint()).willReturn(foundHint);
-        given(serviceLocatorUtil.getOne(ServiceProvider.class,
-                DefaultServiceProvider.class)).willReturn(serviceProvider);
+        given(serviceLocatorUtil.getFromHintOrDefault(
+                eq(testContext),
+                eq(ServiceProvider.class),
+                eq(DefaultServiceProvider.class),
+                any())
+        ).willReturn(serviceProvider);
+
         given(serviceProvider.create(testContext)).willReturn(serviceContext);
         given(serviceProvider.configure(testContext, serviceContext)).willReturn(
                 serviceInstance);
@@ -167,6 +170,13 @@ public class UnitTestRunnerTest {
         verify(testContext).getTestDescriptor();
         verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines,
                 UnitCategory.class);
+        verify(serviceLocatorUtil).getFromHintOrDefault(
+                eq(testContext),
+                eq(ServiceProvider.class),
+                eq(DefaultServiceProvider.class),
+                any());
+        verify(serviceProvider).create(testContext);
+        verify(serviceProvider).configure(testContext, serviceContext);
         verify(serviceLocatorUtil).findAllWithFilter(SutReifier.class, UnitCategory.class);
         verify(testDescriptor).getCollaboratorProvider();
         verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class,

@@ -15,8 +15,8 @@
  */
 package org.testifyproject.server.generic;
 
-import static org.testifyproject.core.TestContextProperties.APP_BASE_URI;
-import static org.testifyproject.core.TestContextProperties.APP_SERVER;
+import static org.testifyproject.core.TestContextProperties.SERVER;
+import static org.testifyproject.core.TestContextProperties.SERVER_BASE_URI;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -61,8 +61,8 @@ public class GenericServerProvider implements ServerProvider<String[], Object> {
             method.invoke(null, (Object[]) methodArgs);
 
             return builder
-                    .baseURI(testContext.getProperty(APP_BASE_URI))
-                    .server(testContext.getProperty(APP_SERVER))
+                    .baseURI(testContext.getProperty(SERVER_BASE_URI))
+                    .server(testContext.getProperty(SERVER))
                     .build("genericServer", application);
         } catch (IllegalAccessException |
                 IllegalArgumentException |

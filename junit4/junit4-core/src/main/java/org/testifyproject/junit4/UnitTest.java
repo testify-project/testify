@@ -16,7 +16,6 @@
 package org.testifyproject.junit4;
 
 import org.junit.runners.model.InitializationError;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.core.setting.TestSettingsBuilder;
 import org.testifyproject.junit4.core.TestifyJUnit4TestRunner;
@@ -40,7 +39,6 @@ public class UnitTest extends TestifyJUnit4TestRunner {
     public UnitTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.UNIT)
-                .resourceStartStrategy(StartStrategy.EAGER)
                 .build()
         );
     }

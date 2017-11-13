@@ -30,20 +30,23 @@ import org.testifyproject.extension.ProxyInstanceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
- * TODO.
+ * A controller class that enables the configuration and instantiation of proxy instances.
  *
  * @author saden
  */
 @Discoverable
 public class DefaultProxyInstanceController implements ProxyInstanceController {
 
+    private final ServiceLocatorUtil serviceLocatorUtil;
     private final InstrumentUtil instrumentUtil;
 
     public DefaultProxyInstanceController() {
-        this(InstrumentUtil.INSTANCE);
+        this(ServiceLocatorUtil.INSTANCE, InstrumentUtil.INSTANCE);
     }
 
-    public DefaultProxyInstanceController(InstrumentUtil instrumentUtil) {
+    public DefaultProxyInstanceController(ServiceLocatorUtil serviceLocatorUtil,
+            InstrumentUtil instrumentUtil) {
+        this.serviceLocatorUtil = serviceLocatorUtil;
         this.instrumentUtil = instrumentUtil;
     }
 
@@ -51,8 +54,7 @@ public class DefaultProxyInstanceController implements ProxyInstanceController {
     public List<Instance> create(TestContext testContext) {
         ImmutableList.Builder<Instance> builder = ImmutableList.builder();
 
-        ServiceLocatorUtil.INSTANCE.findAll(ProxyInstanceProvider.class)
-                .stream()
+        serviceLocatorUtil.findAll(ProxyInstanceProvider.class).stream()
                 .flatMap(p -> p.get(testContext).parallelStream())
                 .forEach(proxyInstance -> {
                     Class proxyType = proxyInstance.getType();
@@ -63,10 +65,10 @@ public class DefaultProxyInstanceController implements ProxyInstanceController {
                         //we cant proxy final classes so ignore them
                         if (!Modifier.isFinal(proxyTypeModifiers)) {
                             String proxyName = proxyInstance.getName();
-                            Supplier proxyDelegate = proxyInstance.getDelegate();
+                            Supplier proxyDelegateSupplier = proxyInstance.getDelegate();
 
                             Object proxy = instrumentUtil.createProxy(proxyType,
-                                    testContext.getTestClassLoader(), proxyDelegate);
+                                    testContext.getTestClassLoader(), proxyDelegateSupplier);
 
                             builder.add(DefaultInstance.of(proxy, proxyName, proxyType));
                         }

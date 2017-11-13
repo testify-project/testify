@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.fixture.instrument;
+
+import org.testifyproject.annotation.Discoverable;
+import org.testifyproject.core.extension.instrument.InstrumentInstanceBuilder;
+import org.testifyproject.extension.InstrumentInstance;
+import org.testifyproject.extension.InstrumentProvider;
 
 /**
- * An enumeration class that defines resource start strategy.
  *
  * @author saden
  */
-public enum StartStrategy {
+@Discoverable
+public class AgentGreeterInstrumentProvider implements InstrumentProvider {
 
-    /**
-     * Indicates resources should be started eagerly.
-     */
-    EAGER,
-    /**
-     * Indicates resources should be started lazily.
-     */
-    LAZY,
+    @Override
+    public InstrumentInstance get() {
+        return InstrumentInstanceBuilder.builder()
+                .build("org.testifyproject.fixture.instrument.AgentGreeter",
+                        new AgentGreeterInterceptor());
+    }
 
 }

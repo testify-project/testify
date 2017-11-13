@@ -55,7 +55,7 @@ public class SpringApplicationInterceptor {
             @This Object object) throws Exception {
         Class<?>[] result = zuper.call();
 
-        return TestContextHolder.INSTANCE.execute(testContext -> {
+        return TestContextHolder.INSTANCE.query(testContext -> {
             TestDescriptor testDescriptor = testContext.getTestDescriptor();
             Collection<Module> modules = testDescriptor.getModules();
 

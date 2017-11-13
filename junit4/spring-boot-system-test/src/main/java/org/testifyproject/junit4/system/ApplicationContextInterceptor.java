@@ -15,7 +15,7 @@
  */
 package org.testifyproject.junit4.system;
 
-import static org.testifyproject.core.TestContextProperties.APP_SERVER;
+import static org.testifyproject.core.TestContextProperties.SERVER;
 import static org.testifyproject.server.core.ServletProperties.SERVLET_CONTEXT;
 
 import java.util.concurrent.Callable;
@@ -62,7 +62,7 @@ public class ApplicationContextInterceptor {
             @SuperCall Callable<EmbeddedServletContainerFactory> zuper) throws Exception {
         EmbeddedServletContainerFactory containerFactory = zuper.call();
 
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             ConfigurableEmbeddedServletContainer servletContainer =
                     (ConfigurableEmbeddedServletContainer) containerFactory;
             servletContainer.setPort(0);
@@ -76,7 +76,7 @@ public class ApplicationContextInterceptor {
 
     protected void prepareEmbeddedWebApplicationContext(@SuperCall Callable<Void> zuper,
             @Argument(0) ServletContext servletContext) throws Exception {
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             TestConfigurer testConfigurer = testContext.getTestConfigurer();
             testConfigurer.configure(testContext, servletContext);
         });
@@ -88,8 +88,8 @@ public class ApplicationContextInterceptor {
             @SuperCall Callable<EmbeddedServletContainer> zuper) throws Exception {
         EmbeddedServletContainer servletContainer = zuper.call();
 
-        TestContextHolder.INSTANCE.execute((Consumer<TestContext>) testContext ->
-                testContext.addProperty(APP_SERVER, servletContainer)
+        TestContextHolder.INSTANCE.command((Consumer<TestContext>) testContext ->
+                testContext.addProperty(SERVER, servletContainer)
         );
 
         return servletContainer;
@@ -97,7 +97,7 @@ public class ApplicationContextInterceptor {
 
     public void prepareEmbeddedWebApplicationContext(@SuperCall Callable<Void> zuper,
             @AllArguments Object[] args) throws Exception {
-        TestContextHolder.INSTANCE.execute(testContext -> {
+        TestContextHolder.INSTANCE.command(testContext -> {
             LoggingUtil.INSTANCE.setTextContext(testContext);
             testContext.addProperty(SERVLET_CONTEXT, args[0]);
         });

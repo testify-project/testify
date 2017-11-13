@@ -40,6 +40,15 @@ public class InstrumentUtil {
     private static final ByteBuddy BYTE_BUDDY = new ByteBuddy();
     public static final InstrumentUtil INSTANCE = new InstrumentUtil();
 
+    /**
+     * Create a proxy instance for the given type using the given classloader and interceptor.
+     *
+     * @param <T> the type of the class being proxied
+     * @param type the class being proxied
+     * @param classLoader the classloader
+     * @param interceptor the interceptor instance used to intercept calls
+     * @return a new proxy instance
+     */
     public <T> T createProxy(Class<T> type, ClassLoader classLoader, Object interceptor) {
         try {
             return createSubclass(type, classLoader, interceptor)
@@ -50,8 +59,19 @@ public class InstrumentUtil {
         }
     }
 
-    public <T> T createProxy(Class<T> type, ClassLoader classLoader, Supplier<?> delegate) {
-        return createProxy(type, classLoader, DefaultDelegateInterceptor.of(delegate));
+    /**
+     * Create a proxy instance for the given type using the given classloader and delegate
+     * supplier.
+     *
+     * @param <T> the type of the class being proxied
+     * @param type the class being proxied
+     * @param classLoader the classloader
+     * @param delegateSupplier the supplier of object calls will be delegated to
+     * @return a new proxy instance
+     */
+    public <T> T createProxy(Class<T> type, ClassLoader classLoader,
+            Supplier<?> delegateSupplier) {
+        return createProxy(type, classLoader, DefaultDelegateInterceptor.of(delegateSupplier));
     }
 
     /**

@@ -34,7 +34,8 @@ import org.testifyproject.core.util.LoggingUtil;
 import io.grpc.Server;
 
 /**
- * TODO.
+ * GRPC Server operation interceptor. This class intercepts certain GRPC Server initialization
+ * calls to configure the test case.
  *
  * @author saden
  */
@@ -49,13 +50,13 @@ public class ServerImplInterceptor {
         Object result = zuper.call();
 
         if (method.getName().equals("start")) {
-            TestContextHolder.INSTANCE.execute(testContext -> {
+            TestContextHolder.INSTANCE.command(testContext -> {
                 int port = ((Server) object).getPort();
                 testContext.addProperty(TestContextProperties.APP_PORT, port);
-                testContext.addProperty(TestContextProperties.APP_SERVER, object);
+                testContext.addProperty(TestContextProperties.SERVER, object);
 
                 URI baseURI = URI.create(format("grpc://localhost:%d", port));
-                testContext.addProperty(TestContextProperties.APP_BASE_URI, baseURI);
+                testContext.addProperty(TestContextProperties.SERVER_BASE_URI, baseURI);
             });
         }
 

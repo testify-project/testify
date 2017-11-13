@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.extension.annotation;
+package org.testifyproject.annotation;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -22,10 +22,13 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.testifyproject.ClientProvider;
 import org.testifyproject.ServiceProvider;
 
 /**
- * An annotation that can be placed a test class to provide hints to the test class.
+ * An annotation that can be placed a test class to provide hints to the test class. This is
+ * useful when being explicit is necessary due to the presence of multiple implementations of
+ * discoverable contracts are present in the classpath.
  *
  * @author saden
  */
@@ -35,9 +38,18 @@ import org.testifyproject.ServiceProvider;
 public @interface Hint {
 
     /**
-     * The service provider implementation class.
+     * The service provider implementation class. Note that if a service provider is not
+     * specified an implementation will be detected.
      *
      * @return the service provider implementation class
      */
     Class<? extends ServiceProvider> serviceProvider() default ServiceProvider.class;
+
+    /**
+     * The client provider implementation class. Note that if a client provider is not specified
+     * an implementation will be detected.
+     *
+     * @return the client provider implementation class
+     */
+    Class<? extends ClientProvider> clientProvider() default ClientProvider.class;
 }

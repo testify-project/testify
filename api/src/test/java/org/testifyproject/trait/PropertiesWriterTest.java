@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +50,17 @@ public class PropertiesWriterTest {
         Map<String, Object> result = sut.getProperties();
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void callToComputeIfAbsentWithAbsentKeyShouldAddProperty() {
+        String key = "key";
+        String value = "value";
+        Function<String, String> function = p -> value;
+
+        sut.computeIfAbsent(key, function);
+
+        assertThat(properties).containsEntry(key, value);
     }
 
     @Test

@@ -17,11 +17,14 @@ package org.testifyproject.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Method;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.fixture.reflection.CustomAnnotation;
 import org.testifyproject.fixture.reflection.CustomConstructorService;
 import org.testifyproject.fixture.reflection.DefaultConstructorService;
+import org.testifyproject.fixture.reflection.Greeter;
 
 /**
  *
@@ -72,6 +75,15 @@ public class ReflectionUtilTest {
                 "Hello!");
 
         assertThat(result).isNotNull();
+    }
+    
+    @Test
+    public void callToInvokeShouldInvokeMethod() throws Exception {
+        Greeter greeter = new Greeter();
+        Method method = Greeter.class.getDeclaredMethod("hello");
+        
+        Object result = sut.invoke(method, greeter);
+        assertThat(result).isEqualTo("hello");
     }
 
 }

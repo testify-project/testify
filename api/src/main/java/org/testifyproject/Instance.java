@@ -62,7 +62,7 @@ public interface Instance<T> {
      * @param function the function
      * @return the result of executing the function
      */
-    default <R> R execute(Function<T, R> function) {
+    default <R> R query(Function<T, R> function) {
         return function.apply(getValue());
     }
 
@@ -71,7 +71,7 @@ public interface Instance<T> {
      *
      * @param consumer the consumer function
      */
-    default void execute(Consumer<T> consumer) {
+    default void command(Consumer<T> consumer) {
         consumer.accept(getValue());
     }
 

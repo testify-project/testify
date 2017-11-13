@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
 import org.testifyproject.guava.common.collect.ImmutableMap;
@@ -47,16 +46,6 @@ public class TestSettingsBuilderTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getTestRunnerClass()).isEqualTo(setting);
-    }
-
-    @Test
-    public void givenResourceStartStrategyBuildShouldReturnTestSettings() {
-        StartStrategy setting = StartStrategy.EAGER;
-
-        TestSettings result = sut.resourceStartStrategy(setting).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getResourceStartStrategy()).isEqualTo(setting);
     }
 
     @Test

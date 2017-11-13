@@ -29,7 +29,8 @@ import org.testifyproject.extension.InstrumentMorpher;
 import io.grpc.netty.NettyServerBuilder;
 
 /**
- * TODO.
+ * Netty Server Provider operation interceptor. This class intercepts certain Netty Server
+ * Provider initialization calls to configure the test case.
  *
  * @author saden
  */
@@ -45,7 +46,7 @@ public class NettyServerProviderInterceptor {
     public NettyServerBuilder builderForPort(
             @Morph InstrumentMorpher<NettyServerBuilder> morpher,
             @AllArguments Object[] args) {
-        NettyServerBuilder result = TestContextHolder.INSTANCE.execute(testContext -> {
+        NettyServerBuilder result = TestContextHolder.INSTANCE.query(testContext -> {
             return morpher.morph(new Object[]{0});
         });
 
