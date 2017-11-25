@@ -16,17 +16,19 @@
 package org.testifyproject.core.extension.instrument;
 
 import static org.testifyproject.bytebuddy.implementation.MethodDelegation.withEmptyConfiguration;
+import static org.testifyproject.bytebuddy.matcher.ElementMatchers.any;
 import static org.testifyproject.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static org.testifyproject.bytebuddy.matcher.ElementMatchers.not;
 
 import org.testifyproject.bytebuddy.agent.builder.AgentBuilder;
 import org.testifyproject.bytebuddy.description.type.TypeDescription;
 import org.testifyproject.bytebuddy.dynamic.DynamicType;
+import org.testifyproject.bytebuddy.implementation.MethodDelegation;
+import org.testifyproject.bytebuddy.implementation.SuperMethodCall;
 import org.testifyproject.bytebuddy.implementation.bind.MethodNameEqualityResolver;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.BindingPriority;
 import org.testifyproject.bytebuddy.implementation.bind.annotation.Morph;
-import org.testifyproject.bytebuddy.implementation.bind.annotation.TargetMethodAnnotationDrivenBinder;
-import org.testifyproject.bytebuddy.matcher.ElementMatchers;
+import org.testifyproject.bytebuddy.implementation.bind.annotation.TargetMethodAnnotationDrivenBinder.ParameterBinder;
 import org.testifyproject.bytebuddy.utility.JavaModule;
 import org.testifyproject.extension.InstrumentInstance;
 import org.testifyproject.extension.InstrumentMorpher;
@@ -39,7 +41,7 @@ import org.testifyproject.extension.InstrumentMorpher;
  */
 public class InstrumentTransformer implements AgentBuilder.Transformer {
 
-    private final InstrumentInstance instance;
+    final InstrumentInstance instance;
 
     InstrumentTransformer(InstrumentInstance instance) {
         this.instance = instance;
@@ -55,14 +57,24 @@ public class InstrumentTransformer implements AgentBuilder.Transformer {
             TypeDescription typeDescription,
             ClassLoader classLoader,
             JavaModule module) {
-        return builder.method(ElementMatchers.any())
-                .intercept(withEmptyConfiguration()
-                        .withBinders(TargetMethodAnnotationDrivenBinder.ParameterBinder.DEFAULTS)
-                        .withBinders(Morph.Binder.install(InstrumentMorpher.class))
-                        .withResolvers(MethodNameEqualityResolver.INSTANCE)
-                        .withResolvers(BindingPriority.Resolver.INSTANCE)
-                        .filter(not(isDeclaredBy(Object.class)))
-                        .to(instance.getInterceptor()));
+        if (instance.getConstructor()) {
+            return builder.constructor(any()).intercept(SuperMethodCall.INSTANCE
+                    .andThen(MethodDelegation.withEmptyConfiguration()
+                            .withResolvers(MethodNameEqualityResolver.INSTANCE)
+                            .withResolvers(BindingPriority.Resolver.INSTANCE)
+                            .withBinders(ParameterBinder.DEFAULTS)
+                            .withBinders(Morph.Binder.install(InstrumentMorpher.class))
+                            .filter(not(isDeclaredBy(Object.class)))
+                            .to(instance.getInterceptor())));
+        } else {
+            return builder.method(any()).intercept(withEmptyConfiguration()
+                    .withBinders(ParameterBinder.DEFAULTS)
+                    .withBinders(Morph.Binder.install(InstrumentMorpher.class))
+                    .withResolvers(MethodNameEqualityResolver.INSTANCE)
+                    .withResolvers(BindingPriority.Resolver.INSTANCE)
+                    .filter(not(isDeclaredBy(Object.class)))
+                    .to(instance.getInterceptor()));
+        }
     }
 
 }

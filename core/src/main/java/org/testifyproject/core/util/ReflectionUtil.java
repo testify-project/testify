@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.testifyproject.ObjenesisHelper;
@@ -83,8 +84,8 @@ public class ReflectionUtil {
                 NoSuchMethodException |
                 SecurityException |
                 InvocationTargetException e) {
-            LoggingUtil.INSTANCE.debug("Could not create instance of type '{}'", type
-                    .getSimpleName(), e);
+            LoggingUtil.INSTANCE.debug("Could not create instance of type '{}'",
+                    type.getSimpleName(), e);
 
             return (T) ObjenesisHelper.getInstantiatorOf(type).newInstance();
         }
@@ -107,12 +108,63 @@ public class ReflectionUtil {
                     SecurityException e) {
                 throw ExceptionUtil.INSTANCE.propagate(
                         "Could not remove final modifier from field  '{}' in class '{}'.",
-                        e, member.getName(), member.getDeclaringClass().getSimpleName());
+                        member.getName(), member.getDeclaringClass().getSimpleName(), e);
             }
         });
-
     }
 
+    /**
+     * Find the main method in the given type.
+     *
+     * @param type the type that will be inspected
+     * @return an optional with the main method, empty optional otherwise
+     */
+    public Optional<Method> findMainMethod(Class type) {
+        return AccessController.doPrivileged((PrivilegedAction<Optional<Method>>) () -> {
+            try {
+                Optional<Method> result = Optional.empty();
+                Method method = type.getMethod("main", String[].class);
+                int modifiers = method.getModifiers();
+                Class<?> returnType = method.getReturnType();
+
+                if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers)
+                        && void.class.isAssignableFrom(returnType)) {
+                    result = Optional.of(method);
+                }
+
+                return result;
+            } catch (NoSuchMethodException | SecurityException e) {
+                return Optional.empty();
+            }
+        });
+    }
+
+    /**
+     * Find a method that takes no arguments and returns void in the given type with the given
+     * name.
+     *
+     * @param type the type that will be inspected
+     * @param methodName the method name
+     * @return an optional with the main method, empty optional otherwise
+     */
+    public Optional<Method> findSimpleMethod(Class type, String methodName) {
+        return AccessController.doPrivileged((PrivilegedAction<Optional<Method>>) () -> {
+            try {
+                Optional<Method> result = Optional.empty();
+                Method method = type.getMethod(methodName);
+                int modifiers = method.getModifiers();
+                Class<?> returnType = method.getReturnType();
+
+                if (void.class.isAssignableFrom(returnType)) {
+                    result = Optional.of(method);
+                }
+
+                return result;
+            } catch (NoSuchMethodException | SecurityException e) {
+                return Optional.empty();
+            }
+        });
+    }
 
     /**
      * Invoke the given method using the given object and arguments.
@@ -126,13 +178,42 @@ public class ReflectionUtil {
     public <T> T invoke(Method method, Object obj, Object... args) {
         return AccessController.doPrivileged((PrivilegedAction<T>) () -> {
             try {
+                method.setAccessible(true);
                 return (T) method.invoke(obj, args);
             } catch (IllegalAccessException |
                     IllegalArgumentException |
                     InvocationTargetException e) {
                 throw ExceptionUtil.INSTANCE.propagate(
                         "Could invoke method '{}' in class '{}'.",
-                        e, method.getName(), method.getDeclaringClass().getSimpleName());
+                        method.getName(), method.getDeclaringClass().getSimpleName(), e);
+            }
+        });
+
+    }
+
+    /**
+     * Set the field with the given name on the given object to the given value.
+     *
+     * @param fieldName the field name of the object
+     * @param obj the object whose field will be set
+     * @param value the value the field will be set to
+     */
+    public void setDeclaredField(String fieldName, Object obj, Object value) {
+        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+            Class<?> objectType = obj.getClass();
+            try {
+                Field field = objectType.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                field.set(obj, value);
+
+                return null;
+            } catch (IllegalAccessException |
+                    IllegalArgumentException |
+                    NoSuchFieldException |
+                    SecurityException e) {
+                throw ExceptionUtil.INSTANCE.propagate(
+                        "Could set field '{}' for object of type '{}''.",
+                        fieldName, objectType.getSimpleName(), e);
             }
         });
 

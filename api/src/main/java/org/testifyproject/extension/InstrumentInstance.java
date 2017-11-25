@@ -36,4 +36,11 @@ public interface InstrumentInstance {
      */
     Object getInterceptor();
 
+    /**
+     * Indicates whether a constructor is being intercepted.
+     *
+     * @return true for constructor interception, false for method interception
+     */
+    Boolean getConstructor();
+
 }

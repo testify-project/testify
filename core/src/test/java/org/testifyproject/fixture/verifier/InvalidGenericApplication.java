@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.system;
-
-import org.testifyproject.CleanupProvider;
-import org.testifyproject.ServerInstance;
-import org.testifyproject.annotation.Discoverable;
-
-import io.grpc.Server;
+package org.testifyproject.fixture.verifier;
 
 /**
- * An implementation of cleanup provider to stop GRPC server.
+ * TODO.
  *
  * @author saden
  */
-@Discoverable
-public class GrpcServerCleanupProvider implements CleanupProvider<ServerInstance<Server>> {
+public class InvalidGenericApplication {
 
-    @Override
-    public void cleanup(ServerInstance<Server> instance) {
-        instance.command((server, baseURI) -> {
-            server.shutdownNow();
-        });
+    public static void main(String[] args) {
+
     }
 
 }

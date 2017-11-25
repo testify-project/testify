@@ -34,7 +34,7 @@
     <modules>
         <module>server-core</module>
         <module>undertow</module>
-        <module>generic-server</module>
+        <module>grizzly2</module>
     </modules>
 
     <dependencies>

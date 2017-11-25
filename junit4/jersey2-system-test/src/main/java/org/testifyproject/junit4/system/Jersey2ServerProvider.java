@@ -73,7 +73,6 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
     }
 
     @Override
-    @SuppressWarnings("UseSpecificCatch")
     public ServerInstance<HttpServer> start(TestContext testContext,
             Application application, ResourceConfig resourceConfig) {
         URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST,
@@ -82,7 +81,8 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
         HttpServer server =
                 GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig, true);
 
-        Optional<NetworkListener> foundListener = server.getListeners().stream()
+        Optional<NetworkListener> foundListener = server.getListeners()
+                .stream()
                 .findFirst();
         ServerInstance serverInstance = null;
 

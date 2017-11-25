@@ -23,7 +23,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.testifyproject.CleanupProvider;
 import org.testifyproject.ClientProvider;
 import org.testifyproject.ServerProvider;
 
@@ -152,10 +151,43 @@ public @interface Application {
     Class serverContract() default void.class;
 
     /**
-     * Specifies a cleanup provider implementations that performs cleanup operation.
+     * <p>
+     * Specifies the name of the method on the {@link #value() application} that will called to
+     * start the application. This is useful for managing the lifecycle of a generic application
+     * for testing purpose.
+     * </p>
+     * <p>
+     * Note that the method specified must public, return a void and take no parameters (i.e.
+     * {@code public void start()}.
+     * </p>
+     * <p>
+     * Alternatively, the start method can be set to "main" which means
+     * {@code public static void main(String[] args)} method will be called. Using the main
+     * method as the start of course implies that the {@link #stop()} method must be a static
+     * method (i.e. {@code public static void stop()}.
+     * </p>
      *
-     * @return the cleanup provider implementation class.
+     * @see #stop()
+     * @return the application start method name
      */
-    Class<? extends CleanupProvider> cleanupProvider() default CleanupProvider.class;
+    String start() default "";
+
+    /**
+     * <p>
+     * Specifies the name of the method on the {@link #value() application} that will called to
+     * stop the application. This is useful for managing the lifecycle of a generic application
+     * for testing purpose.
+     * </p>
+     * <p>
+     * Note that the method must be public, return a void and take no arguments (i.e.
+     * {@code public void start()}). In the event that the {@link #start()} method is a "main"
+     * method then this method must also be a static method (i.e.
+     * {@code public static void start()}).
+     * </p>
+     *
+     * @see #start()
+     * @return the application stop method name
+     */
+    String stop() default "";
 
 }

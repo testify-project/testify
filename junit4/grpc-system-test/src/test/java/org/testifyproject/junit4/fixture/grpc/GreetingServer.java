@@ -15,9 +15,11 @@
  */
 package org.testifyproject.junit4.fixture.grpc;
 
+
 import java.io.IOException;
 import java.util.Set;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testifyproject.junit4.fixture.grpc.service.ServiceModule;
 
@@ -34,11 +36,11 @@ import io.grpc.ServerBuilder;
 public class GreetingServer {
 
     public static final int DEFAULT_PORT = 50051;
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GreetingServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GreetingServer.class);
 
     private Server server;
 
-    private void start() throws IOException {
+    public void start() throws IOException {
         ServerBuilder serverBuilder = ServerBuilder.forPort(DEFAULT_PORT);
 
         Injector injector = Guice.createInjector(new ServiceModule());
@@ -52,7 +54,7 @@ public class GreetingServer {
                 .build()
                 .start();
 
-        LOGGER.info("Server started, listening on {}", DEFAULT_PORT);
+        LOGGER.info("Server started, listening on {}", server.getPort());
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -63,23 +65,23 @@ public class GreetingServer {
         });
     }
 
-    private void stop() {
+    public void stop() {
         if (server != null) {
             LOGGER.info("Server shutting down");
             server.shutdownNow();
         }
     }
 
-    private void blockUntilShutdown() throws InterruptedException {
+    public void block() throws InterruptedException {
         if (server != null) {
             server.awaitTermination();
         }
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        final GreetingServer server = new GreetingServer();
+        GreetingServer server = new GreetingServer();
         server.start();
-        server.blockUntilShutdown();
+        server.block();
     }
 
 }

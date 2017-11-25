@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.server.generic;
+package org.testifyproject.core;
 
 import static org.testifyproject.core.TestContextProperties.SERVER;
 import static org.testifyproject.core.TestContextProperties.SERVER_BASE_URI;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.testifyproject.CleanupProvider;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.util.ExceptionUtil;
-import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.core.util.ServiceLocatorUtil;
 
 /**
  * A default implementation of {@link ServerProvider} contract. This implementation takes the
@@ -40,8 +34,10 @@ import org.testifyproject.core.util.ServiceLocatorUtil;
  *
  * @author saden
  */
-@Discoverable
-public class GenericServerProvider implements ServerProvider<String[], Object> {
+public class DefaultServerProvider implements ServerProvider<String[], Object> {
+
+    private Class<?> appType;
+    private Object appInstance;
 
     @Override
     public String[] configure(TestContext testContext) {
@@ -49,51 +45,46 @@ public class GenericServerProvider implements ServerProvider<String[], Object> {
     }
 
     @Override
-    public ServerInstance<Object> start(TestContext testContext, Application application,
+    public ServerInstance<Object> start(TestContext testContext,
+            Application application,
             String[] args) throws Exception {
-        ServerInstanceBuilder builder = ServerInstanceBuilder.builder();
-
         try {
-            Class[] methodArgsType = new Class[]{String[].class};
-            Object[] methodArgs = new Object[]{args};
-            Method method = application.value().getDeclaredMethod("main",
-                    methodArgsType);
-            method.invoke(null, (Object[]) methodArgs);
+            ServerInstanceBuilder builder = ServerInstanceBuilder.builder();
+            appType = application.value();
+            String startMethodName = application.start();
+
+            if (startMethodName.equals("main")) {
+                //if we are dealing with a static main method then invoke
+                Object[] startArgs = new Object[]{args};
+                Method method = appType.getMethod(startMethodName, String[].class);
+
+                ReflectionUtil.INSTANCE.invoke(method, null, startArgs);
+            } else {
+                //otherwise we are dealing with non static method therefore create an instance
+                //of the application and invoke the start method
+                appInstance = appType.newInstance();
+                Method method = appType.getMethod(startMethodName);
+                ReflectionUtil.INSTANCE.invoke(method, appInstance);
+            }
 
             return builder
                     .baseURI(testContext.getProperty(SERVER_BASE_URI))
                     .server(testContext.getProperty(SERVER))
                     .build("genericServer", application);
-        } catch (IllegalAccessException |
-                IllegalArgumentException |
-                NoSuchMethodException |
-                SecurityException |
-                InvocationTargetException e) {
+        } catch (NoSuchMethodException | SecurityException e) {
             throw ExceptionUtil.INSTANCE.propagate(e);
         }
     }
 
     @Override
     public void stop(ServerInstance<Object> serverInstance) throws Exception {
-        Class<? extends CleanupProvider> cleanupProviderType =
-                serverInstance.getApplication().cleanupProvider();
+        String stopMethodName = serverInstance.getApplication().stop();
+        Method method = appType.getMethod(stopMethodName);
 
-        CleanupProvider cleanupProvider;
-
-        if (CleanupProvider.class.equals(cleanupProviderType)) {
-            cleanupProvider = ServiceLocatorUtil.INSTANCE.findOne(CleanupProvider.class)
-                    .orElse(null);
+        if (appInstance == null) {
+            ReflectionUtil.INSTANCE.invoke(method, null);
         } else {
-            cleanupProvider = ReflectionUtil.INSTANCE.newInstance(cleanupProviderType);
-        }
-
-        if (cleanupProvider == null) {
-            LoggingUtil.INSTANCE.warn(
-                    "Application cleanupProvider not specified. Please provide an "
-                    + "implementation of CleanupProvider that can be used to stop and cleanup "
-                    + "after the generic server.");
-        } else {
-            cleanupProvider.cleanup(serverInstance);
+            ReflectionUtil.INSTANCE.invoke(method, appInstance);
         }
     }
 

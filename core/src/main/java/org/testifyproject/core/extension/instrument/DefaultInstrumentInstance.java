@@ -30,10 +30,12 @@ import lombok.ToString;
 public class DefaultInstrumentInstance implements InstrumentInstance {
 
     private final String className;
+    private final Boolean constructor;
     private final Object interceptor;
 
-    DefaultInstrumentInstance(String className, Object interceptor) {
+    DefaultInstrumentInstance(String className, Boolean constructor, Object interceptor) {
         this.className = className;
+        this.constructor = constructor;
         this.interceptor = interceptor;
     }
 
@@ -41,16 +43,24 @@ public class DefaultInstrumentInstance implements InstrumentInstance {
      * Create an instrumented instance using the given parameters.
      *
      * @param className the name of the class that will be instrumented
+     * @param constructor a flag for constructor interception
      * @param interceptor the interceptor that will be used
      * @return an instrumentation instance
      */
-    public static InstrumentInstance of(String className, Object interceptor) {
-        return new DefaultInstrumentInstance(className, interceptor);
+    public static InstrumentInstance of(String className,
+            Boolean constructor,
+            Object interceptor) {
+        return new DefaultInstrumentInstance(className, constructor, interceptor);
     }
 
     @Override
     public String getClassName() {
         return className;
+    }
+
+    @Override
+    public Boolean getConstructor() {
+        return constructor;
     }
 
     @Override

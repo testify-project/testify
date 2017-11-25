@@ -24,6 +24,14 @@ import org.testifyproject.extension.InstrumentInstance;
  */
 public class InstrumentInstanceBuilder {
 
+    boolean constructor = false;
+
+    public InstrumentInstanceBuilder constructor() {
+        this.constructor = true;
+
+        return this;
+    }
+
     /**
      * Create a new instance of InstrumentInstanceBuilder.
      *
@@ -42,7 +50,7 @@ public class InstrumentInstanceBuilder {
      * @return an instrumentation instance
      */
     public InstrumentInstance build(String className, Object interceptor) {
-        return DefaultInstrumentInstance.of(className, interceptor);
+        return DefaultInstrumentInstance.of(className, constructor, interceptor);
     }
 
 }

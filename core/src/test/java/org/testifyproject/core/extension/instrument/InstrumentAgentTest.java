@@ -17,6 +17,7 @@ package org.testifyproject.core.extension.instrument;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.junit.Test;
@@ -28,13 +29,28 @@ import org.junit.Test;
 public class InstrumentAgentTest {
 
     @Test
-    public void verifyAgent() throws Exception {
+    public void verifyMethodInterception() throws Exception {
         InstrumentAgent.main(new String[]{});
 
         //avoid loading the class which makes it impossible to rebase with agent
         Class type = Class.forName("org.testifyproject.fixture.instrument.AgentGreeter");
         Method method = type.getDeclaredMethod("modifiedGreeting");
         Object greeter = type.newInstance();
+        Object result = method.invoke(greeter);
+
+        assertThat(result).isEqualTo("HELLO");
+    }
+
+    @Test
+    public void verifyConstructorInterception() throws Exception {
+        InstrumentAgent.main(new String[]{});
+
+        //avoid loading the class which makes it impossible to rebase with agent
+        Class type = Class.forName(
+                "org.testifyproject.fixture.instrument.AgentConstructorGreeter");
+        Method method = type.getDeclaredMethod("getPhrase");
+        Constructor constructor = type.getDeclaredConstructor(String.class);
+        Object greeter = constructor.newInstance("hello");
         Object result = method.invoke(greeter);
 
         assertThat(result).isEqualTo("HELLO");

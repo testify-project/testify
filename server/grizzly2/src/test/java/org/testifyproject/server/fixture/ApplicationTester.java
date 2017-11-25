@@ -13,38 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.system;
+package org.testifyproject.server.fixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.testify.example.greetings.GreeterGrpc;
-import org.testify.example.greetings.GreetingReply;
-import org.testify.example.greetings.GreetingRequest;
+import org.testifyproject.ServerInstance;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
-import org.testifyproject.junit4.fixture.grpc.GreetingServer;
 
 /**
+ * TODO.
  *
  * @author saden
  */
-@Application(value = GreetingServer.class, start = "start", stop = "stop")
-@RunWith(GrpcSystemTest.class)
-public class GrpcSystemTestST {
+@Application(TestApplication.class)
+public class ApplicationTester {
 
     @Sut
-    GreeterGrpc.GreeterBlockingStub sut;
+    ServerInstance<HttpServer> sut;
 
     @Test
-    public void givenNameSayHelloShouldReturnHelloReply() {
-        String name = "test";
-        GreetingRequest request = GreetingRequest.newBuilder().setPhrase(name).build();
-        GreetingReply result = sut.greet(request);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getGreeting()).contains(name);
+    public void verifyInjection() {
+        assertThat(sut).isNotNull();
     }
-
 }

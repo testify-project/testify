@@ -10,3 +10,4 @@ buildNumber.properties
 .mvn/timing.properties
 secrets/
 **/secrets.tar.gz
+**/hs_err_pid*.log

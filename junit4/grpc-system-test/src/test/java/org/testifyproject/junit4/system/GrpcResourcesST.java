@@ -35,7 +35,7 @@ import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
  */
 @LocalResource(TestLocalResourceProvider.class)
 @VirtualResource("test")
-@Application(GreetingServer.class)
+@Application(value = GreetingServer.class, start = "start", stop = "stop")
 @RunWith(GrpcSystemTest.class)
 public class GrpcResourcesST {
 

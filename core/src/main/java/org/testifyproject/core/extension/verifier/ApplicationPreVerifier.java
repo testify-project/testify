@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core.extension.verifier;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 import org.testifyproject.TestContext;
@@ -22,6 +23,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.Lenient;
 import org.testifyproject.extension.annotation.Loose;
@@ -50,6 +52,63 @@ public class ApplicationPreVerifier implements PreVerifier {
         ExceptionUtil.INSTANCE.raise(!foundApplication.isPresent(),
                 "Test class '{}' must be annotated with @Application",
                 testClassName);
+
+        foundApplication.ifPresent(application -> {
+            Class<?> value = application.value();
+            String applicationName = value.getSimpleName();
+            String start = application.start();
+            String stop = application.stop();
+
+            ExceptionUtil.INSTANCE.raise(!start.isEmpty() && stop.isEmpty(),
+                    "@Application annotation on test class '{}' defines 'start' attribute"
+                    + "but not stop attribute. Please define the 'stop' attribute.",
+                    testClassName);
+
+            Optional<Method> foundMainMethod =
+                    ReflectionUtil.INSTANCE.findMainMethod(value);
+
+            if (foundMainMethod.isPresent()) {
+                try {
+                    value.getConstructor();
+                } catch (NoSuchMethodException e) {
+                    ExceptionUtil.INSTANCE.raise(
+                            "Application class '{}' defined in test class '{}' does not have "
+                            + "a zero argument default constructor. Please insure that the "
+                            + "the application class defines a public zero argument "
+                            + "default constructor.",
+                            applicationName, testClassName
+                    );
+                }
+            }
+
+            if (!start.isEmpty()) {
+                if ("main".equals(start)) {
+                    ExceptionUtil.INSTANCE.raise(!foundMainMethod.isPresent(),
+                            "Application class '{}' must declare a main method with the"
+                            + " signature 'public static void {}(String[] args)'",
+                            applicationName, start);
+                } else {
+                    Optional<Method> foundStart =
+                            ReflectionUtil.INSTANCE.findSimpleMethod(value, start);
+
+                    ExceptionUtil.INSTANCE.raise(!foundStart.isPresent(),
+                            "Application class '{}' must declare a start method with the"
+                            + " signature 'public void {}()'",
+                            applicationName, start);
+                }
+            }
+
+            if (!stop.isEmpty()) {
+                Optional<Method> foundStop =
+                        ReflectionUtil.INSTANCE.findSimpleMethod(value, stop);
+
+                ExceptionUtil.INSTANCE.raise(!foundStop.isPresent(),
+                        "Application class '{}' must declare a stop method with the"
+                        + " signature 'public void {}()'",
+                        applicationName, stop);
+            }
+        });
+
     }
 
 }

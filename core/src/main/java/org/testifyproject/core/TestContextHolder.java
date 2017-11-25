@@ -76,11 +76,20 @@ public class TestContextHolder {
     }
 
     /**
+     * Determine if the test context is set in the current thread.
+     *
+     * @return returns true the test context has been set, false otherwise
+     */
+    public boolean isPresent() {
+        return threadLocal.get() != null;
+    }
+
+    /**
      * Execute the given consumer function if the the current thread has a test context.
      *
      * @param consumer the consumer function
      */
-    public synchronized void command(Consumer<TestContext> consumer) {
+    public void command(Consumer<TestContext> consumer) {
         TestContext testContext = threadLocal.get();
 
         if (testContext != null) {
@@ -95,7 +104,7 @@ public class TestContextHolder {
      * @param function the function that will be called to get the results
      * @return the function result
      */
-    public synchronized <R> R query(Function<TestContext, R> function) {
+    public <R> R query(Function<TestContext, R> function) {
         TestContext testContext = threadLocal.get();
         R result = null;
 
@@ -104,7 +113,6 @@ public class TestContextHolder {
         }
 
         return result;
-
     }
 
 }

@@ -31,13 +31,15 @@ public class DefaultInstrumentInstanceTest {
 
     String className;
     Object interceptor;
+    boolean constructor;
 
     @Before
     public void init() {
         className = "instance";
+        constructor = false;
         interceptor = new Object();
 
-        sut = DefaultInstrumentInstance.of(className, interceptor);
+        sut = DefaultInstrumentInstance.of(className, constructor, interceptor);
     }
 
     @Test
@@ -62,7 +64,7 @@ public class DefaultInstrumentInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        InstrumentInstance unequal = DefaultInstrumentInstance.of(className, null);
+        InstrumentInstance unequal = DefaultInstrumentInstance.of(className, constructor, null);
 
         assertThat(sut).isNotEqualTo(unequal);
         assertThat(sut.hashCode()).isNotEqualTo(unequal.hashCode());
@@ -75,7 +77,8 @@ public class DefaultInstrumentInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        InstrumentInstance equal = DefaultInstrumentInstance.of(className, interceptor);
+        InstrumentInstance equal = DefaultInstrumentInstance.of(className, constructor,
+                interceptor);
 
         assertThat(sut).isEqualTo(equal);
         assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
@@ -85,7 +88,11 @@ public class DefaultInstrumentInstanceTest {
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultInstrumentInstance", "className", "interceptor");
+        assertThat(result).contains(
+                "DefaultInstrumentInstance",
+                "className", "constructor",
+                "interceptor"
+        );
     }
 
 }

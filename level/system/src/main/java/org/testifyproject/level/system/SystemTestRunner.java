@@ -38,6 +38,7 @@ import org.testifyproject.TestRunner;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.Hint;
+import org.testifyproject.core.DefaultServerProvider;
 import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.TestContextProperties;
 import org.testifyproject.core.util.ExceptionUtil;
@@ -100,8 +101,8 @@ public class SystemTestRunner implements TestRunner {
                 resourceController = serviceLocatorUtil.getOne(ResourceController.class);
                 resourceController.start(testContext);
 
-                ClientProvider clientProvider = createClientProvider(testContext, application);
                 ServerProvider serverProvider = createServerProvider(testContext, application);
+                ClientProvider clientProvider = createClientProvider(testContext, application);
 
                 createServer(testContext, testConfigurer, serverProvider, application);
                 createClient(testContext, testConfigurer, clientProvider, application);
@@ -194,7 +195,14 @@ public class SystemTestRunner implements TestRunner {
         ServerProvider serverProvider;
 
         if (ServerProvider.class.equals(serverProviderType)) {
-            serverProvider = serviceLocatorUtil.getOne(serverProviderType);
+            String start = application.start();
+            String stop = application.stop();
+
+            if (!start.isEmpty() && !stop.isEmpty()) {
+                serverProvider = new DefaultServerProvider();
+            } else {
+                serverProvider = serviceLocatorUtil.getOne(serverProviderType);
+            }
         } else {
             serverProvider = reflectionUtil.newInstance(serverProviderType);
         }

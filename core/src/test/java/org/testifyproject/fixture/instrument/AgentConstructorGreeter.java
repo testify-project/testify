@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject;
+package org.testifyproject.fixture.instrument;
 
 /**
- * A contract the defines a method for performing cleanup operations on an object. This is
- * useful for performing clean up on unmanaged resources.
+ * TODO.
  *
  * @author saden
- * @param <T> the type of parameter used to perform cleanup operation
  */
-public interface CleanupProvider<T> {
+public class AgentConstructorGreeter {
 
-    /**
-     * Perform cleanup operation using the given parameter.
-     *
-     * @param instance instance used to perform clean up operation
-     */
-    void cleanup(T instance);
+    private String phrase;
+
+    public AgentConstructorGreeter(String phrase) {
+        this.phrase = phrase;
+    }
+
+    public String getPhrase() {
+        return phrase;
+    }
+
 }

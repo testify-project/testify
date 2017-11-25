@@ -30,6 +30,8 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.fixture.common.InvalidTestClass;
+import org.testifyproject.fixture.verifier.InvalidGenericApplication;
+import org.testifyproject.fixture.verifier.ValidGenericApplication;
 
 /**
  *
@@ -71,17 +73,50 @@ public class ApplicationPreVerifierTest {
 
     }
 
-    @Test
-    public void givenApplicationVerifyShouldDoNothing() {
+    @Test(expected = TestifyException.class)
+    public void givenInvalidApplicationVerifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         String testClassName = InvalidTestClass.class.getSimpleName();
         Application application = mock(Application.class);
         Optional<Application> foundApplication = Optional.of(application);
+        Class value = InvalidGenericApplication.class;
+        String start = "start";
+        String stop = "stop";
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getApplication()).willReturn(foundApplication);
+        given(application.value()).willReturn(value);
+        given(application.start()).willReturn(start);
+        given(application.stop()).willReturn(stop);
+        try {
+            sut.verify(testContext);
+        } catch (Exception e) {
+            verify(testContext).getTestDescriptor();
+            verify(testDescriptor).getTestClassName();
+            verify(testDescriptor).getApplication();
+            throw e;
+        }
+    }
+
+    @Test
+    public void givenValidApplicationVerifyShouldDoNothing() {
+        TestContext testContext = mock(TestContext.class);
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        String testClassName = InvalidTestClass.class.getSimpleName();
+        Application application = mock(Application.class);
+        Optional<Application> foundApplication = Optional.of(application);
+        Class value = ValidGenericApplication.class;
+        String start = "start";
+        String stop = "stop";
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getTestClassName()).willReturn(testClassName);
+        given(testDescriptor.getApplication()).willReturn(foundApplication);
+        given(application.value()).willReturn(value);
+        given(application.start()).willReturn(start);
+        given(application.stop()).willReturn(stop);
 
         sut.verify(testContext);
 

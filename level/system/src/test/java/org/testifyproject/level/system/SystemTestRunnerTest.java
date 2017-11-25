@@ -288,6 +288,8 @@ public class SystemTestRunnerTest {
         ServerProvider serverProvider = mock(ServerProvider.class);
 
         given(application.serverProvider()).willReturn(serverProviderType);
+        given(application.start()).willReturn("");
+        given(application.stop()).willReturn("");
         given(serviceLocatorUtil.getOne(serverProviderType)).willReturn(serverProvider);
 
         ServerProvider result = sut.createServerProvider(testContext, application);

@@ -16,11 +16,16 @@ was added, changed, deprecated, removed, fix and security fixes.
 ### Added
 - Added Java Agent to enable the redefinition of classes to the core module
  - Added InstrumentProvider and InstrumentInstance to enable the redefinition of classes
+ - Added support for rebasing and intercepting constructor invocations
 - Introduced InstanceProvider extension contracts that enable the addition of arbitrary constants
 - Introduced ProxyInstanceProvider and ProxyInstanceControler to enable the creation and addition of proxied constants
-- Added a generic server provider that can be used to execute static main functions
-- Added a CleanupProvider contract to enable the execution of a cleanup operation
+- Added a default generic server provider to enable direct management of application test lifecycle
+ - Added `start()` and `stop` attributes to `@Application` annotation
+ - Added ability to start a generic server using static void main functions
+ - Added ability to start a generic server using arbitrary start and stop functions
+- Added Grizzly 2 server support
 
+  
 ### Changed
 - Renamed TestResourceProvider to ResourceController
 - Added the ability to get client type and client provider type to ClientProvider contract
