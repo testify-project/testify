@@ -67,9 +67,16 @@ public class DefaultServerProvider implements ServerProvider<String[], Object> {
                 ReflectionUtil.INSTANCE.invoke(method, appInstance);
             }
 
+            //if a server property is defined then use it, otherwise use the application
+            //instance as the server.
+            Object server = testContext.getProperty(SERVER);
+            if (server == null) {
+                server = appInstance;
+            }
+
             return builder
                     .baseURI(testContext.getProperty(SERVER_BASE_URI))
-                    .server(testContext.getProperty(SERVER))
+                    .server(server)
                     .build("genericServer", application);
         } catch (NoSuchMethodException | SecurityException e) {
             throw ExceptionUtil.INSTANCE.propagate(e);

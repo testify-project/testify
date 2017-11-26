@@ -19,6 +19,7 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Added support for rebasing and intercepting constructor invocations
 - Introduced InstanceProvider extension contracts that enable the addition of arbitrary constants
 - Introduced ProxyInstanceProvider and ProxyInstanceControler to enable the creation and addition of proxied constants
+- Added support for generic JUnit 4 system test runner
 - Added a default generic server provider to enable direct management of application test lifecycle
  - Added `start()` and `stop` attributes to `@Application` annotation
  - Added ability to start a generic server using static void main functions
@@ -35,7 +36,6 @@ was added, changed, deprecated, removed, fix and security fixes.
  
 ### Removed 
  - Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute
-
 
 ## [0.9.9] - 2017-09-15
 ### Added

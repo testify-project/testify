@@ -41,6 +41,7 @@
         <module>jersey2-system-test</module>
         <module>grpc-system-test</module>
         <module>guice-integration-test</module>
+        <module>system-test</module>
     </modules>
     
     <properties>

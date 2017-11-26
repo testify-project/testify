@@ -48,7 +48,9 @@ public class DefaultInstance<T> implements Instance<T> {
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance) {
-        return new DefaultInstance(instance, null, instance.getClass());
+        Class<?> contract = instance == null ? null : instance.getClass();
+
+        return new DefaultInstance(instance, null, contract);
     }
 
     /**
@@ -60,7 +62,9 @@ public class DefaultInstance<T> implements Instance<T> {
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance, String name) {
-        return new DefaultInstance(instance, name, instance.getClass());
+        Class<?> contract = instance == null ? null : instance.getClass();
+
+        return new DefaultInstance(instance, name, contract);
     }
 
     /**

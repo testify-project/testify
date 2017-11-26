@@ -184,8 +184,8 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
         if (testSettings.getTestRunnerClass() == null) {
             testRunner = getTestRunner();
         } else {
-            testRunner = ServiceLocatorUtil.INSTANCE.getOne(TestRunner.class, testSettings
-                    .getTestRunnerClass());
+            testRunner = ServiceLocatorUtil.INSTANCE
+                    .getOne(TestRunner.class, testSettings.getTestRunnerClass());
         }
 
         TestContext testContext = DefaultTestContextBuilder.builder()
