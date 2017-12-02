@@ -28,10 +28,6 @@
     <name>Jersey Client</name>
     <description>A module that provides Jersey Client based ClientInstance</description>
 
-    <properties>
-        <javax-wsrs.version>2.1</javax-wsrs.version>
-    </properties>
-    
     <build>
         <plugins>
             <plugin>
@@ -51,8 +47,19 @@
         </plugins>
     </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <dependencies>
-       
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>api</artifactId>
@@ -64,15 +71,12 @@
             <version>${project.version}</version>
         </dependency> 
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>${javax-wsrs.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>${jersey.version}</version>
-            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
         </dependency>
     </dependencies>
     
