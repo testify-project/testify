@@ -23,7 +23,7 @@
         <artifactId>di</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>jersey-di</artifactId>
+    <artifactId>di-jersey</artifactId>
     <name>Jersey DI</name>
     <description>A module that provides Jersey DI Service Instance implementation</description>
     

@@ -61,7 +61,7 @@
         </dependency>
          <dependency>
             <groupId>org.testifyproject.di</groupId>
-            <artifactId>jersey-di</artifactId>
+            <artifactId>di-jersey</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

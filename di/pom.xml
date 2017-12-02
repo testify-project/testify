@@ -35,7 +35,7 @@
         <module>di-spring</module>
         <module>di-hk2</module>
         <module>di-guice</module>
-        <module>jersey-di</module>
+        <module>di-jersey</module>
     </modules>
 
 </project>
