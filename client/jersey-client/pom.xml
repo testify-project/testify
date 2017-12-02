@@ -28,6 +28,10 @@
     <name>Jersey Client</name>
     <description>A module that provides Jersey Client based ClientInstance</description>
 
+    <properties>
+        <javax-wsrs.version>2.1</javax-wsrs.version>
+    </properties>
+    
     <build>
         <plugins>
             <plugin>
@@ -48,6 +52,7 @@
     </build>
 
     <dependencies>
+       
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>api</artifactId>
@@ -57,11 +62,18 @@
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
+        </dependency> 
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${javax-wsrs.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
             <version>${jersey.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+    
 </project>
