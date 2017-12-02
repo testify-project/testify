@@ -28,9 +28,6 @@
     <name>Jersey 2 System Test</name>
     <description>A module that contains a JUnit test runner for running Jersey 2 system tests</description>
 
-    <properties>
-        <jersey.hk2.version>2.5.0-b42</jersey.hk2.version>
-    </properties>
     
     <build>
         <plugins>
@@ -60,6 +57,11 @@
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.testifyproject.di</groupId>
+            <artifactId>jersey-di</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -19,17 +19,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.testifyproject.server</groupId>
-        <artifactId>server</artifactId>
+        <groupId>org.testifyproject.di</groupId>
+        <artifactId>di</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>grizzly2</artifactId>
-    
-    <name>Grizzly 2</name>
-    <description>A module that contains code to support Grizzly 2 Server</description> 
-    <properties>
-        <grizzly2.version>2.3.28</grizzly2.version>
-    </properties>
+    <artifactId>jersey-di</artifactId>
+    <name>Jersey DI</name>
+    <description>A module that provides Jersey DI Service Instance implementation</description>
     
     <build>
         <plugins>
@@ -42,32 +38,35 @@
         </plugins>
     </build>
     
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <!-- Testify Deps -->
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.glassfish.grizzly</groupId>
-            <artifactId>grizzly-http-server</artifactId>
-            <version>${grizzly2.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-grizzly2-http</artifactId>
-            <version>${jersey.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
-            <version>${jersey.version}</version>
+        </dependency>
+
+        <!-- Test Deps -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-metadata-generator</artifactId>
+            <version>${jersey.hk2.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-   
 </project>

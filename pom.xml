@@ -93,6 +93,7 @@
         <springboot.version>1.5.4.RELEASE</springboot.version>
         <hk2.version>2.4.0</hk2.version>
         <jersey.version>2.26</jersey.version>
+        <jersey.hk2.version>2.5.0-b42</jersey.hk2.version>
         <guice.version>4.1.0</guice.version>
 
         <!-- Processor Dependencies -->

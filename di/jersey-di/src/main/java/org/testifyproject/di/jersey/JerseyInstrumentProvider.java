@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.system;
+package org.testifyproject.di.jersey;
 
 import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.extension.instrument.InstrumentInstanceBuilder;
