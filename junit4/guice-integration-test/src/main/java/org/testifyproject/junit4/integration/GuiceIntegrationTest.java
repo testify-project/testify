@@ -40,7 +40,6 @@ public class GuiceIntegrationTest extends TestifyJUnit4TestRunner {
     public GuiceIntegrationTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.INTEGRATION)
-                .dependency("com.google.inject.Guice", "Google Guice")
                 .build()
         );
     }

@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -52,7 +51,7 @@ public class GuidelinePreVerifier implements PreVerifier {
 
         Collection<Class<? extends Annotation>> foundGuidelines = testDescriptor.getGuidelines();
 
-        ExceptionUtil.INSTANCE.raise(foundGuidelines.size() > 1,
+        testContext.addError(foundGuidelines.size() > 1,
                 "Test class '{}' has multiple multiple guideline annotations ({}). "
                 + "Please insure there is only one guideline annotation present.",
                 testClassName, foundGuidelines.stream()

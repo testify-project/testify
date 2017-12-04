@@ -26,8 +26,7 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.util.LoggingUtil;
-import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.Verifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
 import org.testifyproject.extension.annotation.Strict;
@@ -44,7 +43,7 @@ import org.testifyproject.extension.annotation.UnitCategory;
 @UnitCategory
 @IntegrationCategory
 @Discoverable
-public class ConstructorPreiVerifier implements PreiVerifier {
+public class ConstructorPreiVerifier implements Verifier {
 
     @Override
     public void verify(TestContext testContext) {
@@ -79,7 +78,7 @@ public class ConstructorPreiVerifier implements PreiVerifier {
                 undeclared.stream()
                         .map(ParameterDescriptor::getTypeName)
                         .forEach(paramTypeName ->
-                                LoggingUtil.INSTANCE.warn(
+                                testContext.addWarning(
                                         "System under test '{}' defined in '{}' has a "
                                         + "collaborator of type '{}' but test class '{}' "
                                         + "does not define a field of type '{}' annotated "

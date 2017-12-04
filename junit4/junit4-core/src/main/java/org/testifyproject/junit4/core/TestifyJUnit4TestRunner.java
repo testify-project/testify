@@ -197,7 +197,6 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(SettingUtil.INSTANCE.getSettings())
-                .dependencies(testSettings.getDependencies())
                 .build();
 
         Optional<Field> sutField = testDescriptor.getSutField();

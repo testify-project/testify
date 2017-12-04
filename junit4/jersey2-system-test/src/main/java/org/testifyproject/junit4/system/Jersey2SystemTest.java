@@ -40,7 +40,6 @@ public class Jersey2SystemTest extends TestifyJUnit4TestRunner {
     public Jersey2SystemTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.SYSTEM)
-                .dependency("org.glassfish.jersey.server.ResourceConfig", "Jersey2 Server")
                 .build()
         );
     }

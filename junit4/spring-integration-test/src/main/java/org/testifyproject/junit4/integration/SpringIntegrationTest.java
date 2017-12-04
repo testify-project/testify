@@ -40,8 +40,6 @@ public class SpringIntegrationTest extends TestifyJUnit4TestRunner {
     public SpringIntegrationTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.INTEGRATION)
-                .dependency("org.springframework.context.ApplicationContext",
-                        "Spring Context")
                 .build()
         );
     }

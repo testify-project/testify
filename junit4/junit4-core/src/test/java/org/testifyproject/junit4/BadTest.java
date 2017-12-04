@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -31,19 +31,24 @@ import org.testifyproject.guava.common.reflect.ClassPath;
  *
  * @author saden
  */
-@Ignore
-public class BadSetupTest {
+public class BadTest {
+
+    private final Logger logger = LoggerFactory.getLogger("testify");
+
+    JUnitCore core;
+
+    @Before
+    public void init() {
+        core = new JUnitCore();
+    }
 
     @Test
-    public void runBadTestCases() throws IOException {
-        Logger logger = LoggerFactory.getLogger("testify");
-        String testPackage = "org.testifyproject.junit4.bad";
+    public void verifyErroneousTests() throws IOException {
+        String testPackage = "org.testifyproject.junit4.bad.erroneous";
 
-        logger.warn("Running Bad Test Cases in package '{}'", testPackage);
+        logger.warn("Running Erroneous Test Cases in package '{}'", testPackage);
 
-        JUnitCore core = new JUnitCore();
-
-        ClassPath classPath = ClassPath.from(BadSetupTest.class.getClassLoader());
+        ClassPath classPath = ClassPath.from(BadTest.class.getClassLoader());
         Class<?>[] classes = classPath.getTopLevelClassesRecursive(testPackage)
                 .stream()
                 .map(p -> p.load())
@@ -59,6 +64,25 @@ public class BadSetupTest {
                         failure.getDescription().getTestClass().getSimpleName(),
                         failure.getMessage());
             });
+        }
+    }
+
+    @Test
+    public void verifyProblematicTests() throws IOException {
+        String testPackage = "org.testifyproject.junit4.bad.problematic";
+
+        logger.warn("Running Problematic Test Cases in package '{}'", testPackage);
+
+        ClassPath classPath = ClassPath.from(BadTest.class.getClassLoader());
+        Class<?>[] classes = classPath.getTopLevelClassesRecursive(testPackage)
+                .stream()
+                .map(p -> p.load())
+                .toArray(Class<?>[]::new);
+
+        if (classes.length > 0) {
+            Result result = core.run(classes);
+            assertThat(result).isNotNull();
+            assertThat(result.getRunCount()).isEqualTo(classes.length);
         }
     }
 

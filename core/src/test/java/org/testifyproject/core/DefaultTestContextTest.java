@@ -56,7 +56,6 @@ public class DefaultTestContextTest {
     TestConfigurer testConfigurer;
     MockProvider mockProvider;
     Map<String, Object> properties;
-    Map<String, String> dependencies;
 
     @Before
     public void init() {
@@ -68,7 +67,6 @@ public class DefaultTestContextTest {
         testRunner = mock(TestRunner.class);
         mockProvider = mock(MockProvider.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
-        dependencies = mock(Map.class, delegatesTo(new HashMap<>()));
 
         sut = DefaultTestContextBuilder.builder()
                 .testCategory(testCategory)
@@ -79,7 +77,6 @@ public class DefaultTestContextTest {
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
-                .dependencies(dependencies)
                 .build();
     }
 
@@ -162,13 +159,6 @@ public class DefaultTestContextTest {
     }
 
     @Test
-    public void callToGetDependenciesShouldReturn() {
-        Map<String, String> result = sut.getDependencies();
-
-        assertThat(result).isEqualTo(dependencies);
-    }
-
-    @Test
     public void callToGetSutDescriptorShouldReturn() {
         Optional<SutDescriptor> result = sut.getSutDescriptor();
 
@@ -234,7 +224,6 @@ public class DefaultTestContextTest {
                 .testMethodDescriptor(null)
                 .testConfigurer(testConfigurer)
                 .properties(properties)
-                .dependencies(dependencies)
                 .build();
 
         assertThat(sut).isNotEqualTo(uneuqual);
@@ -257,7 +246,6 @@ public class DefaultTestContextTest {
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
-                .dependencies(dependencies)
                 .build();
 
         assertThat(sut).isEqualTo(equal);

@@ -35,7 +35,6 @@ public class TestSettings {
 
     private Class<? extends TestRunner> testRunnerClass;
     private Class<? extends Annotation> testCategory;
-    private Map<String, String> dependencies;
     private TestCategory.Level level;
     private String[] categories;
     private Map<String, Object> properties;
@@ -57,14 +56,6 @@ public class TestSettings {
 
     void setTestCategory(Class<? extends Annotation> testCategory) {
         this.testCategory = testCategory;
-    }
-
-    public Map<String, String> getDependencies() {
-        return dependencies;
-    }
-
-    void setDependencies(Map<String, String> dependencies) {
-        this.dependencies = dependencies;
     }
 
     public TestCategory.Level getLevel() {

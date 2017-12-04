@@ -20,7 +20,6 @@ import java.util.List;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -52,21 +51,25 @@ public class ConfigHandlerPreVerifier implements PreVerifier {
             String declaringClassName = configHandler.getDeclaringClassName();
             Class returnType = configHandler.getReturnType();
 
-            ExceptionUtil.INSTANCE.raise(size != 1,
+            testContext.addError(size != 1,
                     "Configuration Handler method '{}' in class '{}' has {} paramters. "
                     + "Please insure the configuration handler has one and only one paramter.",
                     name, declaringClassName, size);
 
-            Class paramterType = parameterTypes.get(0);
+            if (size != 0) {
+                Class paramterType = parameterTypes.get(0);
+                boolean condition =
+                        !(void.class.equals(returnType)
+                        || Void.class.equals(returnType)
+                        || returnType.isAssignableFrom(paramterType));
 
-            ExceptionUtil.INSTANCE.raise(!(void.class.equals(returnType)
-                    || Void.class.equals(returnType)
-                    || returnType.isAssignableFrom(paramterType)),
-                    "Configuration Handler method '{}' in class '{}' has return type returns '{}'."
-                    + "Please insure the configuration handler returns a void or a super type of "
-                    + "'{}'.",
-                    name, declaringClassName, returnType.getSimpleName(), paramterType
-                    .getSimpleName());
+                testContext.addError(condition,
+                        "Configuration Handler method '{}' in class '{}' has return type "
+                        + "returns '{}'. Please insure the configuration handler returns a "
+                        + "void or a super type of '{}'.",
+                        name, declaringClassName, returnType.getSimpleName(), paramterType
+                        .getSimpleName());
+            }
         });
     }
 

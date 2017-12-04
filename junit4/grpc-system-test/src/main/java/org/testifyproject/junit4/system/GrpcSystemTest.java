@@ -40,7 +40,6 @@ public class GrpcSystemTest extends TestifyJUnit4TestRunner {
     public GrpcSystemTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.SYSTEM)
-                .dependency("io.grpc.Grpc", "gRPC")
                 .build()
         );
     }

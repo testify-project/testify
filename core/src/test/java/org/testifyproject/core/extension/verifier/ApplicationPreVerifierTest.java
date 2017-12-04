@@ -17,8 +17,12 @@ package org.testifyproject.core.extension.verifier;
 
 import static java.util.Optional.empty;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
@@ -27,7 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.fixture.common.InvalidTestClass;
 import org.testifyproject.fixture.verifier.InvalidGenericApplication;
@@ -51,8 +54,8 @@ public class ApplicationPreVerifierTest {
         sut.verify(null);
     }
 
-    @Test(expected = TestifyException.class)
-    public void givenInvalidTestContextVerifyShouldThrowException() {
+    @Test
+    public void givenInvalidTestContextVerifyShouldAddError() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         String testClassName = InvalidTestClass.class.getSimpleName();
@@ -62,18 +65,15 @@ public class ApplicationPreVerifierTest {
         given(testDescriptor.getTestClassName()).willReturn(testClassName);
         given(testDescriptor.getApplication()).willReturn(foundApplication);
 
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getTestClassName();
-            verify(testDescriptor).getApplication();
-            throw e;
-        }
+        sut.verify(testContext);
 
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getTestClassName();
+        verify(testDescriptor).getApplication();
+        verify(testContext).addError(anyBoolean(), anyString(), any());
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenInvalidApplicationVerifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -90,14 +90,12 @@ public class ApplicationPreVerifierTest {
         given(application.value()).willReturn(value);
         given(application.start()).willReturn(start);
         given(application.stop()).willReturn(stop);
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getTestClassName();
-            verify(testDescriptor).getApplication();
-            throw e;
-        }
+        sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getTestClassName();
+        verify(testDescriptor).getApplication();
+        verify(testContext, times(4)).addError(anyBoolean(), anyString(), any());
     }
 
     @Test

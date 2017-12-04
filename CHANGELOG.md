@@ -25,14 +25,18 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Added ability to start a generic server using static void main functions
  - Added ability to start a generic server using arbitrary start and stop functions
 - Added Grizzly 2 server support
+- Added RemoteResourcePreVerifier to verify remote resources
 
-  
 ### Changed
 - Renamed TestResourceProvider to ResourceController
 - Added the ability to get client type and client provider type to ClientProvider contract
 - Added the ability to get server type to the ServerProvider contract
 - Moved reifier and verify extension classes to the extension package
 - Moved @Discoverable from build-tools:service-generator to the API module
+- Renamed PreiVerifier to Verifier
+- Changed how errors and warnings are reported by verifiers
+ - Added `addWarning`, `addError`, and `verify` methods to the TestContext
+ - Removed dependency verification from the test runners to PreVerifier implementation
  
 ### Removed 
  - Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute

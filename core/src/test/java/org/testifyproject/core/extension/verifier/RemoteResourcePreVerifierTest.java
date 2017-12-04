@@ -27,22 +27,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.fixture.resource.InvalidVirtualResourceProvider;
-import org.testifyproject.fixture.resource.ValidVirtualResourceProvider;
+import org.testifyproject.annotation.RemoteResource;
+import org.testifyproject.fixture.resource.InvalidRemoteResourceProvider;
+import org.testifyproject.fixture.resource.ValidRemoteResourceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
  *
  * @author saden
  */
-public class VirtualResourcePreVerifierTest {
+public class RemoteResourcePreVerifierTest {
 
-    VirtualResourcePreVerifier sut;
+    RemoteResourcePreVerifier sut;
 
     @Before
     public void init() {
-        sut = new VirtualResourcePreVerifier();
+        sut = new RemoteResourcePreVerifier();
     }
 
     @Test(expected = NullPointerException.class)
@@ -54,19 +54,19 @@ public class VirtualResourcePreVerifierTest {
     public void givenInvalidTestContextVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        VirtualResource virtualResource = mock(VirtualResource.class);
-        List<VirtualResource> virtualResources = ImmutableList.of(virtualResource);
-        Class provider = InvalidVirtualResourceProvider.class;
+        RemoteResource remoteResource = mock(RemoteResource.class);
+        List<RemoteResource> remoteResources = ImmutableList.of(remoteResource);
+        Class provider = InvalidRemoteResourceProvider.class;
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
-        given(virtualResource.provider()).willReturn(provider);
+        given(testDescriptor.getRemoteResources()).willReturn(remoteResources);
+        given(remoteResource.value()).willReturn(provider);
 
         sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
-        verify(testDescriptor).getVirtualResources();
-        verify(virtualResource).provider();
+        verify(testDescriptor).getRemoteResources();
+        verify(remoteResource).value();
         verify(testContext).addError(anyString(), any());
     }
 
@@ -74,19 +74,20 @@ public class VirtualResourcePreVerifierTest {
     public void givenValidTestContextVerifyShouldDoNothing() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        VirtualResource virtualResource = mock(VirtualResource.class);
-        List<VirtualResource> virtualResources = ImmutableList.of(virtualResource);
-        Class provider = ValidVirtualResourceProvider.class;
+        RemoteResource remoteResource = mock(RemoteResource.class);
+        List<RemoteResource> remoteResources = ImmutableList.of(remoteResource);
+        Class provider = ValidRemoteResourceProvider.class;
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testDescriptor.getVirtualResources()).willReturn(virtualResources);
-        given(virtualResource.provider()).willReturn(provider);
+        given(testDescriptor.getRemoteResources()).willReturn(remoteResources);
+        given(remoteResource.value()).willReturn(provider);
 
         sut.verify(testContext);
 
         verify(testContext).getTestDescriptor();
-        verify(testDescriptor).getVirtualResources();
-        verify(virtualResource).provider();
+        verify(testDescriptor).getRemoteResources();
+        verify(remoteResource).value();
+
     }
 
 }

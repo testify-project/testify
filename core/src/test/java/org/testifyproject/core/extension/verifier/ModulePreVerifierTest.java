@@ -15,6 +15,9 @@
  */
 package org.testifyproject.core.extension.verifier;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.fixture.common.InvalidTestClass;
@@ -49,7 +51,7 @@ public class ModulePreVerifierTest {
         sut.verify(null);
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenInvalidTestContextVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -63,15 +65,13 @@ public class ModulePreVerifierTest {
         given(testDescriptor.getModules()).willReturn(foundModules);
         given(testDescriptor.getScans()).willReturn(foundScans);
 
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getTestClassName();
-            verify(testDescriptor).getModules();
-            verify(testDescriptor).getScans();
-            throw e;
-        }
+        sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getTestClassName();
+        verify(testDescriptor).getModules();
+        verify(testDescriptor).getScans();
+        verify(testContext).addError(anyBoolean(), anyString(), any());
     }
 
     @Test

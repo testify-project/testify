@@ -25,7 +25,6 @@ import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -61,8 +60,7 @@ public class RealPreVerifier implements PreVerifier {
                 .filter(p -> p.getReal().isPresent())
                 .collect(toList());
 
-        ExceptionUtil.INSTANCE.raise(!foundSutDescriptor.isPresent() && fieldDescriptors
-                .isEmpty(),
+        testContext.addError(!foundSutDescriptor.isPresent() && fieldDescriptors.isEmpty(),
                 "Test class '{}' does not define a field annotated with @Sut "
                 + "nor does it define field(s) annotated with @Real. Please "
                 + "insure the test class defines a single field annotated "

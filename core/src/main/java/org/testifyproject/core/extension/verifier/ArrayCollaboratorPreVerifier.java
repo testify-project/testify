@@ -18,7 +18,6 @@ package org.testifyproject.core.extension.verifier;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -51,7 +50,7 @@ public class ArrayCollaboratorPreVerifier implements PreVerifier {
             String fieldName = fieldDescriptor.getName();
             String fieldTypeName = fieldDescriptor.getTypeName();
 
-            ExceptionUtil.INSTANCE.raise(fieldType.isArray(),
+            testContext.addError(fieldType.isArray(),
                     "Collaborator '{}' in test class '{}' can not be configured because "
                     + "'{}' is an array. Please consider using a Collection instead of arrays.",
                     fieldName, testClassName, fieldTypeName);

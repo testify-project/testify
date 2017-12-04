@@ -23,6 +23,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.testifyproject.core.TestContextProperties.CLIENT_INSTANCE;
@@ -62,7 +63,7 @@ import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.Verifier;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -151,8 +152,8 @@ public class SystemTestRunnerTest {
         FinalReifier finalReifier = mock(FinalReifier.class);
         List<FinalReifier> finalReifiers = ImmutableList.of(finalReifier);
 
-        PreiVerifier preiVerifier = mock(PreiVerifier.class);
-        List<PreiVerifier> preiVerifiers = ImmutableList.of(preiVerifier);
+        Verifier preiVerifier = mock(Verifier.class);
+        List<Verifier> preiVerifiers = ImmutableList.of(preiVerifier);
 
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
@@ -189,8 +190,7 @@ public class SystemTestRunnerTest {
                 SystemCategory.class)
         ).willReturn(finalReifiers);
 
-        given(serviceLocatorUtil.findAllWithFilter(
-                PreiVerifier.class,
+        given(serviceLocatorUtil.findAllWithFilter(Verifier.class,
                 guidelines,
                 SystemCategory.class)
         ).willReturn(preiVerifiers);
@@ -213,7 +213,8 @@ public class SystemTestRunnerTest {
         verify(serviceLocatorUtil)
                 .findAllWithFilter(FinalReifier.class, SystemCategory.class);
         verify(serviceLocatorUtil)
-                .findAllWithFilter(PreiVerifier.class, guidelines, SystemCategory.class);
+                .findAllWithFilter(Verifier.class, guidelines, SystemCategory.class);
+        verify(testContext, times(2)).verify();
 
         verifyNoMoreInteractions(testContext, testConfigurer, testDescriptor);
     }
@@ -272,6 +273,7 @@ public class SystemTestRunnerTest {
         verify(testDescriptor).getGuidelines();
         verify(serviceLocatorUtil)
                 .findAllWithFilter(PostVerifier.class, guidelines, SystemCategory.class);
+        verify(testContext).verify();
         verify(postVerifier).verify(testContext);
         verify(fieldDescriptor).destroy(testInstance);
         verify(sutDescriptor).destroy(testInstance);
@@ -502,7 +504,5 @@ public class SystemTestRunnerTest {
         verify(testContext).addProperty(TestContextProperties.CLIENT_SUPPLIER, clientSupplier);
 
     }
-    
-    
 
 }

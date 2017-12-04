@@ -49,7 +49,7 @@ import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.Verifier;
 import org.testifyproject.extension.annotation.SystemCategory;
 
 /**
@@ -93,10 +93,11 @@ public class SystemTestRunner implements TestRunner {
                         CollaboratorReifier.class,
                         SystemCategory.class).forEach(p -> p.reify(testContext));
 
-                serviceLocatorUtil.findAllWithFilter(
-                        PreVerifier.class,
-                        guidelines,
-                        SystemCategory.class).forEach(p -> p.verify(testContext));
+                serviceLocatorUtil
+                        .findAllWithFilter(PreVerifier.class, guidelines, SystemCategory.class)
+                        .forEach(p -> p.verify(testContext));
+
+                testContext.verify();
 
                 resourceController = serviceLocatorUtil.getOne(ResourceController.class);
                 resourceController.start(testContext);
@@ -118,13 +119,14 @@ public class SystemTestRunner implements TestRunner {
                 createSut(testContext, sutDescriptor, serviceInstance, testInstance);
             }
 
-            serviceLocatorUtil.findAllWithFilter(FinalReifier.class, SystemCategory.class)
+            serviceLocatorUtil
+                    .findAllWithFilter(FinalReifier.class, SystemCategory.class)
                     .forEach(p -> p.reify(testContext));
 
-            serviceLocatorUtil.findAllWithFilter(
-                    PreiVerifier.class,
-                    guidelines,
-                    SystemCategory.class).forEach(p -> p.verify(testContext));
+            serviceLocatorUtil
+                    .findAllWithFilter(Verifier.class, guidelines, SystemCategory.class)
+                    .forEach(p -> p.verify(testContext));
+            testContext.verify();
         });
     }
 
@@ -140,6 +142,7 @@ public class SystemTestRunner implements TestRunner {
                 guidelines,
                 SystemCategory.class
         ).forEach(p -> p.verify(testContext));
+        testContext.verify();
 
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()

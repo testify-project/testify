@@ -15,6 +15,9 @@
  */
 package org.testifyproject.core.extension.verifier;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -26,7 +29,6 @@ import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.common.InvalidTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
@@ -66,7 +68,7 @@ public class ArrayCollaboratorPreVerifierTest {
         verify(testDescriptor).getFieldDescriptors();
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenArrayCollaboratorVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -84,17 +86,15 @@ public class ArrayCollaboratorPreVerifierTest {
         given(fieldDescriptor.getName()).willReturn(fieldName);
         given(fieldDescriptor.getTypeName()).willReturn(fieldTypeName);
 
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getTestClassName();
-            verify(testDescriptor).getFieldDescriptors();
-            verify(fieldDescriptor).getType();
-            verify(fieldDescriptor).getName();
-            verify(fieldDescriptor).getTypeName();
-            throw e;
-        }
+        sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getTestClassName();
+        verify(testDescriptor).getFieldDescriptors();
+        verify(fieldDescriptor).getType();
+        verify(fieldDescriptor).getName();
+        verify(fieldDescriptor).getTypeName();
+        verify(testContext).addError(anyBoolean(), anyString(), any());
     }
 
     @Test

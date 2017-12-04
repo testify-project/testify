@@ -20,7 +20,6 @@ import java.util.List;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -56,9 +55,9 @@ public class CollaboratorProviderPreVerifier implements PreVerifier {
                             .getDeclaringClassName();
                     Class returnType = collaboratorProvider.getReturnType();
 
-                    ExceptionUtil.INSTANCE.raise(void.class.equals(returnType)
+                    testContext.addError(void.class.equals(returnType)
                             || Void.class.equals(returnType),
-                            "Collaborator Provider method '{}' in class '{}' has void return type."
+                            "Collaborator provider method '{}' in class '{}' has void return type."
                             + "Please insure the collaborator provider returns a non-void type.",
                             name, declaringClassName);
                 });

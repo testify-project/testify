@@ -112,6 +112,14 @@ public class TestContextProperties {
      * Application instance property key.
      */
     public static final String APPLICATION_INSTANCE = "applicationInstance";
+    /**
+     * Test errors property key.
+     */
+    public static final String TEST_ERRORS = "testErrors";
+    /**
+     * Test warnings property key.
+     */
+    public static final String TEST_WARNINGS = "testWarnings";
 
     private TestContextProperties() {
     }

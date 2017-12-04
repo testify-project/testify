@@ -18,6 +18,7 @@ package org.testifyproject.level.integration;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.Verifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 
 /**
@@ -66,6 +67,7 @@ public class IntegrationTestRunner implements TestRunner {
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
         Optional<SutDescriptor> foundSutDescriptor = testContext.getSutDescriptor();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Collection<Class<? extends Annotation>> guidelines = testDescriptor.getGuidelines();
 
         resourceController = serviceLocatorUtil.getOne(ResourceController.class);
         resourceController.start(testContext);
@@ -74,9 +76,10 @@ public class IntegrationTestRunner implements TestRunner {
                 IntegrationCategory.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor
-                .getGuidelines(), IntegrationCategory.class)
+        serviceLocatorUtil
+                .findAllWithFilter(PreVerifier.class, guidelines, IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
+        testContext.verify();
 
         ServiceProvider serviceProvider = serviceLocatorUtil.getFromHintWithFilter(
                 testContext,
@@ -113,19 +116,22 @@ public class IntegrationTestRunner implements TestRunner {
                 .findAllWithFilter(FinalReifier.class, IntegrationCategory.class)
                 .forEach(p -> p.reify(testContext));
 
-        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor
-                .getGuidelines(), IntegrationCategory.class)
+        serviceLocatorUtil
+                .findAllWithFilter(Verifier.class, guidelines, IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
+        testContext.verify();
     }
 
     @Override
     public void stop(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Collection<Class<? extends Annotation>> guidelines = testDescriptor.getGuidelines();
 
-        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor
-                .getGuidelines(), IntegrationCategory.class)
+        serviceLocatorUtil
+                .findAllWithFilter(PostVerifier.class, guidelines, IntegrationCategory.class)
                 .forEach(p -> p.verify(testContext));
+        testContext.verify();
 
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()

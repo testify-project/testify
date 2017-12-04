@@ -15,8 +15,12 @@
  */
 package org.testifyproject.core.extension.verifier;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -27,7 +31,6 @@ import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
@@ -48,50 +51,58 @@ public class ConfigHandlerPreVerifierTest {
         sut.verify(null);
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenConfigHandlerWithoutParamterVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MethodDescriptor configHandler = mock(MethodDescriptor.class);
         List<MethodDescriptor> configHandlers = ImmutableList.of(configHandler);
         List<Class> paramterTypes = ImmutableList.of();
+        String methodName = "configMethod";
+        String testName = "TestClass";
+        Class returnType = String.class;
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getConfigHandlers()).willReturn(configHandlers);
         given(configHandler.getParameterTypes()).willReturn(paramterTypes);
+        given(configHandler.getName()).willReturn(methodName);
+        given(configHandler.getDeclaringClassName()).willReturn(testName);
+        given(configHandler.getReturnType()).willReturn(returnType);
 
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getConfigHandlers();
-            verify(configHandler).getParameterTypes();
-            verifyNoMoreInteractions(testContext, testDescriptor);
-            throw e;
-        }
+        sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getConfigHandlers();
+        verify(configHandler).getParameterTypes();
+        verify(testContext).addError(anyBoolean(), anyString(), any());
+        verifyNoMoreInteractions(testContext, testDescriptor);
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenConfigHandlerWithTwoParamterVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
         MethodDescriptor configHandler = mock(MethodDescriptor.class);
         List<MethodDescriptor> configHandlers = ImmutableList.of(configHandler);
         List<Class> paramterTypes = ImmutableList.of(Integer.class, String.class);
+        String methodName = "configMethod";
+        String testName = "TestClass";
+        Class returnType = String.class;
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testDescriptor.getConfigHandlers()).willReturn(configHandlers);
         given(configHandler.getParameterTypes()).willReturn(paramterTypes);
+        given(configHandler.getName()).willReturn(methodName);
+        given(configHandler.getDeclaringClassName()).willReturn(testName);
+        given(configHandler.getReturnType()).willReturn(returnType);
 
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getConfigHandlers();
-            verify(configHandler).getParameterTypes();
-            verifyNoMoreInteractions(testContext, testDescriptor);
-            throw e;
-        }
+        sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getConfigHandlers();
+        verify(configHandler).getParameterTypes();
+        verify(testContext, times(2)).addError(anyBoolean(), anyString(), any());
+        verifyNoMoreInteractions(testContext, testDescriptor);
     }
 
     @Test
@@ -120,10 +131,11 @@ public class ConfigHandlerPreVerifierTest {
         verify(configHandler).getName();
         verify(configHandler).getDeclaringClassName();
         verify(configHandler).getReturnType();
+        verify(testContext, times(2)).addError(anyBoolean(), anyString(), any());
         verifyNoMoreInteractions(testContext, testDescriptor);
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenConfigHandlerDifferentReturnTypeVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -141,19 +153,16 @@ public class ConfigHandlerPreVerifierTest {
         given(configHandler.getDeclaringClassName()).willReturn(testName);
         given(configHandler.getReturnType()).willReturn(returnType);
 
-        try {
-            sut.verify(testContext);
-        } catch (TestifyException e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getConfigHandlers();
-            verify(configHandler).getParameterTypes();
-            verify(configHandler).getName();
-            verify(configHandler).getDeclaringClassName();
-            verify(configHandler).getReturnType();
-            verifyNoMoreInteractions(testContext, testDescriptor);
+        sut.verify(testContext);
 
-            throw e;
-        }
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getConfigHandlers();
+        verify(configHandler).getParameterTypes();
+        verify(configHandler).getName();
+        verify(configHandler).getDeclaringClassName();
+        verify(configHandler).getReturnType();
+        verify(testContext, times(2)).addError(anyBoolean(), anyString(), any());
+        verifyNoMoreInteractions(testContext, testDescriptor);
     }
 
 }

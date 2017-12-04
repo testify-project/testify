@@ -40,8 +40,6 @@ public class SpringBootSystemTest extends TestifyJUnit4TestRunner {
     public SpringBootSystemTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.SYSTEM)
-                .dependency("org.springframework.boot.env.EnvironmentPostProcessor",
-                        "Spring Boot")
                 .build()
         );
     }

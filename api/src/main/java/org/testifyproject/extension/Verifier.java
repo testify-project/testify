@@ -21,17 +21,17 @@ import org.testifyproject.TestContext;
  * A contract that defines a method to verify that the test class is initialized correctly
  * before it is executed. Note test class verification is executed in the following order:
  * <ul>
- * <li>{@link PreVerifier} - Verify test class is configured correctly before is executed</li>
- * <li><b>{@link PreiVerifier}</b> - Verify test class is initialized correctly before is
+ * <li>{@link PreVerifier} - Verify test class is configured correctly before it is
  * executed</li>
- * <li>{@link PostVerifier} - Verify test class produces the correct result after it is
+ * <li>{@link Verifier} - Verify test class is initialized correctly before it is executed</li>
+ * <li><b>{@link PostVerifier}</b> - Verify test class produces the correct result after it is
  * executed</li>
  * </ul>
  *
  * @author saden
  */
 @FunctionalInterface
-public interface PreiVerifier {
+public interface Verifier {
 
     /**
      * Verify the test class using the given test context.

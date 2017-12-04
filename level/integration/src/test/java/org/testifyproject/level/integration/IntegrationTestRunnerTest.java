@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
@@ -47,7 +48,7 @@ import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.PreiVerifier;
+import org.testifyproject.extension.Verifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -121,8 +122,8 @@ public class IntegrationTestRunnerTest {
         FinalReifier testReifier = mock(FinalReifier.class);
         List<FinalReifier> testReifiers = ImmutableList.of(testReifier);
 
-        PreiVerifier wiringVerifier = mock(PreiVerifier.class);
-        List<PreiVerifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
+        Verifier wiringVerifier = mock(Verifier.class);
+        List<Verifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -165,7 +166,7 @@ public class IntegrationTestRunnerTest {
         given(serviceLocatorUtil.findAllWithFilter(FinalReifier.class,
                 IntegrationCategory.class))
                 .willReturn(testReifiers);
-        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, guidelines,
+        given(serviceLocatorUtil.findAllWithFilter(Verifier.class, guidelines,
                 IntegrationCategory.class))
                 .willReturn(wiringVerifiers);
 
@@ -200,8 +201,9 @@ public class IntegrationTestRunnerTest {
                 IntegrationCategory.class);
         verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class,
                 IntegrationCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, guidelines,
+        verify(serviceLocatorUtil).findAllWithFilter(Verifier.class, guidelines,
                 IntegrationCategory.class);
+        verify(testContext, times(2)).verify();
     }
 
     @Test
@@ -237,6 +239,7 @@ public class IntegrationTestRunnerTest {
         sut.stop(testContext);
 
         verify(postVerifier).verify(testContext);
+        verify(testContext).verify();
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);

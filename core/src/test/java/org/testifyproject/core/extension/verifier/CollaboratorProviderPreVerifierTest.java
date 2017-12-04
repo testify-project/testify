@@ -15,6 +15,9 @@
  */
 package org.testifyproject.core.extension.verifier;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -27,7 +30,6 @@ import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
@@ -92,11 +94,11 @@ public class CollaboratorProviderPreVerifierTest {
         verify(collaboratorProvider).getName();
         verify(collaboratorProvider).getDeclaringClassName();
         verify(collaboratorProvider).getReturnType();
-
+        verify(testContext).addError(anyBoolean(), anyString(), any());
         verifyNoMoreInteractions(testContext, testDescriptor, collaboratorProvider);
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenCollaboratorProviderMethodThatReturnsVoidVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -115,18 +117,15 @@ public class CollaboratorProviderPreVerifierTest {
         given(collaboratorProvider.getDeclaringClassName()).willReturn(declaringClassName);
         given(collaboratorProvider.getReturnType()).willReturn(returnType);
 
-        try {
-            sut.verify(testContext);
-        } catch (TestifyException e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getCollaboratorProviders();
-            verify(collaboratorProvider).getParameterTypes();
-            verify(collaboratorProvider).getName();
-            verify(collaboratorProvider).getDeclaringClassName();
-            verify(collaboratorProvider).getReturnType();
+        sut.verify(testContext);
 
-            verifyNoMoreInteractions(testContext, testDescriptor, collaboratorProvider);
-            throw e;
-        }
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getCollaboratorProviders();
+        verify(collaboratorProvider).getParameterTypes();
+        verify(collaboratorProvider).getName();
+        verify(collaboratorProvider).getDeclaringClassName();
+        verify(collaboratorProvider).getReturnType();
+        verify(testContext).addError(anyBoolean(), anyString(), any());
+        verifyNoMoreInteractions(testContext, testDescriptor, collaboratorProvider);
     }
 }

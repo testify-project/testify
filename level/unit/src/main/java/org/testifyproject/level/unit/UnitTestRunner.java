@@ -17,6 +17,9 @@ package org.testifyproject.level.unit;
 
 import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+
 import org.testifyproject.ResourceController;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
@@ -33,8 +36,8 @@ import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
+import org.testifyproject.extension.Verifier;
 import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
@@ -62,19 +65,21 @@ public class UnitTestRunner implements TestRunner {
         Object testInstance = testContext.getTestInstance();
         TestConfigurer testConfigurer = testContext.getTestConfigurer();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Collection<Class<? extends Annotation>> guidelines = testDescriptor.getGuidelines();
 
-        serviceLocatorUtil.findAllWithFilter(PreVerifier.class, testDescriptor
-                .getGuidelines(), UnitCategory.class)
+        serviceLocatorUtil
+                .findAllWithFilter(PreVerifier.class, guidelines, UnitCategory.class)
                 .forEach(p -> p.verify(testContext));
+        testContext.verify();
 
         resourceController = serviceLocatorUtil.getOne(ResourceController.class);
         resourceController.start(testContext);
 
         ServiceProvider serviceProvider = serviceLocatorUtil.getFromHintOrDefault(
-                    testContext,
-                    ServiceProvider.class,
-                    DefaultServiceProvider.class,
-                    Hint::serviceProvider);
+                testContext,
+                ServiceProvider.class,
+                DefaultServiceProvider.class,
+                Hint::serviceProvider);
 
         Object serviceContext = serviceProvider.create(testContext);
         testConfigurer.configure(testContext, serviceContext);
@@ -108,19 +113,22 @@ public class UnitTestRunner implements TestRunner {
         testContext.getSutDescriptor()
                 .ifPresent(p -> p.init(testInstance));
 
-        serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, testDescriptor
-                .getGuidelines(), UnitCategory.class)
+        serviceLocatorUtil
+                .findAllWithFilter(Verifier.class, guidelines, UnitCategory.class)
                 .forEach(p -> p.verify(testContext));
+        testContext.verify();
     }
 
     @Override
     public void stop(TestContext testContext) {
         Object testInstance = testContext.getTestInstance();
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Collection<Class<? extends Annotation>> guidelines = testDescriptor.getGuidelines();
 
-        serviceLocatorUtil.findAllWithFilter(PostVerifier.class, testDescriptor
-                .getGuidelines(), UnitCategory.class)
+        serviceLocatorUtil
+                .findAllWithFilter(PostVerifier.class, guidelines, UnitCategory.class)
                 .forEach(p -> p.verify(testContext));
+        testContext.verify();
 
         //invoke destroy method on fields annotated with Fixture
         testDescriptor.getFieldDescriptors()

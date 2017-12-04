@@ -17,6 +17,9 @@ package org.testifyproject.core.extension.verifier;
 
 import static java.util.Optional.empty;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -30,7 +33,6 @@ import org.testifyproject.FieldDescriptor;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.fixture.common.InvalidTestClass;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -53,7 +55,7 @@ public class RealPreVerifierTest {
         sut.verify(null);
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenInvalidTestContextVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -66,15 +68,13 @@ public class RealPreVerifierTest {
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
 
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getTestClassName();
-            verify(testContext).getSutDescriptor();
-            verify(testDescriptor).getFieldDescriptors();
-            throw e;
-        }
+        sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getTestClassName();
+        verify(testContext).getSutDescriptor();
+        verify(testDescriptor).getFieldDescriptors();
+        verify(testContext).addError(anyBoolean(), anyString(), any());
     }
 
     @Test

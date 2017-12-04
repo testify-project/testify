@@ -219,4 +219,21 @@ public class ReflectionUtil {
 
     }
 
+    /**
+     * Find and load the given class.
+     *
+     * @param className the fully qualified name of the desired class
+     * @return an optional with the loaded class, empty optional if class is not found
+     */
+    public Optional<Class> load(String className) {
+        Class result;
+        try {
+            result = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            result = null;
+        }
+
+        return Optional.ofNullable(result);
+    }
+
 }

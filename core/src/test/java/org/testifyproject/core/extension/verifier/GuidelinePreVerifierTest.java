@@ -15,6 +15,9 @@
  */
 package org.testifyproject.core.extension.verifier;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -26,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.extension.annotation.Loose;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.fixture.common.InvalidTestClass;
@@ -80,7 +82,7 @@ public class GuidelinePreVerifierTest {
         verify(testDescriptor).getGuidelines();
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenGuidelinesVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -93,6 +95,11 @@ public class GuidelinePreVerifierTest {
         given(testDescriptor.getGuidelines()).willReturn(foundGuidelines);
 
         sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getTestClassName();
+        verify(testDescriptor).getGuidelines();
+        verify(testContext).addError(anyBoolean(), anyString(), any());
     }
 
 }

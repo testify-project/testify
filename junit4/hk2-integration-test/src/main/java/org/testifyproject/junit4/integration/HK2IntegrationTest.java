@@ -40,7 +40,6 @@ public class HK2IntegrationTest extends TestifyJUnit4TestRunner {
     public HK2IntegrationTest(Class<?> testClass) throws InitializationError {
         super(testClass, TestSettingsBuilder.builder()
                 .level(TestCategory.Level.INTEGRATION)
-                .dependency("org.glassfish.hk2.api.ServiceLocator", "HK2")
                 .build()
         );
     }

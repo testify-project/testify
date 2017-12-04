@@ -15,6 +15,8 @@
  */
 package org.testifyproject.core.extension.verifier;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestifyException;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.fixture.resource.InvalidLocalResourceProvider;
 import org.testifyproject.fixture.resource.ValidLocalResourceProvider;
@@ -49,7 +50,7 @@ public class LocalResourcePreVerifierTest {
         sut.verify(null);
     }
 
-    @Test(expected = TestifyException.class)
+    @Test
     public void givenInvalidTestContextVerifyShouldThrowException() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
@@ -61,14 +62,12 @@ public class LocalResourcePreVerifierTest {
         given(testDescriptor.getLocalResources()).willReturn(localResources);
         given(localResource.value()).willReturn(provider);
 
-        try {
-            sut.verify(testContext);
-        } catch (Exception e) {
-            verify(testContext).getTestDescriptor();
-            verify(testDescriptor).getLocalResources();
-            verify(localResource).value();
-            throw e;
-        }
+        sut.verify(testContext);
+
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getLocalResources();
+        verify(localResource).value();
+        verify(testContext).addError(anyString(), any());
     }
 
     @Test

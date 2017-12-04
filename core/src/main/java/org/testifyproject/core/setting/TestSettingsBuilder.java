@@ -16,11 +16,9 @@
 package org.testifyproject.core.setting;
 
 import java.lang.annotation.Annotation;
-import java.util.Map;
 
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
-import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  * A builder class for {@link TestSettings}.
@@ -31,7 +29,6 @@ public class TestSettingsBuilder {
 
     private Class<? extends TestRunner> testRunnerClass;
     private Class<? extends Annotation> testCategory;
-    private final ImmutableMap.Builder<String, String> dependencies = ImmutableMap.builder();
     private TestCategory.Level level;
 
     /**
@@ -53,16 +50,6 @@ public class TestSettingsBuilder {
         return this;
     }
 
-    public TestSettingsBuilder dependency(String className, String displayName) {
-        this.dependencies.put(className, displayName);
-        return this;
-    }
-
-    public TestSettingsBuilder dependencies(Map<String, String> dependencies) {
-        this.dependencies.putAll(dependencies);
-        return this;
-    }
-
     public TestSettingsBuilder level(TestCategory.Level level) {
         this.level = level;
         this.testCategory = TestCategory.find(level);
@@ -72,7 +59,6 @@ public class TestSettingsBuilder {
     public TestSettings build() {
         TestSettings testSettings = new TestSettings();
 
-        testSettings.setDependencies(dependencies.build());
         testSettings.setLevel(level);
         testSettings.setTestCategory(testCategory);
         testSettings.setTestRunnerClass(testRunnerClass);

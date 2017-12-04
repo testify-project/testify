@@ -22,7 +22,6 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Scan;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -49,7 +48,7 @@ public class ModulePreVerifier implements PreVerifier {
         Collection<Module> foundModules = testDescriptor.getModules();
         Collection<Scan> foundScans = testDescriptor.getScans();
 
-        ExceptionUtil.INSTANCE.raise(foundModules.isEmpty() && foundScans.isEmpty(),
+        testContext.addError(foundModules.isEmpty() && foundScans.isEmpty(),
                 "Test class '{}' must be annotated with @Module or @Scan annotation.",
                 testClassName);
     }

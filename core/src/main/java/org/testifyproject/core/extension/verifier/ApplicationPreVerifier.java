@@ -22,7 +22,6 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.Lenient;
@@ -49,7 +48,7 @@ public class ApplicationPreVerifier implements PreVerifier {
 
         Optional<Application> foundApplication = testDescriptor.getApplication();
 
-        ExceptionUtil.INSTANCE.raise(!foundApplication.isPresent(),
+        testContext.addError(!foundApplication.isPresent(),
                 "Test class '{}' must be annotated with @Application",
                 testClassName);
 
@@ -59,7 +58,7 @@ public class ApplicationPreVerifier implements PreVerifier {
             String start = application.start();
             String stop = application.stop();
 
-            ExceptionUtil.INSTANCE.raise(!start.isEmpty() && stop.isEmpty(),
+            testContext.addError(!start.isEmpty() && stop.isEmpty(),
                     "@Application annotation on test class '{}' defines 'start' attribute"
                     + "but not stop attribute. Please define the 'stop' attribute.",
                     testClassName);
@@ -71,7 +70,7 @@ public class ApplicationPreVerifier implements PreVerifier {
                 try {
                     value.getConstructor();
                 } catch (NoSuchMethodException e) {
-                    ExceptionUtil.INSTANCE.raise(
+                    testContext.addError(
                             "Application class '{}' defined in test class '{}' does not have "
                             + "a zero argument default constructor. Please insure that the "
                             + "the application class defines a public zero argument "
@@ -83,7 +82,7 @@ public class ApplicationPreVerifier implements PreVerifier {
 
             if (!start.isEmpty()) {
                 if ("main".equals(start)) {
-                    ExceptionUtil.INSTANCE.raise(!foundMainMethod.isPresent(),
+                    testContext.addError(!foundMainMethod.isPresent(),
                             "Application class '{}' must declare a main method with the"
                             + " signature 'public static void {}(String[] args)'",
                             applicationName, start);
@@ -91,7 +90,7 @@ public class ApplicationPreVerifier implements PreVerifier {
                     Optional<Method> foundStart =
                             ReflectionUtil.INSTANCE.findSimpleMethod(value, start);
 
-                    ExceptionUtil.INSTANCE.raise(!foundStart.isPresent(),
+                    testContext.addError(!foundStart.isPresent(),
                             "Application class '{}' must declare a start method with the"
                             + " signature 'public void {}()'",
                             applicationName, start);
@@ -102,7 +101,7 @@ public class ApplicationPreVerifier implements PreVerifier {
                 Optional<Method> foundStop =
                         ReflectionUtil.INSTANCE.findSimpleMethod(value, stop);
 
-                ExceptionUtil.INSTANCE.raise(!foundStop.isPresent(),
+                testContext.addError(!foundStop.isPresent(),
                         "Application class '{}' must declare a stop method with the"
                         + " signature 'public void {}()'",
                         applicationName, stop);

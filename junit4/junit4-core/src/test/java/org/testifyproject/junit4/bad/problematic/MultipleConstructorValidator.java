@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit4.bad;
+package org.testifyproject.junit4.bad.problematic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Sut;
@@ -28,9 +27,8 @@ import org.testifyproject.junit4.fixture.MultipleConstructor;
  *
  * @author saden
  */
-@Ignore
 @RunWith(UnitTest.class)
-public class MultipleConstructorBadTestSetup {
+public class MultipleConstructorValidator {
 
     @Sut
     MultipleConstructor sut;

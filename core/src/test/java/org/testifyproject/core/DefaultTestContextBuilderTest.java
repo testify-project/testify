@@ -118,14 +118,4 @@ public class DefaultTestContextBuilderTest {
         assertThat(result.getProperties()).containsEntry(key, value);
     }
 
-    @Test
-    public void givenDependenciesBuildShouldReturnTestContext() {
-        String key = "key";
-        String value = "value";
-        Map<String, String> map = ImmutableMap.of(key, value);
-        TestContext result = sut.dependencies(map).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getDependencies()).containsEntry(key, value);
-    }
 }

@@ -17,13 +17,10 @@ package org.testifyproject.core.setting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
-import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  *
@@ -44,15 +41,6 @@ public class TestSettingsTest {
         sut.setTestRunnerClass(setting);
 
         Class<? extends TestRunner> result = sut.getTestRunnerClass();
-        assertThat(result).isEqualTo(setting);
-    }
-
-    @Test
-    public void validateDependenciesProperty() {
-        Map<String, String> setting = ImmutableMap.of();
-        sut.setDependencies(setting);
-
-        Map<String, String> result = sut.getDependencies();
         assertThat(result).isEqualTo(setting);
     }
 

@@ -16,7 +16,6 @@
 package org.testifyproject.core;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,7 +37,6 @@ public class DefaultTestContextBuilder {
     private MockProvider mockProvider;
 
     private final Map<String, Object> properties = new LinkedHashMap<>();
-    private Map<String, String> dependencies = Collections.emptyMap();
 
     /**
      * Create a new instance of DefaultTestContextBuilder.
@@ -89,15 +87,9 @@ public class DefaultTestContextBuilder {
         return this;
     }
 
-    public DefaultTestContextBuilder dependencies(Map<String, String> dependencies) {
-        this.dependencies = dependencies;
-        return this;
-    }
-
     public TestContext build() {
         DefaultTestContext testContext = new DefaultTestContext();
 
-        testContext.setDependencies(dependencies);
         testContext.setTestMethodDescriptor(methodDescriptor);
         testContext.setMockProvider(mockProvider);
         testContext.setProperties(properties);

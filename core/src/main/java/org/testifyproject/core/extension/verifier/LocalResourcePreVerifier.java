@@ -19,7 +19,6 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.LocalResource;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -52,7 +51,7 @@ public class LocalResourcePreVerifier implements PreVerifier {
                     try {
                         p.getConstructor();
                     } catch (NoSuchMethodException e) {
-                        ExceptionUtil.INSTANCE.raise(
+                        testContext.addError(
                                 "Local Resource '{}' defined in test class '{}' does not have "
                                 + "a zero argument default constructor. Please insure that the "
                                 + "local resource provider defines a public zero argument "

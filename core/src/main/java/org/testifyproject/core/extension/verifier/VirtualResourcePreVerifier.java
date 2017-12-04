@@ -20,7 +20,6 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.VirtualResourceProvider;
 import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.extension.PreVerifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.Lenient;
@@ -53,7 +52,7 @@ public class VirtualResourcePreVerifier implements PreVerifier {
                     try {
                         resourceProvider.getConstructor();
                     } catch (NoSuchMethodException e) {
-                        ExceptionUtil.INSTANCE.raise(
+                        testContext.addError(
                                 "Virtual Resource '{}' defined in test class '{}' does not have "
                                 + "a zero argument default constructor. Please insure that the "
                                 + "virtual resource provider defines a public zero argument "
