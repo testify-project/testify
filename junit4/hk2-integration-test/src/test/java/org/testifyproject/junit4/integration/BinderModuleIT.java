@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.module.BinderGreeterModule;
 import org.testifyproject.junit4.fixture.module.BinderGreeterService;
 import org.testifyproject.junit4.fixture.module.BinderGreetingContract;
@@ -33,7 +34,7 @@ import org.testifyproject.junit4.fixture.module.BinderGreetingService;
  * @author saden
  */
 @Module(BinderGreeterModule.class)
-@RunWith(HK2IntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class BinderModuleIT {
 
     @Sut

@@ -15,15 +15,12 @@
  */
 package org.testifyproject.junit4.system;
 
-/**
- *
- * @author saden
- */
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.inject.Named;
@@ -34,6 +31,7 @@ import javax.ws.rs.client.WebTarget;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.testifyproject.ClientInstance;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.ServerInstance;
@@ -45,33 +43,34 @@ import org.testifyproject.annotation.Property;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.junit4.SystemTest;
 import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 import org.testifyproject.junit4.fixture.web.GreetingServletApplication;
 import org.testifyproject.junit4.fixture.web.service.GreetingService;
 
-import io.undertow.Undertow;
-import io.undertow.servlet.api.DeploymentInfo;
-
 @VirtualResource("test")
 @LocalResource(TestLocalResourceProvider.class)
 @Application(GreetingServletApplication.class)
-@RunWith(SpringSystemTest.class)
-public class SpringSystemTestST {
+@RunWith(SystemTest.class)
+public class KitchenSinkST {
 
     @Sut
     WebTarget sut;
 
     @Real
-    ClientInstance<WebTarget, Client> clientInstance;
+    GreetingService greetingService;
 
     @Real
-    GreetingService greetingService;
+    ClientInstance<WebTarget, Client> clientInstance;
 
     @Real
     TestContext testContext;
 
     @Real
-    ServerInstance<Undertow> serverInstance;
+    ServerInstance<EmbeddedServletContainer> serverInstance;
+
+    @Real
+    EmbeddedServletContainer container;
 
     @Real
     VirtualResourceInstance<InetAddress> virtualResourceInstance;
@@ -100,14 +99,14 @@ public class SpringSystemTestST {
     @Real
     Connection resourceLocalClient;
 
-    @Property("undertow")
+    @Property("springboot")
     Map<String, Object> properties;
 
-    @Property("undertow.deploymentInfo")
-    DeploymentInfo deploymentInfo;
+    @Property("springboot.app")
+    Object application;
 
-    @Property("undertow.deploymentInfo.hostName")
-    String hostName;
+    @Property("springboot.app.sources")
+    Set<Object> sources;
 
     @Test
     public void verifyInjections() {
@@ -117,6 +116,7 @@ public class SpringSystemTestST {
         assertThat(greetingService).as("injection of an application service").isNotNull();
         assertThat(testContext).as("injection of TestContext").isNotNull();
         assertThat(serverInstance).as("injection of ServerInstance").isNotNull();
+        assertThat(container).as("injection of application server instance").isNotNull();
 
         assertThat(virtualResourceInstance).as("injection of VirtualResourceInstance")
                 .isNotNull();
@@ -136,9 +136,9 @@ public class SpringSystemTestST {
 
         assertThat(properties).as("injection of application server properties map")
                 .isNotEmpty();
-        assertThat(deploymentInfo).as(
+        assertThat(application).as(
                 "injection of application server property by expression").isNotNull();
-        assertThat(hostName).as(
+        assertThat(sources).as(
                 "injection of application server property by sub-expression").isNotNull();
     }
 

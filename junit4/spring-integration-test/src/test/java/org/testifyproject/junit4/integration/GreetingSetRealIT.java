@@ -25,6 +25,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.GreetingSet;
@@ -34,7 +35,7 @@ import org.testifyproject.junit4.fixture.common.GreetingSet;
  * @author saden
  */
 @Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class GreetingSetRealIT {
 
     @Sut

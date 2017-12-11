@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
  *  public @interface IntegrationBundle { }
  *
  * {@literal @}IntegrationBundle
- * {@literal @}RunWith(GuiceIntegrationTest.class)
+ * {@literal @}RunWith(IntegrationTest.class)
  *  public class MyServiceIT {
  *
  *    ...

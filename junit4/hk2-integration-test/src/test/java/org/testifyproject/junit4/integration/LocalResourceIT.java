@@ -30,6 +30,7 @@ import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 
 /**
@@ -38,7 +39,7 @@ import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
  */
 @LocalResource(TestLocalResourceProvider.class)
 @Scan(DEFAULT_DESCRIPTOR)
-@RunWith(HK2IntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class LocalResourceIT {
 
     @Real

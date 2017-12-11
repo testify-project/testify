@@ -27,6 +27,7 @@ import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.junit4.IntegrationTest;
 
 /**
  *
@@ -34,7 +35,7 @@ import org.testifyproject.annotation.VirtualResource;
  */
 @VirtualResource("test")
 @Scan(DEFAULT_DESCRIPTOR)
-@RunWith(HK2IntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class VirtualResourceIT {
 
     @Real

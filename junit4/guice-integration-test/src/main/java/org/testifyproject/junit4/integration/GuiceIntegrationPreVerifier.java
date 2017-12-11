@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.di.spring;
+package org.testifyproject.junit4.integration;
 
 import java.util.Optional;
 
@@ -30,16 +30,16 @@ import org.testifyproject.extension.annotation.IntegrationCategory;
  */
 @IntegrationCategory
 @Discoverable
-public class SpringIntegrationPreVerifier implements PreVerifier {
+public class GuiceIntegrationPreVerifier implements PreVerifier {
 
     @Override
     public void verify(TestContext testContext) {
-        String className = "org.springframework.context.ApplicationContext";
+        String className = "com.google.inject.Guice";
         Optional<Class> foundClass = ReflectionUtil.INSTANCE.load(className);
 
         testContext.addError(
                 !foundClass.isPresent(),
-                "Please insure Spring Application Context class '{}' is in the classpath",
+                "Please insure Guice class '{}' is in the classpath",
                 className
         );
     }

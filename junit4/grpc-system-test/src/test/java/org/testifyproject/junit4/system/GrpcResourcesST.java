@@ -26,6 +26,7 @@ import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.junit4.SystemTest;
 import org.testifyproject.junit4.fixture.grpc.GreetingServer;
 import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 
@@ -36,7 +37,7 @@ import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 @LocalResource(TestLocalResourceProvider.class)
 @VirtualResource("test")
 @Application(value = GreetingServer.class, start = "start", stop = "stop")
-@RunWith(GrpcSystemTest.class)
+@RunWith(SystemTest.class)
 public class GrpcResourcesST {
 
     @Sut

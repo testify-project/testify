@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.common.DirectGreeter;
 import org.testifyproject.junit4.fixture.common.DirectGreeterCollaboratorProvider;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
@@ -33,7 +34,7 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
  * @author saden
  */
 @Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 @CollaboratorProvider(DirectGreeterCollaboratorProvider.class)
 public class CollaboratorProviderClassIT {
 

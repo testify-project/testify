@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.di.hk2;
+package org.testifyproject.junit4.integration;
 
 import java.util.Optional;
 
@@ -30,16 +30,16 @@ import org.testifyproject.extension.annotation.IntegrationCategory;
  */
 @IntegrationCategory
 @Discoverable
-public class HK2IntegrationPreVerifier implements PreVerifier {
+public class SpringIntegrationPreVerifier implements PreVerifier {
 
     @Override
     public void verify(TestContext testContext) {
-        String className = "org.glassfish.hk2.api.ServiceLocator";
+        String className = "org.springframework.context.ApplicationContext";
         Optional<Class> foundClass = ReflectionUtil.INSTANCE.load(className);
 
         testContext.addError(
                 !foundClass.isPresent(),
-                "Please insure HK2 class '{}' is in the classpath",
+                "Please insure Spring Application Context class '{}' is in the classpath",
                 className
         );
     }

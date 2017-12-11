@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.scan.ScanGreeterService;
 import org.testifyproject.junit4.fixture.scan.ScanGreetingContract;
 import org.testifyproject.junit4.fixture.scan.ScanGreetingService;
@@ -32,7 +33,7 @@ import org.testifyproject.junit4.fixture.scan.ScanGreetingService;
  * @author saden
  */
 @Scan("META-INF/hk2-locator/custom")
-@RunWith(HK2IntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class ScanDescriptorIT {
 
     @Sut

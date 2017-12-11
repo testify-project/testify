@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.di.guice;
+package org.testifyproject.junit4.integration;
 
 import java.util.Optional;
 
@@ -30,16 +30,16 @@ import org.testifyproject.extension.annotation.IntegrationCategory;
  */
 @IntegrationCategory
 @Discoverable
-public class GuiceIntegrationPreVerifier implements PreVerifier {
+public class HK2IntegrationPreVerifier implements PreVerifier {
 
     @Override
     public void verify(TestContext testContext) {
-        String className = "com.google.inject.Guice";
+        String className = "org.glassfish.hk2.api.ServiceLocator";
         Optional<Class> foundClass = ReflectionUtil.INSTANCE.load(className);
 
         testContext.addError(
                 !foundClass.isPresent(),
-                "Please insure Guice class '{}' is in the classpath",
+                "Please insure HK2 class '{}' is in the classpath",
                 className
         );
     }

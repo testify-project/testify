@@ -41,6 +41,7 @@ import org.testifyproject.annotation.Property;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.junit4.SystemTest;
 import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 import org.testifyproject.junit4.fixture.web.GreetingApplication;
 import org.testifyproject.junit4.fixture.web.service.GreetingService;
@@ -48,8 +49,8 @@ import org.testifyproject.junit4.fixture.web.service.GreetingService;
 @VirtualResource("test")
 @LocalResource(TestLocalResourceProvider.class)
 @Application(GreetingApplication.class)
-@RunWith(Jersey2SystemTest.class)
-public class Jersey2SystemTestST {
+@RunWith(SystemTest.class)
+public class KitchenSinkST {
 
     @Sut
     WebTarget sut;

@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.QualfiedGreeter;
@@ -33,7 +34,7 @@ import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
  * @author saden
  */
 @Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class QualifiedGreeterFakeIT {
 
     @Sut

@@ -26,6 +26,7 @@ import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.VirtualResource;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 
 /**
@@ -34,7 +35,7 @@ import org.testifyproject.junit4.fixture.common.GreeterConfig;
  */
 @VirtualResource("test")
 @Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class VirtualResourceIT {
 
     @Real

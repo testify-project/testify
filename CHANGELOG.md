@@ -26,6 +26,7 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Added ability to start a generic server using arbitrary start and stop functions
 - Added Grizzly 2 server support
 - Added RemoteResourcePreVerifier to verify remote resources
+- Added GRPC Support
 
 ### Changed
 - Renamed TestResourceProvider to ResourceController
@@ -39,7 +40,8 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Removed dependency verification from the test runners to PreVerifier implementation
  
 ### Removed 
- - Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute
+- Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute
+- Removed framework specific GuiceIntegrationTest, HK2InegrationTest, JerseySystemTest, SpringBootSystemTest, SpringIntegrationTest, and SpringSystemTest test runners in favor of generic UnitTest, IntegrationTest, and SystemTest test runners.
 
 ## [0.9.9] - 2017-09-15
 ### Added

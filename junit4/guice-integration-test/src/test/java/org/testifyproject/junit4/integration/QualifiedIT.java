@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.GreetingModule;
 import org.testifyproject.junit4.fixture.common.CustomQualifier;
 import org.testifyproject.junit4.fixture.common.Greeting;
@@ -30,7 +31,7 @@ import org.testifyproject.junit4.fixture.common.Greeting;
  * @author saden
  */
 @Module(GreetingModule.class)
-@RunWith(GuiceIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class QualifiedIT {
 
     @Real

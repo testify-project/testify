@@ -24,6 +24,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.QualfiedGreeter;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.impl.Salam;
@@ -33,7 +34,7 @@ import org.testifyproject.junit4.fixture.common.impl.Salam;
  * @author saden
  */
 @Scan(DEFAULT_DESCRIPTOR)
-@RunWith(HK2IntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class QualifiedGreeterRealIT {
 
     @Sut

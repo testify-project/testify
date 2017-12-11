@@ -25,6 +25,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.GreetingModule;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.service.ProviderGreeting;
@@ -34,7 +35,7 @@ import org.testifyproject.junit4.fixture.service.ProviderGreeting;
  * @author saden
  */
 @Module(GreetingModule.class)
-@RunWith(GuiceIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class ProviderGreeterRealIT {
 
     @Sut

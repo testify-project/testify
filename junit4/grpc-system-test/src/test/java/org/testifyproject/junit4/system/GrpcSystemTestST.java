@@ -24,6 +24,7 @@ import org.testify.example.greetings.GreetingReply;
 import org.testify.example.greetings.GreetingRequest;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.SystemTest;
 import org.testifyproject.junit4.fixture.grpc.GreetingServer;
 
 /**
@@ -31,7 +32,7 @@ import org.testifyproject.junit4.fixture.grpc.GreetingServer;
  * @author saden
  */
 @Application(value = GreetingServer.class, start = "start", stop = "stop")
-@RunWith(GrpcSystemTest.class)
+@RunWith(SystemTest.class)
 public class GrpcSystemTestST {
 
     @Sut
