@@ -51,8 +51,7 @@ public class JerseyInjectionResolver implements InjectionResolver<Inject> {
     private final TestContext testContext;
     private final InjectionManager injectionManager;
 
-    @Inject
-    JerseyInjectionResolver(TestContext testContext, InjectionManager injectionManager) {
+    public JerseyInjectionResolver(TestContext testContext, InjectionManager injectionManager) {
         this.testContext = testContext;
         this.injectionManager = injectionManager;
     }

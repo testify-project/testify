@@ -24,6 +24,7 @@ import java.util.Collection;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Test;
+import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Module;
@@ -44,23 +45,31 @@ public class HK2InstrumentationTest {
     @Test
     public void givenTestContextWithModuleInjectorShouldContainModuleServices() throws Exception {
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        MethodDescriptor methodDescriptor = mock(MethodDescriptor.class);
         TestContext testContext = DefaultTestContextBuilder.builder()
                 .testDescriptor(testDescriptor)
+                .testMethodDescriptor(methodDescriptor)
                 .build();
+
         Module module = DefaultModule.of(TestModule.class);
         Collection<Module> modules = ImmutableList.of(module);
         Collection<Scan> scans = ImmutableList.of();
         TestContextHolder.INSTANCE.set(testContext);
+        String testClass = "testClass";
+        String testMethod = "testMethod";
+        String name = testClass + "." + testMethod;
 
+        given(testDescriptor.getTestClassName()).willReturn(testClass);
+        given(methodDescriptor.getName()).willReturn(testMethod);
         given(testDescriptor.getModules()).willReturn(modules);
         given(testDescriptor.getScans()).willReturn(scans);
         given(testDescriptor.getTestClassLoader()).willReturn(this.getClass().getClassLoader());
 
-        ServiceLocator sut = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+        ServiceLocator sut = ServiceLocatorUtilities.createAndPopulateServiceLocator(name);
 
         WiredService result = sut.getService(WiredService.class);
         assertThat(result).isNotNull();
-        
+
         assertThat(sut.getService(TestContext.class)).isEqualTo(testContext);
     }
 

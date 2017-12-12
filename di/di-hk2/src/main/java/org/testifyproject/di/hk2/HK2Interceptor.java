@@ -83,43 +83,39 @@ public class HK2Interceptor {
         ServiceLocator serviceLocator = zuper.call();
         String locatorName = serviceLocator.getName();
 
-        //ignore jersey service locator
-        switch (locatorName) {
-            case "jersey-server-rd-locator":
-                return serviceLocator;
-        }
-
         TestContextHolder.INSTANCE.command(testContext -> {
-            testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
-                TestDescriptor testDescriptor = testContext.getTestDescriptor();
-                ClassLoader classLoader = testDescriptor.getTestClassLoader();
+            if (testContext.getName().equals(locatorName)) {
+                testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
+                    TestDescriptor testDescriptor = testContext.getTestDescriptor();
+                    ClassLoader classLoader = testDescriptor.getTestClassLoader();
 
-                HK2ServiceInstance serviceInstance =
-                        new HK2ServiceInstance(testContext, serviceLocator);
+                    HK2ServiceInstance serviceInstance =
+                            new HK2ServiceInstance(testContext, serviceLocator);
 
-                HK2InjectionResolver hK2InjectionResolver =
-                        new HK2InjectionResolver(testContext, serviceLocator);
-                ServiceLocatorUtilities.addOneConstant(serviceLocator, hK2InjectionResolver);
+                    HK2InjectionResolver hK2InjectionResolver =
+                            new HK2InjectionResolver(testContext, serviceLocator);
+                    ServiceLocatorUtilities.addOneConstant(serviceLocator, hK2InjectionResolver);
 
-                ServiceLocatorUtilities.enableImmediateScope(serviceLocator);
-                ServiceLocatorUtilities.enableImmediateScopeSuspended(serviceLocator);
-                ServiceLocatorUtilities.enableInheritableThreadScope(serviceLocator);
-                ServiceLocatorUtilities.enableLookupExceptions(serviceLocator);
+                    ServiceLocatorUtilities.enableImmediateScope(serviceLocator);
+                    ServiceLocatorUtilities.enableImmediateScopeSuspended(serviceLocator);
+                    ServiceLocatorUtilities.enableInheritableThreadScope(serviceLocator);
+                    ServiceLocatorUtilities.enableLookupExceptions(serviceLocator);
 
-                enableExtras("enableDefaultInterceptorServiceImplementation", serviceLocator);
-                enableExtras("enableOperations", serviceLocator);
-                enableExtras("enableTopicDistribution", serviceLocator);
+                    enableExtras("enableDefaultInterceptorServiceImplementation", serviceLocator);
+                    enableExtras("enableOperations", serviceLocator);
+                    enableExtras("enableTopicDistribution", serviceLocator);
 
-                addModules(serviceLocator, testDescriptor);
-                addScans(serviceLocator, testDescriptor, classLoader);
-                addInstances(serviceLocator, testContext);
+                    addModules(serviceLocator, testDescriptor);
+                    addScans(serviceLocator, testDescriptor, classLoader);
+                    addInstances(serviceLocator, testContext);
 
-                ServiceProvider<ServiceLocator> serviceProvider =
-                        ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
-                                HK2ServiceProvider.class);
+                    ServiceProvider<ServiceLocator> serviceProvider =
+                            ServiceLocatorUtil.INSTANCE
+                                    .getOne(ServiceProvider.class, HK2ServiceProvider.class);
 
-                return serviceProvider.configure(testContext, serviceLocator);
-            });
+                    return serviceProvider.configure(testContext, serviceLocator);
+                });
+            }
 
         });
 

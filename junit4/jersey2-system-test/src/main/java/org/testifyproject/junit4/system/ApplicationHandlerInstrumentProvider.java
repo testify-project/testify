@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.di.jersey;
+package org.testifyproject.junit4.system;
 
 import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.extension.instrument.InstrumentInstanceBuilder;
@@ -22,18 +22,18 @@ import org.testifyproject.extension.InstrumentProvider;
 
 /**
  * An implementation of InstrumentProvider contract that configures rebasing and interception of
- * HK2 Service locator operations.
+ * Jersey ApplicationHandler operations.
  *
  * @author saden
  */
 @Discoverable
-public class JerseyInstrumentProvider implements InstrumentProvider {
+public class ApplicationHandlerInstrumentProvider implements InstrumentProvider {
 
     @Override
     public InstrumentInstance get() {
         return InstrumentInstanceBuilder.builder()
-                .build("org.glassfish.jersey.inject.hk2.Hk2InjectionManagerFactory",
-                        new JerseyInterceptor());
+                .build("org.glassfish.jersey.server.ApplicationHandler",
+                        new ApplicationHandlerInterceptor());
     }
 
 }
