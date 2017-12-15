@@ -94,7 +94,7 @@
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <spring.version>4.3.9.RELEASE</spring.version>
         <springboot.version>1.5.4.RELEASE</springboot.version>
-        <hk2.version>2.4.0</hk2.version>
+        <hk2.version>2.5.0-b42</hk2.version>
         <jersey.version>2.26</jersey.version>
         <jersey.hk2.version>2.5.0-b42</jersey.hk2.version>
         <guice.version>4.1.0</guice.version>

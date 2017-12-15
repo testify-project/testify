@@ -63,6 +63,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-bom</artifactId>
+                <version>${hk2.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice-bom</artifactId>
                 <version>${guice.version}</version>
