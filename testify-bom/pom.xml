@@ -35,13 +35,6 @@
         <dependencies>
             <!-- Imported Versions -->
             <dependency>
-                <groupId>org.testifyproject.resources</groupId>
-                <artifactId>local-resources-bom</artifactId>
-                <version>${resources.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.glassfish.jersey</groupId>
                 <artifactId>jersey-bom</artifactId>
                 <version>${jersey.version}</version>
