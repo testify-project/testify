@@ -42,13 +42,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.testifyproject.virtual-resources</groupId>
-                <artifactId>virtual-resources-bom</artifactId>
-                <version>${virtual.resources.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.glassfish.jersey</groupId>
                 <artifactId>jersey-bom</artifactId>
                 <version>${jersey.version}</version>
