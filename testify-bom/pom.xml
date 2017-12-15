@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2016-2017 Testify Project.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.testifyproject</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>testify-bom</artifactId>
+    <packaging>pom</packaging>
+    
+    <name>[Testify Project BOM]</name>
+    <description>Testify Project Bill of Material Module</description>
+   
+    <dependencyManagement>
+        <dependencies>
+            <!-- Imported Versions -->
+            <dependency>
+                <groupId>org.testifyproject.resources</groupId>
+                <artifactId>local-resources-bom</artifactId>
+                <version>${resources.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.virtual-resources</groupId>
+                <artifactId>virtual-resources-bom</artifactId>
+                <version>${virtual.resources.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice-bom</artifactId>
+                <version>${guice.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <!-- API & Core Versions -->
+            <dependency>
+                <groupId>org.testifyproject</groupId>
+                <artifactId>api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <!-- Mock Versions -->
+            <dependency>
+                <groupId>org.testifyproject.mock</groupId>
+                <artifactId>mockito</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.mock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        
+            <!-- DI Versions -->
+            <dependency>
+                <groupId>org.testifyproject.di</groupId>
+                <artifactId>di-spring</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.di</groupId>
+                <artifactId>di-hk2</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.di</groupId>
+                <artifactId>di-guice</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.di</groupId>
+                <artifactId>di-jersey</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <!-- Levels Versions -->
+            <dependency>
+                <groupId>org.testifyproject.level</groupId>
+                <artifactId>unit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.level</groupId>
+                <artifactId>integration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.level</groupId>
+                <artifactId>system</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <!-- Client Versions -->
+            <dependency>
+                <groupId>org.testifyproject.client</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <!-- Server Versions -->
+            <dependency>
+                <groupId>org.testifyproject.server</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.server</groupId>
+                <artifactId>grizzly2</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.server</groupId>
+                <artifactId>undertow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <!-- JUnit4 Versions -->
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>junit4-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>unit-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>integration-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>system-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>spring-integration-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>hk2-integration-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>guice-integration-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>jersey2-system-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>spring-boot-system-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>spring-system-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testifyproject.junit4</groupId>
+                <artifactId>grpc-system-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <!-- Virtual Resources -->
+            <dependency>
+                <groupId>org.testifyproject.virtual-resources</groupId>
+                <artifactId>docker</artifactId>
+                <version>${virtual.resources.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
