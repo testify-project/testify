@@ -61,6 +61,7 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <version>${easymock.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

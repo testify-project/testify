@@ -51,11 +51,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.testifyproject.level</groupId>
-            <artifactId>system</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.testifyproject.junit4</groupId>
             <artifactId>junit4-core</artifactId>
             <version>${project.version}</version>

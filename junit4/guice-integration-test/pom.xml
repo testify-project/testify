@@ -55,11 +55,6 @@
             <artifactId>di-guice</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.testifyproject.level</groupId>
-            <artifactId>integration</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         
         <!-- Guice Deps -->
         <dependency>
