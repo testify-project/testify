@@ -23,7 +23,7 @@
 
     <groupId>org.testifyproject</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     
     <name>[Testify Project]</name>
@@ -83,15 +83,15 @@
 
         <!-- Test Dependencies -->
         <junit.version>4.12</junit.version>
-        <mockito.version>2.8.47</mockito.version>
+        <mockito.version>2.11.0</mockito.version>
         <assertj.version>3.8.0</assertj.version>
         <easymock.version>3.4</easymock.version>
 
         <!-- General Dependencies -->
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
-        <spring.version>4.3.9.RELEASE</spring.version>
-        <springboot.version>1.5.4.RELEASE</springboot.version>
+        <spring.version>4.3.12.RELEASE</spring.version>
+        <springboot.version>1.5.7.RELEASE</springboot.version>
         <hk2.version>2.5.0-b42</hk2.version>
         <jersey.version>2.26</jersey.version>
         <jersey.hk2.version>2.5.0-b42</jersey.hk2.version>
@@ -109,7 +109,7 @@
 
     <organization>
         <name>Testify Project</name>
-        <url>http://testifyproject.org</url>
+        <url>https://testifyproject.org</url>
     </organization>
 
     <developers>

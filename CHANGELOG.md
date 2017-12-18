@@ -12,7 +12,8 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Security - Lists security fixes to security vulnerabilities
 
 ## [Unreleased]
-## [1.0.0-SNAPSHOT]
+
+## [1.0.0] - 2017-12-18
 ### Added
 - Added Java Agent to enable the redefinition of classes to the core module
  - Added InstrumentProvider and InstrumentInstance to enable the redefinition of classes
