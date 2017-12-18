@@ -236,8 +236,8 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             }
         } else {
             //if a name is specified then use it to find the right method
-            foundMethodDescriptor = testDescriptor.findCollaboratorProvider(parameterType, name
-                    .value());
+            foundMethodDescriptor = testDescriptor
+                    .findCollaboratorProvider(parameterType, name.value());
         }
 
         return foundMethodDescriptor;

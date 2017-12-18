@@ -17,10 +17,15 @@ package org.testifyproject.core.setting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  *
@@ -29,28 +34,39 @@ import org.testifyproject.core.TestCategory;
 public class TestSettingsTest {
 
     TestSettings sut;
+    Map<String, Object> properties;
 
     @Before
     public void init() {
-        sut = new TestSettings();
+        properties = new HashMap<>();
+        sut = new TestSettings(properties);
     }
 
     @Test
-    public void validateTestRunnerClassProperty() {
-        Class<? extends TestRunner> setting = TestRunner.class;
-        sut.setTestRunnerClass(setting);
+    public void callToGetTestRunnerClassShouldReturnClass() {
+        Class<? extends TestRunner> testRunner = TestRunner.class;
+        properties.put(TestSettingsProperties.TEST_RUNNER_CLASS, testRunner);
 
         Class<? extends TestRunner> result = sut.getTestRunnerClass();
-        assertThat(result).isEqualTo(setting);
+        assertThat(result).isEqualTo(testRunner);
     }
 
     @Test
-    public void validateLevelProperty() {
-        TestCategory.Level setting = TestCategory.Level.UNIT;
-        sut.setLevel(setting);
+    public void callToGetTestCategoryShouldReturnTestCategory() {
+        Class<UnitCategory> category = UnitCategory.class;
+        properties.put(TestSettingsProperties.TEST_CATEGORY, category);
 
-        TestCategory.Level result = sut.getLevel();
-        assertThat(result).isEqualTo(setting);
+        Class<? extends Annotation> result = sut.getTestCategory();
+        assertThat(result).isEqualTo(category);
+    }
+
+    @Test
+    public void callToGetTestLevelShouldReturnTestLevel() {
+        TestCategory.Level level = TestCategory.Level.UNIT;
+        properties.put(TestSettingsProperties.TEST_LEVEL, level);
+
+        TestCategory.Level result = sut.getTestLevel();
+        assertThat(result).isEqualTo(level);
     }
 
 }

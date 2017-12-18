@@ -18,9 +18,11 @@ package org.testifyproject.core.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.reflection.CustomAnnotation;
 import org.testifyproject.fixture.reflection.CustomConstructorService;
 import org.testifyproject.fixture.reflection.DefaultConstructorService;
@@ -76,14 +78,48 @@ public class ReflectionUtilTest {
 
         assertThat(result).isNotNull();
     }
-    
+
     @Test
     public void callToInvokeShouldInvokeMethod() throws Exception {
         Greeter greeter = new Greeter();
         Method method = Greeter.class.getDeclaredMethod("hello");
-        
+
         Object result = sut.invoke(method, greeter);
         assertThat(result).isEqualTo("hello");
+    }
+
+    @Test(expected = TestifyException.class)
+    public void givenNonExistentFieldSetDeclaredFieldShouldThrowException() {
+        String message = "Hello!";
+        CustomConstructorService obj = new CustomConstructorService(message);
+        String newMessage = "Hi!";
+
+        sut.setDeclaredField("nonexistent", obj, newMessage);
+    }
+
+    @Test
+    public void givenExistingFieldSetDeclaredFieldShouldSetField() {
+        String message = "Hello!";
+        CustomConstructorService obj = new CustomConstructorService(message);
+        String newMessage = "Hi!";
+
+        sut.setDeclaredField("message", obj, newMessage);
+
+        assertThat(obj.getMessage()).isEqualTo(newMessage);
+    }
+
+    @Test
+    public void givenNonExistentClassLoadShouldReturnEmptyOptional() {
+        Optional<Class> result = sut.load("NonExistentClass");
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void givenExistingClassLoadShouldReturnOptionalWithClass() {
+        Optional<Class> result = sut.load("java.lang.String");
+
+        assertThat(result).contains(String.class);
     }
 
 }

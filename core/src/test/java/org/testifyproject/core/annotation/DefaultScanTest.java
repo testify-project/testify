@@ -48,6 +48,13 @@ public class DefaultScanTest {
     }
 
     @Test
+    public void givenValueAndTestOfShouldReturnScanInstance() {
+        Scan result = DefaultScan.of(value, test);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     public void callToGetValueShouldReturnValue() {
         String result = sut.value();
 

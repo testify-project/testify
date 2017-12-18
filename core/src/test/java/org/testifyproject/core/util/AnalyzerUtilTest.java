@@ -18,11 +18,13 @@ package org.testifyproject.core.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.SutDescriptor;
+import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.fixture.analyzer.AnalyzedModule;
 import org.testifyproject.fixture.analyzer.AnalyzedTestClass;
@@ -80,5 +82,15 @@ public class AnalyzerUtilTest {
         assertThat(result).isNotNull();
         assertThat(result.getParameterDescriptors()).hasSize(1);
         assertThat(result.getFieldDescriptors()).hasSize(1);
+    }
+
+    @Test
+    public void givenTestClassAnalyzeAndCreateShouldReturnTestContext() throws Exception {
+        Class<AnalyzedTestClass> testClass = AnalyzedTestClass.class;
+        Method testMethod = testClass.getDeclaredMethod("verifyTest");
+
+        TestContext result = AnalyzerUtil.INSTANCE.analyzeAndCreate(testClass, testMethod);
+
+        assertThat(result).isNotNull();
     }
 }

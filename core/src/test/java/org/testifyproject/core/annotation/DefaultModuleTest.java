@@ -49,6 +49,13 @@ public class DefaultModuleTest {
     }
 
     @Test
+    public void givenValueAndTestOfShouldReturnModuleInstance() {
+        Module result = DefaultModule.of(value, test);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     public void callToGetValueShouldReturnValue() {
         Class<?> result = sut.value();
 

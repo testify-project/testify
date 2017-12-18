@@ -15,8 +15,6 @@
  */
 package org.testifyproject.core;
 
-import static java.util.stream.Collectors.joining;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
@@ -224,7 +222,7 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public Collection<String> getError() {
+    public Collection<String> getErrors() {
         return findCollection(TestContextProperties.TEST_ERRORS);
     }
 
@@ -235,18 +233,38 @@ public class DefaultTestContext implements TestContext {
 
     @Override
     public void verify() {
-        String warnings = getWarnings().stream().collect(joining("\n"));
+        Collection<String> warnings = getWarnings();
+
         if (!warnings.isEmpty()) {
-            LOGGING_UTIL.warn("Test Warnings:\n{}", warnings);
+            String warningMessages = formatMessage(warnings);
+            LOGGING_UTIL.warn(
+                    "Please be advised about the following test warnings:\n{}",
+                    warningMessages
+            );
+
             //XXX: once printed the warnings should be cleared so they cant be printed again if
             //verify is called multiple times.
-            getWarnings().clear();
+            warnings.clear();
         }
 
-        String errors = getError().stream().collect(joining("\n"));
+        Collection<String> errors = getErrors();
+
         if (!errors.isEmpty()) {
-            throw TestifyException.of("Test Errors:\n" + errors);
+            String errorMessages = formatMessage(errors);
+            throw TestifyException.of("Please fix the following test errors:\n" + errorMessages);
         }
+    }
+
+    String formatMessage(Collection<String> messages) {
+        int line = 0;
+        StringBuilder builder = new StringBuilder();
+        for (String message : messages) {
+            builder.append(++line)
+                    .append(". ")
+                    .append(message)
+                    .append("\n");
+        }
+        return builder.toString();
     }
 
 }

@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.trait.PropertiesReader;
+import org.testifyproject.trait.PropertiesWriter;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -31,39 +33,29 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-public class TestSettings {
+public class TestSettings implements PropertiesReader, PropertiesWriter {
 
-    private Class<? extends TestRunner> testRunnerClass;
-    private Class<? extends Annotation> testCategory;
-    private TestCategory.Level level;
-    private String[] categories;
-    private Map<String, Object> properties;
+    private final Map<String, Object> properties;
 
-    TestSettings() {
+    public TestSettings(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     public Class<? extends TestRunner> getTestRunnerClass() {
-        return testRunnerClass;
-    }
-
-    void setTestRunnerClass(Class<? extends TestRunner> testRunnerClass) {
-        this.testRunnerClass = testRunnerClass;
+        return getProperty(TestSettingsProperties.TEST_RUNNER_CLASS);
     }
 
     public Class<? extends Annotation> getTestCategory() {
-        return testCategory;
+        return getProperty(TestSettingsProperties.TEST_CATEGORY);
     }
 
-    void setTestCategory(Class<? extends Annotation> testCategory) {
-        this.testCategory = testCategory;
-    }
-
-    public TestCategory.Level getLevel() {
-        return level;
-    }
-
-    void setLevel(TestCategory.Level level) {
-        this.level = level;
+    public TestCategory.Level getTestLevel() {
+        return getProperty(TestSettingsProperties.TEST_LEVEL);
     }
 
 }

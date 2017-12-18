@@ -55,7 +55,7 @@ public class AnalyzedTestClass {
     }
 
     @Test
-    public void givenMessageSaveShouldPersistMessage() {
+    public void verifyTest() {
 
     }
 

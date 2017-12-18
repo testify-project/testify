@@ -34,9 +34,6 @@ public class HK2DescriptorPopulator implements DescriptorFileFinder {
     private final ClassLoader classLoader;
     private final String[] resources;
 
-    public HK2DescriptorPopulator(String... resources) {
-        this(Thread.currentThread().getContextClassLoader(), resources);
-    }
 
     public HK2DescriptorPopulator(ClassLoader classLoader, String... resources) {
         this.classLoader = classLoader;

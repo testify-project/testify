@@ -18,7 +18,6 @@ package org.testifyproject.di.guice;
 import java.util.Queue;
 
 import org.testifyproject.Instance;
-import org.testifyproject.guava.common.collect.Queues;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -44,18 +43,6 @@ public class GuiceAbstractModule extends AbstractModule {
      * @return a module instance
      */
     public static final Module of(Queue<Instance> instances) {
-        return new GuiceAbstractModule(instances);
-    }
-
-    /**
-     * Create an instance of GuiceAbstractModule using the given queue of instances.
-     *
-     * @param instance the instance
-     * @return a module instance
-     */
-    public static final Module of(Instance instance) {
-        Queue<Instance> instances = Queues.newConcurrentLinkedQueue();
-        instances.add(instance);
         return new GuiceAbstractModule(instances);
     }
 

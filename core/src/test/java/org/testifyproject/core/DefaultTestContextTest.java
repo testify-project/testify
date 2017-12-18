@@ -18,6 +18,8 @@ package org.testifyproject.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.lang.annotation.Annotation;
@@ -38,6 +40,7 @@ import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
+import org.testifyproject.TestifyException;
 import org.testifyproject.VirtualResourceInfo;
 import org.testifyproject.extension.annotation.UnitCategory;
 
@@ -68,7 +71,7 @@ public class DefaultTestContextTest {
         mockProvider = mock(MockProvider.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        sut = DefaultTestContextBuilder.builder()
+        sut = spy(DefaultTestContextBuilder.builder()
                 .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
@@ -77,7 +80,7 @@ public class DefaultTestContextTest {
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
-                .build();
+                .build());
     }
 
     @Test
@@ -114,6 +117,13 @@ public class DefaultTestContextTest {
         sut.getTestClass();
 
         verify(testDescriptor).getTestClass();
+    }
+
+    @Test
+    public void callToGetTestClassLoaderShouldReturnTestClassLoader() {
+        sut.getTestClassLoader();
+
+        verify(testDescriptor).getTestClassLoader();
     }
 
     @Test
@@ -201,6 +211,113 @@ public class DefaultTestContextTest {
     }
 
     @Test
+    public void callToAddErrorShouldAddErrorMessage() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+    }
+
+    @Test
+    public void callToAddErrorWithTrueConditionShouldAddErrorMessage() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(true, messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+    }
+
+    @Test
+    public void callToAddErrorWithFalseConditionShouldNotAddErrorMessage() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(false, messageFormat, args);
+
+        verify(sut, times(0)).addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+    }
+
+    @Test
+    public void callToAddWarningShouldAddWarningMessage() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+        String message = "Warning Message: warning";
+
+        sut.addWarning(messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+    }
+
+    @Test
+    public void callToAddWarningWithTrueConditionShouldAddWarningMessage() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+        String message = "Warning Message: warning";
+
+        sut.addWarning(true, messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+    }
+
+    @Test
+    public void callToAddWarningWithFalseConditionShouldNotAddWarningMessage() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+        String message = "Warning Message: warning";
+
+        sut.addWarning(false, messageFormat, args);
+
+        verify(sut, times(0)).addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+    }
+
+    @Test
+    public void callToGetErrorsShouldReturnTestErrors() {
+        Collection<String> result = sut.getErrors();
+
+        assertThat(result).isEmpty();
+        verify(sut).findCollection(TestContextProperties.TEST_ERRORS);
+    }
+
+    @Test
+    public void callToGetWarningsShouldReturnTestWarnings() {
+        Collection<String> result = sut.getWarnings();
+
+        assertThat(result).isEmpty();
+        verify(sut).findCollection(TestContextProperties.TEST_WARNINGS);
+    }
+
+    @Test
+    public void callToVerifyWithWarningMessagesShouldPrintWarnings() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+
+        sut.addWarning(false, messageFormat, args);
+
+        sut.verify();
+
+        verify(sut).getWarnings();
+    }
+
+    @Test(expected = TestifyException.class)
+    public void callToVerifyWithErrorMessagesShouldThrowException() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(true, messageFormat, args);
+
+        sut.verify();
+
+        verify(sut).getErrors();
+    }
+
+    @Test
     public void givenNullInstancesShouldNotBeEqual() {
         TestContext instance = null;
 
@@ -237,7 +354,7 @@ public class DefaultTestContextTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        TestContext equal = DefaultTestContextBuilder.builder()
+        TestContext equal1 = DefaultTestContextBuilder.builder()
                 .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
@@ -248,8 +365,19 @@ public class DefaultTestContextTest {
                 .properties(properties)
                 .build();
 
-        assertThat(sut).isEqualTo(equal);
-        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
+        TestContext equal2 = DefaultTestContextBuilder.builder()
+                .testCategory(testCategory)
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .testMethodDescriptor(methodDescriptor)
+                .testRunner(testRunner)
+                .testConfigurer(testConfigurer)
+                .mockProvider(mockProvider)
+                .properties(properties)
+                .build();
+
+        assertThat(equal1).isEqualTo(equal2);
+        assertThat(equal1.hashCode()).isEqualTo(equal2.hashCode());
     }
 
     @Test

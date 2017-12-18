@@ -178,20 +178,20 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
     TestContext addError(Boolean condition, String messageFormat, Object... args);
 
     /**
-     * Add an error message to the test context.
+     * Get the error messages associated with the test context.
+     *
+     * @return a list of error messages, empty list otherwise.
+     */
+    Collection<String> getErrors();
+
+    /**
+     * Add an warning message to the test context.
      *
      * @param messageFormat the message format
      * @param args message format arguments
      * @return this object
      */
     TestContext addWarning(String messageFormat, Object... args);
-
-    /**
-     * Get the error messages associated with the test context.
-     *
-     * @return a list of error messages, empty list otherwise.
-     */
-    Collection<String> getError();
 
     /**
      * Add an warning message to the test context if the given condition is true.

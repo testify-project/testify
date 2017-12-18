@@ -74,6 +74,16 @@ public class TestContextHolderTest {
 
         assertThat(inheritableThreadLocal.get()).isNull();
     }
+    
+     @Test
+    public void callToIsPresentShouldReturnTrue() {
+        TestContext testContext = mock(TestContext.class);
+        inheritableThreadLocal.set(testContext);
+
+        boolean result = sut.isPresent();
+
+        assertThat(result).isTrue();
+    }
 
     @Test(expected = NullPointerException.class)
     public void givenNullConsumerExecuteShouldThrowException() {

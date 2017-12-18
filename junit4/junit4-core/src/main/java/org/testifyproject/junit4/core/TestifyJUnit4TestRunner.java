@@ -79,7 +79,7 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
 
         try {
             TestifyJUnit4CategoryFilter categoryFilter = TestifyJUnit4CategoryFilter.of(
-                    testSettings.getLevel(),
+                    testSettings.getTestLevel(),
                     SettingUtil.INSTANCE.getSystemCategories()
             );
             filter(categoryFilter);

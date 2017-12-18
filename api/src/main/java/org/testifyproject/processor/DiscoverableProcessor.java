@@ -33,6 +33,7 @@ import java.util.TreeSet;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
@@ -143,7 +144,7 @@ public class DiscoverableProcessor extends AbstractProcessor {
         return false;
     }
 
-    private Collection<TypeElement> getContracts(TypeElement typeElement,
+    Collection<TypeElement> getContracts(TypeElement typeElement,
             Discoverable discoverable) {
         List<TypeElement> typeElementList = new ArrayList<>();
 
@@ -180,7 +181,7 @@ public class DiscoverableProcessor extends AbstractProcessor {
         return typeElementList;
     }
 
-    private boolean isObject(TypeMirror typeMirror) {
+    boolean isObject(TypeMirror typeMirror) {
         if (typeMirror instanceof DeclaredType) {
             DeclaredType declaredType = (DeclaredType) typeMirror;
 
@@ -193,29 +194,30 @@ public class DiscoverableProcessor extends AbstractProcessor {
         return false;
     }
 
-    protected void note(String message, Object... args) {
-        processingEnv.getMessager()
-                .printMessage(Kind.NOTE, String.format(message, args));
+    Messager getMessanger() {
+        return processingEnv.getMessager();
     }
 
-    protected void warning(String message, Object... args) {
-        processingEnv.getMessager()
-                .printMessage(Kind.WARNING, String.format(message, args));
+    void note(String message, Object... args) {
+        getMessanger().printMessage(Kind.NOTE, String.format(message, args));
     }
 
-    protected void error(Element source, String message, Object... args) {
-        processingEnv.getMessager()
-                .printMessage(Kind.ERROR, String.format(message, args), source);
+    void warning(String message, Object... args) {
+        getMessanger().printMessage(Kind.WARNING, String.format(message, args));
     }
 
-    protected void error(Throwable e) {
-        processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage());
+    void error(Element source, String message, Object... args) {
+        getMessanger().printMessage(Kind.ERROR, String.format(message, args), source);
+    }
+
+    void error(Throwable e) {
+        getMessanger().printMessage(Kind.ERROR, e.getMessage());
         StringWriter buffer = new StringWriter();
         try (PrintWriter writer = new PrintWriter(buffer)) {
             e.printStackTrace(writer);
         }
 
-        processingEnv.getMessager().printMessage(Kind.ERROR, buffer.toString());
+        getMessanger().printMessage(Kind.ERROR, buffer.toString());
     }
 
 }

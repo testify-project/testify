@@ -52,7 +52,7 @@ public class TestSettingsBuilderTest {
         TestSettings result = sut.level(setting).build();
 
         assertThat(result).isNotNull();
-        assertThat(result.getLevel()).isEqualTo(setting);
+        assertThat(result.getTestLevel()).isEqualTo(setting);
     }
 
 }

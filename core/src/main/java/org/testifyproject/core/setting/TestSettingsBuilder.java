@@ -16,6 +16,7 @@
 package org.testifyproject.core.setting;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
@@ -57,11 +58,11 @@ public class TestSettingsBuilder {
     }
 
     public TestSettings build() {
-        TestSettings testSettings = new TestSettings();
+        TestSettings testSettings = new TestSettings(new ConcurrentHashMap<>());
 
-        testSettings.setLevel(level);
-        testSettings.setTestCategory(testCategory);
-        testSettings.setTestRunnerClass(testRunnerClass);
+        testSettings.addProperty(TestSettingsProperties.TEST_LEVEL, level);
+        testSettings.addProperty(TestSettingsProperties.TEST_CATEGORY, testCategory);
+        testSettings.addProperty(TestSettingsProperties.TEST_RUNNER_CLASS, testRunnerClass);
 
         return testSettings;
     }

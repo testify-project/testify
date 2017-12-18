@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.di.hk2;
+package org.testifyproject.di.jersey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,8 +21,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+import org.glassfish.jersey.internal.inject.InjectionManager;
+import org.glassfish.jersey.internal.inject.Injections;
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.ServiceInstance;
@@ -35,13 +35,13 @@ import org.testifyproject.guava.common.collect.ImmutableList;
  *
  * @author saden
  */
-public class HK2ServiceProviderTest {
+public class JerseyServiceProviderTest {
 
-    HK2ServiceProvider sut;
+    JerseyServiceProvider sut;
 
     @Before
     public void init() {
-        sut = new HK2ServiceProvider();
+        sut = new JerseyServiceProvider();
     }
 
     @Test
@@ -52,10 +52,10 @@ public class HK2ServiceProviderTest {
 
         given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testContext.getName()).willReturn(testName);
-        given(testConfigurer.configure(eq(testContext), any(ServiceLocator.class)))
+        given(testConfigurer.configure(eq(testContext), any(InjectionManager.class)))
                 .willAnswer(invocation -> invocation.getArgument(1));
 
-        ServiceLocator result = sut.create(testContext);
+        InjectionManager result = sut.create(testContext);
 
         assertThat(result).isNotNull();
     }
@@ -64,20 +64,19 @@ public class HK2ServiceProviderTest {
     public void givenTestContextAndServiceLocatorConfigureShouldReturnServiceLocator() {
         TestContext testContext = mock(TestContext.class);
         TestDescriptor testDescriptor = mock(TestDescriptor.class);
-        ClassLoader classLoader = HK2ServiceProvider.class.getClassLoader();
+        ClassLoader classLoader = JerseyServiceProvider.class.getClassLoader();
 
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestClassLoader()).willReturn(classLoader);
         given(testDescriptor.getModules()).willReturn(ImmutableList.of());
         given(testDescriptor.getScans()).willReturn(ImmutableList.of());
 
-        ServiceLocator serviceLocator = ServiceLocatorUtilities
-                .createAndPopulateServiceLocator();
+        InjectionManager injectionManager = Injections.createInjectionManager();
 
-        ServiceInstance result = sut.configure(testContext, serviceLocator);
+        ServiceInstance result = sut.configure(testContext, injectionManager);
 
         assertThat(result).isNotNull();
-        assertThat((Object) result.getContext()).isEqualTo(serviceLocator);
+        assertThat((Object) result.getContext()).isEqualTo(injectionManager);
     }
 
 }
