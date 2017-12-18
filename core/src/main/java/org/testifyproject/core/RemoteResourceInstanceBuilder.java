@@ -38,7 +38,7 @@ public class RemoteResourceInstanceBuilder<R> {
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**
-     * Create a new resource of RemoteResourceInstanceBuilder.
+     * Create a new instance of RemoteResourceInstanceBuilder.
      *
      * @return a new resource builder
      */

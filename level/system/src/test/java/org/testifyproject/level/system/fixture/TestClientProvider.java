@@ -44,4 +44,14 @@ public class TestClientProvider implements ClientProvider {
 
     }
 
+    @Override
+    public Class getClientType() {
+        return null;
+    }
+
+    @Override
+    public Class getClientSupplierType() {
+        return null;
+    }
+
 }

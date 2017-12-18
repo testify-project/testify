@@ -15,6 +15,7 @@
  */
 package org.testifyproject.core;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -24,13 +25,14 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
+import org.testifyproject.TestifyException;
 import org.testifyproject.VirtualResourceInfo;
+import org.testifyproject.core.util.LoggingUtil;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -45,7 +47,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class DefaultTestContext implements TestContext {
 
-    private StartStrategy resourceStartStrategy;
+    private static final LoggingUtil LOGGING_UTIL = LoggingUtil.INSTANCE;
+
     private Object testInstance;
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
@@ -53,7 +56,7 @@ public class DefaultTestContext implements TestContext {
     private TestConfigurer testConfigurer;
     private MockProvider mockProvider;
     private Map<String, Object> properties;
-    private Map<String, String> dependencies;
+    private Class<? extends Annotation> testCategory;
 
     @Override
     public Map<String, Object> getProperties() {
@@ -86,8 +89,13 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public StartStrategy getResourceStartStrategy() {
-        return resourceStartStrategy;
+    public ClassLoader getTestClassLoader() {
+        return testDescriptor.getTestClassLoader();
+    }
+
+    @Override
+    public Class<? extends Annotation> getTestCategory() {
+        return testCategory;
     }
 
     @Override
@@ -121,11 +129,6 @@ public class DefaultTestContext implements TestContext {
     }
 
     @Override
-    public Map<String, String> getDependencies() {
-        return dependencies;
-    }
-
-    @Override
     public Optional<SutDescriptor> getSutDescriptor() {
         return findProperty(TestContextProperties.SUT_DESCRIPTOR);
     }
@@ -150,8 +153,8 @@ public class DefaultTestContext implements TestContext {
         return findCollection(TestContextProperties.VIRTUAL_RESOURCE_INSTANCES);
     }
 
-    void setResourceStartStrategy(StartStrategy resourceStartStrategy) {
-        this.resourceStartStrategy = resourceStartStrategy;
+    void setTestCategory(Class<? extends Annotation> testCategory) {
+        this.testCategory = testCategory;
     }
 
     void setTestInstance(Object testInstance) {
@@ -182,8 +185,86 @@ public class DefaultTestContext implements TestContext {
         this.properties = properties;
     }
 
-    void setDependencies(Map<String, String> dependencies) {
-        this.dependencies = dependencies;
+    @Override
+    public TestContext addError(String messageFormat, Object... args) {
+        String message = LOGGING_UTIL.formatMessage(messageFormat, args);
+        addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+
+        return this;
+    }
+
+    @Override
+    public TestContext addError(Boolean condition, String messageFormat, Object... args) {
+        if (condition) {
+            String message = LOGGING_UTIL.formatMessage(messageFormat, args);
+            addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+        }
+
+        return this;
+    }
+
+    @Override
+    public TestContext addWarning(String messageFormat, Object... args) {
+        String message = LOGGING_UTIL.formatMessage(messageFormat, args);
+        addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+
+        return this;
+    }
+
+    @Override
+    public TestContext addWarning(Boolean condition, String messageFormat, Object... args) {
+        if (condition) {
+            String message = LOGGING_UTIL.formatMessage(messageFormat, args);
+            addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+        }
+
+        return this;
+    }
+
+    @Override
+    public Collection<String> getErrors() {
+        return findCollection(TestContextProperties.TEST_ERRORS);
+    }
+
+    @Override
+    public Collection<String> getWarnings() {
+        return findCollection(TestContextProperties.TEST_WARNINGS);
+    }
+
+    @Override
+    public void verify() {
+        Collection<String> warnings = getWarnings();
+
+        if (!warnings.isEmpty()) {
+            String warningMessages = formatMessage(warnings);
+            LOGGING_UTIL.warn(
+                    "Please be advised about the following test warnings:\n{}",
+                    warningMessages
+            );
+
+            //XXX: once printed the warnings should be cleared so they cant be printed again if
+            //verify is called multiple times.
+            warnings.clear();
+        }
+
+        Collection<String> errors = getErrors();
+
+        if (!errors.isEmpty()) {
+            String errorMessages = formatMessage(errors);
+            throw TestifyException.of("Please fix the following test errors:\n" + errorMessages);
+        }
+    }
+
+    String formatMessage(Collection<String> messages) {
+        int line = 0;
+        StringBuilder builder = new StringBuilder();
+        for (String message : messages) {
+            builder.append(++line)
+                    .append(". ")
+                    .append(message)
+                    .append("\n");
+        }
+        return builder.toString();
     }
 
 }

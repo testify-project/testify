@@ -19,8 +19,8 @@ import static java.lang.String.format;
 
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
-import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
-import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTEXT;
+import static org.testifyproject.core.TestContextProperties.SERVER;
+import static org.testifyproject.server.core.ServletProperties.SERVLET_CONTEXT;
 
 import java.net.URI;
 import java.util.Optional;
@@ -34,17 +34,13 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
-import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Module;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.ServerInstanceBuilder;
-import org.testifyproject.core.TestContextHolder;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.LoggingUtil;
-import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.
@@ -56,52 +52,22 @@ public class SpringBootServerProvider implements
         ServerProvider<SpringApplicationBuilder, EmbeddedServletContainer> {
 
     private static final String DEFAULT_URI_FORMAT = "http://0.0.0.0:%d%s";
-    private static final TestContextHolder TEST_CONTEXT_HOLDER =
-            TestContextHolder.INSTANCE;
 
     @Override
     public SpringApplicationBuilder configure(TestContext testContext) {
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        TestConfigurer testConfigurer = testContext.getTestConfigurer();
-
-        TEST_CONTEXT_HOLDER.set(testContext);
-
-        SpringApplicationInterceptor springApplicationInterceptor =
-                new SpringApplicationInterceptor(TEST_CONTEXT_HOLDER);
-
         ClassLoader classLoader = testDescriptor.getTestClassLoader();
-
-        String applicationClassName = "org.springframework.boot.SpringApplication";
-
-        ReflectionUtil.INSTANCE.rebase(applicationClassName, classLoader,
-                springApplicationInterceptor);
-
-        ApplicationContextInterceptor applicationContextInterceptor =
-                new ApplicationContextInterceptor(TEST_CONTEXT_HOLDER);
-
-        String applicationContextClassName =
-                "org.springframework.boot.context.embedded.EmbeddedWebApplicationContext";
-
-        ReflectionUtil.INSTANCE.rebase(applicationContextClassName, classLoader,
-                applicationContextInterceptor);
 
         Optional<Application> foundApplication = testDescriptor.getApplication();
         SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder();
 
         foundApplication.ifPresent(application -> {
-            Class[] modules = testDescriptor.getModules()
-                    .stream()
-                    .sequential()
-                    .map(Module::value)
-                    .toArray(Class[]::new);
-
             applicationBuilder.sources(application.value())
-                    .sources(modules)
                     .resourceLoader(new DefaultResourceLoader(classLoader))
                     .bannerMode(Banner.Mode.OFF);
         });
 
-        return testConfigurer.configure(testContext, applicationBuilder);
+        return applicationBuilder;
     }
 
     @Override
@@ -113,10 +79,10 @@ public class SpringBootServerProvider implements
 
         springApplication.run();
 
-        Optional<ServletContext> servletContext = testContext.findProperty(
-                APP_SERVLET_CONTEXT);
-        Optional<EmbeddedServletContainer> servletContainer = testContext.findProperty(
-                APP_SERVLET_CONTAINER);
+        Optional<ServletContext> servletContext =
+                testContext.findProperty(SERVLET_CONTEXT);
+        Optional<EmbeddedServletContainer> servletContainer =
+                testContext.findProperty(SERVER);
 
         if (servletContext.isPresent() && servletContainer.isPresent()) {
             EmbeddedServletContainer server = servletContainer.get();
@@ -131,7 +97,7 @@ public class SpringBootServerProvider implements
                     .server(server)
                     .property(APP, springApplication)
                     .property(APP_NAME, testContext.getName())
-                    .property(APP_SERVLET_CONTAINER, server)
+                    .property(SERVER, server)
                     .build("springboot", application);
         }
 
@@ -142,9 +108,16 @@ public class SpringBootServerProvider implements
     @Override
     public void stop(ServerInstance<EmbeddedServletContainer> serverInstance) {
         if (serverInstance != null) {
-            LoggingUtil.INSTANCE.debug("Stopping Spring Boot server");
-            serverInstance.getServer().getValue().stop();
+            serverInstance.command((container, baseURI) -> {
+                LoggingUtil.INSTANCE.debug("Stopping Spring Boot server");
+                container.stop();
+            });
         }
+    }
+
+    @Override
+    public Class<EmbeddedServletContainer> getServerType() {
+        return EmbeddedServletContainer.class;
     }
 
 }

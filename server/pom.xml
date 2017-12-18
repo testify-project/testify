@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
     
     <groupId>org.testifyproject.server</groupId>
@@ -32,7 +32,9 @@
     <description>Parent module of ServerProvider SPI Contract implementations</description>
 
     <modules>
+        <module>server-core</module>
         <module>undertow</module>
+        <module>grizzly2</module>
     </modules>
 
     <dependencies>

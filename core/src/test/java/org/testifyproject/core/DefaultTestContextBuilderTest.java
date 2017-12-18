@@ -24,11 +24,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
+import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
@@ -45,12 +45,12 @@ public class DefaultTestContextBuilderTest {
     }
 
     @Test
-    public void givenResourceStartStrategyBuildShouldReturnTestContext() {
-        StartStrategy value = StartStrategy.EAGER;
-        TestContext result = sut.resourceStartStrategy(value).build();
+    public void givenTestCategoryBuildShouldReturnTestContext() {
+        Class<UnitCategory> value = UnitCategory.class;
+        TestContext result = sut.testCategory(value).build();
 
         assertThat(result).isNotNull();
-        assertThat(result.getResourceStartStrategy()).isEqualTo(value);
+        assertThat(result.getTestCategory()).isEqualTo(value);
     }
 
     @Test
@@ -118,14 +118,4 @@ public class DefaultTestContextBuilderTest {
         assertThat(result.getProperties()).containsEntry(key, value);
     }
 
-    @Test
-    public void givenDependenciesBuildShouldReturnTestContext() {
-        String key = "key";
-        String value = "value";
-        Map<String, String> map = ImmutableMap.of(key, value);
-        TestContext result = sut.dependencies(map).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getDependencies()).containsEntry(key, value);
-    }
 }

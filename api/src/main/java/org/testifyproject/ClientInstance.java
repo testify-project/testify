@@ -16,6 +16,8 @@
 package org.testifyproject;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import org.testifyproject.annotation.Application;
 import org.testifyproject.trait.PropertiesReader;
@@ -25,9 +27,10 @@ import org.testifyproject.trait.PropertiesReader;
  * with the application under test.
  *
  * @author saden
- * @param <C> the client
+ * @param <C> the client type
+ * @param <P> the client supplier type
  */
-public interface ClientInstance<C> extends PropertiesReader {
+public interface ClientInstance<C, P> extends PropertiesReader {
 
     /**
      * Get a unique fully qualified name associated with the virtual resource.
@@ -51,10 +54,39 @@ public interface ClientInstance<C> extends PropertiesReader {
     Instance<C> getClient();
 
     /**
-     * Get the client provider instance.
+     * Get the client supplier instance.
      *
-     * @param <P> the client provider
-     * @return optional with the client provider, empty optional otherwise
+     * @return optional with the client supplier, empty optional otherwise
      */
-    <P> Optional<Instance<P>> getClientProvider();
+    Optional<Instance<P>> getClientSupplier();
+
+    /**
+     * Execute the given function with the {@link #getClient()} value and
+     * {@link #getClientSupplier()} value as its parameters. If client supplier is not present
+     * {@code null} will passed in as client supplier value.
+     *
+     * @param <R> function return type
+     * @param function the function
+     * @return the result of executing the function
+     */
+    default <R> R query(BiFunction<C, P, R> function) {
+        return function.apply(
+                getClient().getValue(),
+                getClientSupplier().map(Instance::getValue).orElse(null)
+        );
+    }
+
+    /**
+     * Execute the given consumer function with the {@link #getClient()} value and
+     * {@link #getClientSupplier()} value as its parameters. If client supplier is not present
+     * {@code null} will passed in as client supplier value.
+     *
+     * @param consumer the consumer function
+     */
+    default void command(BiConsumer<C, P> consumer) {
+        consumer.accept(
+                getClient().getValue(),
+                getClientSupplier().map(Instance::getValue).orElse(null)
+        );
+    }
 }

@@ -13,6 +13,37 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [1.0.0] - 2017-12-18
+### Added
+- Added Java Agent to enable the redefinition of classes to the core module
+ - Added InstrumentProvider and InstrumentInstance to enable the redefinition of classes
+ - Added support for rebasing and intercepting constructor invocations
+- Introduced InstanceProvider extension contracts that enable the addition of arbitrary constants
+- Introduced ProxyInstanceProvider and ProxyInstanceControler to enable the creation and addition of proxied constants
+- Added support for generic JUnit 4 system test runner
+- Added a default generic server provider to enable direct management of application test lifecycle
+ - Added `start()` and `stop` attributes to `@Application` annotation
+ - Added ability to start a generic server using static void main functions
+ - Added ability to start a generic server using arbitrary start and stop functions
+- Added Grizzly 2 server support
+- Added RemoteResourcePreVerifier to verify remote resources
+- Added GRPC Support
+
+### Changed
+- Renamed TestResourceProvider to ResourceController
+- Added the ability to get client type and client provider type to ClientProvider contract
+- Added the ability to get server type to the ServerProvider contract
+- Moved reifier and verify extension classes to the extension package
+- Moved @Discoverable from build-tools:service-generator to the API module
+- Renamed PreiVerifier to Verifier
+- Changed how errors and warnings are reported by verifiers
+ - Added `addWarning`, `addError`, and `verify` methods to the TestContext
+ - Removed dependency verification from the test runners to PreVerifier implementation
+ 
+### Removed 
+- Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute
+- Removed framework specific GuiceIntegrationTest, HK2InegrationTest, JerseySystemTest, SpringBootSystemTest, SpringIntegrationTest, and SpringSystemTest test runners in favor of generic UnitTest, IntegrationTest, and SystemTest test runners.
+
 ## [0.9.9] - 2017-09-15
 ### Added
 - Added new `@Name` annotation that can be used to associate a custom name with a field, method or method parameter

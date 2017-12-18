@@ -32,6 +32,10 @@ public class TestContextProperties {
      */
     public static final String APP_NAME = "appName";
     /**
+     * The application fully qualified name property key.
+     */
+    public static final String APP_FQN = "appFQN";
+    /**
      * The application arguments property key.
      */
     public static final String APP_ARGUMENTS = "appArguments";
@@ -40,33 +44,46 @@ public class TestContextProperties {
      */
     public static final String APP_PORT = "appPort";
     /**
+     * The application server property key.
+     */
+    public static final String SERVER = "appServer";
+    /**
+     * The application base URI property key.
+     */
+    public static final String SERVER_BASE_URI = "baseURI";
+    /**
      * The application context path property key.
      */
-    public static final String APP_CONTEXT_PATH = "appContextPath";
+    public static final String SERVER_CONTEXT_PATH = "appContextPath";
     /**
      * The application client instance property key.
      */
-    public static final String APP_CLIENT_INSTANCE = "appClientInstance";
+    public static final String CLIENT_INSTANCE = "appClientInstance";
+    /**
+     * The application client property key.
+     */
+    public static final String CLIENT = "appClient";
+    /**
+     * The application client supplier property key.
+     */
+    public static final String CLIENT_SUPPLIER = "appClientSupplier";
+    /**
+     * The application client provider property key.
+     */
+    public static final String CLIENT_PROVIDER = "appClientProvider";
     /**
      * The application server instance property key.
      */
-    public static final String APP_SERVER_INSTANCE = "appServerInstance";
+    public static final String SERVER_INSTANCE = "appServerInstance";
     /**
-     * The application servlet container property key.
+     * The application server provider property key.
      */
-    public static final String APP_SERVLET_CONTAINER = "appServletContainer";
-    /**
-     * The application servlet context property key.
-     */
-    public static final String APP_SERVLET_CONTEXT = "appServletContext";
+    public static final String SERVER_PROVIDER = "appServerProvider";
     /**
      * The application service instance property key.
      */
     public static final String SERVICE_INSTANCE = "serviceInstance";
-    /**
-     * The application base URI property key.
-     */
-    public static final String BASE_URI = "baseURI";
+
     /**
      * The application system under test instance property key.
      */
@@ -91,6 +108,18 @@ public class TestContextProperties {
      * The resource providers property key.
      */
     public static final String RESOURCE_PROVIDERS = "resourceProviders";
+    /**
+     * Application instance property key.
+     */
+    public static final String APPLICATION_INSTANCE = "applicationInstance";
+    /**
+     * Test errors property key.
+     */
+    public static final String TEST_ERRORS = "testErrors";
+    /**
+     * Test warnings property key.
+     */
+    public static final String TEST_WARNINGS = "testWarnings";
 
     private TestContextProperties() {
     }

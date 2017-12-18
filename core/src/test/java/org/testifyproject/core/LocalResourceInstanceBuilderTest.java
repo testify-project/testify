@@ -73,7 +73,7 @@ public class LocalResourceInstanceBuilderTest {
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/resource");
-        assertThat(instance.getContract()).contains(resourceContract);
+        assertThat(instance.getContract()).isEqualTo(resourceContract);
         assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
@@ -94,7 +94,7 @@ public class LocalResourceInstanceBuilderTest {
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/resource");
-        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getContract()).isNull();
         assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
@@ -115,7 +115,7 @@ public class LocalResourceInstanceBuilderTest {
         Instance instance = result.getResource();
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/customName");
-        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getContract()).isEqualTo(customContract);
         assertThat(instance.getValue()).isEqualTo(resourceValue);
     }
 
@@ -139,7 +139,7 @@ public class LocalResourceInstanceBuilderTest {
 
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/client");
-        assertThat(instance.getContract()).contains(clientContract);
+        assertThat(instance.getContract()).isEqualTo(clientContract);
         assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 
@@ -162,7 +162,7 @@ public class LocalResourceInstanceBuilderTest {
 
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/client");
-        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getContract()).isNull();
         assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 
@@ -185,7 +185,7 @@ public class LocalResourceInstanceBuilderTest {
 
         assertThat(instance).isNotNull();
         assertThat(instance.getName()).contains("resource:/test/customName");
-        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getContract()).isEqualTo(customContract);
         assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 

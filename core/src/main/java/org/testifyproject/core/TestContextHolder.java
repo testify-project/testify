@@ -28,27 +28,26 @@ import org.testifyproject.TestContext;
  */
 public class TestContextHolder {
 
-    private final InheritableThreadLocal<TestContext> inheritableThreadLocal;
+    private final InheritableThreadLocal<TestContext> threadLocal;
 
     /**
      * An instance of the TestContextHolder.
      */
-    public static final TestContextHolder INSTANCE = new TestContextHolder(
-            new InheritableThreadLocal<>());
+    public static final TestContextHolder INSTANCE =
+            new TestContextHolder(new InheritableThreadLocal<>());
 
-    TestContextHolder(InheritableThreadLocal<TestContext> inheritableThreadLocal) {
-        this.inheritableThreadLocal = inheritableThreadLocal;
+    TestContextHolder(InheritableThreadLocal<TestContext> threadLocal) {
+        this.threadLocal = threadLocal;
     }
 
     /**
      * Create a new instance of TestContextHolder.
      *
-     * @param inheritableThreadLocal the underlying thread local instance holder
+     * @param threadLocal the underlying thread local instance holder
      * @return a new instance
      */
-    public static TestContextHolder of(
-            InheritableThreadLocal<TestContext> inheritableThreadLocal) {
-        return new TestContextHolder(inheritableThreadLocal);
+    public static TestContextHolder of(InheritableThreadLocal<TestContext> threadLocal) {
+        return new TestContextHolder(threadLocal);
     }
 
     /**
@@ -57,7 +56,7 @@ public class TestContextHolder {
      * @param testContext the value to be stored
      */
     public void set(TestContext testContext) {
-        inheritableThreadLocal.set(testContext);
+        threadLocal.set(testContext);
     }
 
     /**
@@ -66,14 +65,23 @@ public class TestContextHolder {
      * @return the current thread's value, empty optional otherwise
      */
     public Optional<TestContext> get() {
-        return Optional.ofNullable(inheritableThreadLocal.get());
+        return Optional.ofNullable(threadLocal.get());
     }
 
     /**
      * Removes the test context in current thread.
      */
     public void remove() {
-        inheritableThreadLocal.remove();
+        threadLocal.remove();
+    }
+
+    /**
+     * Determine if the test context is set in the current thread.
+     *
+     * @return returns true the test context has been set, false otherwise
+     */
+    public boolean isPresent() {
+        return threadLocal.get() != null;
     }
 
     /**
@@ -81,8 +89,8 @@ public class TestContextHolder {
      *
      * @param consumer the consumer function
      */
-    public synchronized void execute(Consumer<TestContext> consumer) {
-        TestContext testContext = inheritableThreadLocal.get();
+    public void command(Consumer<TestContext> consumer) {
+        TestContext testContext = threadLocal.get();
 
         if (testContext != null) {
             consumer.accept(testContext);
@@ -93,11 +101,11 @@ public class TestContextHolder {
      * Execute the given function if the the current thread has a test context.
      *
      * @param <R> the function result type
-     * @param function the consumer function
+     * @param function the function that will be called to get the results
      * @return the function result
      */
-    public synchronized <R> R execute(Function<TestContext, R> function) {
-        TestContext testContext = inheritableThreadLocal.get();
+    public <R> R query(Function<TestContext, R> function) {
+        TestContext testContext = threadLocal.get();
         R result = null;
 
         if (testContext != null) {
@@ -105,7 +113,6 @@ public class TestContextHolder {
         }
 
         return result;
-
     }
 
 }

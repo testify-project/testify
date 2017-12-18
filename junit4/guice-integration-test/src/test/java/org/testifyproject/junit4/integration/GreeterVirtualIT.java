@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.annotation.Virtual;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.GreetingModule;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.service.Greeter;
@@ -32,7 +33,7 @@ import org.testifyproject.junit4.fixture.service.Greeter;
  * @author saden
  */
 @Module(GreetingModule.class)
-@RunWith(GuiceIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class GreeterVirtualIT {
 
     @Sut

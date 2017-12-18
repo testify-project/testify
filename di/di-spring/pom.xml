@@ -21,13 +21,25 @@
     <parent>
         <groupId>org.testifyproject.di</groupId>
         <artifactId>di</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>di-spring</artifactId>
     <name>Spring DI</name>
     <description>A module that provides Spring DI Service Instance implementation</description>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>${jacocoSurefireArgs} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>

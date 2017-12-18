@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
     <packaging>pom</packaging>
 
@@ -35,6 +35,7 @@
         <module>di-spring</module>
         <module>di-hk2</module>
         <module>di-guice</module>
+        <module>di-jersey</module>
     </modules>
 
 </project>

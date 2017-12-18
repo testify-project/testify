@@ -16,19 +16,31 @@
 package org.testifyproject.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.testifyproject.ServiceProvider;
+import org.testifyproject.TestContext;
+import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestifyException;
+import org.testifyproject.annotation.Hint;
+import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.fixture.locator.MultiImplmentationContract;
 import org.testifyproject.fixture.locator.NoImplementationConract;
 import org.testifyproject.fixture.locator.SingleImplementationContract;
+import org.testifyproject.fixture.locator.TestServiceProvider;
 import org.testifyproject.fixture.locator.impl.FirstMultiImplmentationContract;
 import org.testifyproject.fixture.locator.impl.SecondMultiImplmentationContract;
 import org.testifyproject.fixture.locator.impl.SingleImplementationContractImpl;
@@ -44,7 +56,7 @@ public class ServiceLocatorUtilTest {
 
     @Before
     public void init() {
-        sut = new ServiceLocatorUtil();
+        sut = spy(new ServiceLocatorUtil());
     }
 
     @Test(expected = NullPointerException.class)
@@ -256,4 +268,107 @@ public class ServiceLocatorUtilTest {
         assertThat(result).hasSize(2);
     }
 
+    @Test
+    public void callToGetFromHintWithFilterWithHintShouldReturnService() {
+        TestContext testContext = mock(TestContext.class);
+        Class<ServiceProvider> contract = ServiceProvider.class;
+        Function<Hint, Class<? extends ServiceProvider>> hintProvider = Hint::serviceProvider;
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        ServiceProvider serviceProvider = mock(ServiceProvider.class);
+        Hint hint = mock(Hint.class);
+        Optional<Hint> foundHint = Optional.of(hint);
+        Class hintServiceProvider = TestServiceProvider.class;
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getHint()).willReturn(foundHint);
+        given(hint.serviceProvider()).willReturn(hintServiceProvider);
+        willReturn(serviceProvider).given(sut).getOne(contract, hintServiceProvider);
+
+        ServiceProvider result = sut.getFromHintWithFilter(testContext, contract, hintProvider);
+
+        assertThat(result).isEqualTo(serviceProvider);
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getHint();
+        verify(hint).serviceProvider();
+        verify(sut).getOne(contract, hintServiceProvider);
+    }
+
+    @Test
+    public void callToGetFromHintWithFilterWithoutHintShouldReturnService() {
+        TestContext testContext = mock(TestContext.class);
+        Class contract = ServiceProvider.class;
+        Function<Hint, Class<? extends ServiceProvider>> hintProvider = Hint::serviceProvider;
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        ServiceProvider serviceProvider = mock(ServiceProvider.class);
+        Hint hint = mock(Hint.class);
+        Optional<Hint> foundHint = Optional.of(hint);
+        Class testCategory = UnitCategory.class;
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getHint()).willReturn(foundHint);
+        given(hint.serviceProvider()).willReturn(contract);
+        given(testContext.getTestCategory()).willReturn(testCategory);
+        willReturn(serviceProvider).given(sut).getOneWithFilter(contract, testCategory);
+
+        ServiceProvider result = sut.getFromHintWithFilter(testContext, contract, hintProvider);
+
+        assertThat(result).isEqualTo(serviceProvider);
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getHint();
+        verify(hint).serviceProvider();
+        verify(sut).getOneWithFilter(contract, testCategory);
+    }
+
+    @Test
+    public void callToGetFromHintOrDefaultWithHintShouldReturnService() {
+        TestContext testContext = mock(TestContext.class);
+        Class<ServiceProvider> contract = ServiceProvider.class;
+        Class<DefaultServiceProvider> implementation = DefaultServiceProvider.class;
+        Function<Hint, Class<? extends ServiceProvider>> hintProvider = Hint::serviceProvider;
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        ServiceProvider serviceProvider = mock(ServiceProvider.class);
+        Hint hint = mock(Hint.class);
+        Optional<Hint> foundHint = Optional.of(hint);
+        Class hintServiceProvider = TestServiceProvider.class;
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getHint()).willReturn(foundHint);
+        given(hint.serviceProvider()).willReturn(hintServiceProvider);
+        willReturn(serviceProvider).given(sut).getOne(contract, hintServiceProvider);
+
+        ServiceProvider result =
+                sut.getFromHintOrDefault(testContext, contract, implementation, hintProvider);
+
+        assertThat(result).isEqualTo(serviceProvider);
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getHint();
+        verify(hint).serviceProvider();
+        verify(sut).getOne(contract, hintServiceProvider);
+    }
+    
+    @Test
+    public void callToGetFromHintOrDefaultWithoutHintShouldReturnService() {
+        TestContext testContext = mock(TestContext.class);
+        Class contract = ServiceProvider.class;
+        Class<DefaultServiceProvider> implementation = DefaultServiceProvider.class;
+        Function<Hint, Class<? extends ServiceProvider>> hintProvider = Hint::serviceProvider;
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        ServiceProvider serviceProvider = mock(ServiceProvider.class);
+        Hint hint = mock(Hint.class);
+        Optional<Hint> foundHint = Optional.of(hint);
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testDescriptor.getHint()).willReturn(foundHint);
+        given(hint.serviceProvider()).willReturn(contract);
+        willReturn(serviceProvider).given(sut).getOne(contract, implementation);
+
+        ServiceProvider result =
+                sut.getFromHintOrDefault(testContext, contract, implementation, hintProvider);
+
+        assertThat(result).isEqualTo(serviceProvider);
+        verify(testContext).getTestDescriptor();
+        verify(testDescriptor).getHint();
+        verify(hint).serviceProvider();
+        verify(sut).getOne(contract, implementation);
+    }
 }

@@ -29,6 +29,7 @@ import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.common.GreeterConfig;
 import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
 
@@ -38,7 +39,7 @@ import org.testifyproject.junit4.fixture.resource.TestLocalResourceProvider;
  */
 @LocalResource(TestLocalResourceProvider.class)
 @Module(GreeterConfig.class)
-@RunWith(SpringIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class LocalResourceIT {
 
     @Real

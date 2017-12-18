@@ -21,12 +21,24 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
     
     <artifactId>jersey2-system-test</artifactId>
     <name>Jersey 2 System Test</name>
     <description>A module that contains a JUnit test runner for running Jersey 2 system tests</description>
+
+    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>${jacocoSurefireArgs} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencyManagement>
         <dependencies>
@@ -47,9 +59,9 @@
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>org.testifyproject.di</groupId>
-            <artifactId>di-hk2</artifactId>
+            <artifactId>di-jersey</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -62,28 +74,19 @@
             <artifactId>junit4-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.testifyproject.external</groupId>
-            <artifactId>external-bytebuddy</artifactId>
-            <version>${buildtools.version}</version>
-        </dependency>
 
         <!-- Jersey 2 Deps -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-http</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>hk2-locator</artifactId>
-            <version>${hk2.version}</version>
-            <scope>provided</scope>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
         </dependency>
 
         <!-- Test Deps -->
@@ -96,8 +99,9 @@
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-metadata-generator</artifactId>
-            <version>${hk2.version}</version>
+            <version>${jersey.hk2.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+   
 </project>

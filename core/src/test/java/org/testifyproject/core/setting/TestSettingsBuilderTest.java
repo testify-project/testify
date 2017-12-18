@@ -17,14 +17,10 @@ package org.testifyproject.core.setting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
-import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  *
@@ -50,46 +46,13 @@ public class TestSettingsBuilderTest {
     }
 
     @Test
-    public void givenResourceStartStrategyBuildShouldReturnTestSettings() {
-        StartStrategy setting = StartStrategy.EAGER;
-
-        TestSettings result = sut.resourceStartStrategy(setting).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getResourceStartStrategy()).isEqualTo(setting);
-    }
-
-    @Test
-    public void givenDependencyBuildShouldReturnTestSettings() {
-        String className = "className";
-        String displaceName = "Display Name";
-
-        TestSettings result = sut.dependency(className, displaceName).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getDependencies()).containsEntry(className, displaceName);
-    }
-
-    @Test
-    public void givenDependenciesBuildShouldReturnTestSettings() {
-        String className = "className";
-        String displaceName = "Display Name";
-        Map<String, String> setting = ImmutableMap.of(className, displaceName);
-
-        TestSettings result = sut.dependencies(setting).build();
-
-        assertThat(result).isNotNull();
-        assertThat(result.getDependencies()).containsEntry(className, displaceName);
-    }
-
-    @Test
     public void givenLevelBuildShouldReturnTestSettings() {
         TestCategory.Level setting = TestCategory.Level.INTEGRATION;
 
         TestSettings result = sut.level(setting).build();
 
         assertThat(result).isNotNull();
-        assertThat(result.getLevel()).isEqualTo(setting);
+        assertThat(result.getTestLevel()).isEqualTo(setting);
     }
 
 }

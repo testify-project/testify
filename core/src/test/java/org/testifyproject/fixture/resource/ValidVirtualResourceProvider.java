@@ -20,8 +20,8 @@ import static org.mockito.Mockito.mock;
 import org.testifyproject.TestContext;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
 
 /**

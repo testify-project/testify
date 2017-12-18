@@ -31,12 +31,14 @@ public class DefaultModuleTest {
 
     Module sut;
     Class<?> value;
+    boolean test;
 
     @Before
     public void init() {
         value = Object.class;
+        test = false;
 
-        sut = new DefaultModule(value);
+        sut = new DefaultModule(value, false);
     }
 
     @Test
@@ -47,10 +49,24 @@ public class DefaultModuleTest {
     }
 
     @Test
+    public void givenValueAndTestOfShouldReturnModuleInstance() {
+        Module result = DefaultModule.of(value, test);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     public void callToGetValueShouldReturnValue() {
         Class<?> result = sut.value();
 
         assertThat(result).isEqualTo(value);
+    }
+
+    @Test
+    public void callToGetTestShouldReturnValue() {
+        boolean result = sut.test();
+
+        assertThat(result).isEqualTo(test);
     }
 
     @Test

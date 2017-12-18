@@ -41,14 +41,24 @@ public interface ServerProvider<T, S> {
      * @param application the application annotation
      * @param configuration server configuration object
      * @return a server instance
+     * @throws java.lang.Exception an exception thrown in the event server start fails
      */
-    ServerInstance<S> start(TestContext testContext, Application application, T configuration);
+    ServerInstance<S> start(TestContext testContext, Application application, T configuration)
+            throws Exception;
 
     /**
      * Stop the server.
      *
      * @param serverInstance the server instance
+     * @throws java.lang.Exception an exceptions thrown in the event server stop fails
      */
-    void stop(ServerInstance<S> serverInstance);
+    void stop(ServerInstance<S> serverInstance) throws Exception;
 
+    /**
+     * Get the server type. Note that due to Java type erasure we unfortunately require
+     * implementors specify the server type.
+     *
+     * @return the server type
+     */
+    Class<S> getServerType();
 }

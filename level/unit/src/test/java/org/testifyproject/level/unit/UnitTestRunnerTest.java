@@ -16,8 +16,11 @@
 package org.testifyproject.level.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.lang.annotation.Annotation;
@@ -29,13 +32,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.FieldDescriptor;
 import org.testifyproject.Instance;
+import org.testifyproject.ResourceController;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.TestResourcesProvider;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.core.util.ServiceLocatorUtil;
@@ -43,11 +46,9 @@ import org.testifyproject.extension.CollaboratorReifier;
 import org.testifyproject.extension.FinalReifier;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.PostVerifier;
-import org.testifyproject.extension.PreInstanceProvider;
 import org.testifyproject.extension.PreVerifier;
-import org.testifyproject.extension.PreiVerifier;
 import org.testifyproject.extension.SutReifier;
-import org.testifyproject.extension.annotation.Hint;
+import org.testifyproject.extension.Verifier;
 import org.testifyproject.extension.annotation.Strict;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
@@ -110,8 +111,8 @@ public class UnitTestRunnerTest {
         Optional<CollaboratorProvider> foundCollaboratorProvider = Optional.of(
                 collaboratorProvider);
 
-        PreiVerifier wiringVerifier = mock(PreiVerifier.class);
-        List<PreiVerifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
+        Verifier wiringVerifier = mock(Verifier.class);
+        List<Verifier> wiringVerifiers = ImmutableList.of(wiringVerifier);
 
         FieldDescriptor fieldDescriptor = mock(FieldDescriptor.class);
         Collection<FieldDescriptor> fieldDescriptors = ImmutableList.of(fieldDescriptor);
@@ -120,14 +121,10 @@ public class UnitTestRunnerTest {
         Optional<SutDescriptor> foundSutDescriptor = Optional.of(sutDescriptor);
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
 
-        Hint hint = mock(Hint.class);
-        Optional<Hint> foundHint = Optional.of(hint);
         ServiceProvider serviceProvider = mock(ServiceProvider.class);
         Object serviceContext = mock(Object.class);
         ServiceInstance serviceInstance = mock(ServiceInstance.class);
-        TestResourcesProvider testResourcesProvider = mock(TestResourcesProvider.class);
-        PreInstanceProvider instanceProvider = mock(PreInstanceProvider.class);
-        List<PreInstanceProvider> instanceProviders = ImmutableList.of(instanceProvider);
+        ResourceController resourceController = mock(ResourceController.class);
         Instance instance = mock(Instance.class);
         List<Instance> instances = ImmutableList.of(instance);
 
@@ -138,17 +135,18 @@ public class UnitTestRunnerTest {
         given(serviceLocatorUtil.findAllWithFilter(PreVerifier.class, guidelines,
                 UnitCategory.class))
                 .willReturn(configurationVerifiers);
-        given(testDescriptor.getHint()).willReturn(foundHint);
-        given(serviceLocatorUtil.getOne(ServiceProvider.class,
-                DefaultServiceProvider.class)).willReturn(serviceProvider);
+        given(serviceLocatorUtil.getFromHintOrDefault(
+                eq(testContext),
+                eq(ServiceProvider.class),
+                eq(DefaultServiceProvider.class),
+                any())
+        ).willReturn(serviceProvider);
+
         given(serviceProvider.create(testContext)).willReturn(serviceContext);
         given(serviceProvider.configure(testContext, serviceContext)).willReturn(
                 serviceInstance);
-        given(serviceLocatorUtil.getOne(TestResourcesProvider.class)).willReturn(
-                testResourcesProvider);
-        given(serviceLocatorUtil.findAllWithFilter(PreInstanceProvider.class,
-                UnitCategory.class)).willReturn(instanceProviders);
-        given(instanceProvider.get(testContext)).willReturn(instances);
+        given(serviceLocatorUtil.getOne(ResourceController.class)).willReturn(
+                resourceController);
         given(serviceLocatorUtil.findAllWithFilter(SutReifier.class, UnitCategory.class))
                 .willReturn(sutReifiers);
         given(testDescriptor.getCollaboratorProvider()).willReturn(
@@ -163,7 +161,7 @@ public class UnitTestRunnerTest {
                 .willReturn(testReifiers);
         given(testContext.getSutDescriptor()).willReturn(foundSutDescriptor);
         given(testDescriptor.getFieldDescriptors()).willReturn(fieldDescriptors);
-        given(serviceLocatorUtil.findAllWithFilter(PreiVerifier.class, guidelines,
+        given(serviceLocatorUtil.findAllWithFilter(Verifier.class, guidelines,
                 UnitCategory.class))
                 .willReturn(wiringVerifiers);
 
@@ -171,22 +169,30 @@ public class UnitTestRunnerTest {
 
         verify(testContext).getTestInstance();
         verify(testContext).getTestDescriptor();
-        verify(serviceLocatorUtil).findAllWithFilter(PreVerifier.class, guidelines,
-                UnitCategory.class);
+        verify(serviceLocatorUtil)
+                .findAllWithFilter(PreVerifier.class, guidelines, UnitCategory.class);
+        verify(serviceLocatorUtil).getFromHintOrDefault(
+                eq(testContext),
+                eq(ServiceProvider.class),
+                eq(DefaultServiceProvider.class),
+                any());
+        verify(serviceProvider).create(testContext);
+        verify(serviceProvider).configure(testContext, serviceContext);
         verify(serviceLocatorUtil).findAllWithFilter(SutReifier.class, UnitCategory.class);
         verify(testDescriptor).getCollaboratorProvider();
-        verify(serviceLocatorUtil).findAllWithFilter(InitialReifier.class,
-                UnitCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(CollaboratorReifier.class,
-                UnitCategory.class);
-        verify(serviceLocatorUtil).findAllWithFilter(FinalReifier.class,
-                UnitCategory.class);
+        verify(serviceLocatorUtil)
+                .findAllWithFilter(InitialReifier.class, UnitCategory.class);
+        verify(serviceLocatorUtil)
+                .findAllWithFilter(CollaboratorReifier.class, UnitCategory.class);
+        verify(serviceLocatorUtil)
+                .findAllWithFilter(FinalReifier.class, UnitCategory.class);
         verify(testDescriptor).getFieldDescriptors();
         verify(fieldDescriptor).init(testInstance);
         verify(testContext).getSutDescriptor();
         verify(sutDescriptor).init(testInstance);
-        verify(serviceLocatorUtil).findAllWithFilter(PreiVerifier.class, guidelines,
-                UnitCategory.class);
+        verify(serviceLocatorUtil)
+                .findAllWithFilter(Verifier.class, guidelines, UnitCategory.class);
+        verify(testContext, times(2)).verify();
     }
 
     @Test
@@ -203,12 +209,12 @@ public class UnitTestRunnerTest {
         PostVerifier postVerifier = mock(PostVerifier.class);
         List<PostVerifier> postVerifiers = ImmutableList.of(postVerifier);
         List<Class<? extends Annotation>> guidelines = ImmutableList.of(Strict.class);
-        TestResourcesProvider testResourcesProvider = sut.testResourcesProvider = mock(
-                TestResourcesProvider.class);
+        ResourceController resourceController = sut.resourceController = mock(
+                ResourceController.class);
 
         given(testDescriptor.getGuidelines()).willReturn(guidelines);
-        given(serviceLocatorUtil.findAllWithFilter(PostVerifier.class, guidelines,
-                UnitCategory.class))
+        given(serviceLocatorUtil
+                .findAllWithFilter(PostVerifier.class, guidelines, UnitCategory.class))
                 .willReturn(postVerifiers);
         given(testContext.getTestDescriptor()).willReturn(testDescriptor);
         given(testContext.getTestInstance()).willReturn(testInstance);
@@ -218,11 +224,12 @@ public class UnitTestRunnerTest {
         sut.stop(testContext);
 
         verify(postVerifier).verify(testContext);
+        verify(testContext).verify();
         verify(testContext).getTestDescriptor();
         verify(testContext).getTestInstance();
         verify(fieldDescriptor).destroy(testInstance);
         verify(sutDescriptor).destroy(testInstance);
-        verify(testResourcesProvider).stop(testContext);
+        verify(resourceController).stop(testContext);
 
     }
 }

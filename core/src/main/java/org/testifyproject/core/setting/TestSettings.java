@@ -15,11 +15,13 @@
  */
 package org.testifyproject.core.setting;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
+import org.testifyproject.trait.PropertiesReader;
+import org.testifyproject.trait.PropertiesWriter;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -31,48 +33,29 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-public class TestSettings {
+public class TestSettings implements PropertiesReader, PropertiesWriter {
 
-    private Class<? extends TestRunner> testRunnerClass;
-    private StartStrategy resourceStartStrategy;
-    private Map<String, String> dependencies;
-    private TestCategory.Level level;
-    private String[] categories;
-    private Map<String, Object> properties;
+    private final Map<String, Object> properties;
 
-    TestSettings() {
+    public TestSettings(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     public Class<? extends TestRunner> getTestRunnerClass() {
-        return testRunnerClass;
+        return getProperty(TestSettingsProperties.TEST_RUNNER_CLASS);
     }
 
-    void setTestRunnerClass(Class<? extends TestRunner> testRunnerClass) {
-        this.testRunnerClass = testRunnerClass;
+    public Class<? extends Annotation> getTestCategory() {
+        return getProperty(TestSettingsProperties.TEST_CATEGORY);
     }
 
-    public StartStrategy getResourceStartStrategy() {
-        return resourceStartStrategy;
-    }
-
-    void setResourceStartStrategy(StartStrategy resourceStartStrategy) {
-        this.resourceStartStrategy = resourceStartStrategy;
-    }
-
-    public Map<String, String> getDependencies() {
-        return dependencies;
-    }
-
-    void setDependencies(Map<String, String> dependencies) {
-        this.dependencies = dependencies;
-    }
-
-    public TestCategory.Level getLevel() {
-        return level;
-    }
-
-    void setLevel(TestCategory.Level level) {
-        this.level = level;
+    public TestCategory.Level getTestLevel() {
+        return getProperty(TestSettingsProperties.TEST_LEVEL);
     }
 
 }

@@ -20,13 +20,13 @@ import java.lang.reflect.Method;
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.CollaboratorProvider;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
 import org.testifyproject.core.util.ExceptionUtil;
 import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.extension.AnnotationInspector;
 import org.testifyproject.extension.annotation.Handles;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An annotation inspector that processes {@link CollaboratorProvider} annotation.

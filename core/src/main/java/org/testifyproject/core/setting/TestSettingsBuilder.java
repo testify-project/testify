@@ -15,12 +15,11 @@
  */
 package org.testifyproject.core.setting;
 
-import java.util.Map;
+import java.lang.annotation.Annotation;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestRunner;
 import org.testifyproject.core.TestCategory;
-import org.testifyproject.guava.common.collect.ImmutableMap;
 
 /**
  * A builder class for {@link TestSettings}.
@@ -30,8 +29,7 @@ import org.testifyproject.guava.common.collect.ImmutableMap;
 public class TestSettingsBuilder {
 
     private Class<? extends TestRunner> testRunnerClass;
-    private StartStrategy startStrategy = StartStrategy.LAZY;
-    private final ImmutableMap.Builder<String, String> dependencies = ImmutableMap.builder();
+    private Class<? extends Annotation> testCategory;
     private TestCategory.Level level;
 
     /**
@@ -48,33 +46,23 @@ public class TestSettingsBuilder {
         return this;
     }
 
-    public TestSettingsBuilder resourceStartStrategy(StartStrategy startStrategy) {
-        this.startStrategy = startStrategy;
-        return this;
-    }
-
-    public TestSettingsBuilder dependency(String className, String displayName) {
-        this.dependencies.put(className, displayName);
-        return this;
-    }
-
-    public TestSettingsBuilder dependencies(Map<String, String> dependencies) {
-        this.dependencies.putAll(dependencies);
+    public TestSettingsBuilder testCategory(Class<? extends Annotation> testCategory) {
+        this.testCategory = testCategory;
         return this;
     }
 
     public TestSettingsBuilder level(TestCategory.Level level) {
         this.level = level;
+        this.testCategory = TestCategory.find(level);
         return this;
     }
 
     public TestSettings build() {
-        TestSettings testSettings = new TestSettings();
+        TestSettings testSettings = new TestSettings(new ConcurrentHashMap<>());
 
-        testSettings.setDependencies(dependencies.build());
-        testSettings.setLevel(level);
-        testSettings.setResourceStartStrategy(startStrategy);
-        testSettings.setTestRunnerClass(testRunnerClass);
+        testSettings.addProperty(TestSettingsProperties.TEST_LEVEL, level);
+        testSettings.addProperty(TestSettingsProperties.TEST_CATEGORY, testCategory);
+        testSettings.addProperty(TestSettingsProperties.TEST_RUNNER_CLASS, testRunnerClass);
 
         return testSettings;
     }

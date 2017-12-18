@@ -15,10 +15,6 @@
  */
 package org.testifyproject.core;
 
-import static java.util.Optional.ofNullable;
-
-import java.util.Optional;
-
 import org.testifyproject.Instance;
 
 import lombok.EqualsAndHashCode;
@@ -52,7 +48,9 @@ public class DefaultInstance<T> implements Instance<T> {
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance) {
-        return new DefaultInstance(instance, null, null);
+        Class<?> contract = instance == null ? null : instance.getClass();
+
+        return new DefaultInstance(instance, null, contract);
     }
 
     /**
@@ -64,7 +62,9 @@ public class DefaultInstance<T> implements Instance<T> {
      * @return returns an instance
      */
     public static <T> Instance<T> of(T instance, String name) {
-        return new DefaultInstance(instance, name, null);
+        Class<?> contract = instance == null ? null : instance.getClass();
+
+        return new DefaultInstance(instance, name, contract);
     }
 
     /**
@@ -100,13 +100,13 @@ public class DefaultInstance<T> implements Instance<T> {
     }
 
     @Override
-    public Optional<String> getName() {
-        return ofNullable(name);
+    public String getName() {
+        return name;
     }
 
     @Override
-    public Optional<Class<? extends T>> getContract() {
-        return ofNullable(contract);
+    public Class<? extends T> getContract() {
+        return contract;
     }
 
 }

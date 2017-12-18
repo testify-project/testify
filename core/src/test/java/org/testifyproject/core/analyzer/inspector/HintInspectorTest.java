@@ -21,8 +21,8 @@ import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.TestDescriptor;
+import org.testifyproject.annotation.Hint;
 import org.testifyproject.core.analyzer.TestDescriptorProperties;
-import org.testifyproject.extension.annotation.Hint;
 
 /**
  *

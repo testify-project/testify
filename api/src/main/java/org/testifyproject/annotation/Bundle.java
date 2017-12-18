@@ -24,27 +24,25 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * A meta-annotation that identifies an annotation as test group. A test group annotation
- * provide the ability to define, group, and use one or more Testify annotations in a reusable
- * manner in your test classes and avoid annotation bloat.
+ * A meta-annotation that identifies an annotation as test bundle. This annotation provide the
+ * ability to bundle one or more Testify annotations in a reusable manner and avoid annotation
+ * bloat. Example:
  * </p>
  * <pre>
- * <code>
- * {@literal @}Bundle
+ * <code>{@literal @}Bundle
  * {@literal @}Module(MyModule.class)
  * {@literal @}VirtualResource("postgres")
  * {@literal @}Target(ElementType.TYPE)
  * {@literal @}Retention(RetentionPolicy.RUNTIME)
- *  public @interface MyModuleGroup { }
+ *  public @interface IntegrationBundle { }
  *
+ * {@literal @}IntegrationBundle
+ * {@literal @}RunWith(IntegrationTest.class)
+ *  public class MyServiceIT {
  *
- * {@literal @}MyModuleGroup
- *  public class MyModuleServiceiT {
+ *    ...
  *
- *     ...
- *
- * }
- * </code>
+ * }</code>
  * </pre>
  *
  * @author saden

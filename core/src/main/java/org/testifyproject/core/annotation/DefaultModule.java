@@ -28,9 +28,11 @@ import org.testifyproject.annotation.Module;
 public class DefaultModule implements Module {
 
     private final Class<?> value;
+    private final boolean test;
 
-    public DefaultModule(Class<?> value) {
+    DefaultModule(Class<?> value, boolean test) {
         this.value = value;
+        this.test = test;
     }
 
     /**
@@ -40,7 +42,18 @@ public class DefaultModule implements Module {
      * @return a new module instance
      */
     public static Module of(Class<?> value) {
-        return new DefaultModule(value);
+        return new DefaultModule(value, false);
+    }
+
+    /**
+     * Create a new instance of Module with the given value.
+     *
+     * @param value the module class
+     * @param test true if the module is for testing purpose, false otherwise
+     * @return a new module instance
+     */
+    public static Module of(Class<?> value, boolean test) {
+        return new DefaultModule(value, test);
     }
 
     @Override
@@ -51,6 +64,11 @@ public class DefaultModule implements Module {
     @Override
     public Class<? extends Annotation> annotationType() {
         return Module.class;
+    }
+
+    @Override
+    public boolean test() {
+        return test;
     }
 
 }

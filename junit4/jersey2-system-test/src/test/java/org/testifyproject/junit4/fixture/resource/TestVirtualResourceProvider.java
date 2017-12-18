@@ -20,10 +20,10 @@ import java.net.InetAddress;
 import org.testifyproject.TestContext;
 import org.testifyproject.VirtualResourceInstance;
 import org.testifyproject.VirtualResourceProvider;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.VirtualResourceInstanceBuilder;
 import org.testifyproject.guava.common.net.InetAddresses;
-import org.testifyproject.tools.Discoverable;
 import org.testifyproject.trait.PropertiesReader;
 
 /**

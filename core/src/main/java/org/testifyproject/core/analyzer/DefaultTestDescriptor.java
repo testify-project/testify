@@ -34,6 +34,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
+import org.testifyproject.annotation.Hint;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Name;
@@ -41,7 +42,6 @@ import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.util.LoggingUtil;
-import org.testifyproject.extension.annotation.Hint;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

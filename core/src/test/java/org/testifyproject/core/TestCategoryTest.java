@@ -17,9 +17,13 @@ package org.testifyproject.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import org.junit.Test;
+import org.testifyproject.extension.annotation.IntegrationCategory;
+import org.testifyproject.extension.annotation.SystemCategory;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  *
@@ -95,6 +99,27 @@ public class TestCategoryTest {
                 TestCategory.Dynamic.VIRTUAL,
                 TestCategory.Dynamic.REMOTE
         );
+    }
+
+    @Test
+    public void givenUnitLevelFindShouldReturnUnitCategory() {
+        Class<? extends Annotation> result = TestCategory.find(TestCategory.Level.UNIT);
+
+        assertThat(result).isEqualTo(UnitCategory.class);
+    }
+
+    @Test
+    public void givenIntegrationLevelFindShouldReturnIntegrationCategory() {
+        Class<? extends Annotation> result = TestCategory.find(TestCategory.Level.INTEGRATION);
+
+        assertThat(result).isEqualTo(IntegrationCategory.class);
+    }
+
+    @Test
+    public void givenSystemLevelFindShouldReturnSystemCategory() {
+        Class<? extends Annotation> result = TestCategory.find(TestCategory.Level.SYSTEM);
+
+        assertThat(result).isEqualTo(SystemCategory.class);
     }
 
     @Test

@@ -35,7 +35,7 @@ import org.testifyproject.annotation.Application;
  */
 public class DefaultClientInstanceTest {
 
-    DefaultClientInstance<Object> sut;
+    DefaultClientInstance<Object, Object> sut;
 
     String fqn;
     Application application;
@@ -70,7 +70,7 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void callToGetResourceShouldReturnResource() {
-        Optional<Instance<Object>> result = sut.getClientProvider();
+        Optional<Instance<Object>> result = sut.getClientSupplier();
 
         assertThat(result).contains(clientProvider);
     }
@@ -92,7 +92,7 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
-        DefaultClientInstance<Object> uneuqual =
+        DefaultClientInstance<Object, Object> uneuqual =
                 DefaultClientInstance.of(fqn, application, clientProvider, null, properties);
 
         assertThat(sut).isNotEqualTo(uneuqual);
@@ -106,7 +106,7 @@ public class DefaultClientInstanceTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        DefaultClientInstance<Object> equal =
+        DefaultClientInstance<Object, Object> equal =
                 DefaultClientInstance.of(fqn, application, client, clientProvider, properties);
 
         assertThat(sut).isEqualTo(equal);

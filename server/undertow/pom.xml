@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.server</groupId>
         <artifactId>server</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>undertow</artifactId>
@@ -60,6 +60,11 @@
         <dependency>
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.server</groupId>
+            <artifactId>server-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

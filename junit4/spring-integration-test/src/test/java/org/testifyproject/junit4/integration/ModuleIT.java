@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.module.GreeterModule;
 import org.testifyproject.junit4.fixture.module.GreeterService;
 import org.testifyproject.junit4.fixture.module.GreetingContract;
@@ -33,7 +34,7 @@ import org.testifyproject.junit4.fixture.module.GreetingService;
  * @author saden
  */
 @Module(GreeterModule.class)
-@RunWith(SpringIntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class ModuleIT {
 
     @Sut

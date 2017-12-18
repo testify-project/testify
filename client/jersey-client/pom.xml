@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.client</groupId>
         <artifactId>client</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
     
     <artifactId>jersey-client</artifactId>
@@ -47,6 +47,18 @@
         </plugins>
     </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>
@@ -57,11 +69,19 @@
             <groupId>org.testifyproject</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> 
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
         </dependency>
     </dependencies>
+    
 </project>

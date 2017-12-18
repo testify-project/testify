@@ -26,10 +26,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.SystemTest;
 import org.testifyproject.junit4.fixture.web.GreetingApplication;
 
 @Application(GreetingApplication.class)
-@RunWith(Jersey2SystemTest.class)
+@RunWith(SystemTest.class)
 public class GreetingResourceClientST {
 
     @Sut
@@ -37,9 +38,6 @@ public class GreetingResourceClientST {
 
     @Test
     public void verifyInjections() {
-        //Arrange
-        String phrase = "Hello";
-
         //Act
         Response result = sut.path("/").request().get();
 

@@ -74,6 +74,16 @@ public class TestContextHolderTest {
 
         assertThat(inheritableThreadLocal.get()).isNull();
     }
+    
+     @Test
+    public void callToIsPresentShouldReturnTrue() {
+        TestContext testContext = mock(TestContext.class);
+        inheritableThreadLocal.set(testContext);
+
+        boolean result = sut.isPresent();
+
+        assertThat(result).isTrue();
+    }
 
     @Test(expected = NullPointerException.class)
     public void givenNullConsumerExecuteShouldThrowException() {
@@ -81,14 +91,14 @@ public class TestContextHolderTest {
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
 
-        sut.execute(consumer);
+        sut.command(consumer);
     }
 
     @Test
     public void givenValidConsumerAndNoTestContextExecuteShouldDoNothing() {
         Consumer<TestContext> consumer = mock(Consumer.class);
 
-        sut.execute(consumer);
+        sut.command(consumer);
 
         verifyZeroInteractions(consumer);
     }
@@ -101,7 +111,7 @@ public class TestContextHolderTest {
 
         willDoNothing().given(consumer).accept(testContext);
 
-        sut.execute(consumer);
+        sut.command(consumer);
 
         verify(consumer).accept(testContext);
     }
@@ -112,14 +122,14 @@ public class TestContextHolderTest {
         TestContext testContext = mock(TestContext.class);
         inheritableThreadLocal.set(testContext);
 
-        sut.execute(function);
+        sut.query(function);
     }
 
     @Test
     public void givenValidFunctionAndNoTestContextExecuteShouldDoNothing() {
         Function<TestContext, Object> function = mock(Function.class);
 
-        Object result = sut.execute(function);
+        Object result = sut.query(function);
 
         assertThat(result).isNull();
         verifyZeroInteractions(function);
@@ -135,7 +145,7 @@ public class TestContextHolderTest {
 
         given(function.apply(testContext)).willReturn(answer);
 
-        Object result = sut.execute(function);
+        Object result = sut.query(function);
 
         assertThat(result).isEqualTo(answer);
         verify(function).apply(testContext);

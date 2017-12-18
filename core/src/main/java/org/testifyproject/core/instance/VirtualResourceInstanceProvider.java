@@ -22,15 +22,15 @@ import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
 import org.testifyproject.VirtualResourceInfo;
 import org.testifyproject.VirtualResourceInstance;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.VirtualResource;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.NamingUtil;
-import org.testifyproject.extension.PreInstanceProvider;
+import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An implementation of PreInstanceProvider that provides virtual resource instances.
@@ -41,7 +41,7 @@ import org.testifyproject.tools.Discoverable;
 @IntegrationCategory
 @SystemCategory
 @Discoverable
-public class VirtualResourceInstanceProvider implements PreInstanceProvider {
+public class VirtualResourceInstanceProvider implements InstanceProvider {
 
     @Override
     public List<Instance> get(TestContext testContext) {
@@ -62,10 +62,12 @@ public class VirtualResourceInstanceProvider implements PreInstanceProvider {
                 name = NamingUtil.INSTANCE.createResourceName(name);
             }
 
+            Instance<VirtualResourceInstance> instance =
+                    DefaultInstance.of(virtualResource, name, VirtualResourceInstance.class);
+
             builder
-                    .add(DefaultInstance
-                            .of(virtualResource, name, VirtualResourceInstance.class));
-            builder.add(virtualResource.getResource());
+                    .add(instance)
+                    .add(virtualResource.getResource());
         });
 
         return builder.build();

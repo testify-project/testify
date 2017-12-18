@@ -16,20 +16,16 @@
 package org.testifyproject;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.lang.annotation.Annotation;
-import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
 
 /**
  *
@@ -44,105 +40,6 @@ public class ServiceInstanceTest {
         sut = mock(ServiceInstance.class, Answers.CALLS_REAL_METHODS);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void givenNullInstanceCallToReplaceShouldThrowException() {
-        Instance<Object> instance = null;
-
-        sut.replace(instance);
-    }
-
-    @Test
-    public void givenInstanceWithoutNameAndContractReplaceShouldCallReplace() {
-        Instance<Object> instance = mock(Instance.class);
-        String name = null;
-        Class<Object> contract = null;
-        Object constant = mock(Object.class);
-
-        Optional<String> foundName = Optional.ofNullable(name);
-        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
-
-        given(instance.getName()).willReturn(foundName);
-        given(instance.getContract()).willReturn(foundContract);
-        given(instance.getValue()).willReturn(constant);
-
-        sut.replace(instance);
-
-        verify(instance).getValue();
-        verify(instance).getName();
-        verify(instance).getContract();
-
-        verify(sut).replace(constant, name, contract);
-    }
-
-    @Test
-    public void givenInstanceWithNameAndContractReplaceShouldCallReplace() {
-        Instance<Object> instance = mock(Instance.class);
-        String name = "test";
-        Class<Object> contract = Object.class;
-        Object constant = mock(Object.class);
-
-        Optional<String> foundName = Optional.ofNullable(name);
-        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
-
-        given(instance.getName()).willReturn(foundName);
-        given(instance.getContract()).willReturn(foundContract);
-        given(instance.getValue()).willReturn(constant);
-
-        sut.replace(instance);
-
-        verify(instance).getValue();
-        verify(instance).getName();
-        verify(instance).getContract();
-
-        verify(sut).replace(constant, name, contract);
-    }
-
-    @Test
-    public void givenInstanceWithoutNameAndContractAddConstantShouldCallReplace() {
-        Instance<Object> instance = mock(Instance.class);
-        String name = null;
-        Class<Object> contract = null;
-        Object constant = mock(Object.class);
-
-        Optional<String> foundName = Optional.ofNullable(name);
-        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
-
-        given(instance.getName()).willReturn(foundName);
-        given(instance.getContract()).willReturn(foundContract);
-        given(instance.getValue()).willReturn(constant);
-
-        sut.addConstant(instance);
-
-        verify(instance).getValue();
-        verify(instance).getName();
-        verify(instance).getContract();
-
-        verify(sut).addConstant(constant, name, contract);
-    }
-
-    @Test
-    public void givenInstanceWithNameAndContractAddConstantShouldCallReplace() {
-        Instance<Object> instance = mock(Instance.class);
-        String name = "test";
-        Class<Object> contract = Object.class;
-        Object constant = mock(Object.class);
-
-        Optional<String> foundName = Optional.ofNullable(name);
-        Optional<Class<? extends Object>> foundContract = Optional.ofNullable(contract);
-
-        given(instance.getName()).willReturn(foundName);
-        given(instance.getContract()).willReturn(foundContract);
-        given(instance.getValue()).willReturn(constant);
-
-        sut.addConstant(instance);
-
-        verify(instance).getValue();
-        verify(instance).getName();
-        verify(instance).getContract();
-
-        verify(sut).addConstant(constant, name, contract);
-    }
-
     @Test
     public void callToIsRunningShouldReturnFalse() {
         Boolean result = sut.isRunning();
@@ -152,37 +49,10 @@ public class ServiceInstanceTest {
     }
 
     @Test
-    public void callToInitShouldDoNothing() {
-        sut.init();
-
-        verify(sut).init();
-    }
-
-    @Test
     public void callToDestroyShouldDoNothing() {
         sut.destroy();
 
         verify(sut).destroy();
-    }
-
-    @Test
-    public void callToAddModulesShouldDoNothing() {
-        Module module = mock(Module.class);
-
-        sut.addModules(module);
-
-        verify(sut).addModules(module);
-        verifyZeroInteractions(module);
-    }
-
-    @Test
-    public void callToAddScansShouldDoNothing() {
-        Scan scan = mock(Scan.class);
-
-        sut.addScans(scan);
-
-        verify(sut).addScans(scan);
-        verifyZeroInteractions(scan);
     }
 
     @Test

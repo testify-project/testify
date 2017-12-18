@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
     
     <artifactId>junit4-core</artifactId>
@@ -38,6 +38,16 @@
         <dependency>
             <groupId>org.testifyproject.level</groupId>
             <artifactId>unit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.level</groupId>
+            <artifactId>integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testifyproject.level</groupId>
+            <artifactId>system</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

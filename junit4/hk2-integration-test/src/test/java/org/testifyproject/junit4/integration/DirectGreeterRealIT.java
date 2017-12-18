@@ -24,6 +24,7 @@ import org.mockito.Mockito;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.DirectGreeter;
 import org.testifyproject.junit4.fixture.common.impl.Hello;
 
@@ -32,7 +33,7 @@ import org.testifyproject.junit4.fixture.common.impl.Hello;
  * @author saden
  */
 @Scan(DEFAULT_DESCRIPTOR)
-@RunWith(HK2IntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class DirectGreeterRealIT {
 
     @Sut

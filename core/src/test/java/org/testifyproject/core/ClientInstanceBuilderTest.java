@@ -16,7 +16,6 @@
 package org.testifyproject.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.util.Map;
@@ -47,7 +46,7 @@ public class ClientInstanceBuilderTest {
 
     @Test
     public void givenFqnAndLocalClientBuildShouldCreateInstance() {
-        ClientInstance<Object> result = sut.build(fqn, application);
+        ClientInstance<Object, Object> result = sut.build(fqn, application);
 
         assertThat(result).isNotNull();
         assertThat(result.getFqn()).isEqualTo(fqn);
@@ -56,134 +55,105 @@ public class ClientInstanceBuilderTest {
 
     @Test
     public void givenClientAndContractWithoutCustomNameAndContractBuildShouldAddClient() {
-        String customName = "";
-        Class customContract = void.class;
         Object clientValue = mock(Object.class);
         Class clientContract = Object.class;
 
-        given(application.clientName()).willReturn(customName);
-        given(application.clientContract()).willReturn(customContract);
-
-        ClientInstance<Object> result = sut.client(clientValue, clientContract)
+        ClientInstance<Object, Object> result = sut.client(clientValue, clientContract)
                 .build(fqn, application);
 
         assertThat(result).isNotNull();
 
         Instance instance = result.getClient();
         assertThat(instance).isNotNull();
-        assertThat(instance.getName()).contains("application:/test/client");
-        assertThat(instance.getContract()).contains(clientContract);
+        assertThat(instance.getName()).isNull();
+        assertThat(instance.getContract()).isEqualTo(clientContract);
         assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 
     @Test
     public void givenClientWithoutCustomNameAndContractBuildShouldAddClient() {
-        String customName = "";
-        Class customContract = void.class;
         Object clientValue = mock(Object.class);
 
-        given(application.clientName()).willReturn(customName);
-        given(application.clientContract()).willReturn(customContract);
-
-        ClientInstance<Object> result = sut.client(clientValue).build(fqn, application);
+        ClientInstance<Object, Object> result = sut.client(clientValue).build(fqn, application);
 
         assertThat(result).isNotNull();
 
         Instance instance = result.getClient();
         assertThat(instance).isNotNull();
-        assertThat(instance.getName()).contains("application:/test/client");
-        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getName()).isNull();
+        assertThat(instance.getContract()).isNull();
         assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 
     @Test
     public void givenClientWithCustomNameAndContractBuildShouldAddClient() {
-        String customName = "customName";
-        Class customContract = Object.class;
         Object clientValue = mock(Object.class);
 
-        given(application.clientName()).willReturn(customName);
-        given(application.clientContract()).willReturn(customContract);
-
-        ClientInstance<Object> result = sut.client(clientValue).build(fqn, application);
+        ClientInstance<Object, Object> result = sut.client(clientValue).build(fqn, application);
 
         assertThat(result).isNotNull();
 
         Instance instance = result.getClient();
         assertThat(instance).isNotNull();
-        assertThat(instance.getName()).contains("application:/test/customName");
-        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getName()).isNull();
+        assertThat(instance.getContract()).isNull();
         assertThat(instance.getValue()).isEqualTo(clientValue);
     }
 
     @Test
     public void givenClientProviderAndContractWithoutCustomNameAndContractBuildShouldAddClientProvider() {
-        String customName = "";
-        Class customContract = void.class;
         Object clientProviderValue = mock(Object.class);
         Class clientProviderContract = Object.class;
 
-        given(application.clientProviderName()).willReturn(customName);
-        given(application.clientProviderContract()).willReturn(customContract);
-
-        ClientInstance<Object> result = sut.clientProvider(clientProviderValue,
+        ClientInstance<Object, Object> result = sut.clientSupplier(clientProviderValue,
                 clientProviderContract)
                 .build(fqn, application);
 
         assertThat(result).isNotNull();
-        assertThat(result.getClientProvider()).isPresent();
+        assertThat(result.getClientSupplier()).isPresent();
 
-        Instance instance = result.getClientProvider().get();
+        Instance instance = result.getClientSupplier().get();
 
         assertThat(instance).isNotNull();
-        assertThat(instance.getName()).contains("application:/test/clientProvider");
-        assertThat(instance.getContract()).contains(clientProviderContract);
+        assertThat(instance.getName()).isNull();
+        assertThat(instance.getContract()).isEqualTo(clientProviderContract);
         assertThat(instance.getValue()).isEqualTo(clientProviderValue);
     }
 
     @Test
     public void givenClientProviderWithoutCustomNameAndContractBuildShouldAddClientProvider() {
-        String customName = "";
-        Class customContract = void.class;
         Object clientProviderValue = mock(Object.class);
 
-        given(application.clientProviderName()).willReturn(customName);
-        given(application.clientProviderContract()).willReturn(customContract);
-
-        ClientInstance<Object> result = sut.clientProvider(clientProviderValue).build(fqn,
-                application);
+        ClientInstance<Object, Object> result = sut.clientSupplier(clientProviderValue)
+                .build(fqn, application);
 
         assertThat(result).isNotNull();
-        assertThat(result.getClientProvider()).isPresent();
+        assertThat(result.getClientSupplier()).isPresent();
 
-        Instance instance = result.getClientProvider().get();
+        Instance instance = result.getClientSupplier().get();
 
         assertThat(instance).isNotNull();
-        assertThat(instance.getName()).contains("application:/test/clientProvider");
-        assertThat(instance.getContract()).isEmpty();
+        assertThat(instance.getName()).isNull();
+        assertThat(instance.getContract()).isNull();
         assertThat(instance.getValue()).isEqualTo(clientProviderValue);
     }
 
     @Test
     public void givenClientProviderWithCustomNameAndContractBuildShouldAddClientProvider() {
-        String customName = "customName";
-        Class customContract = Object.class;
         Object clientProviderValue = mock(Object.class);
 
-        given(application.clientProviderName()).willReturn(customName);
-        given(application.clientProviderContract()).willReturn(customContract);
-
-        ClientInstance<Object> result = sut.clientProvider(clientProviderValue).build(fqn,
+        ClientInstance<Object, Object> result = sut.clientSupplier(clientProviderValue).build(
+                fqn,
                 application);
 
         assertThat(result).isNotNull();
-        assertThat(result.getClientProvider()).isPresent();
+        assertThat(result.getClientSupplier()).isPresent();
 
-        Instance instance = result.getClientProvider().get();
+        Instance instance = result.getClientSupplier().get();
 
         assertThat(instance).isNotNull();
-        assertThat(instance.getName()).contains("application:/test/customName");
-        assertThat(instance.getContract()).contains(customContract);
+        assertThat(instance.getName()).isNull();
+        assertThat(instance.getContract()).isNull();
         assertThat(instance.getValue()).isEqualTo(clientProviderValue);
     }
 
@@ -192,7 +162,7 @@ public class ClientInstanceBuilderTest {
         String key = "key";
         String value = "value";
 
-        ClientInstance<Object> result = sut.property(key, value).build(fqn, application);
+        ClientInstance<Object, Object> result = sut.property(key, value).build(fqn, application);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);
@@ -204,7 +174,8 @@ public class ClientInstanceBuilderTest {
         String value = "value";
         Map<String, Object> properties = ImmutableMap.of(key, value);
 
-        ClientInstance<Object> result = sut.properties(properties).build(fqn, application);
+        ClientInstance<Object, Object> result = sut.properties(properties).build(fqn,
+                application);
 
         assertThat(result).isNotNull();
         assertThat(result.findProperty(key)).contains(value);

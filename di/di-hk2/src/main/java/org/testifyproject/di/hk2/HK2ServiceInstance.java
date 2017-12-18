@@ -16,36 +16,18 @@
 package org.testifyproject.di.hk2;
 
 import static org.glassfish.hk2.api.ServiceLocatorState.RUNNING;
-import static org.glassfish.hk2.utilities.BuilderHelper.createContractFilter;
-import static org.glassfish.hk2.utilities.BuilderHelper.createNameAndContractFilter;
-import static org.glassfish.hk2.utilities.BuilderHelper.createNameFilter;
-import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addOneConstant;
-import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.removeFilter;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Set;
 
 import javax.inject.Named;
 import javax.inject.Qualifier;
 
-import org.glassfish.hk2.api.DynamicConfiguration;
-import org.glassfish.hk2.api.DynamicConfigurationService;
-import org.glassfish.hk2.api.IndexedFilter;
-import org.glassfish.hk2.api.MultiException;
-import org.glassfish.hk2.api.Populator;
 import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.Binder;
-import org.glassfish.hk2.utilities.BuilderHelper;
 import org.glassfish.hk2.utilities.NamedImpl;
 import org.testifyproject.ServiceInstance;
 import org.testifyproject.TestContext;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
-import org.testifyproject.core.util.ExceptionUtil;
-import org.testifyproject.core.util.ReflectionUtil;
 import org.testifyproject.guava.common.collect.ImmutableSet;
 import org.testifyproject.guava.common.reflect.TypeToken;
 
@@ -126,87 +108,6 @@ public class HK2ServiceInstance implements ServiceInstance {
         }
 
         return (T) instance;
-    }
-
-    @Override
-    public void addConstant(Object instance, String name, Class contract) {
-        Class instanceType = instance.getClass();
-
-        if (name != null && contract != null) {
-            addOneConstant(locator, instance, name, instanceType, contract);
-            addOneConstant(locator, instance, null, instanceType, contract);
-        } else if (name != null) {
-            addOneConstant(locator, instance, name, instanceType);
-            addOneConstant(locator, instance, null, instanceType);
-        } else if (contract != null) {
-            addOneConstant(locator, instance, null, instanceType, contract);
-        } else {
-            Class<?>[] interfaces = instanceType.getInterfaces();
-            Class<?>[] contracts = Arrays.copyOf(interfaces, interfaces.length + 1);
-            contracts[interfaces.length] = instanceType;
-
-            addOneConstant(locator, instance, null, contracts);
-        }
-
-        addOneConstant(locator, instance);
-    }
-
-    @Override
-    public void replace(Object instance, String name, Class contract) {
-        Class instanceType = instance.getClass();
-
-        IndexedFilter filter = BuilderHelper.createContractFilter(instanceType
-                .getTypeName());
-        removeFilter(locator, filter, true);
-
-        if (name != null && contract != null) {
-            removeFilter(locator, createNameAndContractFilter(contract.getName(), name),
-                    true);
-            removeFilter(locator, createNameFilter(name), true);
-            removeFilter(locator, createContractFilter(contract.getName()), true);
-        } else if (name != null) {
-            removeFilter(locator, createNameFilter(name), true);
-        } else if (contract != null) {
-            removeFilter(locator, createContractFilter(contract.getName()), true);
-        }
-
-        addConstant(instance, name, contract);
-    }
-
-    @Override
-    public void addModules(Module... modules) {
-        DynamicConfigurationService dcs = locator.getService(
-                DynamicConfigurationService.class);
-        DynamicConfiguration config = dcs.createDynamicConfiguration();
-
-        for (Module module : modules) {
-            Binder binder = (Binder) ReflectionUtil.INSTANCE.newInstance(module.value());
-            binder.bind(config);
-        }
-
-        config.commit();
-    }
-
-    @Override
-    public void addScans(Scan... scans) {
-        try {
-            DynamicConfigurationService dcs = locator.getService(
-                    DynamicConfigurationService.class);
-            DynamicConfiguration dc = dcs.createDynamicConfiguration();
-            Populator populator = dcs.getPopulator();
-            ClassLoader classLoader = testContext.getTestDescriptor().getTestClassLoader();
-
-            for (Scan scan : scans) {
-                HK2DescriptorPopulator descriptorPopulator = new HK2DescriptorPopulator(
-                        classLoader, scan.value());
-                populator.populate(descriptorPopulator);
-            }
-
-            dc.commit();
-        } catch (IOException | MultiException e) {
-            throw ExceptionUtil.INSTANCE.propagate("Could not populate service instance",
-                    e);
-        }
     }
 
     @Override

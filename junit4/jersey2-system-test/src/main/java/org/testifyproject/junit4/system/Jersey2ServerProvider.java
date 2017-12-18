@@ -19,7 +19,7 @@ import static java.lang.String.format;
 
 import static org.testifyproject.core.TestContextProperties.APP;
 import static org.testifyproject.core.TestContextProperties.APP_NAME;
-import static org.testifyproject.core.TestContextProperties.APP_SERVLET_CONTAINER;
+import static org.testifyproject.core.TestContextProperties.SERVER;
 
 import java.net.URI;
 import java.util.Optional;
@@ -30,15 +30,13 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.testifyproject.ServerInstance;
 import org.testifyproject.ServerProvider;
-import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.ServerInstanceBuilder;
 import org.testifyproject.core.TestContextHolder;
-import org.testifyproject.core.util.LoggingUtil;
 import org.testifyproject.core.util.ReflectionUtil;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * A SpringBoot implementation of the ServerProvider SPI contract.
@@ -59,15 +57,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
     public ResourceConfig configure(TestContext testContext) {
         TestContextHolder.INSTANCE.set(testContext);
 
-        String className =
-                "org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory";
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Jerset2Interceptor interceptor =
-                new Jerset2Interceptor(TestContextHolder.INSTANCE);
-        ReflectionUtil.INSTANCE.rebase(className, classLoader, interceptor);
-
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
-        TestConfigurer testConfigurer = testContext.getTestConfigurer();
 
         Optional<Application> foundApplication = testDescriptor.getApplication();
         ResourceConfig resourceConfig = null;
@@ -75,28 +65,24 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
         if (foundApplication.isPresent()) {
             Application application = foundApplication.get();
 
-            resourceConfig = (ResourceConfig) ReflectionUtil.INSTANCE.newInstance(
-                    application.value());
-            Jersey2ApplicationListener listener = new Jersey2ApplicationListener(
-                    TestContextHolder.INSTANCE);
-            resourceConfig.register(listener);
+            resourceConfig = ReflectionUtil.INSTANCE.newInstance(application.value());
             resourceConfig.setApplicationName(testContext.getName());
         }
 
-        return testConfigurer.configure(testContext, resourceConfig);
+        return resourceConfig;
     }
 
     @Override
-    @SuppressWarnings("UseSpecificCatch")
     public ServerInstance<HttpServer> start(TestContext testContext,
             Application application, ResourceConfig resourceConfig) {
         URI uri = URI.create(format(DEFAULT_URI_FORMAT, DEFAULT_SCHEME, DEFAULT_HOST,
                 DEFAULT_PORT, DEFAULT_PATH));
         // create and start a new instance of grizzly http server
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig,
-                true);
+        HttpServer server =
+                GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig, true);
 
-        Optional<NetworkListener> foundListener = server.getListeners().stream()
+        Optional<NetworkListener> foundListener = server.getListeners()
+                .stream()
                 .findFirst();
         ServerInstance serverInstance = null;
 
@@ -113,7 +99,7 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
                     .server(server)
                     .property(APP, resourceConfig)
                     .property(APP_NAME, testContext.getName())
-                    .property(APP_SERVLET_CONTAINER, server)
+                    .property(SERVER, server)
                     .build("jersey", application);
         }
 
@@ -123,9 +109,15 @@ public class Jersey2ServerProvider implements ServerProvider<ResourceConfig, Htt
     @Override
     public void stop(ServerInstance<HttpServer> serverInstance) {
         if (serverInstance != null) {
-            LoggingUtil.INSTANCE.debug("Stopping Jersey server");
-            serverInstance.getServer().getValue().stop();
+            serverInstance.command((httpServer, baseURI) -> {
+                httpServer.shutdown();
+            });
         }
+    }
+
+    @Override
+    public Class<HttpServer> getServerType() {
+        return HttpServer.class;
     }
 
 }

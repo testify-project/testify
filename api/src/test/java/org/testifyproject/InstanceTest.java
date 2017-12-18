@@ -20,7 +20,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.junit.After;
 import org.junit.Before;
@@ -47,18 +49,40 @@ public class InstanceTest {
 
     @Test
     public void callToGetNameShouldReturnEmptyOptional() {
-        Optional<String> result = sut.getName();
+        String result = sut.getName();
 
-        assertThat(result).isEmpty();
+        assertThat(result).isNull();
         verify(sut).getName();
     }
 
     @Test
     public void callToGetContractShouldReturnEmptyOptional() {
-        Optional<Class<? extends String>> result = sut.getContract();
+        Class<? extends String> result = sut.getContract();
 
-        assertThat(result).isEmpty();
+        assertThat(result).isNull();
         verify(sut).getContract();
+    }
+
+    @Test
+    public void callToQueryShouldReturnResult() {
+        String test = "test";
+        Function<String, String> function = s -> test;
+        String result = sut.query(function);
+
+        assertThat(result).isEqualTo(test);
+        verify(sut).query(function);
+        verify(sut).getValue();
+    }
+
+    @Test
+    public void callToCommandShouldDoNothing() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean();
+        Consumer<String> consumer = s -> atomicBoolean.set(true);
+        sut.command(consumer);
+
+        assertThat(atomicBoolean).isTrue();
+        verify(sut).command(consumer);
+        verify(sut).getValue();
     }
 
 }

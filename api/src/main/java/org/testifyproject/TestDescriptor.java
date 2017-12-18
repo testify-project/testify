@@ -24,12 +24,12 @@ import java.util.Optional;
 import org.testifyproject.annotation.Application;
 import org.testifyproject.annotation.CollaboratorProvider;
 import org.testifyproject.annotation.ConfigHandler;
+import org.testifyproject.annotation.Hint;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.annotation.Module;
 import org.testifyproject.annotation.RemoteResource;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.VirtualResource;
-import org.testifyproject.extension.annotation.Hint;
 import org.testifyproject.trait.AnnotationTrait;
 import org.testifyproject.trait.PropertiesReader;
 import org.testifyproject.trait.PropertiesWriter;
@@ -39,8 +39,8 @@ import org.testifyproject.trait.PropertiesWriter;
  *
  * @author saden
  */
-public interface TestDescriptor extends PropertiesReader, PropertiesWriter,
-        AnnotationTrait<Class> {
+public interface TestDescriptor extends
+        PropertiesReader, PropertiesWriter, AnnotationTrait<Class> {
 
     /**
      * The name of the test class.

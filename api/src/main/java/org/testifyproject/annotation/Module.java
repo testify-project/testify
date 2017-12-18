@@ -24,6 +24,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+
 /**
  * An annotation that can be placed on integration and system tests to load a module that
  * contains services before each test run (i.e. Spring's Java Config, HK2's AbstractBinder, or
@@ -50,5 +51,16 @@ public @interface Module {
      * @return a module class.
      */
     Class<?> value();
+
+    /**
+     * An attribute that indicates whether the module is a for testing purpose. If the module is
+     * for testing purpose the services defined in the module will take precedence over services
+     * defined in other modules. This is useful if you wish to substitute certain services for
+     * testing purpose (i.e. load a different DataSource than the one for production during test
+     * runs):
+     *
+     * @return true if the module is for testing purpose, false otherwise.
+     */
+    boolean test() default false;
 
 }

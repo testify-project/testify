@@ -24,10 +24,11 @@ package org.testifyproject;
 public interface ServiceProvider<T> {
 
     /**
-     * Create a service instance using the given test context.
+     * Create and configure a dependency injection object using the given test context (i.e
+     * Guice Injector, HK2 ServiceLocator, etc).
      *
      * @param testContext the test context
-     * @return a service instance context
+     * @return a the underlying dependency injection context object
      */
     T create(TestContext testContext);
 

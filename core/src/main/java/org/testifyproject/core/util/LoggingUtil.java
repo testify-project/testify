@@ -112,14 +112,14 @@ public class LoggingUtil {
             Throwable throwable = (Throwable) lastEntry;
 
             if (args.length == 1) {
-                formattingTuple = MessageFormatter.arrayFormat(messageFormat, new Object[]{},
-                        throwable);
+                formattingTuple =
+                        MessageFormatter.arrayFormat(messageFormat, new Object[]{}, throwable);
             } else {
                 int length = args.length - 1;
                 Object[] arguments = new Object[length];
                 System.arraycopy(args, 0, arguments, 0, length);
-                formattingTuple = MessageFormatter.arrayFormat(messageFormat, arguments,
-                        throwable);
+                formattingTuple =
+                         MessageFormatter.arrayFormat(messageFormat, arguments, throwable);
             }
         } else {
             formattingTuple = MessageFormatter.arrayFormat(messageFormat, args);

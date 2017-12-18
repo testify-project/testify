@@ -15,8 +15,8 @@
  */
 package org.testifyproject;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 import org.testifyproject.trait.PropertiesReader;
@@ -64,6 +64,13 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
      * @return the test class instance
      */
     Class<?> getTestClass();
+
+    /**
+     * The class loader associated with the test class.
+     *
+     * @return the test class classloader
+     */
+    ClassLoader getTestClassLoader();
 
     /**
      * Get the test class descriptor.
@@ -123,21 +130,12 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
     Optional<ServiceInstance> getServiceInstance();
 
     /**
-     * Get dependencies required to run the tests. The fully qualified name of the class
-     * required in the classpath is the key and human readable description is the value.
+     * Get the test category associated with the test. Note that the annotation returned will be
+     * {@code UnitCategory, IntegrationCategory, or SystemCategory}.
      *
-     * @return a map that contains required dependencies
+     * @return the test category annotation
      */
-    Map<String, String> getDependencies();
-
-    /**
-     * Indicates whether test resources should be eagerly started. Note that during integration
-     * tests resources can be started right before the test case is executed but in system tests
-     * the start of resources must be delayed until the application server is running.
-     *
-     * @return resource start strategy
-     */
-    StartStrategy getResourceStartStrategy();
+    Class<? extends Annotation> getTestCategory();
 
     /**
      * Get the local resource instances associated with the test.
@@ -159,5 +157,64 @@ public interface TestContext extends PropertiesReader, PropertiesWriter {
      * @return a collection of remote resource instances, empty list otherwise
      */
     Collection<RemoteResourceInfo> getRemoteResources();
+
+    /**
+     * Add an error message to the test context.
+     *
+     * @param messageFormat the message format
+     * @param args message format arguments
+     * @return this object
+     */
+    TestContext addError(String messageFormat, Object... args);
+
+    /**
+     * Add an error message to the test context if the given condition is true.
+     *
+     * @param condition the condition that will used to determine if the condition is added
+     * @param messageFormat the message format
+     * @param args message format arguments
+     * @return this object
+     */
+    TestContext addError(Boolean condition, String messageFormat, Object... args);
+
+    /**
+     * Get the error messages associated with the test context.
+     *
+     * @return a list of error messages, empty list otherwise.
+     */
+    Collection<String> getErrors();
+
+    /**
+     * Add an warning message to the test context.
+     *
+     * @param messageFormat the message format
+     * @param args message format arguments
+     * @return this object
+     */
+    TestContext addWarning(String messageFormat, Object... args);
+
+    /**
+     * Add an warning message to the test context if the given condition is true.
+     *
+     * @param condition the condition that will used to determine if the condition is added
+     * @param messageFormat the message format
+     * @param args message format arguments
+     * @return this object
+     */
+    TestContext addWarning(Boolean condition, String messageFormat, Object... args);
+
+    /**
+     * Get the warning messages associated with the test context.
+     *
+     * @return a list of warning messages, empty list otherwise.
+     */
+    Collection<String> getWarnings();
+
+    /**
+     * Verify the integrity test context. This method checks to see if the test has any errors
+     * or warning. If errors are found they are reported and the test is terminated. If warnings
+     * are found they are reported and the test continues to execute.
+     */
+    void verify();
 
 }

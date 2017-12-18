@@ -95,29 +95,29 @@ public class DefaultServiceInstanceTest {
         assertThat(result).isEqualTo(value);
     }
 
-    @Test
-    public void callToAddConstantShouldAddConstantToServiceContext() {
-        Object instance = new Object();
-        String name = "test";
-        Class contract = Object.class;
-
-        sut.addConstant(instance, name, contract);
-
-        assertThat(serviceContext)
-                .containsEntry(ServiceKey.of(contract, name), instance);
-    }
-
-    @Test
-    public void callToReplaceShouldreplaceConstantInServiceContext() {
-        Object instance = new Object();
-        String name = "test";
-        Class contract = Object.class;
-
-        sut.replace(instance, name, contract);
-
-        assertThat(serviceContext)
-                .containsEntry(ServiceKey.of(contract, name), instance);
-    }
+//    @Test
+//    public void callToAddConstantShouldAddConstantToServiceContext() {
+//        Object instance = new Object();
+//        String name = "test";
+//        Class contract = Object.class;
+//
+//        sut.addConstant(instance, name, contract);
+//
+//        assertThat(serviceContext)
+//                .containsEntry(ServiceKey.of(contract, name), instance);
+//    }
+//
+//    @Test
+//    public void callToReplaceShouldreplaceConstantInServiceContext() {
+//        Object instance = new Object();
+//        String name = "test";
+//        Class contract = Object.class;
+//
+//        sut.replace(instance, name, contract);
+//
+//        assertThat(serviceContext)
+//                .containsEntry(ServiceKey.of(contract, name), instance);
+//    }
 
     @Test
     public void callToGetNameQualifierShouldReturnName() {

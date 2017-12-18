@@ -19,10 +19,10 @@ import java.util.List;
 
 import org.testifyproject.Instance;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.tools.Discoverable;
 
 /**
  *

@@ -21,13 +21,24 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>0.9.9</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>spring-integration-test</artifactId>
     <name>Spring Integration Test</name>
     <description>A module that contains a JUnit test runner for running Spring integration tests</description>
    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>${jacocoSurefireArgs} -javaagent:${org.testifyproject:core:jar} -client -Xms512m -Xmx2048m</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>org.testifyproject</groupId>
@@ -42,11 +53,6 @@
         <dependency>
             <groupId>org.testifyproject.di</groupId>
             <artifactId>di-spring</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testifyproject.level</groupId>
-            <artifactId>integration</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

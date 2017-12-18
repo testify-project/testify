@@ -31,12 +31,13 @@ public class DefaultScanTest {
 
     Scan sut;
     String value;
+    boolean test;
 
     @Before
     public void init() {
         value = "value";
-
-        sut = new DefaultScan(value);
+        test = false;
+        sut = new DefaultScan(value, test);
     }
 
     @Test
@@ -47,10 +48,24 @@ public class DefaultScanTest {
     }
 
     @Test
+    public void givenValueAndTestOfShouldReturnScanInstance() {
+        Scan result = DefaultScan.of(value, test);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
     public void callToGetValueShouldReturnValue() {
         String result = sut.value();
 
         assertThat(result).isEqualTo(value);
+    }
+
+    @Test
+    public void callToGetTestShouldReturnValue() {
+        boolean result = sut.test();
+
+        assertThat(result).isEqualTo(test);
     }
 
     @Test

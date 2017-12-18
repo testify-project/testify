@@ -83,13 +83,13 @@ public class SutClassAnalyzer extends ClassVisitor {
         return AccessController.doPrivileged((PrivilegedAction<MethodVisitor>) () -> {
             if (CONSTRUCTOR_NAME.equals(name)) {
                 org.testifyproject.asm.Type type = getMethodType(desc);
-                Class[] parameterTypes = of(type.getArgumentTypes()).map(this::getClass)
-                        .toArray(
-                                Class[]::new);
+                Class[] parameterTypes = of(type.getArgumentTypes())
+                        .map(this::getClass)
+                        .toArray(Class[]::new);
 
                 try {
-                    Constructor<?> constructor = sutField.getType().getDeclaredConstructor(
-                            parameterTypes);
+                    Constructor<?> constructor = sutField.getType()
+                            .getDeclaredConstructor(parameterTypes);
                     sutDescriptor.addProperty(SutDescriptorProperties.CONSTRUCTOR, constructor);
 
                     Parameter[] parameters = constructor.getParameters();

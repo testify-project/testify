@@ -16,6 +16,8 @@
 package org.testifyproject;
 
 import java.net.URI;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import org.testifyproject.annotation.Application;
 import org.testifyproject.trait.PropertiesReader;
@@ -55,5 +57,27 @@ public interface ServerInstance<T> extends PropertiesReader {
      * @return the underlying server instance
      */
     Instance<T> getServer();
+
+    /**
+     * Execute the given function with the {@link #getServer()} value and {@link #getBaseURI()}
+     * as its parameters.
+     *
+     * @param <R> function return type
+     * @param function the function
+     * @return the result of executing the function
+     */
+    default <R> R query(BiFunction<T, URI, R> function) {
+        return function.apply(getServer().getValue(), getBaseURI());
+    }
+
+    /**
+     * Execute the given consumer function with the {@link #getServer()} value and
+     * {@link #getBaseURI()} as its parameters.
+     *
+     * @param consumer the consumer function
+     */
+    default void command(BiConsumer<T, URI> consumer) {
+        consumer.accept(getServer().getValue(), getBaseURI());
+    }
 
 }

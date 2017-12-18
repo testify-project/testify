@@ -15,7 +15,6 @@
  */
 package org.testifyproject.di.guice;
 
-import java.util.Optional;
 import java.util.Queue;
 
 import org.testifyproject.Instance;
@@ -31,49 +30,39 @@ import com.google.inject.name.Names;
  */
 public class GuiceAbstractModule extends AbstractModule {
 
-    private final Queue<Instance> constants;
+    private final Queue<Instance> instances;
 
-    GuiceAbstractModule(Queue<Instance> constants) {
-        this.constants = constants;
+    GuiceAbstractModule(Queue<Instance> instances) {
+        this.instances = instances;
     }
 
     /**
-     * Create an instance of GuiceAbstractModule using the given queue of constants.
+     * Create an instance of GuiceAbstractModule using the given queue of instances.
      *
-     * @param constants the constants
+     * @param instances the instances
      * @return a module instance
      */
-    public static final Module of(Queue<Instance> constants) {
-        return new GuiceAbstractModule(constants);
+    public static final Module of(Queue<Instance> instances) {
+        return new GuiceAbstractModule(instances);
     }
 
     @Override
     protected void configure() {
-        while (constants.peek() != null) {
-            Instance constant = constants.poll();
+        while (instances.peek() != null) {
+            Instance constant = instances.poll();
             Object instance = constant.getValue();
             Class instanceType = instance.getClass();
-            Optional<String> name = constant.getName();
-            Optional<Class> contract = constant.getContract();
+            String name = constant.getName();
+            Class contract = constant.getContract();
 
-            if (name.isPresent() && contract.isPresent()) {
-                Class contractType = contract.get();
-                String instanceName = name.get();
-
-                bind(instanceType).annotatedWith(Names.named(instanceName)).toInstance(
-                        instance);
-                bind(contractType).annotatedWith(Names.named(instanceName)).toInstance(
-                        instance);
-                bind(contractType).toInstance(instance);
-            } else if (name.isPresent()) {
-                String instanceName = name.get();
-
-                bind(instanceType).annotatedWith(Names.named(instanceName)).toInstance(
-                        instance);
-            } else if (contract.isPresent()) {
-                Class contractType = contract.get();
-
-                bind(contractType).toInstance(instance);
+            if (name != null && contract != null) {
+                bind(instanceType).annotatedWith(Names.named(name)).toInstance(instance);
+                bind(contract).annotatedWith(Names.named(name)).toInstance(instance);
+                bind(contract).toInstance(instance);
+            } else if (name != null) {
+                bind(instanceType).annotatedWith(Names.named(name)).toInstance(instance);
+            } else if (contract != null) {
+                bind(contract).toInstance(instance);
             } else {
                 for (Class instanceInterface : instanceType.getInterfaces()) {
                     bind(instanceInterface).toInstance(instance);

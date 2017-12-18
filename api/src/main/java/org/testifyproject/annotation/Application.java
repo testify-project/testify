@@ -65,7 +65,7 @@ public @interface Application {
      *
      * @return a the client name.
      */
-    String clientName() default "";
+    String clientName() default "applicationClient";
 
     /**
      * <p>
@@ -83,30 +83,37 @@ public @interface Application {
 
     /**
      * <p>
-     * Specifies the client provider name. This useful for giving the client provider instance a
+     * Specifies the client supplier name. This useful for giving the client supplier instance a
      * unique name that can be used to qualify and distinguish it from other similar services.
      * </p>
-     * <p>
-     * Note that the default client name is "applicationClientProvider".
-     * </p>
      *
-     * @return a the client provider name.
+     *
+     * @return a the client supplier name.
      */
-    String clientProviderName() default "";
+    String clientSupplierName() default "applicationClientSupplier";
 
     /**
      * <p>
-     * Specifies the contract implemented by the client provider. This useful for getting the
-     * client provider instance by its contract.
+     * Specifies the contract implemented by the client supplier. This useful for getting the
+     * client supplier instance by its contract.
      * </p>
      * <p>
-     * Note that if the client provider contract class is not specified the client provider
+     * Note that if the client supplier contract class is not specified the client supplier
      * instance will be injectable by its implementation class only.
      * </p>
      *
-     * @return the client provider contract class
+     * @return the client supplier contract class
      */
-    Class clientProviderContract() default void.class;
+    Class clientSupplierContract() default void.class;
+
+    /**
+     * Specifies a class that aids in the construction of a client. This is useful when the
+     * application being tested is an RPC application and the creation of a client requires we
+     * construct the client from stubs (i.e. gRPC).
+     *
+     * @return the client supplier hint class
+     */
+    Class clientProviderHint() default void.class;
 
     /**
      * Specifies the class that provides {@link ServerProvider server provider implementation}.
@@ -127,7 +134,7 @@ public @interface Application {
      *
      * @return a the server name.
      */
-    String serverName() default "";
+    String serverName() default "applicationServer";
 
     /**
      * <p>
@@ -142,5 +149,45 @@ public @interface Application {
      * @return the server contract class
      */
     Class serverContract() default void.class;
+
+    /**
+     * <p>
+     * Specifies the name of the method on the {@link #value() application} that will called to
+     * start the application. This is useful for managing the lifecycle of a generic application
+     * for testing purpose.
+     * </p>
+     * <p>
+     * Note that the method specified must public, return a void and take no parameters (i.e.
+     * {@code public void start()}.
+     * </p>
+     * <p>
+     * Alternatively, the start method can be set to "main" which means
+     * {@code public static void main(String[] args)} method will be called. Using the main
+     * method as the start of course implies that the {@link #stop()} method must be a static
+     * method (i.e. {@code public static void stop()}.
+     * </p>
+     *
+     * @see #stop()
+     * @return the application start method name
+     */
+    String start() default "";
+
+    /**
+     * <p>
+     * Specifies the name of the method on the {@link #value() application} that will called to
+     * stop the application. This is useful for managing the lifecycle of a generic application
+     * for testing purpose.
+     * </p>
+     * <p>
+     * Note that the method must be public, return a void and take no arguments (i.e.
+     * {@code public void start()}). In the event that the {@link #start()} method is a "main"
+     * method then this method must also be a static method (i.e.
+     * {@code public static void start()}).
+     * </p>
+     *
+     * @see #start()
+     * @return the application stop method name
+     */
+    String stop() default "";
 
 }

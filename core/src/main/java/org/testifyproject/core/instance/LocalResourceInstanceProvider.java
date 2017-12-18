@@ -22,15 +22,15 @@ import org.testifyproject.Instance;
 import org.testifyproject.LocalResourceInfo;
 import org.testifyproject.LocalResourceInstance;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Discoverable;
 import org.testifyproject.annotation.LocalResource;
 import org.testifyproject.core.DefaultInstance;
 import org.testifyproject.core.util.NamingUtil;
-import org.testifyproject.extension.PreInstanceProvider;
+import org.testifyproject.extension.InstanceProvider;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.SystemCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
 import org.testifyproject.guava.common.collect.ImmutableList;
-import org.testifyproject.tools.Discoverable;
 
 /**
  * An implementation of PreInstanceProvider that provides local resource instances.
@@ -41,7 +41,7 @@ import org.testifyproject.tools.Discoverable;
 @IntegrationCategory
 @SystemCategory
 @Discoverable
-public class LocalResourceInstanceProvider implements PreInstanceProvider {
+public class LocalResourceInstanceProvider implements InstanceProvider {
 
     @Override
     public List<Instance> get(TestContext testContext) {
@@ -61,8 +61,13 @@ public class LocalResourceInstanceProvider implements PreInstanceProvider {
                 name = NamingUtil.INSTANCE.createResourceName(name);
             }
 
-            builder.add(DefaultInstance.of(value, name, LocalResourceInstance.class));
-            builder.add(value.getResource());
+            Instance<LocalResourceInstance> instance =
+                    DefaultInstance.of(value, name, LocalResourceInstance.class);
+
+            builder
+                    .add(instance)
+                    .add(value.getResource());
+
             value.getClient().ifPresent(builder::add);
         });
 

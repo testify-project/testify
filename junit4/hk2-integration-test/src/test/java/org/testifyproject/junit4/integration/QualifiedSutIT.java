@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Sut;
+import org.testifyproject.junit4.IntegrationTest;
 import org.testifyproject.junit4.fixture.common.Greeting;
 import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
 
@@ -30,7 +31,7 @@ import org.testifyproject.junit4.fixture.common.qualifier.CustomQualifier;
  * @author saden
  */
 @Scan(DEFAULT_DESCRIPTOR)
-@RunWith(HK2IntegrationTest.class)
+@RunWith(IntegrationTest.class)
 public class QualifiedSutIT {
 
     @Sut

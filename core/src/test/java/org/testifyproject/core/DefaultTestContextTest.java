@@ -18,8 +18,11 @@ package org.testifyproject.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,13 +35,14 @@ import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
 import org.testifyproject.RemoteResourceInfo;
 import org.testifyproject.ServiceInstance;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.TestRunner;
+import org.testifyproject.TestifyException;
 import org.testifyproject.VirtualResourceInfo;
+import org.testifyproject.extension.annotation.UnitCategory;
 
 /**
  *
@@ -47,8 +51,7 @@ import org.testifyproject.VirtualResourceInfo;
 public class DefaultTestContextTest {
 
     TestContext sut;
-
-    StartStrategy resourceStartStrategy;
+    Class<? extends Annotation> testCategory;
     Object testInstance;
     TestDescriptor testDescriptor;
     MethodDescriptor methodDescriptor;
@@ -56,11 +59,10 @@ public class DefaultTestContextTest {
     TestConfigurer testConfigurer;
     MockProvider mockProvider;
     Map<String, Object> properties;
-    Map<String, String> dependencies;
 
     @Before
     public void init() {
-        resourceStartStrategy = StartStrategy.EAGER;
+        testCategory = UnitCategory.class;
         testInstance = new Object();
         testDescriptor = mock(TestDescriptor.class);
         methodDescriptor = mock(MethodDescriptor.class);
@@ -68,10 +70,9 @@ public class DefaultTestContextTest {
         testRunner = mock(TestRunner.class);
         mockProvider = mock(MockProvider.class);
         properties = mock(Map.class, delegatesTo(new HashMap<>()));
-        dependencies = mock(Map.class, delegatesTo(new HashMap<>()));
 
-        sut = DefaultTestContextBuilder.builder()
-                .resourceStartStrategy(resourceStartStrategy)
+        sut = spy(DefaultTestContextBuilder.builder()
+                .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .testMethodDescriptor(methodDescriptor)
@@ -79,8 +80,7 @@ public class DefaultTestContextTest {
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
-                .dependencies(dependencies)
-                .build();
+                .build());
     }
 
     @Test
@@ -120,10 +120,17 @@ public class DefaultTestContextTest {
     }
 
     @Test
-    public void callToGetResourceStartStrategyShouldReturn() {
-        StartStrategy result = sut.getResourceStartStrategy();
+    public void callToGetTestClassLoaderShouldReturnTestClassLoader() {
+        sut.getTestClassLoader();
 
-        assertThat(result).isEqualTo(resourceStartStrategy);
+        verify(testDescriptor).getTestClassLoader();
+    }
+
+    @Test
+    public void callToGetResourceStartStrategyShouldReturn() {
+        Class<? extends Annotation> result = sut.getTestCategory();
+
+        assertThat(result).isEqualTo(testCategory);
     }
 
     @Test
@@ -159,13 +166,6 @@ public class DefaultTestContextTest {
         MockProvider result = sut.getMockProvider();
 
         assertThat(result).isEqualTo(mockProvider);
-    }
-
-    @Test
-    public void callToGetDependenciesShouldReturn() {
-        Map<String, String> result = sut.getDependencies();
-
-        assertThat(result).isEqualTo(dependencies);
     }
 
     @Test
@@ -211,6 +211,113 @@ public class DefaultTestContextTest {
     }
 
     @Test
+    public void callToAddErrorShouldAddErrorMessage() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+    }
+
+    @Test
+    public void callToAddErrorWithTrueConditionShouldAddErrorMessage() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(true, messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+    }
+
+    @Test
+    public void callToAddErrorWithFalseConditionShouldNotAddErrorMessage() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(false, messageFormat, args);
+
+        verify(sut, times(0)).addCollectionElement(TestContextProperties.TEST_ERRORS, message);
+    }
+
+    @Test
+    public void callToAddWarningShouldAddWarningMessage() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+        String message = "Warning Message: warning";
+
+        sut.addWarning(messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+    }
+
+    @Test
+    public void callToAddWarningWithTrueConditionShouldAddWarningMessage() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+        String message = "Warning Message: warning";
+
+        sut.addWarning(true, messageFormat, args);
+
+        verify(sut).addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+    }
+
+    @Test
+    public void callToAddWarningWithFalseConditionShouldNotAddWarningMessage() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+        String message = "Warning Message: warning";
+
+        sut.addWarning(false, messageFormat, args);
+
+        verify(sut, times(0)).addCollectionElement(TestContextProperties.TEST_WARNINGS, message);
+    }
+
+    @Test
+    public void callToGetErrorsShouldReturnTestErrors() {
+        Collection<String> result = sut.getErrors();
+
+        assertThat(result).isEmpty();
+        verify(sut).findCollection(TestContextProperties.TEST_ERRORS);
+    }
+
+    @Test
+    public void callToGetWarningsShouldReturnTestWarnings() {
+        Collection<String> result = sut.getWarnings();
+
+        assertThat(result).isEmpty();
+        verify(sut).findCollection(TestContextProperties.TEST_WARNINGS);
+    }
+
+    @Test
+    public void callToVerifyWithWarningMessagesShouldPrintWarnings() {
+        String messageFormat = "Warning Message: {}";
+        String args = "warning";
+
+        sut.addWarning(false, messageFormat, args);
+
+        sut.verify();
+
+        verify(sut).getWarnings();
+    }
+
+    @Test(expected = TestifyException.class)
+    public void callToVerifyWithErrorMessagesShouldThrowException() {
+        String messageFormat = "Error Message: {}";
+        String args = "error";
+        String message = "Error Message: error";
+
+        sut.addError(true, messageFormat, args);
+
+        sut.verify();
+
+        verify(sut).getErrors();
+    }
+
+    @Test
     public void givenNullInstancesShouldNotBeEqual() {
         TestContext instance = null;
 
@@ -228,13 +335,12 @@ public class DefaultTestContextTest {
     @Test
     public void givenUnequalInstancesShouldNotBeEqual() {
         TestContext uneuqual = DefaultTestContextBuilder.builder()
-                .resourceStartStrategy(resourceStartStrategy)
+                .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .testMethodDescriptor(null)
                 .testConfigurer(testConfigurer)
                 .properties(properties)
-                .dependencies(dependencies)
                 .build();
 
         assertThat(sut).isNotEqualTo(uneuqual);
@@ -248,8 +354,8 @@ public class DefaultTestContextTest {
 
     @Test
     public void givenEqualInstancesShouldBeEqual() {
-        TestContext equal = DefaultTestContextBuilder.builder()
-                .resourceStartStrategy(resourceStartStrategy)
+        TestContext equal1 = DefaultTestContextBuilder.builder()
+                .testCategory(testCategory)
                 .testInstance(testInstance)
                 .testDescriptor(testDescriptor)
                 .testMethodDescriptor(methodDescriptor)
@@ -257,19 +363,31 @@ public class DefaultTestContextTest {
                 .testConfigurer(testConfigurer)
                 .mockProvider(mockProvider)
                 .properties(properties)
-                .dependencies(dependencies)
                 .build();
 
-        assertThat(sut).isEqualTo(equal);
-        assertThat(sut.hashCode()).isEqualTo(equal.hashCode());
+        TestContext equal2 = DefaultTestContextBuilder.builder()
+                .testCategory(testCategory)
+                .testInstance(testInstance)
+                .testDescriptor(testDescriptor)
+                .testMethodDescriptor(methodDescriptor)
+                .testRunner(testRunner)
+                .testConfigurer(testConfigurer)
+                .mockProvider(mockProvider)
+                .properties(properties)
+                .build();
+
+        assertThat(equal1).isEqualTo(equal2);
+        assertThat(equal1.hashCode()).isEqualTo(equal2.hashCode());
     }
 
     @Test
     public void callToToStringShouldReturnHumanReadableString() {
         String result = sut.toString();
 
-        assertThat(result).contains("DefaultTestContext", "resourceStartStrategy",
+        assertThat(result).contains(
+                "DefaultTestContext",
                 "testDescriptor",
-                "methodDescriptor");
+                "methodDescriptor"
+        );
     }
 }

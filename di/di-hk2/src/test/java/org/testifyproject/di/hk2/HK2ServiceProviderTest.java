@@ -16,21 +16,19 @@
 package org.testifyproject.di.hk2;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.util.List;
 
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.Before;
 import org.junit.Test;
 import org.testifyproject.ServiceInstance;
+import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
-import org.testifyproject.annotation.Module;
-import org.testifyproject.annotation.Scan;
 import org.testifyproject.guava.common.collect.ImmutableList;
 
 /**
@@ -49,9 +47,13 @@ public class HK2ServiceProviderTest {
     @Test
     public void givenTestContextCreateShouldReturnServiceLocator() {
         TestContext testContext = mock(TestContext.class);
+        TestConfigurer testConfigurer = mock(TestConfigurer.class);
         String testName = "TestClass";
 
+        given(testContext.getTestConfigurer()).willReturn(testConfigurer);
         given(testContext.getName()).willReturn(testName);
+        given(testConfigurer.configure(eq(testContext), any(ServiceLocator.class)))
+                .willAnswer(invocation -> invocation.getArgument(1));
 
         ServiceLocator result = sut.create(testContext);
 
@@ -61,37 +63,21 @@ public class HK2ServiceProviderTest {
     @Test
     public void givenTestContextAndServiceLocatorConfigureShouldReturnServiceLocator() {
         TestContext testContext = mock(TestContext.class);
+        TestDescriptor testDescriptor = mock(TestDescriptor.class);
+        ClassLoader classLoader = HK2ServiceProvider.class.getClassLoader();
+
+        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
+        given(testContext.getTestClassLoader()).willReturn(classLoader);
+        given(testDescriptor.getModules()).willReturn(ImmutableList.of());
+        given(testDescriptor.getScans()).willReturn(ImmutableList.of());
+
         ServiceLocator serviceLocator = ServiceLocatorUtilities
                 .createAndPopulateServiceLocator();
 
         ServiceInstance result = sut.configure(testContext, serviceLocator);
 
         assertThat(result).isNotNull();
-        assertThat((ServiceLocator) result.getContext()).isEqualTo(serviceLocator);
+        assertThat((Object) result.getContext()).isEqualTo(serviceLocator);
     }
 
-    @Test
-    public void givenTestContextAndServiceInstancePostConfigureShouldAddModules() {
-        TestContext testContext = mock(TestContext.class);
-        ServiceInstance serviceInstance = mock(ServiceInstance.class);
-        TestDescriptor testDescriptor = mock(TestDescriptor.class);
-
-        Module module = mock(Module.class);
-        List<Module> modules = ImmutableList.of(module);
-
-        Scan scan = mock(Scan.class);
-        List<Scan> scans = ImmutableList.of(scan);
-
-        given(testContext.getTestDescriptor()).willReturn(testDescriptor);
-        given(testDescriptor.getModules()).willReturn(modules);
-        given(testDescriptor.getScans()).willReturn(scans);
-
-        sut.postConfigure(testContext, serviceInstance);
-
-        verify(testContext).getTestDescriptor();
-        verify(testDescriptor).getModules();
-        verify(serviceInstance).addModules(module);
-        verify(testDescriptor).getScans();
-        verify(serviceInstance).addScans(scan);
-    }
 }

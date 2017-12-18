@@ -16,22 +16,17 @@
 package org.testifyproject.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.AdditionalAnswers.delegatesTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-import java.util.concurrent.Callable;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.testifyproject.bytebuddy.dynamic.DynamicType;
+import org.testifyproject.TestifyException;
 import org.testifyproject.fixture.reflection.CustomAnnotation;
 import org.testifyproject.fixture.reflection.CustomConstructorService;
 import org.testifyproject.fixture.reflection.DefaultConstructorService;
-import org.testifyproject.fixture.reflection.GreeterInterceptor;
-import org.testifyproject.fixture.reflection.RebasedGreeter;
-import org.testifyproject.fixture.reflection.SubclassedGreeter;
+import org.testifyproject.fixture.reflection.Greeter;
 
 /**
  *
@@ -85,42 +80,46 @@ public class ReflectionUtilTest {
     }
 
     @Test
-    public void givenClassAndInterceptRebaseShouldRebaseTheClass()
-            throws Exception {
-        GreeterInterceptor interceptor = mock(GreeterInterceptor.class, delegatesTo(
-                new GreeterInterceptor()));
-        String className = "org.testifyproject.fixture.reflection.RebasedGreeter";
-        ClassLoader classLoader = this.getClass().getClassLoader();
+    public void callToInvokeShouldInvokeMethod() throws Exception {
+        Greeter greeter = new Greeter();
+        Method method = Greeter.class.getDeclaredMethod("hello");
 
-        DynamicType.Loaded<?> result = sut.rebase(className, classLoader, interceptor);
+        Object result = sut.invoke(method, greeter);
+        assertThat(result).isEqualTo("hello");
+    }
 
-        assertThat(result).isNotNull();
+    @Test(expected = TestifyException.class)
+    public void givenNonExistentFieldSetDeclaredFieldShouldThrowException() {
+        String message = "Hello!";
+        CustomConstructorService obj = new CustomConstructorService(message);
+        String newMessage = "Hi!";
 
-        RebasedGreeter instance = (RebasedGreeter) result.getLoaded().newInstance();
-        String greeting = instance.hello();
-
-        assertThat(greeting).isNotNull();
-        verify(interceptor).hello(any(Callable.class));
+        sut.setDeclaredField("nonexistent", obj, newMessage);
     }
 
     @Test
-    public void givenClassAndInterceptSubclassShouldSubclassTheClass()
-            throws Exception {
-        GreeterInterceptor interceptor = mock(GreeterInterceptor.class, delegatesTo(
-                new GreeterInterceptor()));
-        Class<SubclassedGreeter> classType = SubclassedGreeter.class;
-        ClassLoader classLoader = this.getClass().getClassLoader();
+    public void givenExistingFieldSetDeclaredFieldShouldSetField() {
+        String message = "Hello!";
+        CustomConstructorService obj = new CustomConstructorService(message);
+        String newMessage = "Hi!";
 
-        Class<? extends SubclassedGreeter> result = sut
-                .subclass(classType, classLoader, interceptor);
+        sut.setDeclaredField("message", obj, newMessage);
 
-        assertThat(result).isNotNull();
+        assertThat(obj.getMessage()).isEqualTo(newMessage);
+    }
 
-        SubclassedGreeter instance = (SubclassedGreeter) result.newInstance();
-        String greeting = instance.hello();
+    @Test
+    public void givenNonExistentClassLoadShouldReturnEmptyOptional() {
+        Optional<Class> result = sut.load("NonExistentClass");
 
-        assertThat(greeting).isNotNull();
-        verify(interceptor).hello(any(Callable.class));
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void givenExistingClassLoadShouldReturnOptionalWithClass() {
+        Optional<Class> result = sut.load("java.lang.String");
+
+        assertThat(result).contains(String.class);
     }
 
 }

@@ -15,13 +15,12 @@
  */
 package org.testifyproject.core;
 
-import java.util.Collections;
+import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.testifyproject.MethodDescriptor;
 import org.testifyproject.MockProvider;
-import org.testifyproject.StartStrategy;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
@@ -29,7 +28,7 @@ import org.testifyproject.TestRunner;
 
 public class DefaultTestContextBuilder {
 
-    private StartStrategy resourceStartStrategy;
+    private Class<? extends Annotation> testCategory;
     private Object testInstance;
     private TestDescriptor testDescriptor;
     private MethodDescriptor methodDescriptor;
@@ -38,7 +37,6 @@ public class DefaultTestContextBuilder {
     private MockProvider mockProvider;
 
     private final Map<String, Object> properties = new LinkedHashMap<>();
-    private Map<String, String> dependencies = Collections.emptyMap();
 
     /**
      * Create a new instance of DefaultTestContextBuilder.
@@ -49,8 +47,8 @@ public class DefaultTestContextBuilder {
         return new DefaultTestContextBuilder();
     }
 
-    public DefaultTestContextBuilder resourceStartStrategy(StartStrategy resourceStartStrategy) {
-        this.resourceStartStrategy = resourceStartStrategy;
+    public DefaultTestContextBuilder testCategory(Class<? extends Annotation> testCategory) {
+        this.testCategory = testCategory;
         return this;
     }
 
@@ -89,19 +87,13 @@ public class DefaultTestContextBuilder {
         return this;
     }
 
-    public DefaultTestContextBuilder dependencies(Map<String, String> dependencies) {
-        this.dependencies = dependencies;
-        return this;
-    }
-
     public TestContext build() {
         DefaultTestContext testContext = new DefaultTestContext();
 
-        testContext.setDependencies(dependencies);
         testContext.setTestMethodDescriptor(methodDescriptor);
         testContext.setMockProvider(mockProvider);
         testContext.setProperties(properties);
-        testContext.setResourceStartStrategy(resourceStartStrategy);
+        testContext.setTestCategory(testCategory);
         testContext.setTestDescriptor(testDescriptor);
         testContext.setTestInstance(testInstance);
         testContext.setTestConfigurer(testConfigurer);
