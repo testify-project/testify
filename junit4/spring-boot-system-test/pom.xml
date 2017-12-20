@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject.junit4</groupId>
         <artifactId>junit4</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
     
     <artifactId>spring-boot-system-test</artifactId>
