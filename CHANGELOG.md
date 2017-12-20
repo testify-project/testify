@@ -12,6 +12,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Security - Lists security fixes to security vulnerabilities
 
 ## [Unreleased]
+## [1.0.1] - 2017-12-19
+### Fixed
+- Fixed issue with dependency oon virtual resource with invalid version property in `testify-bom`. The dependency was removed.
+- Fxed issue with `testify-bom` managed dependencies not being test scoped.
 
 ## [1.0.0] - 2017-12-18
 ### Added
