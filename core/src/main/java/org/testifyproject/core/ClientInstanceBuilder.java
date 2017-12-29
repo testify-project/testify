@@ -32,8 +32,8 @@ public class ClientInstanceBuilder<C, P> {
 
     private C client;
     private Class<C> clientContract;
-    private Object clientSupplier;
-    private Class clientSupplierContract;
+    private P clientSupplier;
+    private Class<P> clientSupplierContract;
     private final ImmutableMap.Builder<String, Object> properties = ImmutableMap.builder();
 
     /**

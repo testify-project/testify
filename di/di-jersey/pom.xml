@@ -47,6 +47,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+             <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-bom</artifactId>
+                <version>${hk2.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -59,18 +66,14 @@
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test Deps -->
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-metadata-generator</artifactId>
-            <version>${jersey.hk2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>hk2-extras</artifactId>
-            <version>${jersey.hk2.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

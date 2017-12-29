@@ -65,8 +65,19 @@ public class GrpcClientProvider
                 ManagedChannel managedChannel = managedChannelBuilder.build();
 
                 Class<?> stubType = sutDescriptor.getType();
+                String stubTypeName = stubType.getSimpleName();
+                String factoryMethod;
+
+                if (stubTypeName.endsWith("BlockingStub")) {
+                    factoryMethod = "newBlockingStub";
+                } else if (stubTypeName.endsWith("FutureStub")) {
+                    factoryMethod = "newFutureStub";
+                } else {
+                    factoryMethod = "newStub";
+                }
+
                 Class<?> stubParentType = stubType.getDeclaringClass();
-                Method method = stubParentType.getMethod("newBlockingStub", Channel.class);
+                Method method = stubParentType.getMethod(factoryMethod, Channel.class);
                 AbstractStub abstractStub = (AbstractStub) method.invoke(null, managedChannel);
 
                 return ClientInstanceBuilder.builder()

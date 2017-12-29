@@ -15,7 +15,6 @@
  */
 package org.testifyproject.di.guice;
 
-import static com.google.inject.util.Modules.combine;
 import static com.google.inject.util.Modules.override;
 
 import java.util.Arrays;
@@ -100,15 +99,18 @@ public class GuiceInterceptor {
 
             Module instanceModule = GuiceAbstractModule.of(instances);
 
-            //combine the prod modules then override its defined bindings with those provided
-            //by the test modules and instance provider based instance module
-            Module finalModule = override(prodModules)
-                    .with(instanceModule, combine(testModules));
+            //override prod modules with test modules to insure services defined in test modules
+            //take precedence over prod modules
+            Module testModuleSet = override(prodModules).with(testModules);
+
+            //override test module set with instance module to insure services defined by
+            //instance providers take precedence over prod ad test modules
+            Module finalModuleSet = override(testModuleSet).with(instanceModule);
 
             //create a guice injector
             Injector injector = new InternalInjectorCreator()
                     .stage(Stage.DEVELOPMENT)
-                    .addModules(Arrays.asList(finalModule))
+                    .addModules(Arrays.asList(finalModuleSet))
                     .build();
 
             //add service instance to the test context

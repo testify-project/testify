@@ -15,13 +15,14 @@
  */
 package org.testifyproject;
 
+import java.lang.reflect.Type;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
  * A contract that defines an instance object. An instance represents the properties of an
- * object in the dependency injection framework in use and how the object is made available for
- * injection into test classes and fixtures.
+ * object in the dependency injection framework and how the object is made available for
+ * injection.
  *
  * @author saden
  * @param <T> the instance object type
@@ -46,12 +47,22 @@ public interface Instance<T> {
     }
 
     /**
-     * The contract implemented by the instance. If present any existing implementations of the
-     * contract in the dependency injection framework will be replaced by this instance.
+     * The contract implemented by the instance. If present the instance value can be injected
+     * into services by this contract.
      *
      * @return instance contract type, null otherwise
      */
     default Class<? extends T> getContract() {
+        return null;
+    }
+
+    /**
+     * The generic contract implemented by the instance.If present the instance value can be
+     * injected into services by this contract.
+     *
+     * @return instance contract type, null otherwise
+     */
+    default Type getGenericContract() {
         return null;
     }
 
@@ -73,6 +84,19 @@ public interface Instance<T> {
      */
     default void command(Consumer<T> consumer) {
         consumer.accept(getValue());
+    }
+
+    /**
+     * Atomically execute the given function with the {@link #getValue() } as its parameters.
+     *
+     * @param <R> function return type
+     * @param function the function
+     * @return the result of executing the function
+     */
+    default <R> R operation(Function<T, R> function) {
+        synchronized (this) {
+            return function.apply(getValue());
+        }
     }
 
 }

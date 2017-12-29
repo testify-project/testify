@@ -90,12 +90,14 @@
         <!-- General Dependencies -->
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
-        <spring.version>4.3.12.RELEASE</spring.version>
-        <springboot.version>1.5.7.RELEASE</springboot.version>
+        <spring.version>5.0.2.RELEASE</spring.version>
+        <springboot.version>1.5.9.RELEASE</springboot.version>
         <hk2.version>2.5.0-b42</hk2.version>
         <jersey.version>2.26</jersey.version>
         <jersey.hk2.version>2.5.0-b42</jersey.hk2.version>
         <guice.version>4.1.0</guice.version>
+        <jackson.version>2.9.2</jackson.version>
+
 
         <!-- Processor Dependencies -->
         <lombok.version>1.16.18</lombok.version>

@@ -15,7 +15,10 @@
  */
 package org.testifyproject.core;
 
+import java.lang.reflect.Type;
+
 import org.testifyproject.Instance;
+import org.testifyproject.guava.common.reflect.TypeToken;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -32,9 +35,9 @@ public class DefaultInstance<T> implements Instance<T> {
 
     private final T instance;
     private final String name;
-    private final Class<? extends T> contract;
+    private final Type contract;
 
-    DefaultInstance(T instance, String name, Class<? extends T> contract) {
+    DefaultInstance(T instance, String name, Type contract) {
         this.name = name;
         this.instance = instance;
         this.contract = contract;
@@ -75,7 +78,7 @@ public class DefaultInstance<T> implements Instance<T> {
      * @param contract the contract implemented by the instance
      * @return returns an instance
      */
-    public static <T> Instance<T> of(T instance, Class<? extends T> contract) {
+    public static <T> Instance<T> of(T instance, Type contract) {
         return new DefaultInstance(instance, null, contract);
     }
 
@@ -90,7 +93,7 @@ public class DefaultInstance<T> implements Instance<T> {
      * @param contract the contract implemented by the instance
      * @return returns an instance
      */
-    public static <T> Instance<T> of(T instance, String name, Class<? extends T> contract) {
+    public static <T> Instance<T> of(T instance, String name, Type contract) {
         return new DefaultInstance(instance, name, contract);
     }
 
@@ -106,6 +109,13 @@ public class DefaultInstance<T> implements Instance<T> {
 
     @Override
     public Class<? extends T> getContract() {
+        return contract == null
+                ? null
+                : (Class<? extends T>) TypeToken.of(contract).getRawType();
+    }
+
+    @Override
+    public Type getGenericContract() {
         return contract;
     }
 
