@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.external.dockerclient;
+package org.testifyproject.spotify.docker.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.spotify.docker.client.DefaultDockerClient;
@@ -26,6 +27,7 @@ import com.spotify.docker.client.DockerClient;
  *
  * @author saden
  */
+@Ignore
 public class DockerClientTest {
 
     @Test
