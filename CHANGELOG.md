@@ -20,6 +20,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ### Changed
 - Removed framework bom from `testify-bom` module and added them to framework specific modules
+- Restructured project to make easy to update and build:
+ - Creating a `modules` module to encapsulate the primary code-base
+ - Copied external libraries from build tools module
+ - Copied tools module from the build tools module
 
 ## [1.0.1] - 2017-12-19
 ### Fixed
