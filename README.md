@@ -29,11 +29,11 @@ Testify is an annotation driven Java Testing Framework that provides uniform and
 - HK2 Integration Testing
 - Jersey 2 RESTful Web Services Framework System Testing
 - Google Guice Integration Testing
+- gRPC System Testing
 
 ## Learning
 - Testify documentation is available [here][docs].
-- Examples code can be found [here][examples].
-- Take a look at [Test Driven Development][tdd-presentation] presentation.
+- Example code can be found [here][examples].
 - Read [Java for Small Team][java-for-small-team] eBook.
 
 ## Issue Tracking
@@ -44,7 +44,9 @@ Please consider submitting a reproduction project via the a new [Github Issue][g
 [Pull requests](http://help.github.com/send-pull-requests) are welcome.
 
 ## Staying in Touch
-Hit us up on [Gitter][gitter].
+- [Gitter][gitter].
+- [Users Mailing List][users-groups] ([testifyproject-users@googlegroups.com][users-email])
+- [Developers Mailing List][devs-groups] ([testifyproject-devs@googlegroups.com][devs-email])
 
 ## Show Some Love
 Testify Project does not have a revenue source and depends on support from the open source community. If you believe in our mission please consider donating:
@@ -60,11 +62,13 @@ The Testify is released under [Apache Software License, Version 2.0](LICENSE).
 Enjoy and keep on Testifying!
 
 
-[docs]: http://fitburio.github.io/testify
-[examples]: https://github.com/testify-project/examples/tree/develop/examples
+[docs]: https://testifyproject.org
+[examples]: https://github.com/testify-project/examples
 [github-issues]: https://github.com/testify-project/testify/issues
 [github-issues-new]: https://github.com/testify-project/testify/issues/new
 [gitter]: https://gitter.im/testify-project/Lobby
+[users-email]: mailto:testifyproject-users@googlegroups.com
+[users-groups]: https://groups.google.com/forum/#!forum/testifyproject-users
+[devs-email]: mailto:testifyproject-devs@googlegroups.com
+[devs-groups]: https://groups.google.com/forum/#!forum/testifyproject-devs
 [java-for-small-team]: https://www.gitbook.com/book/ncrcoe/java-for-small-teams/details
-[tdd-presentation]: http://saden1.slides.com/saden1/tdd/embed?token=C82lw8_l
-
