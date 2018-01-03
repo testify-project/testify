@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2016-2017 Testify Project.
+    Copyright 2016-2018 Testify Project.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -65,6 +65,11 @@
                     </dependencies>
                     <configuration>
                         <header>license.txt</header>
+                        <errorMessage> Please insure the file(s) listed above:
+                            a) have a license header
+                            b) the header is formatted correctly
+                            c) the header contains the correct license year date range
+                        </errorMessage>
                         <properties>
                             <owner>${project.organization.name}</owner>
                         </properties>
