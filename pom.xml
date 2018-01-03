@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2016-2017 Testify Project.
+    Copyright 2016-2018 Testify Project.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
     <groupId>org.testifyproject</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>pom</packaging>
     
     <name>[Testify Project]</name>
@@ -33,14 +33,9 @@
     <url>https://testifyproject.org</url>
 
     <modules>
-        <module>api</module>
-        <module>mock</module>
-        <module>core</module>
-        <module>di</module>
-        <module>level</module>
-        <module>client</module>
-        <module>server</module>
-        <module>junit4</module>
+        <module>external</module>
+        <module>tools</module>
+        <module>modules</module>
         <module>testify-bom</module>
     </modules>
     
@@ -55,9 +50,6 @@
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <netbeans.hint.license>apache20</netbeans.hint.license>
         <netbeans.inceptionYear>2016</netbeans.inceptionYear>
-
-        <!-- Build Dependency Versions -->
-        <buildtools.version>1.0.0</buildtools.version>
 
         <!-- Plugin Versions -->
         <plugin.resource>3.0.2</plugin.resource>
@@ -79,7 +71,7 @@
         <plugin.projectinfo>2.9</plugin.projectinfo>
         <plugin.jxr>2.5</plugin.jxr>
         <plugin.sonarqube>3.3.0.603</plugin.sonarqube>
-        <plugin.shade>2.4.3</plugin.shade>
+        <plugin.shade>3.1.0</plugin.shade>
 
         <!-- Test Dependencies -->
         <junit.version>4.12</junit.version>
@@ -88,14 +80,16 @@
         <easymock.version>3.4</easymock.version>
 
         <!-- General Dependencies -->
+        <slf4j.version>1.7.25</slf4j.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
-        <spring.version>4.3.12.RELEASE</spring.version>
-        <springboot.version>1.5.7.RELEASE</springboot.version>
+        <spring.version>5.0.2.RELEASE</spring.version>
+        <springboot.version>1.5.9.RELEASE</springboot.version>
         <hk2.version>2.5.0-b42</hk2.version>
         <jersey.version>2.26</jersey.version>
         <jersey.hk2.version>2.5.0-b42</jersey.hk2.version>
         <guice.version>4.1.0</guice.version>
+        <jackson.version>2.9.2</jackson.version>
 
         <!-- Processor Dependencies -->
         <lombok.version>1.16.18</lombok.version>
@@ -300,6 +294,8 @@
                     </executions>
                     <configuration>
                         <sourcepath>${project.build.sourceDirectory}</sourcepath>
+                        <doctitle>Testify API Documentation</doctitle>
+                        <windowtitle>Testify API Documentation</windowtitle>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -318,13 +314,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>${plugin.shade}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.testifyproject.maven</groupId>
-                            <artifactId>shade-plugin-extentions</artifactId>
-                            <version>${buildtools.version}</version>
-                        </dependency>
-                    </dependencies>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -340,8 +329,7 @@
                         <createSourcesJar>true</createSourcesJar>
                         <shadeSourcesContent>true</shadeSourcesContent>
                         <transformers>
-                            <transformer implementation="org.testifyproject.maven.shade.ServiceResourceTransformer" />
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
                             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                                 <addHeader>false</addHeader>
@@ -484,80 +472,10 @@
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
                     <version>${plugin.license}</version>
-                    <executions>
-                        <execution>
-                            <id>license-check</id>
-                            <phase>process-resources</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.testifyproject.buildtools</groupId>
-                            <artifactId>coding-conventions</artifactId>
-                            <version>${buildtools.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <header>license.txt</header>
-                        <properties>
-                            <owner>${project.organization.name}</owner>
-                        </properties>
-                        <headerDefinitions>
-                            <headerDefinition>java_header_style.xml</headerDefinition>
-                        </headerDefinitions>
-                        <excludes>
-                            <exclude>**/.*</exclude>
-                            <exclude>**/*.md</exclude>
-                            <exclude>**/*.txt</exclude>
-                            <exclude>**/*.gpg</exclude>
-                            <exclude>**/*.enc</exclude>
-                            <exclude>**/*.tar</exclude>
-                            <exclude>**/*.sh</exclude>
-                            <exclude>**/*.proto</exclude>
-                            <exclude>**/settings.xml</exclude>
-                            <exclude>**/nbactions.xml</exclude>
-                            <exclude>LICENSE</exclude>
-                            <exclude>src/test/resources/**</exclude>
-                            <exclude>src/main/resources/**</exclude>
-                            <exclude>nbproject/**</exclude>
-                            <exclude>secrets/**</exclude>
-                            <exclude>archetype.properties</exclude>
-                            <exclude>.mvn/**</exclude>
-                            <exclude>mvnw*</exclude>
-                            <exclude>CODEOWNERS</exclude>
-                        </excludes>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${plugin.checkstyle}</version>
-                    <executions>
-                        <execution>
-                            <id>checkstyle-check</id>
-                            <phase>process-resources</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.testifyproject.buildtools</groupId>
-                            <artifactId>coding-conventions</artifactId>
-                            <version>${buildtools.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <configLocation>testify_checkstyle.xml</configLocation>
-                        <suppressionsLocation>testify_supressions.xml</suppressionsLocation>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                        <testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
-                        <consoleOutput>true</consoleOutput>
-                        <failsOnError>true</failsOnError>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -605,8 +523,8 @@
                 <version>${plugin.javadoc}</version>
                 <configuration>
                     <sourcepath>${project.build.sourceDirectory}</sourcepath>
-                    <doctitle>Testify Documentation</doctitle>
-                    <windowtitle>Testify Documentation</windowtitle>
+                    <doctitle>Testify API Documentation</doctitle>
+                    <windowtitle>Testify API Documentation</windowtitle>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -700,12 +618,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>test-logger</artifactId>
-            <version>${buildtools.version}</version>
             <scope>test</scope>
         </dependency>
 

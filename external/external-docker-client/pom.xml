@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2016-2018 Testify Project.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.testifyproject.external</groupId>
+        <artifactId>external</artifactId>
+        <version>1.0.2</version>
+    </parent>
+
+    <artifactId>external-docker-client</artifactId>
+    
+    <properties>
+        <docker.client.version>8.9.2</docker.client.version>
+        <jersey.version>2.26</jersey.version>
+        <hk2.version>2.5.0-b42</hk2.version>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <artifactSet>
+                        <!--
+                            XXX: Every package can be shaded except:
+                            1. com.github.jnr dependencies to avoid UnsatisfiedLinkError 
+                            2. org.apache.commons.logging to avoid logger not being found 
+                            3. javax dependencies
+                        -->
+                        <excludes>
+                            <exclude>org.testifyproject.external:external-docker-client</exclude>
+                            <exclude>commons-logging:commons-logging</exclude>
+                            <exclude>com.github.jnr:*</exclude>
+                            <exclude>org.slf4j:*</exclude>
+                            <exclude>ch.qos.logback:*</exclude>
+                        </excludes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>com</pattern>
+                            <shadedPattern>org.testifyproject</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org</pattern>
+                            <shadedPattern>org.testifyproject</shadedPattern>
+                            <excludes>
+                                <exclude>org.slf4j.*</exclude>
+                                <exclude>ch.qos.logback.*</exclude>
+                                <exclude>org.apache.commons.logging.*</exclude>
+                                <exclude>org.xml.sax.*</exclude>
+                                <exclude>org.w3c.dom.*</exclude>
+                            </excludes>
+                        </relocation>
+                        <relocation>
+                            <pattern>jersey</pattern>
+                            <shadedPattern>org.testifyproject</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>javassist</pattern>
+                            <shadedPattern>org.testifyproject</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-bom</artifactId>
+                <version>${hk2.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-client</artifactId>
+            <version>${docker.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.connectors</groupId>
+            <artifactId>jersey-apache-connector</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-locator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-utils</artifactId>
+        </dependency>
+    </dependencies>
+    
+</project>

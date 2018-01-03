@@ -12,6 +12,20 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Security - Lists security fixes to security vulnerabilities
 
 ## [Unreleased]
+
+## [1.0.2] - 2018-01-03
+### Added
+- Added support for various GRPC client types (BlockingStub, FutureStub and generic Stub)
+- Added ability to use and make available `@Fake` instances using Guice DI
+- Added the ability to get generic type to `Instance` contract
+
+### Changed
+- Removed framework BOMs from `testify-bom` module and added them to framework specific modules to minimize version conflicts
+- Restructured project to make easy to update and build:
+ - Creating a `modules` module to encapsulate the primary code-base
+ - Copied external libraries from build tools module
+ - Copied tools module from the build tools module
+
 ## [1.0.1] - 2017-12-19
 ### Fixed
 - Fixed issue with dependency oon virtual resource with invalid version property in `testify-bom`. The dependency was removed.
@@ -20,23 +34,23 @@ was added, changed, deprecated, removed, fix and security fixes.
 ## [1.0.0] - 2017-12-18
 ### Added
 - Added Java Agent to enable the redefinition of classes to the core module
- - Added InstrumentProvider and InstrumentInstance to enable the redefinition of classes
+ - Added `InstrumentProvider` and `InstrumentInstance` to enable the redefinition of classes
  - Added support for rebasing and intercepting constructor invocations
-- Introduced InstanceProvider extension contracts that enable the addition of arbitrary constants
-- Introduced ProxyInstanceProvider and ProxyInstanceControler to enable the creation and addition of proxied constants
+- Introduced `InstanceProvider` extension contracts that enable the addition of arbitrary constants
+- Introduced `ProxyInstanceProvider` and `ProxyInstanceControler` to enable the creation and addition of proxied constants
 - Added support for generic JUnit 4 system test runner
 - Added a default generic server provider to enable direct management of application test lifecycle
  - Added `start()` and `stop` attributes to `@Application` annotation
  - Added ability to start a generic server using static void main functions
  - Added ability to start a generic server using arbitrary start and stop functions
 - Added Grizzly 2 server support
-- Added RemoteResourcePreVerifier to verify remote resources
+- Added `RemoteResourcePreVerifier` to verify remote resources
 - Added GRPC Support
 
 ### Changed
 - Renamed TestResourceProvider to ResourceController
-- Added the ability to get client type and client provider type to ClientProvider contract
-- Added the ability to get server type to the ServerProvider contract
+- Added the ability to get client type and client provider type to `ClientProvider` contract
+- Added the ability to get server type to the `ServerProvider` contract
 - Moved reifier and verify extension classes to the extension package
 - Moved @Discoverable from build-tools:service-generator to the API module
 - Renamed PreiVerifier to Verifier
@@ -45,7 +59,7 @@ was added, changed, deprecated, removed, fix and security fixes.
  - Removed dependency verification from the test runners to PreVerifier implementation
  
 ### Removed 
-- Removed the ability to use the @Fixture annotation on classes in favor of @Module#test attribute
+- Removed the ability to use the `@Fixture` annotation on classes in favor of @Module#test attribute
 - Removed framework specific GuiceIntegrationTest, HK2InegrationTest, JerseySystemTest, SpringBootSystemTest, SpringIntegrationTest, and SpringSystemTest test runners in favor of generic UnitTest, IntegrationTest, and SystemTest test runners.
 
 ## [0.9.9] - 2017-09-15

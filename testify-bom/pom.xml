@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2016-2017 Testify Project.
+    Copyright 2016-2018 Testify Project.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,44 +23,25 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </parent>
     <artifactId>testify-bom</artifactId>
     <packaging>pom</packaging>
     
     <name>[Testify Project BOM]</name>
     <description>Testify Project Bill of Material Module</description>
+    
+    <properties>
+        <guava.version>23.2-jre</guava.version>
+    </properties>
    
     <dependencyManagement>
         <dependencies>
-            <!-- Imported Versions -->
+            <!-- Upgraded Dependencies -->
             <dependency>
-                <groupId>org.glassfish.jersey</groupId>
-                <artifactId>jersey-bom</artifactId>
-                <version>${jersey.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${springboot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>hk2-bom</artifactId>
-                <version>${hk2.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.inject</groupId>
-                <artifactId>guice-bom</artifactId>
-                <version>${guice.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
             
             <!-- API & Core Versions -->
