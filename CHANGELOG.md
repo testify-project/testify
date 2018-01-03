@@ -12,14 +12,15 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Security - Lists security fixes to security vulnerabilities
 
 ## [Unreleased]
-## [1.0.2-SNAPSHOT]
+
+## [1.0.2] - 2018-01-03
 ### Added
 - Added support for various GRPC client types (BlockingStub, FutureStub and generic Stub)
 - Added ability to use and make available `@Fake` instances using Guice DI
 - Added the ability to get generic type to `Instance` contract
 
 ### Changed
-- Removed framework bom from `testify-bom` module and added them to framework specific modules
+- Removed framework BOMs from `testify-bom` module and added them to framework specific modules to minimize version conflicts
 - Restructured project to make easy to update and build:
  - Creating a `modules` module to encapsulate the primary code-base
  - Copied external libraries from build tools module
