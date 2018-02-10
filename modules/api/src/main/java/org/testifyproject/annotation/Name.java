@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on field, method, or method parameter to associate it with a
- * name that can be used to qualify them.
+ * An annotation that can be placed on field, method, or method parameter to give it a unique
+ * name to distinguish it from similar fields, methods or parameters.
  *
  * @author saden
  */
