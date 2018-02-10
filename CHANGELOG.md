@@ -13,6 +13,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [1.0.3] - 2018-02-10
+### Fixed
+- Fixed issue with SpringBoot applications that that use the default servlet container
+
 ## [1.0.2] - 2018-01-03
 ### Added
 - Added support for various GRPC client types (BlockingStub, FutureStub and generic Stub)
