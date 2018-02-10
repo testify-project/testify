@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.testifyproject.ServiceProvider;
 /**
  * An annotation that can be placed a test class to provide hints to the test class. This is
  * useful when being explicit is necessary due to the presence of multiple implementations of
- * discoverable contracts are present in the classpath.
+ * discoverable contracts in the classpath.
  *
  * @author saden
  */
