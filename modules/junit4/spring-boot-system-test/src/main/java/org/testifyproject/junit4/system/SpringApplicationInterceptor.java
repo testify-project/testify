@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
 import java.util.concurrent.Callable;
 
-import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testifyproject.ServiceProvider;
@@ -60,8 +59,8 @@ public class SpringApplicationInterceptor {
             @SuperCall Callable<ConfigurableApplicationContext> zuper,
             @This Object object,
             @AllArguments Object[] args) throws Exception {
-        AnnotationConfigEmbeddedWebApplicationContext applicationContext =
-                (AnnotationConfigEmbeddedWebApplicationContext) zuper.call();
+        ConfigurableApplicationContext applicationContext =
+                (ConfigurableApplicationContext) zuper.call();
 
         TestContextHolder.INSTANCE.command(testContext -> {
             testContext.addProperty(APP, object);

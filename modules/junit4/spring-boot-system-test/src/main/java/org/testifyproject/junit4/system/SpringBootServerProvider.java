@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import static org.testifyproject.core.TestContextProperties.SERVER;
 import static org.testifyproject.server.core.ServletProperties.SERVLET_CONTEXT;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.ServletContext;
@@ -62,9 +64,15 @@ public class SpringBootServerProvider implements
         SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder();
 
         foundApplication.ifPresent(application -> {
+            Map<String, Object> properties = new HashMap<>();
+            properties.put("spring.application.name", testContext.getName());
+            properties.put("server.port", 0);
+            properties.put("spring.jmx.default-domain", testContext.getName());
+
             applicationBuilder.sources(application.value())
                     .resourceLoader(new DefaultResourceLoader(classLoader))
-                    .bannerMode(Banner.Mode.OFF);
+                    .bannerMode(Banner.Mode.OFF)
+                    .properties(properties);
         });
 
         return applicationBuilder;
