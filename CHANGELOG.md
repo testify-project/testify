@@ -13,6 +13,11 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [1.0.4] - 2018-05-02
+### Changed
+- Removed direct dependency on logback and instead use whatever implementation of SLF4J implementation is in the classpath
+- Added custom internal logger that is used as a fallback in case a SLF4J implementation is not in the classpath
+
 ## [1.0.3] - 2018-02-10
 ### Fixed
 - Fixed issue with SpringBoot applications that that use the default servlet container
