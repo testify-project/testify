@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
     <artifactId>modules</artifactId>
     <packaging>pom</packaging>
@@ -130,13 +130,4 @@
             </plugins>
         </pluginManagement>
     </build>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.testifyproject.tools</groupId>
-            <artifactId>test-logger</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>

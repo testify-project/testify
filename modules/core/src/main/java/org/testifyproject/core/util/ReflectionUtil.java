@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,8 @@ public class ReflectionUtil {
                 NoSuchMethodException |
                 SecurityException |
                 InvocationTargetException e) {
-            LoggingUtil.INSTANCE.debug("Could not create instance of type '{}'",
+            LoggingUtil.INSTANCE.debug("Could not create instance of type '{}', falling back "
+                    + "to using Objenesis to create an instance",
                     type.getSimpleName(), e);
 
             return (T) ObjenesisHelper.getInstantiatorOf(type).newInstance();

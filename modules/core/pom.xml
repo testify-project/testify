@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.testifyproject</groupId>
         <artifactId>modules</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
     
     <artifactId>core</artifactId>
@@ -30,7 +30,8 @@
 
     <properties>
         <slf4jtesting.version>1.0.1</slf4jtesting.version>
-        <systemrules.version>1.16.1</systemrules.version>
+        <systemrules.version>1.16.1</systemrules.version>        
+        <jansi.version>1.16</jansi.version>
     </properties>
     
     <build>
@@ -107,6 +108,11 @@
             <groupId>org.testifyproject.external</groupId>
             <artifactId>external-failsafe</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>${jansi.version}</version>
         </dependency>
         
         <dependency>
