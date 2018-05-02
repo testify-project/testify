@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
+import org.slf4j.helpers.NOPLogger;
 import org.testifyproject.TestContext;
+import org.testifyproject.core.util.logger.SimpleLogger;
 
 /**
  * A utility class for logging information.
@@ -33,9 +35,14 @@ import org.testifyproject.TestContext;
 public class LoggingUtil {
 
     public static final LoggingUtil INSTANCE;
+    public static final String TESTIFY_LOGGER_NAME = "testify";
 
     static {
-        Logger logger = LoggerFactory.getLogger("testify");
+        Logger logger = LoggerFactory.getLogger(TESTIFY_LOGGER_NAME);
+        if (logger instanceof NOPLogger) {
+            SimpleLogger.lazyInit();
+            logger = new SimpleLogger(TESTIFY_LOGGER_NAME);
+        }
         INSTANCE = new LoggingUtil(logger);
     }
 
@@ -119,7 +126,7 @@ public class LoggingUtil {
                 Object[] arguments = new Object[length];
                 System.arraycopy(args, 0, arguments, 0, length);
                 formattingTuple =
-                         MessageFormatter.arrayFormat(messageFormat, arguments, throwable);
+                        MessageFormatter.arrayFormat(messageFormat, arguments, throwable);
             }
         } else {
             formattingTuple = MessageFormatter.arrayFormat(messageFormat, args);

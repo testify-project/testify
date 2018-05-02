@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,8 @@ import org.testifyproject.mock.MockitoMockProvider;
  */
 public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
 
+    public static final String TEST_METHOD_KEY = "method";
+    public static final String TEST_CLASS_KEY = "test";
     private TestSettings testSettings;
 
     /**
@@ -116,8 +118,8 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
 
         TestifyJUnit4RunNotifier notifier = (TestifyJUnit4RunNotifier) runNotifier;
 
-        MDC.put("test", javaClass.getSimpleName());
-        MDC.put("method", method.getName());
+        MDC.put(TEST_CLASS_KEY, javaClass.getSimpleName());
+        MDC.put(TEST_METHOD_KEY, method.getName());
 
         if (isIgnored(method)) {
             notifier.fireTestIgnored(methodDescription);
@@ -164,8 +166,8 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
         TestDescriptor testDescriptor = AnalyzerUtil.INSTANCE.analyzeTestClass(javaClass);
 
         Method method = frameworkMethod.getMethod();
-        MDC.put("test", javaClass.getSimpleName());
-        MDC.put("method", method.getName());
+        MDC.put(TEST_CLASS_KEY, javaClass.getSimpleName());
+        MDC.put(TEST_METHOD_KEY, method.getName());
 
         LoggingUtil.INSTANCE.debug("creating method decriptor for test method {}#{}",
                 javaClass.getName(), method.getName());
@@ -199,46 +201,46 @@ public abstract class TestifyJUnit4TestRunner extends BlockJUnit4ClassRunner {
                 .properties(SettingUtil.INSTANCE.getSettings())
                 .build();
 
+        TestContextHolder.INSTANCE.set(testContext);
+
         Optional<Field> sutField = testDescriptor.getSutField();
 
         if (sutField.isPresent()) {
-            SutDescriptor sutDescriptor = AnalyzerUtil.INSTANCE.analyzeSutField(sutField
-                    .get());
+            SutDescriptor sutDescriptor =
+                    AnalyzerUtil.INSTANCE.analyzeSutField(sutField.get());
             testContext.addProperty(TestContextProperties.SUT_DESCRIPTOR, sutDescriptor);
         }
 
         LoggingUtil.INSTANCE.debug(
-                "starting test runner '{}'",
+                "Starting test runner '{}'",
                 testRunner.getClass().getName()
         );
-
-        TestContextHolder.INSTANCE.set(testContext);
 
         testRunner.start(testContext);
 
         LoggingUtil.INSTANCE.debug(
-                "exesuting test method {}#{}'",
+                "Executing test method {}#{}'",
                 javaClass.getName(), method.getName()
         );
         Statement statement = methodInvoker(frameworkMethod, testInstance);
         statement = possiblyExpectingExceptions(frameworkMethod, testInstance, statement);
 
         LoggingUtil.INSTANCE.debug(
-                "exesuting statement before lifecycle methods for {}#{}'",
+                "Executing statement before lifecycle methods for {}#{}'",
                 javaClass.getName(),
                 method.getName()
         );
         statement = withBefores(frameworkMethod, testInstance, statement);
 
         LoggingUtil.INSTANCE.debug(
-                "exesuting statement after lifecycle methods for {}#{}'",
+                "Executing statement after lifecycle methods for {}#{}'",
                 javaClass.getName(),
                 method.getName()
         );
         statement = withAfters(frameworkMethod, testInstance, statement);
 
         LoggingUtil.INSTANCE.debug(
-                "exesuting statement rules lifecycle methods for {}#{}'",
+                "Executing statement rules lifecycle methods for {}#{}'",
                 javaClass.getName(),
                 method.getName()
         );
