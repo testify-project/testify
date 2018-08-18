@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,7 +144,7 @@ public class CollaboratorsInitialReifierTest {
         willReturn(foundMethod).given(sutDescriptor).findMethod(factoryMethodName);
         willReturn(collaboratorProviders).given(testDescriptor).getCollaboratorProviders();
         willReturn(true).given(collaboratorProvider).hasReturnType(Object[].class);
-        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor,
+        willReturn(foundCollaborators).given(sut).findCollaborators(testDescriptor,
                 collaboratorProvider, testInstance);
         willReturn(collaborators).given(sut).convertToArray(collaborators);
         willReturn(Map.class).given(sut).getCollaboratorType(mockProvider, collaborator);
@@ -182,7 +182,7 @@ public class CollaboratorsInitialReifierTest {
         willReturn(foundMethod).given(sutDescriptor).findMethod(factoryMethodName);
         willReturn(collaboratorProviders).given(testDescriptor).getCollaboratorProviders();
         willReturn(true).given(collaboratorProvider).hasReturnType(Collection.class);
-        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor,
+        willReturn(foundCollaborators).given(sut).findCollaborators(testDescriptor,
                 collaboratorProvider, testInstance);
         willReturn(collaboratorsArray).given(sut).convertToArray(collaborators);
         willReturn(Map.class).given(sut).getCollaboratorType(mockProvider, collaborator);
@@ -223,7 +223,7 @@ public class CollaboratorsInitialReifierTest {
         willReturn(false).given(collaboratorProvider).hasReturnType(any());
         given(testDescriptor.findCollaboratorProvider(Map.class)).willReturn(
                 foundCollaboratorMethodDescriptor);
-        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor,
+        willReturn(foundCollaborators).given(sut).findCollaborators(testDescriptor,
                 collaboratorMethodDescriptor, testInstance);
 
         sut.processFactoryMethod(factoryMethodName,
@@ -287,7 +287,7 @@ public class CollaboratorsInitialReifierTest {
 
         willReturn(collaboratorProviders).given(testDescriptor).getCollaboratorProviders();
         willReturn(true).given(collaboratorProvider).hasReturnType(any());
-        willReturn(foundCollaborators).given(sut).getCollaborators(testDescriptor,
+        willReturn(foundCollaborators).given(sut).findCollaborators(testDescriptor,
                 collaboratorProvider, testInstance);
         willReturn(collaborators).given(sut).convertToArray(collaborator);
         willDoNothing().given(sut).processCollaborators(mockProvider, sutDescriptor, sutValue,
@@ -394,7 +394,7 @@ public class CollaboratorsInitialReifierTest {
         given(methodDescriptor.getInstance()).willReturn(foundInstance);
         given(methodDescriptor.invoke(instance)).willReturn(foundValue);
 
-        Optional<Object> result = sut.getCollaborators(testDescriptor, methodDescriptor,
+        Optional<Object> result = sut.findCollaborators(testDescriptor, methodDescriptor,
                 testInstance);
 
         assertThat(result).contains(value);
@@ -414,7 +414,7 @@ public class CollaboratorsInitialReifierTest {
         given(methodDescriptor.getInstance()).willReturn(foundInstance);
         given(methodDescriptor.invoke(testInstance)).willReturn(foundValue);
 
-        Optional<Object> result = sut.getCollaborators(testDescriptor, methodDescriptor,
+        Optional<Object> result = sut.findCollaborators(testDescriptor, methodDescriptor,
                 testInstance);
 
         assertThat(result).contains(value);

@@ -55,7 +55,7 @@
         <plugin.resource>3.0.2</plugin.resource>
         <plugin.compiler>3.6.1</plugin.compiler>
         <plugin.jar>3.0.2</plugin.jar>
-        <plugin.surefire>2.20</plugin.surefire>
+        <plugin.surefire>2.22.0</plugin.surefire>
         <plugin.checkstyle>2.17</plugin.checkstyle>
         <plugin.enforcer>1.4.1</plugin.enforcer>
         <plugin.source>3.0.1</plugin.source>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,11 @@ import org.testifyproject.SutDescriptor;
 import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Discoverable;
-import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.core.analyzer.DefaultMethodDescriptor;
-import org.testifyproject.core.util.ExceptionUtil;
+import org.testifyproject.core.extension.FindCollaboratorProvider;
+import org.testifyproject.core.extension.FindCollaborators;
+import org.testifyproject.core.extension.GetCollaborators;
 import org.testifyproject.extension.InitialReifier;
 import org.testifyproject.extension.annotation.IntegrationCategory;
 import org.testifyproject.extension.annotation.UnitCategory;
@@ -99,8 +100,8 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             for (MethodDescriptor collaboratorProvider : collaboratorProviders) {
                 if (collaboratorProvider.hasReturnType(Object[].class)
                         || collaboratorProvider.hasReturnType(Collection.class)) {
-                    Optional<Object> foundCollaborators =
-                            getCollaborators(testDescriptor, collaboratorProvider, testInstance);
+                    Optional<Object> foundCollaborators = findCollaborators(
+                            testDescriptor, collaboratorProvider, testInstance);
 
                     if (foundCollaborators.isPresent()) {
                         Object[] collaborators = convertToArray(foundCollaborators.get());
@@ -124,7 +125,7 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             //at the builder paramteters and see if there are methods in the collaborator
             //providers that return the same type and call them to provide collaborators
             //for the sut
-            Object[] collaborators = findCollaborators(testDescriptor, factoryMethodDescriptor,
+            Object[] collaborators = getCollaborators(testDescriptor, factoryMethodDescriptor,
                     testInstance);
 
             factoryMethodDescriptor.invoke(sutValue, collaborators)
@@ -146,7 +147,7 @@ public class CollaboratorsInitialReifier implements InitialReifier {
             if (collaboratorProvider.hasReturnType(Object[].class)
                     || collaboratorProvider.hasReturnType(Collection.class)) {
                 Optional<Object> foundCollaborators =
-                        getCollaborators(testDescriptor, collaboratorProvider, testInstance);
+                        findCollaborators(testDescriptor, collaboratorProvider, testInstance);
 
                 if (foundCollaborators.isPresent()) {
                     processCollaborators(
@@ -180,67 +181,19 @@ public class CollaboratorsInitialReifier implements InitialReifier {
         }
     }
 
-    Optional<Object> getCollaborators(TestDescriptor testDescriptor,
+    Optional<Object> findCollaborators(TestDescriptor testDescriptor,
             MethodDescriptor methodDescriptor, Object testInstance) {
-        Object[] collaborators = findCollaborators(testDescriptor, methodDescriptor,
-                testInstance);
-
-        return methodDescriptor.getInstance()
-                .map(instance -> methodDescriptor.invoke(instance, convertToArray(
-                        collaborators)))
-                .orElseGet(() -> methodDescriptor.invoke(testInstance, convertToArray(
-                        collaborators)));
+        return new FindCollaborators(testDescriptor, methodDescriptor, testInstance).execute();
     }
 
-    Object[] findCollaborators(TestDescriptor testDescriptor, MethodDescriptor methodDescriptor,
+    Object[] getCollaborators(TestDescriptor testDescriptor, MethodDescriptor methodDescriptor,
             Object testInstance) {
-        return methodDescriptor.getParameters().stream()
-                .map(parameter -> {
-                    Optional<MethodDescriptor> foundMethodDescriptor =
-                            findCollaboratorProvider(testDescriptor, parameter);
-
-                    ExceptionUtil.INSTANCE.raise(!foundMethodDescriptor.isPresent(),
-                            "Could not find a provider for argument '{} {}'"
-                            + " for collaborator method provider '{}' in '{}'",
-                            parameter.getType().getSimpleName(),
-                            parameter.getName(),
-                            methodDescriptor.getName(),
-                            methodDescriptor.getDeclaringClassName());
-
-                    return foundMethodDescriptor;
-                })
-                .filter(foundMethodDescriptor -> foundMethodDescriptor.isPresent())
-                .map(foundMethodDescriptor -> foundMethodDescriptor.get())
-                .map(parameterMethodDescriptor ->
-                        getCollaborators(testDescriptor, parameterMethodDescriptor, testInstance)
-                                .orElse(null)
-                )
-                .toArray();
+        return new GetCollaborators(testDescriptor, methodDescriptor, testInstance).execute();
     }
 
     Optional<MethodDescriptor> findCollaboratorProvider(TestDescriptor testDescriptor,
             Parameter parameter) {
-        Class<?> parameterType = parameter.getType();
-        Name name = parameter.getDeclaredAnnotation(Name.class);
-        Optional<MethodDescriptor> foundMethodDescriptor;
-
-        if (name == null) {
-            //find a method that has returns the same type as the parameter and has the same name
-            foundMethodDescriptor = testDescriptor.findCollaboratorProvider(parameterType,
-                    parameter
-                            .getName());
-
-            //if one is not found then just use parameter type matching
-            if (!foundMethodDescriptor.isPresent()) {
-                foundMethodDescriptor = testDescriptor.findCollaboratorProvider(parameterType);
-            }
-        } else {
-            //if a name is specified then use it to find the right method
-            foundMethodDescriptor = testDescriptor
-                    .findCollaboratorProvider(parameterType, name.value());
-        }
-
-        return foundMethodDescriptor;
+        return new FindCollaboratorProvider(testDescriptor, parameter).execute();
     }
 
     Object[] convertToArray(Object value) {

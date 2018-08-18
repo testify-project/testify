@@ -38,6 +38,7 @@
         <module>client</module>
         <module>server</module>
         <module>junit4</module>
+        <module>junit5</module>
     </modules>
     
     <build>
