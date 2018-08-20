@@ -17,10 +17,15 @@ package org.testifyproject.junit5.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Hint;
+import org.testifyproject.annotation.Name;
 import org.testifyproject.annotation.Real;
+import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.junit5.SystemTest;
 import org.testifyproject.junit5.fixture.GenericApplication;
 
@@ -29,15 +34,22 @@ import org.testifyproject.junit5.fixture.GenericApplication;
  *
  * @author saden
  */
+@Hint(serviceProvider = DefaultServiceProvider.class)
 @Application(value = GenericApplication.class, start = "start", stop = "stop")
 @SystemTest
-public class GenericSystemTest {
+public class ServiceResolverSystemTest {
 
     @Real
-    TestContext testContext;
+    TestContext sut;
+
+    @Before
+    public void verifyInjections() {
+        assertThat(sut).isNotNull();
+    }
 
     @Test
-    public void verify() {
+    public void verifyFakeParameter(@Name TestContext testContext) {
         assertThat(testContext).isNotNull();
+        assertThat(Mockito.mockingDetails(testContext).isMock()).isFalse();
     }
 }

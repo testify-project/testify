@@ -24,7 +24,9 @@ import java.util.stream.Stream;
 import org.testifyproject.extension.Operation;
 
 /**
- * TODO.
+ * Get annotations with meta annotations for a parameter. This operation can discover
+ * annotations on a parameter with the specified meta annotations. This is useful for
+ * discovering custom qualifiers.
  *
  * @author saden
  */
@@ -41,7 +43,6 @@ public class GetMetaAnnotations implements Operation<Annotation[]> {
 
     @Override
     public Annotation[] execute() {
-        //XXX: dont execute on this stream in parallel
         return Stream.of(metaAnnotationTypes).parallel()
                 .flatMap(Collection::parallelStream)
                 .distinct()

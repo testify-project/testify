@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit5;
+package org.testifyproject.junit5.resolver;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 
@@ -27,18 +27,30 @@ import org.testifyproject.TestContext;
 import org.testifyproject.TestDescriptor;
 import org.testifyproject.annotation.Name;
 import org.testifyproject.core.extension.GetCollaborator;
+import org.testifyproject.junit5.TestifyExtension;
 
 /**
- * TODO.
+ * A parameter resolver that provides the ability to resolve collaborators as test method
+ * parameters.
  *
  * @author saden
  */
-public class CollaboratorResolverExtension implements ParameterResolver {
+public class CollaboratorParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec)
             throws ParameterResolutionException {
-        return pc.getParameter().getAnnotation(Name.class) != null;
+        ExtensionContext.Namespace namespace = create(TestifyExtension.class);
+        ExtensionContext.Store store = ec.getStore(namespace);
+
+        TestContext testContext = store.get(TestContext.class, TestContext.class);
+        TestDescriptor testDescriptor = testContext.getTestDescriptor();
+        Parameter parameter = pc.getParameter();
+
+        return testDescriptor.getCollaboratorProvider()
+                .map(p -> parameter.getAnnotation(Name.class) != null)
+                .orElse(false);
+
     }
 
     @Override
@@ -47,11 +59,13 @@ public class CollaboratorResolverExtension implements ParameterResolver {
         ExtensionContext.Namespace namespace = create(TestifyExtension.class);
         ExtensionContext.Store store = ec.getStore(namespace);
         TestContext testContext = store.get(TestContext.class, TestContext.class);
+
         TestDescriptor testDescriptor = testContext.getTestDescriptor();
         Parameter parameter = pc.getParameter();
         Object testInstance = ec.getTestInstance().get();
 
-        return new GetCollaborator(testDescriptor, parameter, testInstance).execute();
+        return new GetCollaborator(testDescriptor, parameter, testInstance)
+                .execute();
     }
 
 }

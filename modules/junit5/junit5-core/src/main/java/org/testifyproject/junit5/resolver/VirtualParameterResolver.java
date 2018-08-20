@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit5;
+package org.testifyproject.junit5.resolver;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 
@@ -27,13 +27,15 @@ import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Virtual;
 import org.testifyproject.core.util.ReflectionUtil;
+import org.testifyproject.junit5.TestifyExtension;
 
 /**
- * TODO.
+ * A parameter resolver that provides the ability to resolve test method parameters annotated
+ * with {@link Virtual}.
  *
  * @author saden
  */
-public class VirtualResolverExtension implements ParameterResolver {
+public class VirtualParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec)

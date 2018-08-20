@@ -40,11 +40,9 @@ public class GetCollaborators implements Operation<Object[]> {
 
     @Override
     public Object[] execute() {
-        return methodDescriptor.getParameters().stream()
-                .map(parameter -> {
-                    return new GetCollaborator(testDescriptor, parameter, testInstance)
-                            .execute();
-                }).toArray();
+        return methodDescriptor.getParameters().stream().map(parameter -> {
+            return new GetCollaborator(testDescriptor, parameter, testInstance).execute();
+        }).toArray();
     }
 
 }

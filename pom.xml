@@ -26,7 +26,7 @@
     <version>1.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <name>[Testify Project]</name>
+    <name>[[Testify Project]]</name>
     <description>
         A Java Testing Framework faithful to testing principles and best practices
     </description>

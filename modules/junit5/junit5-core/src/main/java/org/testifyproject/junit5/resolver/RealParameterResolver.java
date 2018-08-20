@@ -13,25 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit5;
+package org.testifyproject.junit5.resolver;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Real;
 import org.testifyproject.core.util.ReflectionUtil;
+import org.testifyproject.junit5.TestifyExtension;
 
 /**
- * TODO.
+ * A parameter resolver that provides the ability to resolve test method parameters annotated
+ * with {@link Real}.
  *
  * @author saden
  */
-public class RealResolverExtension implements ParameterResolver {
+public class RealParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec)
@@ -44,9 +49,24 @@ public class RealResolverExtension implements ParameterResolver {
             throws ParameterResolutionException {
         ExtensionContext.Namespace namespace = create(TestifyExtension.class);
         ExtensionContext.Store store = ec.getStore(namespace);
+        TestContext testContext = store.get(TestContext.class, TestContext.class);
         Parameter parameter = pc.getParameter();
+        Class<?> type = parameter.getType();
 
-        return ReflectionUtil.INSTANCE.newInstance(parameter.getType());
+        return testContext.getServiceInstance()
+                .map(serviceInstance -> {
+                    Annotation[] annotations = Arrays.stream(parameter.getDeclaredAnnotations())
+                            .filter(p -> !Real.class.equals(p.annotationType()))
+                            .toArray(Annotation[]::new);
+
+                    if (annotations == null) {
+                        return serviceInstance.getService(type);
+                    }
+
+                    return serviceInstance.getService(type, annotations);
+                })
+                .orElseGet(() -> ReflectionUtil.INSTANCE.newInstance(parameter.getType()));
+
     }
 
 }

@@ -34,7 +34,8 @@ public class GetCollaborator implements Operation<Object> {
     private final Parameter parameter;
     private final Object testInstance;
 
-    public GetCollaborator(TestDescriptor testDescriptor, Parameter parameter,
+    public GetCollaborator(TestDescriptor testDescriptor,
+            Parameter parameter,
             Object testInstance) {
         this.testDescriptor = testDescriptor;
         this.parameter = parameter;
@@ -52,10 +53,10 @@ public class GetCollaborator implements Operation<Object> {
                 parameter.getType().getSimpleName(),
                 parameter.getName());
 
-        return foundMethodDescriptor.map(parameterMethodDescriptor -> {
+        return foundMethodDescriptor.map(methodDescriptor -> {
             FindCollaborators query = new FindCollaborators(
                     testDescriptor,
-                    parameterMethodDescriptor,
+                    methodDescriptor,
                     testInstance);
             return query.execute().orElse(null);
         }).orElse(null);

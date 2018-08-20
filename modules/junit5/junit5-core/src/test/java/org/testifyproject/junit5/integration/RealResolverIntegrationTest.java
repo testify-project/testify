@@ -15,32 +15,41 @@
  */
 package org.testifyproject.junit5.integration;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.testifyproject.TestContext;
+import org.mockito.Mockito;
 import org.testifyproject.annotation.Hint;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.annotation.Scan;
 import org.testifyproject.annotation.Sut;
 import org.testifyproject.core.DefaultServiceProvider;
 import org.testifyproject.junit5.IntegrationTest;
+import org.testifyproject.junit5.fixture.TestClass;
 
 /**
- * TODO.
  *
  * @author saden
  */
 @Scan("test")
 @Hint(serviceProvider = DefaultServiceProvider.class)
 @IntegrationTest
-public class GenericIntegrationTest {
+public class RealResolverIntegrationTest {
 
     @Sut
-    TestContext testContext;
+    TestClass sut;
+
+    @Before
+    public void verifyInjections() {
+        assertThat(sut).isNotNull();
+    }
 
     @Test
-    public void verify() {
-        assertThat(testContext).isNotNull();
+    public void verifyRealParameter(@Real TestClass testClass) {
+        assertThat(testClass).isNotNull();
+        assertThat(Mockito.mockingDetails(testClass).isMock()).isFalse();
     }
 
 }

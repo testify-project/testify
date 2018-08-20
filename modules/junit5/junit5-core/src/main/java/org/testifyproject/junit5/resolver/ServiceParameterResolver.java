@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit5;
+package org.testifyproject.junit5.resolver;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 
@@ -27,13 +27,15 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.testifyproject.TestContext;
 import org.testifyproject.core.extension.GetMetaAnnotations;
+import org.testifyproject.junit5.TestifyExtension;
 
 /**
- * TODO.
+ * A parameter resolver that provides the ability to resolve test method parameters annotated
+ * with dependency injection framework specific annotations.
  *
  * @author saden
  */
-public class ServiceResolverExtension implements ParameterResolver {
+public class ServiceParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec)
@@ -49,19 +51,15 @@ public class ServiceResolverExtension implements ParameterResolver {
                     Set<Class<? extends Annotation>> customQualifiers =
                             serviceInstance.getCustomQualifiers();
 
-                    for (Class<? extends Annotation> nameQualifer : nameQualifers) {
-                        if (pc.isAnnotated(nameQualifer)) {
-                            return true;
-                        }
+                    boolean match = nameQualifers.stream()
+                            .anyMatch(pc::isAnnotated);
+
+                    if (!match) {
+                        match = customQualifiers.stream()
+                                .anyMatch(pc::isAnnotated);
                     }
 
-                    for (Class<? extends Annotation> customQualifier : customQualifiers) {
-                        if (pc.isAnnotated(customQualifier)) {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return match;
                 })
                 .orElse(false);
     }

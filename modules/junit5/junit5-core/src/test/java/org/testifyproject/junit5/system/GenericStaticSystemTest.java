@@ -13,22 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.fixture;
+package org.testifyproject.junit5.system;
 
-import org.testifyproject.annotation.Discoverable;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Real;
+import org.testifyproject.junit5.SystemTest;
+import org.testifyproject.junit5.fixture.GenericApplication;
 
 /**
- * A service provider implementation class.
+ * TODO.
  *
  * @author saden
  */
-@Discoverable(DiscoverableExplicitContract.class)
-public class DiscoverableExplicitService 
-        implements DiscoverableContract, DiscoverableExplicitContract {
+@Application(value = GenericApplication.class, start = "main", stop = "exit")
+@SystemTest
+public class GenericStaticSystemTest {
 
-    @Override
-    public String sayHello() {
-        return "Hello";
+    @Real
+    TestContext testContext;
+
+    @Test
+    public void verify() {
+        assertThat(testContext).isNotNull();
     }
 
 }

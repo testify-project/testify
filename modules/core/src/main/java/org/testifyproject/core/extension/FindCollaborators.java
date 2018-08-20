@@ -23,7 +23,7 @@ import org.testifyproject.TestDescriptor;
 import org.testifyproject.extension.Query;
 
 /**
- * TODO.
+ * A query to find collaborators for a method.
  *
  * @author saden
  */
@@ -43,12 +43,14 @@ public class FindCollaborators implements Query<Object> {
 
     @Override
     public Optional<Object> execute() {
+        //get the collaborators for the method
         Object[] collaborators = new GetCollaborators(
                 testDescriptor,
                 methodDescriptor,
                 testInstance
         ).execute();
 
+        //invoke the method and get the acutal collaborator
         return methodDescriptor.getInstance()
                 .map(instance -> {
                     return methodDescriptor.invoke(instance, convertToArray(collaborators));

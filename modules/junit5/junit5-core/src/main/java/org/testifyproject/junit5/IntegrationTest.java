@@ -23,18 +23,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.testifyproject.junit5.resolver.CollaboratorParameterResolver;
+import org.testifyproject.junit5.resolver.FakeParameterResolver;
+import org.testifyproject.junit5.resolver.RealParameterResolver;
+import org.testifyproject.junit5.resolver.ServiceParameterResolver;
 
 /**
- * TODO.
+ * A JUnit 5 annotation that can be placed on integration test classes. This annotation provides
+ * the ability to create a system under test (SUT) instance and substitute instances of its
+ * collaborators with fake, virtual or real instances.
  *
  * @author saden
  */
 @ExtendWith({
     IntegrationTestExtension.class,
     TestifyExtension.class,
-    FakeResolverExtension.class,
-    ServiceResolverExtension.class,
-    CollaboratorResolverExtension.class
+    FakeParameterResolver.class,
+    ServiceParameterResolver.class,
+    RealParameterResolver.class,
+    CollaboratorParameterResolver.class
 })
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)

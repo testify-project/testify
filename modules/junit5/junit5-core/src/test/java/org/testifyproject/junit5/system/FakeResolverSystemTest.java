@@ -13,34 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit5.integration;
+package org.testifyproject.junit5.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.testifyproject.TestContext;
+import org.testifyproject.annotation.Application;
+import org.testifyproject.annotation.Fake;
 import org.testifyproject.annotation.Hint;
-import org.testifyproject.annotation.Scan;
-import org.testifyproject.annotation.Sut;
+import org.testifyproject.annotation.Real;
 import org.testifyproject.core.DefaultServiceProvider;
-import org.testifyproject.junit5.IntegrationTest;
+import org.testifyproject.junit5.SystemTest;
+import org.testifyproject.junit5.fixture.GenericApplication;
+import org.testifyproject.junit5.fixture.TestClass;
 
 /**
  * TODO.
  *
  * @author saden
  */
-@Scan("test")
 @Hint(serviceProvider = DefaultServiceProvider.class)
-@IntegrationTest
-public class GenericIntegrationTest {
+@Application(value = GenericApplication.class, start = "start", stop = "stop")
+@SystemTest
+public class FakeResolverSystemTest {
 
-    @Sut
-    TestContext testContext;
+    @Real
+    TestContext sut;
 
-    @Test
-    public void verify() {
-        assertThat(testContext).isNotNull();
+    @Before
+    public void verifyInjections() {
+        assertThat(sut).isNotNull();
     }
 
+    @Test
+    public void verifyFakeParameter(@Fake TestClass testClass) {
+        assertThat(testClass).isNotNull();
+        assertThat(Mockito.mockingDetails(testClass).isMock()).isTrue();
+    }
 }

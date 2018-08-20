@@ -13,32 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit5.system;
+package org.testifyproject.fixture.analyzer;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Test;
-import org.testifyproject.TestContext;
-import org.testifyproject.annotation.Application;
-import org.testifyproject.annotation.Real;
-import org.testifyproject.junit5.SystemTest;
-import org.testifyproject.junit5.fixture.GenericApplication;
+import org.testifyproject.annotation.Name;
 
 /**
- * TODO.
  *
  * @author saden
  */
-@Application(value = GenericApplication.class, start = "main", stop = "exit")
-@SystemTest
-public class GenericMainSystemTest {
+public class AnalyzedCollaboratorProvider {
 
-    @Real
-    TestContext testContext;
-
-    @Test
-    public void verify() {
-        assertThat(testContext).isNotNull();
+    String provide(@Name("hello") String hello) {
+        return hello + " " + "world!";
     }
 
+    @Name("hello")
+    String namedHelloProvider() {
+        return "hello";
+    }
+
+    String unnamedHelloProvider() {
+        return "hello";
+    }
 }

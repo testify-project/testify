@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testifyproject.junit5;
+package org.testifyproject.junit5.resolver;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 
@@ -26,13 +26,15 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.testifyproject.MockProvider;
 import org.testifyproject.TestContext;
 import org.testifyproject.annotation.Fake;
+import org.testifyproject.junit5.TestifyExtension;
 
 /**
- * TODO.
+ * A parameter resolver that provides the ability to resolve test method parameters annotated
+ * with {@link Fake}.
  *
  * @author saden
  */
-public class FakeResolverExtension implements ParameterResolver {
+public class FakeParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext pc, ExtensionContext ec)
@@ -45,6 +47,7 @@ public class FakeResolverExtension implements ParameterResolver {
             throws ParameterResolutionException {
         ExtensionContext.Namespace namespace = create(TestifyExtension.class);
         ExtensionContext.Store store = ec.getStore(namespace);
+
         TestContext testContext = store.get(TestContext.class, TestContext.class);
         MockProvider mockProvider = testContext.getMockProvider();
         Parameter parameter = pc.getParameter();
