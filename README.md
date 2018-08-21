@@ -18,6 +18,7 @@ Testify is an annotation driven Java Testing Framework that provides uniform and
 - Managed Test Case Configuration, Isolation, and Execution
 - JSR-330 Dependency Injection Annotations Support
 - JUnit 4 Testing Framework Support
+- JUnit 5 Testing Framework Support
 - Pluggable Mocking SPI (Mockito and EasyMock supported)
 - Pluggable Local Test Resource SPI (HSQL, ElasticSearch, ZooKeeper, etc supported)
 - Pluggable Virtual Test Resource SPI (Docker Container supported)
