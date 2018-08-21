@@ -53,6 +53,15 @@ public class LoggingUtil {
     }
 
     /**
+     * Get the underlying SLF4J logger instance.
+     *
+     * @return the underlying logger instance
+     */
+    public Logger getLogger() {
+        return logger;
+    }
+
+    /**
      * Log a debug message.
      *
      * @param messageFormat log message format

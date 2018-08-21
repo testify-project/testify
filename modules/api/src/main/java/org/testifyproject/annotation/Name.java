@@ -40,5 +40,5 @@ public @interface Name {
      *
      * @return the name
      */
-    String value();
+    String value() default "";
 }
