@@ -24,8 +24,8 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.context.support.GenericApplicationContext;
 import org.testifyproject.ServiceProvider;
 import org.testifyproject.TestConfigurer;
 import org.testifyproject.TestDescriptor;
@@ -62,40 +62,39 @@ public class ApplicationContextInterceptor {
             @This ConfigurableApplicationContext applicationContext,
             @AllArguments Object[] args) throws Exception {
         TestContextHolder.INSTANCE.command(testContext -> {
-            if (applicationContext instanceof GenericApplicationContext
-                    && applicationContext.getParent() == null) {
-                GenericApplicationContext configContext
-                        = (GenericApplicationContext) applicationContext;
+            if (applicationContext instanceof AnnotationConfigApplicationContext) {
+                AnnotationConfigApplicationContext configContext =
+                        (AnnotationConfigApplicationContext) applicationContext;
                 configContext.setId(testContext.getName());
                 configContext.setDisplayName(testContext.getName());
                 configContext.setAllowCircularReferences(false);
                 configContext.setAllowBeanDefinitionOverriding(true);
-
-                TestConfigurer testConfigurer = testContext.getTestConfigurer();
-                ConfigurableApplicationContext configuredApplicationContext
-                        = testConfigurer.configure(testContext, applicationContext);
-
-                TestDescriptor testDescriptor = testContext.getTestDescriptor();
-                DefaultListableBeanFactory beanFactory
-                        = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
-                BeanDefinitionRegistry registry = (BeanDefinitionRegistry) applicationContext;
-
-                addModules(testDescriptor, registry);
-                addScans(testDescriptor, registry);
-
-                SpringBeanFactoryPostProcessor postProcessor
-                        = new SpringBeanFactoryPostProcessor(testContext);
-
-                applicationContext.addBeanFactoryPostProcessor(postProcessor);
-
-                testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
-                    ServiceProvider<ConfigurableApplicationContext> serviceProvider
-                            = ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
-                                    SpringServiceProvider.class);
-
-                    return serviceProvider.configure(testContext, configuredApplicationContext);
-                });
             }
+
+            TestConfigurer testConfigurer = testContext.getTestConfigurer();
+            ConfigurableApplicationContext configuredApplicationContext =
+                    testConfigurer.configure(testContext, applicationContext);
+
+            TestDescriptor testDescriptor = testContext.getTestDescriptor();
+            DefaultListableBeanFactory beanFactory =
+                    (DefaultListableBeanFactory) applicationContext.getBeanFactory();
+            BeanDefinitionRegistry registry = (BeanDefinitionRegistry) applicationContext;
+
+            addModules(testDescriptor, registry);
+            addScans(testDescriptor, registry);
+
+            SpringBeanFactoryPostProcessor postProcessor =
+                    new SpringBeanFactoryPostProcessor(testContext);
+
+            applicationContext.addBeanFactoryPostProcessor(postProcessor);
+
+            testContext.computeIfAbsent(SERVICE_INSTANCE, key -> {
+                ServiceProvider<ConfigurableApplicationContext> serviceProvider =
+                        ServiceLocatorUtil.INSTANCE.getOne(ServiceProvider.class,
+                                SpringServiceProvider.class);
+
+                return serviceProvider.configure(testContext, configuredApplicationContext);
+            });
         });
 
         zuper.call();

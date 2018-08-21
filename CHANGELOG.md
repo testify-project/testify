@@ -13,6 +13,10 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [1.0.6] - 2018-08-21
+### Fixed
+- Reverted changes made in release 1.0.3 which prevented SpringBoot applications from being testable
+
 ## [1.0.5] - 2018-08-20
 ### Added
 - Added JUnit 5 support!
@@ -75,8 +79,8 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Changed how errors and warnings are reported by verifiers
  - Added `addWarning`, `addError`, and `verify` methods to the TestContext
  - Removed dependency verification from the test runners to PreVerifier implementation
- 
-### Removed 
+
+### Removed
 - Removed the ability to use the `@Fixture` annotation on classes in favor of @Module#test attribute
 - Removed framework specific GuiceIntegrationTest, HK2InegrationTest, JerseySystemTest, SpringBootSystemTest, SpringIntegrationTest, and SpringSystemTest test runners in favor of generic UnitTest, IntegrationTest, and SystemTest test runners.
 
@@ -104,7 +108,7 @@ was added, changed, deprecated, removed, fix and security fixes.
 - Changed stop method in `ClientProvider` contract by adding `ClientInstance` parameter
 - Changed ClientInstance contract to return client and clientProvider instances. Also added methods to get `fqn` and `annotation`.
 - Renamed `PropertiesWriter#addListElement` and `PropertiesReader#findList`
-- Changed return types of methods that return `List` to `Collection` 
+- Changed return types of methods that return `List` to `Collection`
 - Renamed `ResourceInstance` contract to `ResourceInfo`
 
 ### Removed

@@ -21,6 +21,7 @@ import static org.testifyproject.core.TestContextProperties.SERVICE_INSTANCE;
 
 import java.util.concurrent.Callable;
 
+import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testifyproject.ServiceProvider;
@@ -59,8 +60,8 @@ public class SpringApplicationInterceptor {
             @SuperCall Callable<ConfigurableApplicationContext> zuper,
             @This Object object,
             @AllArguments Object[] args) throws Exception {
-        ConfigurableApplicationContext applicationContext =
-                (ConfigurableApplicationContext) zuper.call();
+        AnnotationConfigEmbeddedWebApplicationContext applicationContext =
+                (AnnotationConfigEmbeddedWebApplicationContext) zuper.call();
 
         TestContextHolder.INSTANCE.command(testContext -> {
             testContext.addProperty(APP, object);
