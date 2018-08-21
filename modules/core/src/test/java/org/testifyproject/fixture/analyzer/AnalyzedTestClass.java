@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import org.testifyproject.annotation.Sut;
 @Module(AnalyzedModule.class)
 @AnalyzedBundle
 @ConfigHandler(AnalyzedConfigHandler.class)
+@CollaboratorProvider(AnalyzedCollaboratorProvider.class)
 public class AnalyzedTestClass {
 
     @Sut

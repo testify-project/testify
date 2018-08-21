@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.testifyproject.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -24,18 +25,19 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * An annotation that can be placed on unit, integration and system test class fields to denote
- * the fields as a virtual collaborator. Virtual collaborators are mock instances that delegate
- * to a real instance of the collaborator of the System Under Test and are useful if you wish to
- * mock certain functionality (i.e. a method that calls a third-party service to process a
- * credit card charge) and delegate other functionality to the real collaborator instance.
+ * An annotation that can be placed on unit, integration and system test class fields or test
+ * method parameter to denote the fields as a virtual collaborator. Virtual collaborators are
+ * mock instances that delegate to a real instance of the collaborator of the System Under Test
+ * and are useful if you wish to mock certain functionality (i.e. a method that calls a
+ * third-party service to process a credit card charge) and delegate other functionality to the
+ * real collaborator instance.
  * </p>
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
-@Target(FIELD)
+@Target({FIELD, PARAMETER})
 public @interface Virtual {
 
 }

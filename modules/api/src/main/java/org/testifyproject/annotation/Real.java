@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.testifyproject.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -23,14 +24,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that can be placed on integration and system test class fields to denote the
- * field as a real collaborator of the System Under Test.
+ * An annotation that can be placed on integration and system test class fields or test method
+ * parameter to denote the field as a real collaborator of the System Under Test.
  *
  * @author saden
  */
 @Documented
 @Retention(RUNTIME)
-@Target(FIELD)
+@Target({FIELD, PARAMETER})
 public @interface Real {
 
 }

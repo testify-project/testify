@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Testify Project.
+ * Copyright 2016-2018 Testify Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,8 +87,14 @@ public class DefaultServiceInstance implements ServiceInstance {
             }
 
         } else if (Name.class.equals(qualifiers[0].annotationType())) {
-            Name name = (Name) qualifiers[0];
-            instance = serviceContext.get(ServiceKey.of(type, name.value()));
+            Name annotation = (Name) qualifiers[0];
+            String name = annotation.value();
+
+            if ("".equals(name)) {
+                instance = serviceContext.get(ServiceKey.of(type));
+            } else {
+                instance = serviceContext.get(ServiceKey.of(type, name));
+            }
         }
 
         return (T) instance;

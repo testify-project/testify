@@ -13,6 +13,15 @@ was added, changed, deprecated, removed, fix and security fixes.
 
 ## [Unreleased]
 
+## [1.0.5] - 2018-08-20
+### Added
+- Added JUnit 5 support!
+- Added `Command`, `Query`, and `Operation` extension interfaces.
+
+### Changed
+- Relaxed `@Name` value being required. It has a default value of `""`
+- Added the ability to to place `@Real`, `@Fake`, `@Virtual` on parameters
+
 ## [1.0.4] - 2018-05-02
 ### Changed
 - Removed direct dependency on logback and instead use whatever implementation of SLF4J implementation is in the classpath
