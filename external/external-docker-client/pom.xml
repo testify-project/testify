@@ -27,7 +27,7 @@
     <artifactId>external-docker-client</artifactId>
     
     <properties>
-        <docker.client.version>8.9.2</docker.client.version>
+        <docker.client.version>8.14.4</docker.client.version>
         <jersey.version>2.26</jersey.version>
         <hk2.version>2.5.0-b42</hk2.version>
     </properties>
