@@ -30,7 +30,7 @@
     <description>A module that contains coding convention resource files (i.e. license header, checkstyle configuration, etc)</description>
 
     <properties>
-        <checkstyle.version>8.3</checkstyle.version>
+        <checkstyle.version>8.29</checkstyle.version>
         <license.version>3.0</license.version>
     </properties>
 
