@@ -74,7 +74,7 @@
         <plugin.shade>3.1.0</plugin.shade>
 
         <!-- Test Dependencies -->
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <mockito.version>2.11.0</mockito.version>
         <assertj.version>3.8.0</assertj.version>
         <easymock.version>3.4</easymock.version>
@@ -261,7 +261,7 @@
                         <debuglevel>lines,vars,source</debuglevel>
                         <compilerArguments>
                             <!-- enable runtime discover of parameter names -->
-                            <parameters />
+                            <parameters/>
                         </compilerArguments>
                     </configuration>
                 </plugin>
@@ -329,8 +329,8 @@
                         <createSourcesJar>true</createSourcesJar>
                         <shadeSourcesContent>true</shadeSourcesContent>
                         <transformers>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
                             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                                 <addHeader>false</addHeader>
                             </transformer>
@@ -790,7 +790,7 @@
                             -->
                             <debug>false</debug>
                             <compilerArguments>
-                                <parameters />
+                                <parameters/>
                             </compilerArguments>
                         </configuration>
                     </plugin>
