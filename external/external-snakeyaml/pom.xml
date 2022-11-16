@@ -27,7 +27,7 @@
     <artifactId>external-snakeyaml</artifactId>
     
     <properties>
-        <snakeyaml.version>1.19</snakeyaml.version>
+        <snakeyaml.version>1.32</snakeyaml.version>
     </properties>
     
     <build>
