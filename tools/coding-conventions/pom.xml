@@ -31,7 +31,7 @@
 
     <properties>
         <checkstyle.version>8.3</checkstyle.version>
-        <license.version>3.0</license.version>
+        <license.version>4.2</license.version>
     </properties>
 
     <dependencies>
