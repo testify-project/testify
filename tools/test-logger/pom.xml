@@ -32,7 +32,7 @@
     </description>
 
     <properties>
-        <logback.version>1.2.3</logback.version>
+        <logback.version>1.2.13</logback.version>
         <jansi.version>1.16</jansi.version>
     </properties>
 
